@@ -128,7 +128,7 @@ unsigned short crazyGetBit(unsigned short crcIdx) {
 
   unsigned short cx = CRCTable[crcIdx+30];
 
-  unsigned char al = GetBitsFromBitBuffer(cx >> 8);
+  GetBitsFromBitBuffer(cx >> 8);
   cx &= 0xFF;
 
   if (cx < 2) return cx;

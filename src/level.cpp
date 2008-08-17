@@ -11,6 +11,10 @@ level_c::level_c(void) {
       vid->format->Rmask, vid->format->Gmask, vid->format->Bmask, 0);
 }
 
+level_c::~level_c(void) {
+  SDL_FreeSurface(background);
+}
+
 void level_c::load(const char * name) {
 
   char fname[200];
@@ -124,4 +128,5 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
       }
     }
 }
+
 

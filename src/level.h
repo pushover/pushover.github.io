@@ -34,6 +34,7 @@ class level_c {
   public:
 
     level_c(void);
+    ~level_c(void);
 
     void load(const char * name);
 

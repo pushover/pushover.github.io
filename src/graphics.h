@@ -8,6 +8,7 @@ class graphics_c {
   public:
 
     graphics_c(void);
+    virtual ~graphics_c(void);
 
     virtual void loadGraphics(void) = 0;
 

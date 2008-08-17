@@ -8,6 +8,7 @@ class graphicsO_c : public graphics_c {
   public:
 
     graphicsO_c(const char * path, unsigned int scale);
+    ~graphicsO_c(void) {}
 
     void loadGraphics(void);
 

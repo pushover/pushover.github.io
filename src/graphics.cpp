@@ -48,3 +48,19 @@ const unsigned char graphics_c::numDominos[numDominoTypes] = {
     17, 6, 6, 6, 6, 6, 6, 8, 1
 };
 
+graphics_c::~graphics_c(void) {
+
+  for (unsigned int i = 0; i < bgTiles.size(); i++)
+    for (unsigned int j = 0; j < bgTiles[i].size(); j++)
+      SDL_FreeSurface(bgTiles[i][j]);
+
+  for (unsigned int i = 0; i < fgTiles.size(); i++)
+    for (unsigned int j = 0; j < fgTiles[i].size(); j++)
+      SDL_FreeSurface(fgTiles[i][j]);
+
+  for (unsigned int i = 0; i < dominos.size(); i++)
+    for (unsigned int j = 0; j < dominos[i].size(); j++)
+      if (dominos[i][j])
+        SDL_FreeSurface(dominos[i][j]);
+}
+
