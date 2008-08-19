@@ -41,7 +41,8 @@ int main(int argn, char * argv[]) {
   l.drawDominos(video, gr);
 
   SDL_Flip(video);
-  SDL_Delay(10*1000);
+
+  getc(stdin);
 
   return 0;
 }
