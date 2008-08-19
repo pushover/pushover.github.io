@@ -124,8 +124,28 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
             SDL_BlitSurface(v, 0, target, &dst);
           }
         }
-        dynamicDirty[y] &= ~(1 << x);
       }
+    }
+  for (unsigned int y = 0; y < 13; y++)
+    for (unsigned int x = 0; x < 20; x++) {
+      if ((dynamicDirty[y] >> x) & 1) {
+        if (getFg(x, y) == FgElementPlatformLadderDown || getFg(x, y) == FgElementLadder) {
+          SDL_Rect dst;
+          dst.x = x*gr->blockX();
+          dst.y = y*gr->blockY();
+          dst.w = gr->blockX();
+          dst.h = gr->blockY();
+          SDL_BlitSurface(gr->getFgTile(FgElementLadder2), 0, target, &dst);
+	} else if (getFg(x, y) == FgElementPlatformLadderUp) {
+          SDL_Rect dst;
+          dst.x = x*gr->blockX();
+          dst.y = y*gr->blockY();
+          dst.w = gr->blockX();
+          dst.h = gr->blockY();
+          SDL_BlitSurface(gr->getFgTile(FgElementLadderMiddle), 0, target, &dst);
+	}
+      }
+      dynamicDirty[y] &= ~(1 << x);
     }
 }
 

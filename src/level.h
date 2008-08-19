@@ -40,6 +40,34 @@ class level_c {
 
     const char * getTheme(void) const { return theme; }
 
+    /* Foreground elements */
+    enum {
+      FgElementEmpty,
+      FgElementPlatformStart,
+      FgElementPlatformMiddle,
+      FgElementPlatformEnd,
+      FgElementPlatformLadderDown,
+      FgElementLadder,
+      FgElementPlatformLadderUp,
+      FgElementPlatformStep1,
+      FgElementPlatformStep2,
+      FgElementPlatformStep3,
+      FgElementPlatformStep4,
+      FgElementPlatformStep5,
+      FgElementPlatformStep6,
+      FgElementPlatformStep7,
+      FgElementPlatformStep8,
+      FgElementPlatformWrongDoor,
+      FgElementPlatformStack,
+      FgElementLadderMiddle,
+      FgElementPlatformStrip,
+      FgElementLadder2,
+      FgElementDoor0,
+      FgElementDoor1,
+      FgElementDoor2,
+      FgElementDoor3
+    };
+
     unsigned short getBg(unsigned int x, unsigned int y) const { return level[y][x].bg; }
     unsigned char  getFg(unsigned int x, unsigned int y) const { return level[y][x].fg; }
     unsigned char  getDominoType(unsigned int x, unsigned int y) const { return level[y][x].dominoType; }
