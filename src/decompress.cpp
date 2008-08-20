@@ -1,89 +1,97 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-unsigned short CRCTable[256];
+unsigned short CRCTable[256] = { 0, 0 };
 
 void calcCRCTable(void) {
 
-    for (unsigned int i = 0; i < 256; i++) {
-        unsigned short val = i;
-        for (unsigned int j = 0; j < 8; j++) {
+  /* CRC Table is not 0 ar position 1 */
+  if (CRCTable[1] != 0) return;
 
-            if (val & 1 == 1)
-                val = (val >> 1) ^ 0xA001;
-            else
-                val >>= 1;
-        }
-        CRCTable[i] = val;
+  printf("init CRC table\n");
+
+  for (unsigned int i = 0; i < 256; i++) {
+    unsigned short val = i;
+    for (unsigned int j = 0; j < 8; j++) {
+
+      if (val & 1 == 1)
+        val = (val >> 1) ^ 0xA001;
+      else
+        val >>= 1;
     }
+    CRCTable[i] = val;
+  }
 }
 
 unsigned short calcCRC(const unsigned char * buffer, unsigned int cnt) {
 
-    calcCRCTable();
+  calcCRCTable();
 
-    unsigned short val = 0;
+  unsigned short val = 0;
 
-    while (cnt > 0) {
-        val = CRCTable[(val^(*buffer++)) & 0xFF] ^ (val >> 8);
-        cnt--;
-    }
+  while (cnt > 0) {
+    val = CRCTable[(val^(*buffer++)) & 0xFF] ^ (val >> 8);
+    cnt--;
+  }
 
-    return val;
+  return val;
 }
 
-unsigned char file[100000];
-unsigned char decoded[100000];
-short bitsInBitBuffer = 0;
-unsigned short bitBuffer;
-unsigned short bitBufferHigh;
-unsigned int targetPos = 0;
-unsigned int sourcePos = 18;
+typedef struct {
 
-unsigned short GetBitsFromBitBuffer(unsigned char num) {
+  unsigned short bitBuffer;
+  unsigned short bitBufferHigh;
+  unsigned short bitsInBitBuffer;
+  unsigned char * file;
+  unsigned int sourcePos;
+  unsigned short getBitTable[256];
+
+} decompState;
+
+
+unsigned short GetBitsFromBitBuffer(unsigned char num, decompState * s) {
 
   if (num > 16) {
-    printf("too many bits\n");
+    printf("error decoding spream: too many bits\n");
     exit(1);
   }
 
-  unsigned short result = bitBuffer & ((1 << num) -1);
+  unsigned short result = s->bitBuffer & ((1 << num) -1);
 
-
-  if (bitsInBitBuffer < num) {
+  if (s->bitsInBitBuffer < num) {
 
     /* first remove all the bits that are left in high */
 
-    bitBuffer >>= bitsInBitBuffer;
-    bitBuffer |= bitBufferHigh << (16-bitsInBitBuffer);
-    num -= bitsInBitBuffer;
+    s->bitBuffer >>= s->bitsInBitBuffer;
+    s->bitBuffer |= s->bitBufferHigh << (16-s->bitsInBitBuffer);
+    num -= s->bitsInBitBuffer;
 
     /* refill the high part again */
-    sourcePos += 2;
-    bitBufferHigh = ((unsigned short)file[sourcePos]) | ((unsigned short)file[sourcePos+1] << 8);
-    bitsInBitBuffer = 16;
+    s->sourcePos += 2;
+    s->bitBufferHigh = ((unsigned short)s->file[s->sourcePos]) | ((unsigned short)s->file[s->sourcePos+1] << 8);
+    s->bitsInBitBuffer = 16;
 
   }
 
-  bitBuffer >>= num;
-  bitBuffer |= bitBufferHigh << (16-num);
-  bitBufferHigh >>= num;
-  bitsInBitBuffer -= num;
+  s->bitBuffer >>= num;
+  s->bitBuffer |= s->bitBufferHigh << (16-num);
+  s->bitBufferHigh >>= num;
+  s->bitsInBitBuffer -= num;
 
   return result;
 }
 
-void doSomething(unsigned short crcIdx) {
 
-  int count = GetBitsFromBitBuffer(5);
+void doSomething(unsigned short crcIdx, decompState * s) {
+
+  int count = GetBitsFromBitBuffer(5, s);
 
   if (count == 0) return;
 
   unsigned char stack[16];
 
   for (int i = 0; i < count; i++)
-    stack[i] = GetBitsFromBitBuffer(4);
+    stack[i] = GetBitsFromBitBuffer(4, s);
 
   unsigned short mask = 0x8000;
   unsigned short bx = 0;
@@ -97,7 +105,7 @@ void doSomething(unsigned short crcIdx) {
       if (stack[j] == i) {
 
         unsigned short val = (1 << stack[j]) -1;
-        CRCTable[idx++] = val;
+        s->getBitTable[idx++] = val;
 
         val = (bx >> (16-stack[j]));
 
@@ -107,10 +115,10 @@ void doSomething(unsigned short crcIdx) {
           if (val & 1) val2 |= 1;
           val >>= 1;
         }
-        CRCTable[idx++] = val2;
+        s->getBitTable[idx++] = val2;
 
         val = (((unsigned short)stack[j]) << 8) + j;
-        CRCTable[idx+30] = val;
+        s->getBitTable[idx+30] = val;
 
         bx += mask;
 
@@ -121,84 +129,156 @@ void doSomething(unsigned short crcIdx) {
   }
 }
 
-unsigned short crazyGetBit(unsigned short crcIdx) {
-  while ((CRCTable[crcIdx] & bitBuffer) != CRCTable[crcIdx+1])
+unsigned short crazyGetBit(unsigned short crcIdx, decompState * s) {
+  while ((s->getBitTable[crcIdx] & s->bitBuffer) != s->getBitTable[crcIdx+1])
     crcIdx+=2;
   crcIdx+=2;
 
-  unsigned short cx = CRCTable[crcIdx+30];
+  unsigned short cx = s->getBitTable[crcIdx+30];
 
-  GetBitsFromBitBuffer(cx >> 8);
+  GetBitsFromBitBuffer(cx >> 8, s);
   cx &= 0xFF;
 
   if (cx < 2) return cx;
 
   cx--;
 
-  unsigned short a = GetBitsFromBitBuffer(cx);
-
-  return a | (1 << cx);
+  return GetBitsFromBitBuffer(cx, s) | (1 << cx);
 }
 
-void decompress2(unsigned short key) {
+unsigned char * decompress(const char * fname, unsigned int *size) {
 
+  decompState st;
 
-  unsigned int numPasses = file[17];
+  /* read the file, allocate the right amount of memory */
+  {
+    FILE * f = fopen(fname, "rb");
+    if (!f) {
+      printf("file %s not found\n", fname);
+      exit(1);
+    }
 
-  bitBuffer = ((unsigned short)file[sourcePos]) | ((unsigned short)file[sourcePos+1] << 8);
+    fseek(f, 0, SEEK_END);
+    unsigned long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);
 
-  GetBitsFromBitBuffer(2);
+    if (fsize > 10000000) {
+      printf("file %s too big\n", fname);
+      exit(1);
+    }
+
+    if (fsize < 20) {
+      printf("file %s too small, doesn't even contain header\n", fname);
+      exit(1);
+    }
+
+    st.file = new unsigned char[fsize];
+
+    fread(st.file, 1, fsize, f);
+    fclose(f);
+  }
+
+  /* check the header of the file */
+  {
+    unsigned int header = ((int)st.file[0] << 24) + ((int)st.file[1] << 16) + ((int)st.file[2] << 8) + st.file[3];
+
+    if (header != 0x524E4301) {   // RNC1
+      printf("file %s is no compressed file\n", fname);
+      exit(1);
+    }
+  }
+
+  /* get CRC and sizes for compressed and decompressed data */
+  unsigned int decodedSize = ((unsigned int)st.file[ 4] << 24) + ((unsigned int)st.file[ 5] << 16)
+    + ((unsigned int)st.file[ 6] << 8) + (unsigned int)st.file[ 7];
+  unsigned int encodedSize = ((unsigned int)st.file[ 8] << 24) + ((unsigned int)st.file[ 9] << 16)
+    + ((unsigned int)st.file[10] << 8) + (unsigned int)st.file[11];
+  unsigned short decodedCRC = ((unsigned short)st.file[12] << 8) + (unsigned short)st.file[13];
+  unsigned short encodedCRC = ((unsigned short)st.file[14] << 8) + (unsigned short)st.file[15];
+
+  /* check the CRC sum of the compressed data */
+  {
+    unsigned short CRC = calcCRC(st.file+18, encodedSize);
+
+    if (CRC != encodedCRC) {
+      printf("encoded Checksums don't match in file %s\n", fname);
+      exit(1);
+    }
+  }
+
+  unsigned char * decoded = new unsigned char[decodedSize];
+
+  st.bitsInBitBuffer = 0;
+  st.bitBufferHigh = 0;
+  unsigned int targetPos = 0;
+  st.sourcePos = 18;
+  unsigned short key = 0x1984;
+  unsigned int numPasses = st.file[17];
+
+  st.bitBuffer = ((unsigned short)st.file[st.sourcePos]) | ((unsigned short)st.file[st.sourcePos+1] << 8);
+
+  GetBitsFromBitBuffer(2, &st);
 
   do {
 
-    doSomething(0x40);
-    doSomething(0x80);
-    doSomething(0xC0);
+    doSomething(0x40, &st);
+    doSomething(0x80, &st);
+    doSomething(0xC0, &st);
 
-    unsigned short internalPasses = GetBitsFromBitBuffer(16);
+    unsigned short internalPasses = GetBitsFromBitBuffer(16, &st);
 
     while (true) {  // internal Passes loop
 
-      unsigned short num = crazyGetBit(0x40);
+      unsigned short num = crazyGetBit(0x40, &st);
 
       if (num > 0) {
 
+        if (targetPos+num > decodedSize) {
+          printf("error decoding file: too long\n");
+          exit(1);
+        }
+
         while (num) {
 
-          decoded[targetPos] = file[sourcePos] ^ key;
+          decoded[targetPos] = st.file[st.sourcePos] ^ key;
           num--;
           targetPos++;
-          sourcePos++;
+          st.sourcePos++;
         }
 
         key = key >> 1 | ((key & 1) ? 0x8000 : 0);  // ror key, 1
 
         // refill bitbuffer
 
-        unsigned short b = (unsigned short)file[sourcePos] |
-          ((unsigned short)file[sourcePos+1] << 8);
+        unsigned short b = (unsigned short)st.file[st.sourcePos] |
+          ((unsigned short)st.file[st.sourcePos+1] << 8);
         unsigned short a = b;
 
-        for (int i = 0; i < bitsInBitBuffer; i++)
+        for (int i = 0; i < st.bitsInBitBuffer; i++)
           a = a << 1 | ((a & 0x8000) ? 1 : 0);  // ror a, 1
 
-        unsigned short d = (1 << bitsInBitBuffer) -1;
+        unsigned short d = (1 << st.bitsInBitBuffer) -1;
 
-        bitBuffer &= d;
+        st.bitBuffer &= d;
         d &= a;
 
-        a = (unsigned short)file[sourcePos+2] |
-          ((unsigned short)file[sourcePos+3] << 8);
+        a = (unsigned short)st.file[st.sourcePos+2] |
+          ((unsigned short)st.file[st.sourcePos+3] << 8);
 
-        bitBuffer |= b << bitsInBitBuffer;
-        bitBufferHigh = (a << bitsInBitBuffer) | d;
+        st.bitBuffer |= b << st.bitsInBitBuffer;
+        st.bitBufferHigh = (a << st.bitsInBitBuffer) | d;
       }
 
       internalPasses--;
       if (internalPasses == 0) break;
 
-      unsigned ofs = crazyGetBit(0x80)+1;
-      num = crazyGetBit(0xC0) + 2;
+      unsigned ofs = crazyGetBit(0x80, &st)+1;
+      num = crazyGetBit(0xC0, &st) + 2;
+
+      if (targetPos+num > decodedSize) {
+        printf("error decoding file: too long\n");
+        exit(1);
+      }
 
       for (int i = 0; i < num; i++) {
         decoded[targetPos] = decoded[targetPos-ofs];
@@ -207,64 +287,26 @@ void decompress2(unsigned short key) {
     }
 
     numPasses--;
+
   } while (numPasses > 0);
-}
 
+  delete [] st.file;
 
-
-unsigned char * decompress(const char * fname, unsigned int *size) {
-
-    {
-        FILE * f = fopen(fname, "rb");
-        if (!f) {
-//            printf("file not found\n");
-            return 0;
-        }
-        fread(file, 1, 100000, f);
-        fclose(f);
-    }
-
-    unsigned int header = ((int)file[0] << 24) + ((int)file[1] << 16) + ((int)file[2] << 8) + file[3];
-
-    if (header != 0x524E4301) {   // RNC1
-//        printf("no compressed file %x\n", header);
-        return 0;
-    }
-
-    unsigned int decodedSize = ((unsigned int)file[ 4] << 24) + ((unsigned int)file[ 5] << 16) + ((unsigned int)file[ 6] << 8) + (unsigned int)file[ 7];
-    unsigned int encodedSize = ((unsigned int)file[ 8] << 24) + ((unsigned int)file[ 9] << 16) + ((unsigned int)file[10] << 8) + (unsigned int)file[11];
-    unsigned short decodedCRC = ((unsigned short)file[12] << 8) + (unsigned short)file[13];
-    unsigned short encodedCRC = ((unsigned short)file[14] << 8) + (unsigned short)file[15];
-
-    printf("%i %i %x %x\n", encodedSize, decodedSize, encodedCRC, decodedCRC);
-
-    unsigned short CRC = calcCRC(file+18, encodedSize);
-
-    if (CRC != encodedCRC) {
-//      printf("encoded Checksums don't match: %x  %x\n", encodedCRC, CRC);
-      return 0;
-    }
-
-    bitsInBitBuffer = 0;
-    targetPos = 0;
-    sourcePos = 18;
-
-    decompress2(0x1984);
-
-    CRC = calcCRC(decoded, decodedSize);
+  /* check CRC of the decoded data */
+  {
+    unsigned short CRC = calcCRC(decoded, decodedSize);
 
     if (CRC != decodedCRC) {
-//      printf("decoded Checksums don't match savin anyway: %x  %x\n", decodedCRC, CRC);
-      return 0;
+      printf("decoded Checksums don't match in file %s\n", fname);
+      exit(1);
     }
+  }
 
-    unsigned char * res = new unsigned char[decodedSize];
-    memcpy(res, decoded, decodedSize);
+  /* set decoded size and return */
+  if (size) {
+    *size = decodedSize;
+  }
 
-    if (size) {
-      *size = decodedSize;
-    }
-
-    return res;
+  return decoded;
 }
 
