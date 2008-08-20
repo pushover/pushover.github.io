@@ -60,7 +60,7 @@ void level_c::updateBackground(graphics_c * gr) {
         SDL_BlitSurface(gr->getFgTile(getFg(x, y)), 0, background, &dst);
 
         /* apply gradient effect */
-        for (unsigned int i = 0; i < gr->blockY(); i++)
+        for (unsigned int i = 0; i < gr->blockY() && y*gr->blockY()+i < background->h; i++)
           for (unsigned int j = 0; j < gr->blockX(); j++) {
 
             uint32_t col = *((uint32_t*)(((uint8_t*)background->pixels) + (y*gr->blockY()+i) * background->pitch +
