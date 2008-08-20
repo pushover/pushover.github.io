@@ -19,7 +19,7 @@ void level_c::load(const char * name) {
 
   char fname[200];
 
-  snprintf(fname, 200, "/home/andy/.wine/drive_c/pushover/screens/P%s.SCR", name);
+  snprintf(fname, 200, "./screens/%s.SCR", name);
 
   unsigned char * dat = decompress(fname, 0);
 

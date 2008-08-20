@@ -20,7 +20,7 @@ const char * themes[] = {
 
 int main(int argn, char * argv[]) {
 
-  graphics_c * gr = new graphicsO_c("/home/andy/.wine/drive_c/pushover", 2);
+  graphics_c * gr = new graphicsO_c(".", 2);
 
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Surface *video = SDL_SetVideoMode(gr->resolutionX(), gr->resolutionY(), 24, 0);
@@ -29,11 +29,7 @@ int main(int argn, char * argv[]) {
 
   level_c l;
 
-  char name[20];
-
-  snprintf(name, 20, "%05i", atoi(argv[1]));
-
-  l.load(name);
+  l.load(argv[1]);
 
   gr->setTheme(l.getTheme());
 
