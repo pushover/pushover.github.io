@@ -33,11 +33,11 @@ AM_PATH_SDL($SDL_VERSION,
 CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
 
-AC_CHECK_LIB(SDL_mixer, main, ,
-	AC_MSG_WARN([Can't find SDL_mixer.]))
+#AC_CHECK_LIB(SDL_mixer, main, ,
+#	AC_MSG_WARN([Can't find SDL_mixer.]))
 
-AC_CHECK_LIB(z, uncompress, ,
-	AC_MSG_ERROR([Can't find libz.]))
+#AC_CHECK_LIB(z, uncompress, ,
+#	AC_MSG_ERROR([Can't find libz.]))
 
 # Checks for header files.
 AC_HEADER_DIRENT
