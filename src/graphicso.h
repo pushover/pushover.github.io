@@ -26,4 +26,6 @@ class graphicsO_c : public graphics_c {
     std::string dataPath;
     unsigned int scale;
 
+    unsigned int getAnimation(unsigned char * data, unsigned char anim, unsigned short * palette);
+
 };

@@ -7,6 +7,8 @@ graphics_c::graphics_c(void) {
   for (unsigned int i = 0; i < numDominoTypes; i++)
     dominos[i].resize(numDominos[i]);
 
+  ant.resize(numAntAnimations);
+
 }
 
 void graphics_c::setTheme(const char *name) {
@@ -42,11 +44,23 @@ void graphics_c::setDomino(unsigned int type, unsigned int num, SDL_Surface * v)
   dominos[type][num] = v;
 }
 
+void graphics_c::addAnt(unsigned int anim, signed char yOffset, SDL_Surface * v, bool free) {
+
+  antSprite s;
+  s.v = v;
+  s.ofs = yOffset;
+  s.free = free;
+
+  ant[anim].push_back(s);
+}
+
 const unsigned char graphics_c::numDominoTypes = 18;
 const unsigned char graphics_c::numDominos[numDominoTypes] = {
   15, 15, 14, 8, 15, 15, 15, 15, 15,
     17, 6, 6, 6, 6, 6, 6, 8, 1
 };
+
+const unsigned char graphics_c::numAntAnimations = 66;
 
 graphics_c::~graphics_c(void) {
 
@@ -62,5 +76,10 @@ graphics_c::~graphics_c(void) {
     for (unsigned int j = 0; j < dominos[i].size(); j++)
       if (dominos[i][j])
         SDL_FreeSurface(dominos[i][j]);
+
+  for (unsigned int i = 0; i < ant.size(); i++)
+    for (unsigned int j = 0; j < ant[i].size(); j++)
+      if (ant[i][j].free)
+        SDL_FreeSurface(ant[i][j].v);
 }
 
