@@ -1,31 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-unsigned short CRCTable[256] = { 0, 0 };
+static unsigned short calcCRC(const unsigned char * buffer, unsigned int cnt) {
 
-void calcCRCTable(void) {
+  static unsigned short CRCTable[256] = { 0, 0 };
 
-  /* CRC Table is not 0 ar position 1 */
-  if (CRCTable[1] != 0) return;
+  if (CRCTable[1] == 0) {
+    for (unsigned int i = 0; i < 256; i++) {
+      unsigned short val = i;
+      for (unsigned int j = 0; j < 8; j++) {
 
-  printf("init CRC table\n");
-
-  for (unsigned int i = 0; i < 256; i++) {
-    unsigned short val = i;
-    for (unsigned int j = 0; j < 8; j++) {
-
-      if (val & 1 == 1)
-        val = (val >> 1) ^ 0xA001;
-      else
-        val >>= 1;
+        if (val & 1 == 1)
+          val = (val >> 1) ^ 0xA001;
+        else
+          val >>= 1;
+      }
+      CRCTable[i] = val;
     }
-    CRCTable[i] = val;
   }
-}
-
-unsigned short calcCRC(const unsigned char * buffer, unsigned int cnt) {
-
-  calcCRCTable();
 
   unsigned short val = 0;
 
@@ -49,7 +41,7 @@ typedef struct {
 } decompState;
 
 
-unsigned short GetBitsFromBitBuffer(unsigned char num, decompState * s) {
+static unsigned short GetBitsFromBitBuffer(unsigned char num, decompState * s) {
 
   if (num > 16) {
     printf("error decoding spream: too many bits\n");
@@ -82,7 +74,7 @@ unsigned short GetBitsFromBitBuffer(unsigned char num, decompState * s) {
 }
 
 
-void doSomething(unsigned short crcIdx, decompState * s) {
+static void doSomething(unsigned short crcIdx, decompState * s) {
 
   int count = GetBitsFromBitBuffer(5, s);
 
@@ -129,7 +121,7 @@ void doSomething(unsigned short crcIdx, decompState * s) {
   }
 }
 
-unsigned short crazyGetBit(unsigned short crcIdx, decompState * s) {
+static unsigned short crazyGetBit(unsigned short crcIdx, decompState * s) {
   while ((s->getBitTable[crcIdx] & s->bitBuffer) != s->getBitTable[crcIdx+1])
     crcIdx+=2;
   crcIdx+=2;
