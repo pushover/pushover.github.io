@@ -128,7 +128,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
 
             SDL_Rect dst;
             dst.x = (x-2)*gr->blockX();
-            dst.y = y*gr->blockY()-v->h + gr->blockObject();
+            dst.y = y*gr->blockY()-v->h + 8;
             dst.w = v->w;
             dst.h = v->h;
             SDL_BlitSurface(v, 0, target, &dst);
