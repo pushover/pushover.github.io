@@ -199,7 +199,10 @@ void graphicsO_c::loadGraphics(void) {
   for (unsigned int i = 36; i <= 43; i++)
     offset += getAnimation(a2+offset, i, palette);
 
-  // 44 and 45 are again copied from somewhere else
+  // 44 and 45 are again copied from for animations before
+  for (unsigned int i = 44; i <= 45; i++)
+    for (unsigned int j = 0; j < getAntImages(i-4); j++)
+      addAnt(i, getAntOfset(i-4, j), getAnt(i-4, j), false);
 
   offset += getAnimation(a2+offset, 46, palette);
 
