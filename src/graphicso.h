@@ -20,6 +20,8 @@ class graphicsO_c : public graphics_c {
     /* to get the blocksize of one block */
     virtual unsigned int blockX(void) { return 16*scale; }
     virtual unsigned int blockY(void) { return 16*scale; }
+    virtual unsigned int blockObject(void) { return 8*scale; }
+
 
   private:
 

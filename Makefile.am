@@ -8,9 +8,10 @@ bin_PROGRAMS = pushover
 
 pushover_LDFLAGS = $(LIBINTL)
 pushover_SOURCES =                  \
+  src/ant.cpp src/ant.h \
+  src/decompress.cpp src/decompress.h \
   src/graphics.cpp src/graphics.h \
   src/graphicso.cpp src/graphicso.h \
-  src/decompress.cpp src/decompress.h \
   src/level.cpp src/level.h \
   src/main.cpp
 

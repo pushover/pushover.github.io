@@ -1,5 +1,6 @@
 #include "graphicso.h"
 #include "level.h"
+#include "ant.h"
 
 #include <SDL.h>
 
@@ -33,12 +34,35 @@ int main(int argn, char * argv[]) {
 
   gr->setTheme(l.getTheme());
 
-  l.updateBackground(gr);
-  l.drawDominos(video, gr);
+  ant_c a;
 
-  SDL_Flip(video);
+  a.init(&l, gr);
 
-  getc(stdin);
+  bool exit = false;
+
+  while (!exit) {
+
+    SDL_Event event; /* Event structure */
+
+    while(SDL_PollEvent(&event)) {  /* Loop until there are no events left on the queue */
+      switch(event.type) { /* Process the appropiate event type */
+        case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
+          exit = true;
+          break;
+      }
+    }
+
+    l.performDoors();
+    a.performAnimation();
+
+    l.updateBackground(gr);
+    l.drawDominos(video, gr);
+    a.draw(video);
+
+    SDL_Flip(video);
+
+    SDL_Delay(1000);
+  }
 
   return 0;
 }

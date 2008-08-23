@@ -24,13 +24,14 @@ class graphics_c {
     /* to get the blocksize of one block */
     virtual unsigned int blockX(void) = 0;
     virtual unsigned int blockY(void) = 0;
+    virtual unsigned int blockObject(void) = 0;  // return and noffset to actually place the objects
 
     SDL_Surface * getBgTile(unsigned int num) { return bgTiles[curTheme][num]; }
     SDL_Surface * getFgTile(unsigned int num) { return fgTiles[curTheme][num]; }
 
     SDL_Surface * getDomino(unsigned int domino, unsigned int image) { return dominos[domino][image]; }
     SDL_Surface * getAnt(unsigned int animation, unsigned int step) { return ant[animation][step].v; }
-    int getAntOfset(unsigned int animation, unsigned int step) { return ant[animation][step].ofs; }
+    int getAntOffset(unsigned int animation, unsigned int step) { return ant[animation][step].ofs; }
     unsigned int getAntImages(unsigned int animation) { return ant[animation].size(); }
 
     virtual void loadTheme(const char *name) = 0;

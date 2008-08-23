@@ -34,6 +34,10 @@ class level_c {
      */
     SDL_Surface * background;
 
+    // requested stated for the 2 doors
+    bool openDoorExit;
+    bool openDoorEntry;
+
   public:
 
     level_c(void);
@@ -82,5 +86,16 @@ class level_c {
     /* draw the changed stuff into the target surface */
     void drawDominos(SDL_Surface * target, graphics_c * gr);
 
+    /* opens and closes doors */
+    void performDoors(void);
+    // allows you to open and close the 2 doors
+    void openEntryDoor(bool open) { openDoorEntry = open; }
+    void openExitDoor(bool open) { openDoorExit = open; }
+    bool isEntryDoorOpen(void) { return getFg(doorEntryX, doorEntryY) == FgElementDoor3; }
+    bool isExitDoorOpen(void) { return getFg(doorExitX, doorExitY) == FgElementDoor3; }
+    unsigned int getEntryDoorPosX(void) { return doorEntryX; }
+    unsigned int getEntryDoorPosY(void) { return doorEntryY; }
 
+    // dirty marking of blocks
+    void markDirty(int x, int y) { if (x >= 0 && x < 20 && y >= 0 && y < 13) dynamicDirty[y] |= (1 << x); }
 };

@@ -44,7 +44,11 @@ void level_c::load(const char * name) {
   doorEntryX = dat[1580];
   doorEntryY = dat[1581];
   doorExitX  = dat[1582];
-  doorExitY  = dat[1582];
+  doorExitY  = dat[1583];
+
+
+  level[doorEntryY][doorEntryX].fg = FgElementDoor0;
+  openDoorEntry = openDoorExit = false;
 
   delete [] dat;
 
@@ -66,7 +70,7 @@ void level_c::updateBackground(graphics_c * gr) {
         SDL_BlitSurface(gr->getFgTile(getFg(x, y)), 0, background, &dst);
 
         /* apply gradient effect */
-        for (unsigned int i = 0; i < gr->blockY() && y*gr->blockY()+i < background->h; i++)
+        for (unsigned int i = 0; i < gr->blockY() && y*gr->blockY()+i < (unsigned int)background->h; i++)
           for (unsigned int j = 0; j < gr->blockX(); j++) {
 
             uint32_t col = *((uint32_t*)(((uint8_t*)background->pixels) + (y*gr->blockY()+i) * background->pitch +
@@ -124,7 +128,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
 
             SDL_Rect dst;
             dst.x = (x-2)*gr->blockX();
-            dst.y = y*gr->blockY()-v->h+8;
+            dst.y = y*gr->blockY()-v->h + gr->blockObject();
             dst.w = v->w;
             dst.h = v->h;
             SDL_BlitSurface(v, 0, target, &dst);
@@ -132,6 +136,8 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
         }
       }
     }
+
+  // repaint the ladders in front of dominos
   for (unsigned int y = 0; y < 13; y++)
     for (unsigned int x = 0; x < 20; x++) {
       if ((dynamicDirty[y] >> x) & 1) {
@@ -155,4 +161,37 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
     }
 }
 
+void level_c::performDoors(void) {
+
+  if (openDoorEntry) {
+    if (getFg(doorEntryX, doorEntryY) < FgElementDoor3) {
+      level[doorEntryY][doorEntryX].fg++;
+      staticDirty[doorEntryY] |= 1 << doorEntryX;
+      dynamicDirty[doorEntryY] |= 1 << doorEntryX;
+    }
+
+  } else {
+    if (getFg(doorEntryX, doorEntryY) > FgElementDoor0) {
+      level[doorEntryY][doorEntryX].fg--;
+      staticDirty[doorEntryY] |= 1 << doorEntryX;
+      dynamicDirty[doorEntryY] |= 1 << doorEntryX;
+    }
+  }
+
+  if (openDoorExit) {
+    if (getFg(doorExitX, doorExitY) < FgElementDoor3) {
+      level[doorExitY][doorExitX].fg++;
+      staticDirty[doorExitY] |= 1 << doorExitX;
+      dynamicDirty[doorExitY] |= 1 << doorExitX;
+    }
+  } else {
+    if (getFg(doorExitX, doorExitY) > FgElementDoor0) {
+      level[doorExitY][doorExitX].fg--;
+      staticDirty[doorExitY] |= 1 << doorExitX;
+      dynamicDirty[doorExitY] |= 1 << doorExitX;
+    }
+  }
+
+
+}
 
