@@ -40,6 +40,12 @@ void level_c::load(const char * name) {
   for (int i = 0; i < 10; i++)
     theme[i] = dat[260*6+i];
 
+  /* copy the door positions */
+  doorEntryX = dat[1580];
+  doorEntryY = dat[1581];
+  doorExitX  = dat[1582];
+  doorExitY  = dat[1582];
+
   delete [] dat;
 
   for (unsigned int i = 0; i < 13; i++)

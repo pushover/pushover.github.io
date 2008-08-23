@@ -19,6 +19,9 @@ class level_c {
 
     char theme[10];
 
+    // the positions of the 2 doors
+    unsigned char doorEntryX, doorEntryY, doorExitX, doorExitY;
+
     /* 2 bitmasks containing a bit for each block saying if it changed
      * there is one array for the static background and one for the dynamic
      * foreground with the dominos and the ant, the clock, ...
