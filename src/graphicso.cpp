@@ -105,7 +105,7 @@ void graphicsO_c::loadGraphics(void) {
   // load a palette file, it doesn't matter which because all
   // sprites loded here use only colors that are identical on all
   // palettes
-  snprintf(fname, 200, "%s/themes/AZTEC.PAL", dataPath.c_str());
+  snprintf(fname, 200, "%s/themes/SPACE.PAL", dataPath.c_str());
   unsigned short palette[32];
   {
     FILE * f = fopen(fname, "rb");
