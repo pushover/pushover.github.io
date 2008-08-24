@@ -164,7 +164,8 @@ unsigned char * decompress(const char * fname, unsigned int *size) {
       exit(1);
     }
 
-    st.file = new unsigned char[fsize];
+    // we allocate 4 more byes, they are used to refill the bit buffer
+    st.file = new unsigned char[fsize+4];
 
     fread(st.file, 1, fsize, f);
     fclose(f);

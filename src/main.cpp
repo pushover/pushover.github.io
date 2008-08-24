@@ -80,5 +80,7 @@ int main(int argn, char * argv[]) {
     SDL_Delay(1000/9);
   }
 
+  delete gr;
+
   return 0;
 }
