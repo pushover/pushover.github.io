@@ -87,6 +87,7 @@ void ant_c::init(level_c * l, graphics_c * graph) {
   state = animation = AntAnimLeaveDoorEnterLevel;
   animationImage = 0;
   animationTimer = 0;
+  carriedDomino = 0;
 
   level = l;
   gr = graph;
@@ -97,7 +98,7 @@ void ant_c::draw(SDL_Surface * video) {
   SDL_Rect dst;
 
   dst.x = (blockX-2)*gr->blockX();
-  dst.y = (blockY+1)*gr->blockY()-gr->getAnt(animation, animationImage)->h+screenBlock + +2*6;
+  dst.y = (blockY+1)*gr->blockY()-gr->getAnt(animation, animationImage)->h+screenBlock + gr->antDisplace();
   dst.w = gr->blockX();
   dst.h = gr->blockY();
   SDL_BlitSurface(gr->getAnt(animation, animationImage), 0, video, &dst);
@@ -140,20 +141,20 @@ unsigned int ant_c::callStateFunction(unsigned int state) {
 
     case AntAnimWalkLeft:      return SFWalkLeft();
     case AntAnimWalkRight:     return SFWalkRight();
-    case AntAnimJunpUpLeft:
-    case AntAnimJunpUpRight:
-    case AntAnimJunpDownLeft:
-    case AntAnimJunpDownRight:
+    case AntAnimJunpUpLeft:    return SFJumpUpLeft();
+    case AntAnimJunpUpRight:   return SFJumpUpRight();
+    case AntAnimJunpDownLeft:  return SFJumpDownLeft();
+    case AntAnimJunpDownRight: return SFJumpDownRight();
     case AntAnimLadder1:
     case AntAnimLadder2:
     case AntAnimLadder3:
     case AntAnimLadder4:                   return AntAnimNothing; /////////////
     case AntAnimCarryLeft:     return SFWalkLeft();
     case AntAnimCarryRight:    return SFWalkRight();
-    case AntAnimCarryUpLeft:
-    case AntAnimCarryUpRight:
-    case AntAnimCarryDownLeft:
-    case AntAnimCarryDownRight:
+    case AntAnimCarryUpLeft:   return SFJumpUpLeft();
+    case AntAnimCarryUpRight:  return SFJumpUpRight();
+    case AntAnimCarryDownLeft: return SFJumpDownLeft();
+    case AntAnimCarryDownRight:return SFJumpDownRight();
     case AntAnimCarryLadder1:
     case AntAnimCarryLadder2:
     case AntAnimCarryLadder3:
@@ -250,6 +251,98 @@ unsigned int ant_c::SFWalkRight(void) {
   return animation;
 }
 
+unsigned int ant_c::SFJumpUpLeft(void) {
+  if (!animateAnt(0)) {
+    return animation;
+  }
+
+  if (carriedDomino) {
+    animation = AntAnimCarryStopLeft;
+  } else {
+    animation = AntAnimWalkLeft;
+  }
+
+  blockX--;
+
+  if (screenBlock == 0) {
+    blockY--;
+    screenBlock = subBlock = gr->halveBlockDisplace();
+  } else {
+    screenBlock = subBlock = 0;
+  }
+
+  return AntAnimNothing;
+}
+
+unsigned int ant_c::SFJumpUpRight(void) {
+  if (!animateAnt(0)) {
+    return animation;
+  }
+
+  if (carriedDomino) {
+    animation = AntAnimCarryStopRight;
+  } else {
+    animation = AntAnimWalkRight;
+  }
+
+  blockX++;
+
+  if (screenBlock == 0) {
+    blockY--;
+    screenBlock = subBlock = gr->halveBlockDisplace();
+  } else {
+    screenBlock = subBlock = 0;
+  }
+
+  return AntAnimNothing;
+}
+
+unsigned int ant_c::SFJumpDownLeft(void) {
+  if (!animateAnt(0)) {
+    return animation;
+  }
+
+  if (carriedDomino) {
+    animation = AntAnimCarryStopLeft;
+  } else {
+    animation = AntAnimWalkLeft;
+  }
+
+  blockX--;
+
+  if (screenBlock == 0) {
+    screenBlock = subBlock = gr->halveBlockDisplace();
+  } else {
+    blockY++;
+    screenBlock = subBlock = 0;
+  }
+
+  return AntAnimNothing;
+}
+
+unsigned int ant_c::SFJumpDownRight(void) {
+  if (!animateAnt(0)) {
+    return animation;
+  }
+
+  if (carriedDomino) {
+    animation = AntAnimCarryStopRight;
+  } else {
+    animation = AntAnimWalkRight;
+  }
+
+  blockX++;
+
+  if (screenBlock == 0) {
+    screenBlock = subBlock = gr->halveBlockDisplace();
+  } else {
+    blockY++;
+    screenBlock = subBlock = 0;
+  }
+
+  return AntAnimNothing;
+}
+
 unsigned int ant_c::SFLeaveDoor(void) {
   level->openEntryDoor(true);
 
@@ -284,9 +377,29 @@ unsigned int ant_c::SFStepAside(void) {
 unsigned int ant_c::SFNextAction(void) {
 
   if (keyMask & KEY_LEFT) {
-    animation = AntAnimWalkLeft;
+    if (level->canStandThere(blockX-1, blockY, subBlock))
+      animation = AntAnimWalkLeft;
+    else if (subBlock && level->canStandThere(blockX-1, blockY, 0) ||
+             !subBlock && level->canStandThere(blockX-1, blockY-1, 8))
+      animation = AntAnimJunpUpLeft;
+    else if (subBlock && level->canStandThere(blockX-1, blockY+1, 0) ||
+             !subBlock && level->canStandThere(blockX-1, blockY, 8))
+      animation = AntAnimJunpDownLeft;
+    else
+      animation = AntAnimStop;
+
   } else if (keyMask & KEY_RIGHT) {
-    animation = AntAnimWalkRight;
+    if (level->canStandThere(blockX+1, blockY, subBlock))
+      animation = AntAnimWalkRight;
+    else if (subBlock && level->canStandThere(blockX+1, blockY, 0) ||
+             !subBlock && level->canStandThere(blockX+1, blockY-1, 8))
+      animation = AntAnimJunpUpRight;
+    else if (subBlock && level->canStandThere(blockX+1, blockY+1, 0) ||
+             !subBlock && level->canStandThere(blockX+1, blockY, 8))
+      animation = AntAnimJunpDownRight;
+    else
+      animation = AntAnimStop;
+
   } else {
     animation = AntAnimStop;
   }

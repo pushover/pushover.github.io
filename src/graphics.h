@@ -24,7 +24,9 @@ class graphics_c {
     /* to get the blocksize of one block */
     virtual unsigned int blockX(void) = 0;
     virtual unsigned int blockY(void) = 0;
-    virtual unsigned int blockObject(void) = 0;  // return and noffset to actually place the objects
+    virtual unsigned int halveBlockDisplace(void) = 0;  // return and noffset to actually place the objects
+    virtual unsigned int antDisplace(void) = 0;  // return and noffset to actually place the objects
+    virtual unsigned int dominoDisplace(void) = 0;  // return and noffset to actually place the objects
 
     SDL_Surface * getBgTile(unsigned int num) { return bgTiles[curTheme][num]; }
     SDL_Surface * getFgTile(unsigned int num) { return fgTiles[curTheme][num]; }

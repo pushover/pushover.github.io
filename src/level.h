@@ -96,6 +96,11 @@ class level_c {
     unsigned int getEntryDoorPosX(void) { return doorEntryX; }
     unsigned int getEntryDoorPosY(void) { return doorEntryY; }
 
+    // query level information of certain places
+    bool containsPlank(int x, int y);
+    bool canStandThere(int x, int y, int sub);  // returns true, if the ant can stand at the given position
+
+
     // dirty marking of blocks
     void markDirty(int x, int y) { if (x >= 0 && x < 20 && y >= 0 && y < 13) dynamicDirty[y] |= (1 << x); }
 };

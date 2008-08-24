@@ -128,7 +128,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
 
             SDL_Rect dst;
             dst.x = (x-2)*gr->blockX();
-            dst.y = y*gr->blockY()-v->h + 8;
+            dst.y = y*gr->blockY()-v->h + gr->dominoDisplace();
             dst.w = v->w;
             dst.h = v->h;
             SDL_BlitSurface(v, 0, target, &dst);
@@ -191,7 +191,29 @@ void level_c::performDoors(void) {
       dynamicDirty[doorExitY] |= 1 << doorExitX;
     }
   }
+}
 
+bool level_c::containsPlank(int x, int y) {
+  if (x < 0 || x >= 20 || y < 0 || y >= 13) return false;
+
+  unsigned int fg = getFg(x, y);
+
+  return (fg == 1 || fg == 2 | fg == 3 || fg == 4 || fg == 6 || fg == 7 || fg == 10 || fg == 15);
+}
+
+bool level_c::canStandThere(int x, int y, int sub) {
+  if (x < 0 || x >= 19 || y < 0 || y >= 13) return false;
+
+  if (sub == 0) {
+    return ((   getFg(x, y+1) == 1 || getFg(x, y+1) == 2 || getFg(x, y+1) == 3
+             || getFg(x, y+1) == 4 || getFg(x, y+1) == 6 || getFg(x, y+1) == 7 || getFg(x, y+1) == 12) &&
+
+            (getFg(x, y) == 0 || getFg(x, y) == 5 || getFg(x, y) == 15 || getFg(x, y) == 17 || getFg(x, y) >= 19));
+  } else {
+    return ((getFg(x, y+1) == 8 || getFg(x, y+1) == 11) &&
+
+            (getFg(x, y) == 0 || getFg(x, y) == 5 || getFg(x, y) == 15 || getFg(x, y) == 17 || getFg(x, y) >= 19));
+  }
 
 }
 

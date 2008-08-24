@@ -57,6 +57,10 @@ class ant_c {
     unsigned int SFStepAside(void);
     unsigned int SFWalkLeft(void);
     unsigned int SFWalkRight(void);
+    unsigned int SFJumpUpLeft(void);
+    unsigned int SFJumpUpRight(void);
+    unsigned int SFJumpDownLeft(void);
+    unsigned int SFJumpDownRight(void);
 
     unsigned int SFNextAction(void);
 
