@@ -30,6 +30,8 @@ class ant_c {
     graphics_c * gr;
 
     unsigned int keyMask;
+    unsigned int inactiveTimer;
+    unsigned int fallingHight;
 
   public:
 
@@ -63,6 +65,13 @@ class ant_c {
     unsigned int SFJumpDownRight(void);
     unsigned int SFInFrontOfExploder(void);
     unsigned int SFInactive(void);
+    unsigned int SFLazying(void);
+    unsigned int SFFlailing(void);
+    unsigned int SFStartFallingLeft(void);
+    unsigned int SFStartFallingRight(void);
+    unsigned int SFFalling(void);
+    unsigned int SFLanding(void);
+    unsigned int SFLandDying(void);
 
     unsigned int SFNextAction(void);
 

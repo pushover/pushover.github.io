@@ -88,6 +88,7 @@ void ant_c::init(level_c * l, graphics_c * graph) {
   animationImage = 0;
   animationTimer = 0;
   carriedDomino = 0;
+  inactiveTimer = 0;
 
   level = l;
   gr = graph;
@@ -139,22 +140,22 @@ unsigned int ant_c::callStateFunction(unsigned int state) {
 
   switch (state) {
 
-    case AntAnimWalkLeft:      return SFWalkLeft();
-    case AntAnimWalkRight:     return SFWalkRight();
-    case AntAnimJunpUpLeft:    return SFJumpUpLeft();
-    case AntAnimJunpUpRight:   return SFJumpUpRight();
-    case AntAnimJunpDownLeft:  return SFJumpDownLeft();
-    case AntAnimJunpDownRight: return SFJumpDownRight();
+    case AntAnimWalkLeft:                  return SFWalkLeft();
+    case AntAnimWalkRight:                 return SFWalkRight();
+    case AntAnimJunpUpLeft:                return SFJumpUpLeft();
+    case AntAnimJunpUpRight:               return SFJumpUpRight();
+    case AntAnimJunpDownLeft:              return SFJumpDownLeft();
+    case AntAnimJunpDownRight:             return SFJumpDownRight();
     case AntAnimLadder1:
     case AntAnimLadder2:
     case AntAnimLadder3:
-    case AntAnimLadder4:                   return AntAnimNothing; /////////////
-    case AntAnimCarryLeft:     return SFWalkLeft();
-    case AntAnimCarryRight:    return SFWalkRight();
-    case AntAnimCarryUpLeft:   return SFJumpUpLeft();
-    case AntAnimCarryUpRight:  return SFJumpUpRight();
-    case AntAnimCarryDownLeft: return SFJumpDownLeft();
-    case AntAnimCarryDownRight:return SFJumpDownRight();
+    case AntAnimLadder4:                             return AntAnimNothing; /////////////
+    case AntAnimCarryLeft:                 return SFWalkLeft();
+    case AntAnimCarryRight:                return SFWalkRight();
+    case AntAnimCarryUpLeft:               return SFJumpUpLeft();
+    case AntAnimCarryUpRight:              return SFJumpUpRight();
+    case AntAnimCarryDownLeft:             return SFJumpDownLeft();
+    case AntAnimCarryDownRight:            return SFJumpDownRight();
     case AntAnimCarryLadder1:
     case AntAnimCarryLadder2:
     case AntAnimCarryLadder3:
@@ -171,10 +172,10 @@ unsigned int ant_c::callStateFunction(unsigned int state) {
     case AntAnimXXX4:
     case AntAnimLoosingDominoRight:
     case AntAnimLoosingDominoLeft:
-    case AntAnimXXX7:
-    case AntAnimStop:
-    case AntAnimTapping:
-    case AntAnimYawning:
+    case AntAnimXXX7:                                return AntAnimNothing;  /////////
+    case AntAnimStop:                      return SFInactive();
+    case AntAnimTapping:                   return SFLazying();
+    case AntAnimYawning:                   return SFLazying();
     case AntAnimEnterLeft:
     case AntAnimEnterRight:
     case AntAnimPushLeft:
@@ -184,27 +185,27 @@ unsigned int ant_c::callStateFunction(unsigned int state) {
     case AntAnimPushRiserLeft:
     case AntAnimPushRiserRight:
     case AntAnimXXX5:
-    case AntAnimXXX6:
-    case AntAnimSuddenFallRight:
-    case AntAnimSuddenFallLeft:
-    case AntAnimFalling:                             return AntAnimNothing;  /////////
+    case AntAnimXXX6:                                return AntAnimNothing;  /////////
+    case AntAnimSuddenFallRight:           return SFStartFallingRight();
+    case AntAnimSuddenFallLeft:            return SFStartFallingLeft();
+    case AntAnimFalling:                   return SFFalling();
     case AntAnimInFrontOfExploder:         return SFInFrontOfExploder();
     case AntAnimInFrontOfExploderWait:     return SFInactive();
-    case AntAnimLanding:
+    case AntAnimLanding:                   return SFLanding();
     case AntAnimGhost1:
     case AntAnimGhost2:                              return AntAnimNothing;  /////////
     case AntAnimLeaveDoorEnterLevel:       return SFLeaveDoor();
     case AntAnimStepAsideAfterEnter:       return SFStepAside();
     case AntAnimEnterDoor:
     case AntAnimXXX9:
-    case AntAnimStruggingAgainsFallLeft:
-    case AntAnimStruggingAgainsFallRight:
+    case AntAnimStruggingAgainsFallLeft:   return SFFlailing();
+    case AntAnimStruggingAgainsFallRight:  return SFFlailing();
     case AntAnimVictory:
     case AntAnimShrugging:
     case AntAnimNoNo:
     case AntAnimXXXA:
-    case AntAnimDominoDying:
-    case AntAnimLandDying:                           return AntAnimNothing;  /////////
+    case AntAnimDominoDying:                         return AntAnimNothing;  /////////
+    case AntAnimLandDying:                 return SFLandDying();
     case AntAnimNothing:                   return SFNextAction();
     default:                               return AntAnimNothing;
   }
@@ -383,35 +384,142 @@ unsigned int ant_c::SFInFrontOfExploder(void) {
   return animation;
 }
 
+unsigned int ant_c::SFLazying(void) {
+
+  if (animateAnt(3)) {
+    return AntAnimNothing;
+  }
+
+  return animation;
+}
+
 unsigned int ant_c::SFInactive(void) {
   return AntAnimNothing;
 }
 
+unsigned int ant_c::SFFlailing(void) {
+  if (animateAnt(0)) {
+    return AntAnimNothing;
+  }
+
+  return animation;
+}
+
+unsigned int ant_c::SFStartFallingLeft(void) {
+
+  if (animateAnt(0)) {
+    blockX--;
+    animation = AntAnimFalling;
+    blockY = blockY+1 < 12 ? blockY+1 : 12;
+    fallingHight++;
+    return AntAnimNothing;
+  }
+
+  return animation;
+}
+
+unsigned int ant_c::SFStartFallingRight(void) {
+
+  if (animateAnt(0)) {
+    blockX++;
+    animation = AntAnimFalling;
+    blockY = blockY+1 < 12 ? blockY+1 : 12;
+    fallingHight++;
+    return AntAnimNothing;
+  }
+
+  return animation;
+}
+
+unsigned int ant_c::SFFalling(void) {
+
+  if (animateAnt(0)) {
+    blockY++;
+    fallingHight++;
+    return AntAnimNothing;
+  }
+
+  return animation;
+}
+
+unsigned int ant_c::SFLanding(void) {
+  if (animateAnt(0)) {
+    animation = AntAnimStop;
+    return AntAnimNothing;
+  }
+
+  return animation;
+}
+
+unsigned int ant_c::SFLandDying(void) {
+  if (animateAnt(2)) {
+    animationImage = 12;
+  }
+
+  return animation;
+}
+
 unsigned int ant_c::SFNextAction(void) {
 
-  if (keyMask & KEY_LEFT) {
+  if (keyMask) inactiveTimer = 0;
+
+  if (!level->canStandThere(blockX, blockY, subBlock)) {
+    if (animation != AntAnimFalling) {
+      // TODO start falling here
+    }
+  } else if (animation == AntAnimFalling) {
+
+    if (fallingHight < 3) {
+      animation = AntAnimLanding;
+    } else {
+      animation = AntAnimLandDying;
+    }
+
+  } else if (keyMask & KEY_LEFT) {
+
     if (level->canStandThere(blockX-1, blockY, subBlock))
       animation = AntAnimWalkLeft;
     else if (subBlock && level->canStandThere(blockX-1, blockY, 0) ||
-             !subBlock && level->canStandThere(blockX-1, blockY-1, 8))
+             !subBlock && level->canStandThere(blockX-1, blockY-1, 1))
       animation = AntAnimJunpUpLeft;
     else if (subBlock && level->canStandThere(blockX-1, blockY+1, 0) ||
-             !subBlock && level->canStandThere(blockX-1, blockY, 8))
+             !subBlock && level->canStandThere(blockX-1, blockY, 1))
       animation = AntAnimJunpDownLeft;
-    else
-      animation = AntAnimStop;
+    else {
+      if (animation == AntAnimStruggingAgainsFallLeft) {
+
+        fallingHight = 0;
+        animation = AntAnimSuddenFallLeft;
+
+      } else {
+
+        animation = AntAnimStruggingAgainsFallLeft;
+
+      }
+    }
 
   } else if (keyMask & KEY_RIGHT) {
+
     if (level->canStandThere(blockX+1, blockY, subBlock))
       animation = AntAnimWalkRight;
     else if (subBlock && level->canStandThere(blockX+1, blockY, 0) ||
-             !subBlock && level->canStandThere(blockX+1, blockY-1, 8))
+             !subBlock && level->canStandThere(blockX+1, blockY-1, 1))
       animation = AntAnimJunpUpRight;
     else if (subBlock && level->canStandThere(blockX+1, blockY+1, 0) ||
-             !subBlock && level->canStandThere(blockX+1, blockY, 8))
+             !subBlock && level->canStandThere(blockX+1, blockY, 1))
       animation = AntAnimJunpDownRight;
-    else
-      animation = AntAnimStop;
+    else {
+      if (animation == AntAnimStruggingAgainsFallRight) {
+
+        fallingHight = 0;
+        animation = AntAnimSuddenFallRight;
+
+      } else {
+
+        animation = AntAnimStruggingAgainsFallRight;
+
+      }
+    }
 
   } else if (keyMask & KEY_UP) {
   } else if (keyMask & KEY_DOWN) {
@@ -420,7 +528,19 @@ unsigned int ant_c::SFNextAction(void) {
       if (animation != AntAnimInFrontOfExploderWait)
         animation = AntAnimInFrontOfExploder;
     } else {
-      animation = AntAnimStop;
+
+      //// TODO tapping and yawning is still not verified....
+      inactiveTimer++;
+
+      if (inactiveTimer > 18*5) {
+
+        animation = AntAnimYawning;
+        inactiveTimer = 0;
+
+      } else {
+
+        animation = AntAnimStop;
+      }
     }
   }
 
