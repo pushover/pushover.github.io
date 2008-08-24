@@ -61,6 +61,8 @@ class ant_c {
     unsigned int SFJumpUpRight(void);
     unsigned int SFJumpDownLeft(void);
     unsigned int SFJumpDownRight(void);
+    unsigned int SFInFrontOfExploder(void);
+    unsigned int SFInactive(void);
 
     unsigned int SFNextAction(void);
 

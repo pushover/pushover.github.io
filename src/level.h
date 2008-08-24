@@ -75,6 +75,28 @@ class level_c {
       FgElementDoor3
     };
 
+    enum {
+      DominoTypeEmpty,
+      DominoTypeStandard,
+      DominoTypeBlocker,
+      DominoTypeSplitter,
+      DominoTypeExploder,
+      DominoTypeDelay,
+      DominoTypeTumbler,
+      DominoTypeBridger,
+      DominoTypeVanisher,
+      DominoTypeTrigger,
+      DominoTypeRiser,
+      DominoTypeCrash0,
+      DominoTypeCrash1,
+      DominoTypeCrash2,
+      DominoTypeCrash3,
+      DominoTypeCrash4,
+      DominoTypeCrash5,
+      DominoTypeRiserCont,
+      DominoTypeQuaver
+    };
+
     unsigned short getBg(unsigned int x, unsigned int y) const { return level[y][x].bg; }
     unsigned char  getFg(unsigned int x, unsigned int y) const { return level[y][x].fg; }
     unsigned char  getDominoType(unsigned int x, unsigned int y) const { return level[y][x].dominoType; }

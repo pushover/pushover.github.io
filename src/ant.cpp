@@ -187,9 +187,9 @@ unsigned int ant_c::callStateFunction(unsigned int state) {
     case AntAnimXXX6:
     case AntAnimSuddenFallRight:
     case AntAnimSuddenFallLeft:
-    case AntAnimFalling:
-    case AntAnimInFrontOfExploder:
-    case AntAnimInFrontOfExploderWait:
+    case AntAnimFalling:                             return AntAnimNothing;  /////////
+    case AntAnimInFrontOfExploder:         return SFInFrontOfExploder();
+    case AntAnimInFrontOfExploderWait:     return SFInactive();
     case AntAnimLanding:
     case AntAnimGhost1:
     case AntAnimGhost2:                              return AntAnimNothing;  /////////
@@ -204,7 +204,7 @@ unsigned int ant_c::callStateFunction(unsigned int state) {
     case AntAnimNoNo:
     case AntAnimXXXA:
     case AntAnimDominoDying:
-    case AntAnimLandDying:
+    case AntAnimLandDying:                           return AntAnimNothing;  /////////
     case AntAnimNothing:                   return SFNextAction();
     default:                               return AntAnimNothing;
   }
@@ -374,6 +374,19 @@ unsigned int ant_c::SFStepAside(void) {
   return animation;
 }
 
+unsigned int ant_c::SFInFrontOfExploder(void) {
+
+  if (animateAnt(3)) {
+    animation = AntAnimInFrontOfExploderWait;
+  }
+
+  return animation;
+}
+
+unsigned int ant_c::SFInactive(void) {
+  return AntAnimNothing;
+}
+
 unsigned int ant_c::SFNextAction(void) {
 
   if (keyMask & KEY_LEFT) {
@@ -400,8 +413,15 @@ unsigned int ant_c::SFNextAction(void) {
     else
       animation = AntAnimStop;
 
+  } else if (keyMask & KEY_UP) {
+  } else if (keyMask & KEY_DOWN) {
   } else {
-    animation = AntAnimStop;
+    if (level->getDominoType(blockX, blockY+1) == level_c::DominoTypeExploder) {
+      if (animation != AntAnimInFrontOfExploderWait)
+        animation = AntAnimInFrontOfExploder;
+    } else {
+      animation = AntAnimStop;
+    }
   }
 
   return animation;
