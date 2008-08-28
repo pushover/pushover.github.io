@@ -42,6 +42,8 @@ int main(int argn, char * argv[]) {
 
   while (!exit) {
 
+    Uint32 ticks = SDL_GetTicks() + 1000/18;
+
     {
       SDL_Event event; /* Event structure */
 
@@ -77,7 +79,8 @@ int main(int argn, char * argv[]) {
 
     SDL_Flip(video);
 
-    SDL_Delay(1000/9);
+    if (SDL_GetTicks() < ticks)
+      SDL_Delay(ticks-SDL_GetTicks());
   }
 
   delete gr;
