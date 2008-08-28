@@ -32,6 +32,9 @@ class ant_c {
     unsigned int keyMask;
     unsigned int inactiveTimer;
     unsigned int fallingHight;
+    signed int direction;
+    unsigned int pushDelay;
+    unsigned int pushAnimation;
 
   public:
 
@@ -71,7 +74,36 @@ class ant_c {
     unsigned int SFStartFallingRight(void);
     unsigned int SFFalling(void);
     unsigned int SFLanding(void);
-    unsigned int SFLandDying(void);
+    unsigned int SFLadder1(void);
+    unsigned int SFLadder2(void);
+    unsigned int SFLadder3(void);
+    unsigned int SFPullOutLeft(void);
+    unsigned int SFPullOutRight(void);
+    unsigned int SFPushInLeft(void);
+    unsigned int SFPushInRight(void);
+    unsigned int SFLeaveLadderRight(void);
+    unsigned int SFLeaveLadderLeft(void);
+    unsigned int SFEnterLadder(void);
+    unsigned int SFLooseRight(void);
+    unsigned int SFLooseLeft(void);
+    unsigned int SFXXX7(void);   // TODO whats this state????
+    unsigned int SFEnterDominosLeft(void);
+    unsigned int SFEnterDominosRight(void);
+    unsigned int SFPushLeft(void);
+    unsigned int SFPushRight(void);
+    unsigned int SFPushSpecialLeft(void);
+    unsigned int SFPushSpecialRight(void);
+    unsigned int SFXXX5(void);   // TODO whats this state????
+    unsigned int SFXXX6(void);   // TODO whats this state????
+    unsigned int SFGhost1(void);
+    unsigned int SFGhost2(void);
+    unsigned int SFEnterDoor(void);
+    unsigned int SFXXX9(void);   // TODO whats this state????
+    unsigned int SFNoNo(void);
+    unsigned int SFVictory(void);
+    unsigned int SFShrugging(void);
+    unsigned int SFStruck(void);
+
 
     unsigned int SFNextAction(void);
 

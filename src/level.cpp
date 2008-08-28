@@ -217,3 +217,50 @@ bool level_c::canStandThere(int x, int y, int sub) {
 
 }
 
+int level_c::pickUpDomino(int x, int y) {
+  int dom = level[y][x].dominoType;
+  level[y][x].dominoType = DominoTypeEmpty;
+  level[y][x].dominoState = 8;
+  level[y][x].dominoDir = 0;
+  level[y][x].dominoYOffset = 0;
+  level[y][x].dominoExtra = 0;
+
+  return dom;
+}
+
+void level_c::putDownDomino(int x, int y, int domino) {
+
+  if (level[y][x].dominoType != 0) {
+
+    // TODO:::: crash
+
+  } else if (x > 0 && level[y][x-1].dominoType && level[y][x-1].dominoState >= 12) {
+
+    // TODO:::: crash
+
+  } else if (x < 19 && level[y][x+1].dominoType && level[y][x-1].dominoState <= 4) {
+
+    // TODO:::: crash
+
+  } else {
+
+    // we can place the domino
+    level[y][x].dominoType = domino;
+    level[y][x].dominoState = 8;
+    level[y][x].dominoDir = 0;
+    level[y][x].dominoYOffset = 0;
+    level[y][x].dominoExtra = 0;
+
+  }
+}
+
+void level_c::fallingDomino(int x, int y) {
+  if (level[y][x].dominoType == DominoTypeRiser)
+    level[y][x].dominoExtra = 0x60;
+  else
+    level[y][x].dominoExtra = 0x70;
+}
+
+bool level_c::pushDomino(int x, int y, int dir) {
+}
+

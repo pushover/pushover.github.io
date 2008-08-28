@@ -13,6 +13,7 @@ class level_c {
       unsigned char dominoState;
       char dominoDir;
       char dominoYOffset;
+      char dominoExtra;
     } levelEntry;
 
     levelEntry level[13][20];
@@ -121,6 +122,12 @@ class level_c {
     // query level information of certain places
     bool containsPlank(int x, int y);
     bool canStandThere(int x, int y, int sub);  // returns true, if the ant can stand at the given position
+
+    int pickUpDomino(int x, int y);  // removes the domino from that position and returns the domino type
+    void putDownDomino(int x, int y, int domino);
+    void fallingDomino(int x, int y);
+
+    bool pushDomino(int x, int y, int dir);
 
 
     // dirty marking of blocks
