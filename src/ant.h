@@ -35,6 +35,9 @@ class ant_c {
     signed int direction;
     unsigned int pushDelay;
     unsigned int pushAnimation;
+    bool finalAnimationPlayed;
+    bool downChecker, upChecker;
+    int numPushsLeft;
 
   public:
 
@@ -106,5 +109,9 @@ class ant_c {
 
 
     unsigned int SFNextAction(void);
+
+    unsigned int checkForNoKeyActions(void);
+    bool CanPlaceDomino(int x, int y, int ofs);
+    bool PushableDomino(int x, int y, int ofs);
 
 };

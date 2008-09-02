@@ -89,6 +89,8 @@ void ant_c::init(level_c * l, graphics_c * graph) {
   animationTimer = 0;
   carriedDomino = 0;
   inactiveTimer = 0;
+  numPushsLeft = 1;
+  fallingHight = 0;
 
   level = l;
   gr = graph;
@@ -99,7 +101,7 @@ void ant_c::draw(SDL_Surface * video) {
   SDL_Rect dst;
 
   dst.x = (blockX-2)*gr->blockX();
-  dst.y = (blockY+1)*gr->blockY()-gr->getAnt(animation, animationImage)->h+screenBlock + gr->antDisplace();
+  dst.y = (blockY)*gr->blockY()-gr->getAnt(animation, animationImage)->h+screenBlock + gr->antDisplace();
   dst.w = gr->blockX();
   dst.h = gr->blockY();
   SDL_BlitSurface(gr->getAnt(animation, animationImage), 0, video, &dst);
@@ -734,7 +736,7 @@ unsigned int ant_c::SFLeaveDoor(void) {
 
   if (animationImage == 0) {
     blockX = level->getEntryDoorPosX();
-    blockY = level->getEntryDoorPosY();
+    blockY = level->getEntryDoorPosY()+1;
 
     screenBlock = subBlock + gr->getAntOffset(animation, 0);
   }
@@ -833,91 +835,615 @@ unsigned int ant_c::SFLanding(void) {
   return animation;
 }
 
+unsigned int ant_c::checkForNoKeyActions(void) {
+  return AntAnimStop;
+}
+
+static void SaveLevelState(void) {
+  // TODO: we need to fill this function
+}
+
+bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
+  return true;
+}
+
+bool ant_c::PushableDomino(int x, int y, int ofs) {
+  return true;
+}
+
+
 unsigned int ant_c::SFNextAction(void) {
 
-  if (keyMask) inactiveTimer = 0;
+  animationImage = 0;
+  unsigned int returnState;
 
-  if (!level->canStandThere(blockX, blockY, subBlock)) {
-    if (animation != AntAnimFalling) {
-      // TODO start falling here
+  bool onLadder = animation >= AntAnimLadder1 && animation <= AntAnimLadder4 ||
+                  animation >= AntAnimCarryLadder1 && animation <= AntAnimCarryLadder4;
+
+  if (level->noGround(blockX, blockY, onLadder))
+  {
+    fallingHight++;
+    if (blockY == 13)
+    {
+      animation = returnState = AntAnimLandDying;
+      animationImage = 12;
+      return returnState;
     }
-  } else if (animation == AntAnimFalling) {
-
-    if (fallingHight < 3) {
-      animation = AntAnimLanding;
-    } else {
-      animation = AntAnimLandDying;
+    animation = returnState = AntAnimFalling;
+    return returnState;
+  }
+  if (animation == AntAnimPushLeft &&
+      animationImage == 0)
+  {
+    if (level->getDominoType(blockX, blockY) != 0 &&
+        level->getDominoState(blockX, blockY) < 8 ||
+        level->getDominoType(blockX-1, blockY) != 0 &&
+        level->getDominoState(blockX-1, blockY) > 8)
+    {
+      animation = returnState = AntAnimDominoDying;
+      return returnState;
     }
-
-  } else if (keyMask & KEY_LEFT) {
-
-    if (level->canStandThere(blockX-1, blockY, subBlock))
-      animation = AntAnimWalkLeft;
-    else if (subBlock && level->canStandThere(blockX-1, blockY, 0) ||
-             !subBlock && level->canStandThere(blockX-1, blockY-1, 1))
-      animation = AntAnimJunpUpLeft;
-    else if (subBlock && level->canStandThere(blockX-1, blockY+1, 0) ||
-             !subBlock && level->canStandThere(blockX-1, blockY, 1))
-      animation = AntAnimJunpDownLeft;
-    else {
-      if (animation == AntAnimStruggingAgainsFallLeft) {
-
-        fallingHight = 0;
-        animation = AntAnimSuddenFallLeft;
-
-      } else {
-
-        animation = AntAnimStruggingAgainsFallLeft;
-
+  }
+  if (animation == AntAnimPushRight &&
+      animationImage == 0)
+  {
+    if (level->getDominoType(blockX, blockY) != 0 &&
+        level->getDominoState(blockX, blockY) > 8 ||
+        level->getDominoType(blockX+1, blockY) != 0 &&
+        level->getDominoState(blockX+1, blockY) < 8)
+    {
+      if (blockX < 19)
+      {
+        blockX++;
+        animation = returnState = AntAnimDominoDying;
+        return returnState;
       }
+      animation = returnState = AntAnimDominoDying;
+      return returnState;
     }
-
-  } else if (keyMask & KEY_RIGHT) {
-
-    if (level->canStandThere(blockX+1, blockY, subBlock))
-      animation = AntAnimWalkRight;
-    else if (subBlock && level->canStandThere(blockX+1, blockY, 0) ||
-             !subBlock && level->canStandThere(blockX+1, blockY-1, 1))
-      animation = AntAnimJunpUpRight;
-    else if (subBlock && level->canStandThere(blockX+1, blockY+1, 0) ||
-             !subBlock && level->canStandThere(blockX+1, blockY, 1))
-      animation = AntAnimJunpDownRight;
-    else {
-      if (animation == AntAnimStruggingAgainsFallRight) {
-
-        fallingHight = 0;
-        animation = AntAnimSuddenFallRight;
-
-      } else {
-
-        animation = AntAnimStruggingAgainsFallRight;
-
+  }
+  returnState = AntAnimStop;
+  if (!(keyMask & KEY_DOWN))
+  {
+    downChecker = false;
+  }
+  if (!(keyMask & KEY_UP))
+  {
+    upChecker = false;
+  }
+  if (fallingHight != 0)
+  {
+    if (fallingHight > 3)
+    {
+      animation = returnState = AntAnimLandDying;
+    }
+    else
+    {
+      animation = returnState = AntAnimLanding;
+      if (level->getFg(blockX, blockY) != level_c::FgElementPlatformStep2 &&
+          level->getFg(blockX, blockY) != level_c::FgElementPlatformStep5)
+      {
       }
-    }
-
-  } else if (keyMask & KEY_UP) {
-  } else if (keyMask & KEY_DOWN) {
-  } else {
-    if (level->getDominoType(blockX, blockY+1) == level_c::DominoTypeExploder) {
-      if (animation != AntAnimInFrontOfExploderWait)
-        animation = AntAnimInFrontOfExploder;
-    } else {
-
-      //// TODO tapping and yawning is still not verified....
-      inactiveTimer++;
-
-      if (inactiveTimer > 18*5) {
-
-        animation = AntAnimYawning;
-        inactiveTimer = 0;
-
-      } else {
-
-        animation = AntAnimStop;
+      else
+      {
+        subBlock = screenBlock = 8;
       }
     }
   }
+  else if (keyMask & KEY_LEFT)
+  {
+    if (blockX <= 0)
+    {
+      direction = 1;
+    }
+    else if (animation == AntAnimPushLeft)
+    {
+      downChecker = true;
+      if (numPushsLeft == 0)
+      {
+      }
+      else if (!(keyMask & KEY_ACTION))
+      {
+      }
+      else
+      {
+        SaveLevelState();
+        numPushsLeft--;
+        returnState = AntAnimPushLeft;
+        direction = -1;
+      }
+    }
+    else if (animation == AntAnimPushRight)
+    {
+      downChecker = true;
+      if (numPushsLeft && keyMask & KEY_ACTION)
+      {
+        SaveLevelState();
+        blockX++;
+        animation = returnState = AntAnimPushLeft;
+        if (!PushableDomino(blockX+1, blockY, -1))
+        {
+          animationImage = 9;
+          direction = -1;
+        }
+        else
+        {
+          numPushsLeft--;
+          direction = -1;
+        }
+      }
+      else if (numPushsLeft == 0)
+      {
+      }
+      else if (!PushableDomino(blockX+1, blockY, -1))
+      {
+      }
+      else
+      {
+        blockX++;
+        animation = AntAnimPushLeft;
+        direction = -1;
+      }
+    }
+    else if (level->getFg(blockX, blockY) == level_c::FgElementPlatformStep2)
+    {
+      animation = returnState = AntAnimJunpUpLeft;
+      direction = -1;
+    }
+    else if (level->getFg(blockX, blockY) == level_c::FgElementPlatformStep5)
+    {
+      animation = returnState = AntAnimJunpDownLeft;
+      direction = -1;
+    }
+    else if (level->getFg(blockX, blockY) == level_c::FgElementLadder)
+    {
+    }
+    else if (level->getFg(blockX-1, blockY) == 0 ||
+        level->getFg(blockX-1, blockY) == 5)
+    {
+      if (carriedDomino != 0)
+      {
+        animation = returnState = AntAnimLoosingDominoLeft;
+        direction = -1;
+      }
+      else if (animation == AntAnimStruggingAgainsFallLeft)
+      {
+        animation = returnState = AntAnimSuddenFallLeft;
+        direction = -1;
+      }
+      else
+      {
+        animation = returnState = AntAnimStruggingAgainsFallLeft;
+        direction = -1;
+      }
+    }
+    else if (level->getFg(blockX-1, blockY) == 0x0A)
+    {
+      animation = returnState = AntAnimJunpUpLeft;
+      direction = -1;
+    }
+    else if (level->getFg(blockX-1, blockY) == 0x0B)
+    {
+      animation = returnState = AntAnimJunpDownLeft;
+      direction = -1;
+    }
+    else if (carriedDomino != 0 &&
+        (direction == 20 || direction == -20))
+    {
+      animation = returnState = AntAnimXXX4;
+      direction = -1;
+    }
+    else if ((keyMask & KEY_UP) && PushableDomino(blockX, blockY, -1))
+    {
+      animation = returnState = AntAnimEnterLeft;
+      direction = -1;
+    }
+    else
+    {
+      animation = returnState = 0;
+      direction = -1;
+    }
+  }
+  else if (keyMask & KEY_RIGHT)
+  {
+    if (blockX >= 19)
+    {
+      direction = -1;
+    }
+    else if (animation == AntAnimPushRight)
+    {
+      downChecker = true;
+      if (numPushsLeft == 0)
+      {
+      }
+      else if (!(keyMask & KEY_ACTION))
+      {
+      }
+      else
+      {
+        SaveLevelState();
+        numPushsLeft--;
+        returnState = AntAnimPushRight;
+        direction = 1;
+      }
+    }
+    else if (animation == AntAnimPushLeft)
+    {
+      downChecker = true;
+      if (numPushsLeft != 0 && keyMask & KEY_ACTION)
+      {
+        SaveLevelState();
+        blockX--;
+        animation = returnState = AntAnimPushRight;
+        if (!PushableDomino(blockX-1, blockY, 1))
+        {
+          animationImage = 9;
+          direction = 1;
+        }
+        else
+        {
+          numPushsLeft--;
+          direction = 1;
+        }
+      }
+      else if (numPushsLeft == 0)
+      {
+      }
+      else if (!PushableDomino(blockX-1, blockY, 1))
+      {
+      }
+      else
+      {
+        blockX--;
+        animation = AntAnimPushRight;
+        direction = 1;
+      }
+    }
+    else if (level->getFg(blockX, blockY) == level_c::FgElementPlatformStep2)
+    {
+      animation = returnState = AntAnimJunpDownRight;
+      direction = 1;
+    }
+    else if (level->getFg(blockX, blockY) == level_c::FgElementPlatformStep6)
+    {
+      animation = returnState = AntAnimJunpUpRight;
+      direction = 1;
+    }
+    else if (level->getFg(blockX, blockY) == level_c::FgElementLadder)
+    {
+    }
+    else if (level->getFg(blockX+1, blockY) == level_c::FgElementEmpty ||
+        level->getFg(blockX+1, blockY) == level_c::FgElementLadder)
+    {
+      if (carriedDomino != 0)
+      {
+        returnState = AntAnimXXX7;
+        animation = AntAnimCarryRight;
+        direction = 1;
+      }
+      else if (animation == AntAnimStruggingAgainsFallRight)
+      {
+        animation = returnState = AntAnimSuddenFallRight;
+        direction = 1;
+      }
+      else
+      {
+        animation = returnState = AntAnimStruggingAgainsFallRight;
+        direction = 1;
+      }
+    }
+    else if (level->getFg(blockX+1, blockY) == level_c::FgElementPlatformStep2)
+    {
+      animation = returnState = AntAnimJunpDownRight;
+      direction = 1;
+    }
+    else if (level->getFg(blockX+1, blockY) == level_c::FgElementPlatformStep7)
+    {
+      animation = returnState = AntAnimJunpUpRight;
+      direction = 1;
+    }
+    else if (carriedDomino != 0 &&
+        (direction == 20 || direction == -20))
+    {
+      animation = returnState = AntAnimXXX3;
+      direction = 1;
+    }
+    else if ((keyMask & KEY_UP) && PushableDomino(blockX, blockY, 1))
+    {
+      animation = returnState = AntAnimEnterRight;
+      direction = 1;
+    }
+    else
+    {
+      animation = returnState = AntAnimWalkRight;
+      direction = 1;
+    }
+  }
+  else if (keyMask & KEY_UP)
+  {
+    if ((level->getFg(blockX, blockY-1) == level_c::FgElementDoor3) &&
+        ((level->getDominoType(blockX, blockY) == 0 ||
+            level->getDominoState(blockX, blockY) > 8) &&
+          (level->getDominoType(blockX-1, blockY) == 0) ||
+          level->getDominoState(blockX-1, blockY) <= 8)
+        )
+    {
 
-  return animation;
+      if (direction == -1)
+      {
+        animation = returnState = AntAnimEnterDoor;
+        blockX--;
+        upChecker = true;
+      }
+      else
+      {
+        animation = returnState = AntAnimXXX9;
+        upChecker = true;
+      }
+    }
+    else if (level->getFg(blockX, blockY) == level_c::FgElementPlatformLadderUp)
+    {
+      if (carriedDomino == 0)
+      {
+        animation = returnState = AntAnimLadder1;
+        direction = -20;
+        upChecker = true;
+      }
+      else if (direction == -1)
+      {
+        animation = returnState = AntAnimXXX2;
+        direction = -20;
+        upChecker = true;
+      }
+      else
+      {
+        animation = returnState = AntAnimXXX1;
+        direction = -20;
+        upChecker = true;
+      }
+    }
+    else if (level->getFg(blockX, blockY-1) == level_c::FgElementLadder)
+    {
+      animation = returnState = AntAnimLadder1;
+      direction = -20;
+      upChecker = true;
+    }
+    else if (level->getFg(blockX, blockY) == level_c::FgElementPlatformLadderDown)
+    {
+      animation = returnState = AntAnimLadder2;
+      direction = -20;
+      upChecker = true;
+    }
+    else if (animation == AntAnimPushLeft
+        || animation == AntAnimPushRight)
+    {
+      returnState = AntAnimNothing;
+      upChecker = true;
+    }
+    else if (carriedDomino != 0)
+    {
+      returnState = AntAnimStop;
+      upChecker = true;
+    }
+    else if (direction == -1 &&
+        PushableDomino(blockX, blockY, -1))
+    {
+      animation = returnState = AntAnimEnterLeft;
+      upChecker = true;
+      goto FinalChecks;
+    }
+    else if (direction == 1 &&
+      PushableDomino(blockX, blockY, 1))
+    {
+      animation = returnState = AntAnimEnterRight;
+      upChecker = true;
+    }
+    else if (!upChecker)
+    {
+      if (!PushableDomino(blockX, blockY, -1))
+      {
+        animation = returnState = AntAnimEnterLeft;
+        upChecker = true;
+      }
+      else if (!PushableDomino(blockX, blockY, 1))
+      {
+        animation = returnState = AntAnimEnterRight;
+        upChecker = true;
+      }
+      else
+      {
+        upChecker = true;
+      }
+    }
+  }
+  else if (keyMask & KEY_DOWN)  //down
+  {
+    if (animation == AntAnimPushLeft ||
+        animation == AntAnimPushRight)
+    {
+      returnState = animation ;
+      animationImage = 9;
+      downChecker = true;
+    }
+    else if (level->getFg(blockX, blockY) == level_c::FgElementPlatformLadderDown)
+    {
+      if (carriedDomino != 0)
+      {
+        if (direction == -1)
+        {
+          animation = returnState = AntAnimXXX2;
+          direction = 20;
+        }
+        else
+        {
+          animation = returnState = AntAnimXXX1;
+          direction = 20;
+        }
+      }
+      else if (downChecker)
+      {
+      }
+      else
+      {
+        animation = returnState = AntAnimLadder4;
+        direction = 20;
+      }
+    }
+    else if (level->getFg(blockX, blockY+1) == level_c::FgElementLadder)
+    {
+      animation = returnState = AntAnimLadder3;
+      direction = 20;
+    }
+    else if (level->getFg(blockX, blockY+1) == 6 ||
+        (level->getFg(blockX, blockY+1) == 4 &&
+         level->getFg(blockX, blockY) == 5))
+
+    {
+      animation = returnState = AntAnimLadder3;
+      direction = 20;
+    }
+  }
+  else if (keyMask & KEY_ACTION)
+  {
+    if (animation == AntAnimPushRight)
+    {
+    }
+    else if (animation == AntAnimPushLeft)
+    {
+    }
+    else if ((carriedDomino == 0)
+        && (level->getDominoType(blockX, blockY) != 0)
+        && (level->getDominoState(blockX, blockY) == 8)
+        && (level->getDominoType(blockX, blockY) != level_c::DominoTypeRiser || level->getDominoExtra(blockX, blockY) != 0x60)
+        && (level->getFg(blockX, blockY) != level_c::FgElementLadder)
+        )
+    {
+      if (level->getDominoType(blockX, blockY) == level_c::DominoTypeTrigger)
+      {
+        animation = returnState = AntAnimNoNo;
+      }
+      else
+      {
+        carriedDomino = level->pickUpDomino(blockX, blockY);
+
+        if (direction == -1)
+        {
+          animation = returnState = AntAnimPullOutLeft;
+          level->removeDomino(blockX, blockY);
+        }
+        else
+        {
+          animation = returnState = AntAnimPullOutRight;
+          level->removeDomino(blockX, blockY);
+        }
+      }
+    }
+    else if (carriedDomino == 0)
+    {
+    }
+    else if (CanPlaceDomino(0, blockX, blockY))
+    {
+      if (direction == -1)
+      {
+        blockX++;
+        animation = returnState = AntAnimPushInLeft;
+        animationImage = 4;
+      }
+      else
+      {
+        blockX--;
+        animation = returnState = AntAnimPushInRight;
+        animationImage = 4;
+      }
+    }
+    else if (!CanPlaceDomino(direction, blockX, blockY))
+    {
+    }
+    else if (direction == -1)
+    {
+      animation = returnState = AntAnimPushInLeft;
+    }
+    else if (direction != 1)
+    {
+    }
+    else
+    {
+      animation = returnState = AntAnimPushInRight;
+    }
+  }
+  else if (direction == -20)
+  {
+    if (level->getFg(blockX, blockY-1) == 5)
+    {
+      animation = returnState = AntAnimLadder1;
+      direction = -20;
+    }
+    else if (level->getFg(blockX, blockY-1) != 4)
+    {
+      direction = -1;
+    }
+    else
+    {
+      animation = returnState = AntAnimLadder2;
+      direction = -1;
+    }
+  }
+  else if (direction == 20)
+  {
+    if (level->getFg(blockX, blockY+1) == 5)
+    {
+      if (level->getFg(blockX, blockY) == 4)
+      {
+        direction = 20;
+      }
+      else
+      {
+        animation = returnState = AntAnimLadder3;
+        direction = 20;
+      }
+    } else if (level->getFg(blockX, blockY+1) == 6 ||
+        level->getFg(blockX, blockY+1) == 4 &&
+        level->getFg(blockX, blockY) == 5)
+    {
+      animation = returnState = AntAnimLadder3;
+      direction = 20;
+    }
+  }
+
+FinalChecks:
+
+  if (returnState != AntAnimStop)
+  {
+    inactiveTimer = 0;
+  }
+  else if (carriedDomino != 0 || level->getFg(blockX, blockY) == level_c::FgElementLadder || finalAnimationPlayed)
+  {
+    inactiveTimer++;
+    returnState = checkForNoKeyActions();
+  }
+  else if (false /*TODO LevelCompletedSuccessfully*/)
+  {
+    animation = returnState = AntAnimVictory;
+    finalAnimationPlayed = 1;
+  }
+  else if (0 /* TODO LevelFailReason*/)
+  {
+    animation = returnState = AntAnimShrugging;
+    finalAnimationPlayed = 1;
+  }
+  else
+  {
+    inactiveTimer++;
+    returnState = checkForNoKeyActions();
+  }
+
+  if (carriedDomino && animation < AntAnimCarryLeft)
+  {
+    animation += 10;
+  }
+
+  fallingHight = 0;
+  return returnState;
+
 }
 

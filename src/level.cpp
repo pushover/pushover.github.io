@@ -201,20 +201,19 @@ bool level_c::containsPlank(int x, int y) {
   return (fg == 1 || fg == 2 | fg == 3 || fg == 4 || fg == 6 || fg == 7 || fg == 10 || fg == 15);
 }
 
-bool level_c::canStandThere(int x, int y, int sub) {
-  if (x < 0 || x >= 19 || y < 0 || y >= 13) return false;
+bool level_c::noGround(int x, int y, bool onLadder) {
 
-  if (sub == 0) {
-    return ((   getFg(x, y+1) == 1 || getFg(x, y+1) == 2 || getFg(x, y+1) == 3
-             || getFg(x, y+1) == 4 || getFg(x, y+1) == 6 || getFg(x, y+1) == 7 || getFg(x, y+1) == 12) &&
+  if (y >= 12) return true;
 
-            (getFg(x, y) == 0 || getFg(x, y) == 5 || getFg(x, y) == 15 || getFg(x, y) == 17 || getFg(x, y) >= 19));
-  } else {
-    return ((getFg(x, y+1) == 8 || getFg(x, y+1) == 11) &&
+  if (getFg(x, y) == FgElementEmpty) return true;
 
-            (getFg(x, y) == 0 || getFg(x, y) == 5 || getFg(x, y) == 15 || getFg(x, y) == 17 || getFg(x, y) >= 19));
-  }
+  if (getFg(x, y) >= FgElementDoor0) return true;
 
+  if (getFg(x, y) != FgElementLadder) return false;
+
+  if (onLadder) return false;
+
+  return true;
 }
 
 int level_c::pickUpDomino(int x, int y) {

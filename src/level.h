@@ -102,6 +102,7 @@ class level_c {
     unsigned char  getFg(unsigned int x, unsigned int y) const { return level[y][x].fg; }
     unsigned char  getDominoType(unsigned int x, unsigned int y) const { return level[y][x].dominoType; }
     unsigned char  getDominoState(unsigned int x, unsigned int y) const { return level[y][x].dominoState; }
+    unsigned char  getDominoExtra(unsigned int x, unsigned int y) const { return level[y][x].dominoExtra; }
 
     /* update the background where necessary */
     void updateBackground(graphics_c * gr);
@@ -121,13 +122,14 @@ class level_c {
 
     // query level information of certain places
     bool containsPlank(int x, int y);
-    bool canStandThere(int x, int y, int sub);  // returns true, if the ant can stand at the given position
+    bool noGround(int x, int y, bool onLadder);  // returns true, if the ant can't stand
 
     int pickUpDomino(int x, int y);  // removes the domino from that position and returns the domino type
     void putDownDomino(int x, int y, int domino);
     void fallingDomino(int x, int y);
 
     bool pushDomino(int x, int y, int dir);
+    void removeDomino(int x, int y) { level[y][x].dominoType = 0; }
 
 
     // dirty marking of blocks
