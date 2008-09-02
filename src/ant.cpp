@@ -836,7 +836,293 @@ unsigned int ant_c::SFLanding(void) {
 }
 
 unsigned int ant_c::checkForNoKeyActions(void) {
-  return AntAnimStop;
+  unsigned int ReturnAntState = AntAnimStop;
+
+  if (animation == AntAnimPushRight || animation == AntAnimPushLeft)
+  {
+    return AntAnimNothing;
+  }
+
+  if (direction == -20 || direction == 20)
+  {
+#if 0
+
+; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+loc_3BF9:				; CODE XREF: CheckForNoKeyActions+37j
+					; CheckForNoKeyActions+3Ej
+		cmp	TimeInStopState, 40 ; NumberOfTicksInStop
+		jg	loc_3C03
+
+	        return ReturnAntState;
+
+; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+loc_3C03:				; CODE XREF: CheckForNoKeyActions+48j
+		mov	ax, [bp+LevelBelowAntPtr]
+		add	ax, 0A0h ; ' '
+		mov	[bp+LevelSubAnt], ax
+		mov	ax, [bp+LevelBelowAntPtr]
+		sub	ax, 0A0h ; ' '
+		mov	[bp+LevelAboveAnt], ax
+		mov	bx, [bp+LevelBelowAntPtr]
+		cmp	byte ptr [bx+LevelDataForeground], FgElementPlatformLadderUp
+		jz	loc_3C24
+
+		cmp	byte ptr [bx+LevelDataForeground], FgElementPlatformLadderDown
+		jnz	loc_3C90
+
+
+loc_3C24:				; CODE XREF: CheckForNoKeyActions+66j
+		mov	ax, bx
+		sub	ax, 8
+		mov	[bp+LevelLeftAnt], ax
+		mov	ax, bx
+		add	ax, 8
+		mov	[bp+LevelRightAnt], ax
+		mov	bx, [bp+LevelLeftAnt]
+		cmp	byte ptr [bx+LevelDataForeground], FgElementEmpty
+		jle	loc_3C62
+
+		cmp	byte ptr [bx+LevelDataForeground], FgElementLadder
+		jz	loc_3C62
+
+		cmp	CurrentlyCarriedDomino,	0
+		jz	loc_3C50
+
+		mov	ax, AntAnimXXX4
+		jmp	short loc_3C52
+
+; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+		align 2
+
+loc_3C50:				; CODE XREF: CheckForNoKeyActions+92j
+		sub	ax, ax
+
+loc_3C52:				; CODE XREF: CheckForNoKeyActions+97j
+		mov	AntAnimation, ax ; which ant animation is playing
+		mov	[bp+ReturnAntState], ax
+
+loc_3C58:				; CODE XREF: CheckForNoKeyActions+B3j
+					; CheckForNoKeyActions+B9j
+		mov	AntMovementDirection, -1 ; -1 left, 1 right, 20	down, -20 up (in level array coordinates
+	        return ReturnAntState;
+
+; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+		align 2
+
+loc_3C62:				; CODE XREF: CheckForNoKeyActions+85j
+					; CheckForNoKeyActions+8Bj
+		mov	bx, [bp+LevelRightAnt]
+		cmp	byte ptr [bx+2], 0
+		jle	loc_3C58
+
+		cmp	byte ptr [bx+2], 5
+		jz	loc_3C58
+
+		cmp	CurrentlyCarriedDomino,	0
+		jz	loc_3C7E
+
+		mov	ax, 1Ch
+		jmp	short loc_3C81
+
+; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+		align 2
+
+loc_3C7E:				; CODE XREF: CheckForNoKeyActions+C0j
+		mov	ax, 1
+
+loc_3C81:				; CODE XREF: CheckForNoKeyActions+C5j
+		mov	AntAnimation, ax ; which ant animation is playing
+		mov	[bp+ReturnAntState], ax
+		mov	AntMovementDirection, 1	; -1 left, 1 right, 20 down, -20 up (in	level array coordinates
+	        return ReturnAntState;
+
+; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+loc_3C90:				; CODE XREF: CheckForNoKeyActions+6Cj
+		mov	bx, [bp+LevelAboveAnt]
+		cmp	byte ptr [bx+2], 4
+		jz	loc_3CA7
+
+		cmp	byte ptr [bx+2], 5
+		jnz	loc_3CAC
+
+		cmp	TimeInStopState, 0A0h ;	' ' ; NumberOfTicksInStop
+		jle	loc_3CAC
+
+
+loc_3CA7:				; CODE XREF: CheckForNoKeyActions+E1j
+		mov	ax, AntAnimLadder1
+		mov	AntAnimation, ax ; which ant animation is playing
+		mov	[bp+ReturnAntState], ax
+	        return ReturnAntState;
+
+; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+loc_3CAC:				; CODE XREF: CheckForNoKeyActions+E7j
+					; CheckForNoKeyActions+EFj
+		mov	bx, [bp+LevelSubAnt]
+		cmp	byte ptr [bx+2], 5
+		jz	loc_3CD0
+
+		cmp	byte ptr [bx+2], 6
+		jz	loc_3CD0
+
+		cmp	byte ptr [bx+2], 4
+		jz	loc_3CC4
+
+	        return ReturnAntState;
+
+; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+loc_3CC4:				; CODE XREF: CheckForNoKeyActions+109j
+		mov	bx, [bp+LevelBelowAntPtr]
+		cmp	byte ptr [bx+2], 5
+		jz	loc_3CD0
+
+	        return ReturnAntState;
+
+; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+loc_3CD0:				; CODE XREF: CheckForNoKeyActions+FDj
+					; CheckForNoKeyActions+103j ...
+		mov	ax, AntAnimLadder3
+		mov	AntAnimation, ax ; which ant animation is playing
+		mov	[bp+ReturnAntState], ax
+	        return ReturnAntState;
+
+; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+#endif
+  }
+  if (carriedDomino != 0)
+  {
+#if 0
+
+		cmp	TimeInStopState, 1 ; NumberOfTicksInStop
+		jnz	loc_3CFE
+
+		cmp	AntMovementDirection, -1 ; -1 left, 1 right, 20	down, -20 up (in level array coordinates
+		jnz	loc_3CF8
+
+		mov	ax, AntAnimCarryStopLeft
+		mov	AntAnimation, ax ; which ant animation is playing
+		mov	[bp+ReturnAntState], ax
+	        return ReturnAntState;
+
+; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+		align 4
+
+loc_3CF8:				; CODE XREF: CheckForNoKeyActions+139j
+		mov	ax, AntAnimCarryStopRight
+		mov	AntAnimation, ax ; which ant animation is playing
+		mov	[bp+ReturnAntState], ax
+	        return ReturnAntState;
+
+; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+		align 2
+
+loc_3CFE:				; CODE XREF: CheckForNoKeyActions+132j
+		cmp	TimeInStopState, 40 ; NumberOfTicksInStop
+		jle	loc_3D24
+
+		sub	ax, ax
+		push	ax
+		push	[bp+LevelBelowAntPtr]
+		call	CanPlaceDomino	; returns true,	if we can place	a domino at the	given position....
+
+		add	sp, 4
+		or	ax, ax
+		jz	loc_3D24
+
+		inc	AntXPos		; given	in blocks
+		mov	AntAnimationStep, 4 ; which image of the Ant animation is visible
+
+loc_3D1F:				; CODE XREF: CheckForNoKeyActions+184j
+		mov	ax, AntAnimPushInLeft
+		mov	AntAnimation, ax ; which ant animation is playing
+		mov	[bp+ReturnAntState], ax
+	        return ReturnAntState;
+
+; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+loc_3D24:				; CODE XREF: CheckForNoKeyActions+14Dj
+					; CheckForNoKeyActions+15Dj
+		cmp	TimeInStopState, 40 ; NumberOfTicksInStop
+		jle	loc_3D3C
+
+		mov	ax, -1
+		push	ax
+		push	[bp+LevelBelowAntPtr]
+		call	CanPlaceDomino	; returns true,	if we can place	a domino at the	given position....
+
+		add	sp, 4
+		or	ax, ax
+		jnz	loc_3D1F
+
+
+loc_3D3C:				; CODE XREF: CheckForNoKeyActions+173j
+		cmp	TimeInStopState, 40 ; NumberOfTicksInStop
+		jg	loc_3D46
+
+	        return ReturnAntState;
+
+; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+loc_3D46:				; CODE XREF: CheckForNoKeyActions+18Bj
+		mov	ax, 1
+		push	ax
+		push	[bp+LevelBelowAntPtr]
+		call	CanPlaceDomino	; returns true,	if we can place	a domino at the	given position....
+
+		add	sp, 4
+		or	ax, ax
+		jz	ReturnAndExit
+
+		mov	ax, AntAnimPushInRight
+		mov	AntAnimation, ax ; which ant animation is playing
+		mov	[bp+ReturnAntState], ax
+	        return ReturnAntState;
+#endif
+  }
+  if (level->getDominoType(blockX, blockY) == level_c::DominoTypeExploder)
+  {
+    if (animation == AntAnimInFrontOfExploderWait)
+    {
+      return ReturnAntState;
+    }
+    animation = AntAnimInFrontOfExploder;
+    return AntAnimInFrontOfExploder;
+  }
+  if (((inactiveTimer & 0x20) == 0x20) && ((inactiveTimer & 0x1F) == 5))
+  {
+    // same as below but with soundeffect
+      animation = AntAnimTapping;
+      return AntAnimTapping;
+  }
+
+  if (((inactiveTimer & 0x20) == 0x20) && ((inactiveTimer & 0x1F) <= 5))
+  {
+      animation = AntAnimTapping;
+      return AntAnimTapping;
+  }
+  if (inactiveTimer == 204)
+  {
+    animation = AntAnimYawning;
+    return AntAnimYawning;
+  }
+
+  if (inactiveTimer == 220)
+  {
+    inactiveTimer = 0;
+    return ReturnAntState;
+  }
+  if (inactiveTimer > 4)
+  {
+    animation = AntAnimStop;
+  }
+
+  return ReturnAntState;
 }
 
 static void SaveLevelState(void) {
