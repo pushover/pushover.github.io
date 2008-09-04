@@ -226,6 +226,42 @@ void graphicsO_c::loadGraphics(void) {
 
   // load the images of carried cominoes
 
+  snprintf(fname, 200, "%s/data/ANT10B29.SPX", dataPath.c_str());
+  unsigned char * d3 = decompress(fname, 0);
+
+  offset = 0;
+
+  for (unsigned int i = 0; i < 7; i++) {
+      for (unsigned int j = 0; j < 10; j++) {
+          SDL_Surface * v = getSprite(d3 + offset, &offset, palette, scale);
+          setCarriedDomino(i, j, SDL_DisplayFormatAlpha(v));
+          SDL_FreeSurface(v);
+      }
+  }
+
+  // copy some surfaces surfaces
+  for (unsigned int i = 7; i < 10; i++) {
+      for (unsigned int j = 0; j < 10; j++) {
+        setCarriedDomino(i, j, SDL_DisplayFormatAlpha(getCarriedDomino(i-1, j)));
+      }
+  }
+
+  for (unsigned int i = 10; i < 12; i++) {
+      for (unsigned int j = 0; j < 10; j++) {
+        setCarriedDomino(i, j, SDL_DisplayFormatAlpha(getCarriedDomino(i & 1, j)));
+      }
+  }
+
+  // load the final surfaces
+  for (unsigned int i = 12; i < 16; i++) {
+      for (unsigned int j = 0; j < 10; j++) {
+          SDL_Surface * v = getSprite(d3 + offset, &offset, palette, scale);
+          setCarriedDomino(i, j, SDL_DisplayFormatAlpha(v));
+          SDL_FreeSurface(v);
+      }
+  }
+
+  delete [] d3;
 }
 
 void graphicsO_c::loadTheme(const char *name) {
@@ -335,3 +371,27 @@ void graphicsO_c::loadTheme(const char *name) {
   delete [] fg;
 
 }
+
+
+static signed int offsets[12][16] = {
+  {     -7, -3,  -8, -3, -11, -3, -14, -3, -16, -3, -20, -3,
+  }, {   5, -3,   6, -3,   9, -3,  12, -3,  14, -3,  18, -3,
+  }, {  -4, -3,  -6, -5,  -7, -7, -11, -5, -16, -4, -20, -3,
+  }, {   2, -3,   4, -5,   5, -7,   9, -5,  14, -4,  18, -3,
+  }, { -12, -3, -16, -4, -19, -1, -19,  0, -19,  0, -20, -1,
+  }, {   9, -3,  13, -4,  16, -1,  16,  0,  16,  0,  17, -1,
+  }, {  -8, -3,  -8, -2,  -7, -3,  -7, -2,  -8, -3,  -8, -2, -7, -3, -7, -2,
+  }, {  -8, -3,  -8, -2,  -7, -3,  -7, -2,  -8, -3,  -8, -2, -7, -3, -7, -2,
+  }, {  -7, -2,  -7, -3,  -8, -2,  -8, -3,  -7, -2,  -7, -3, -8, -2, -8, -3,
+  }, {  -7, -2,  -7, -3,  -8, -2,  -8, -3,  -7, -2,  -7, -3, -8, -2, -8, -3,
+  }, {  -5, -3,
+  }, {   5, -3,
+  }
+};
+
+signed int graphicsO_c::getCarryOffsetX(unsigned int animation, unsigned int image) { return scale*offsets[animation][2*image+0]; }
+signed int graphicsO_c::getCarryOffsetY(unsigned int animation, unsigned int image) { return scale*offsets[animation][2*image+1]; }
+
+
+
+

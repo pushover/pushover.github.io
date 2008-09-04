@@ -134,4 +134,5 @@ class level_c {
 
     // dirty marking of blocks
     void markDirty(int x, int y) { if (x >= 0 && x < 20 && y >= 0 && y < 13) dynamicDirty[y] |= (1 << x); }
+    bool isDirty(int x, int y) { return (dynamicDirty[y] & (1 << x)) != 0; }
 };

@@ -100,11 +100,224 @@ void ant_c::draw(SDL_Surface * video) {
 
   SDL_Rect dst;
 
-  dst.x = (blockX-2)*gr->blockX();
-  dst.y = (blockY)*gr->blockY()-gr->getAnt(animation, animationImage)->h+screenBlock + gr->antDisplace();
-  dst.w = gr->blockX();
-  dst.h = gr->blockY();
-  SDL_BlitSurface(gr->getAnt(animation, animationImage), 0, video, &dst);
+  int screenXpos = blockX*16;
+  int screenYpos = blockY*16 + screenBlock + 6;
+
+  if (blockX < 0 || blockX > 19 || blockY < 0 || blockY > 13) return;
+
+  if (carriedDomino != 0)
+  {
+    if (animation >= AntAnimPullOutLeft && animation <= AntAnimLoosingDominoLeft)
+    {
+      /*  put domino image of normal domino
+         mov	ax, AntAnimation ; which ant animation is playing
+         sub	ax, AntAnimPullOutLeft
+         mov	si, AntAnimationStep ; which image of the Ant animation	is visible
+         mov	cl, 2
+         shl	si, cl
+         mov	bx, ax
+         shl	bx, 1
+         add	si, AntSpriteOffsets[bx]
+         mov	al, [si+1]
+         cbw
+         add	ax, [bp+ScreenYpos]
+         mov	[bp+Ypos], ax
+         mov	al, [si]
+         cbw
+         add	ax, [bp+ScreenXpos]
+         mov	[bp+Xpos], ax
+         mov	ax, [si+2]
+         mov	[bp+DominoSpriteArray],	ax
+         cmp	ax, 32
+         jge	loc_291C
+
+         cmp	ax, 7
+         jz	loc_2900
+
+         cmp	CurrentlyCarriedDomino,	cl
+         jz	loc_28FB
+
+         cmp	CurrentlyCarriedDomino,	3
+         jz	loc_28FB
+
+         cmp	CurrentlyCarriedDomino,	4
+         jz	loc_28FB
+
+         cmp	CurrentlyCarriedDomino,	0Ah
+         jnz	loc_2900
+
+
+loc_28FB:				; CODE XREF: PutAntSprite+A8j
+         mov	[bp+DominoSpriteArray],	7
+
+loc_2900:				; CODE XREF: PutAntSprite+A2j
+         mov	al, CurrentlyCarriedDomino
+         cbw
+         dec	ax
+         cwd
+         mov	cx, 0Ah
+         idiv	cx
+         mov	bx, dx
+         shl	bx, 1
+         mov	ax, DominoStoneArray[bx] ; An array of pointers	to arrays of sprites containing	the dominos
+         mov	dx, [bp+DominoSpriteArray]
+         mov	cl, 3
+         shl	dx, cl
+         jmp	short loc_2934
+
+loc_291C:				; CODE XREF: PutAntSprite+9Dj
+         mov	al, CurrentlyCarriedDomino
+         cbw
+         dec	ax
+         cwd
+
+loc_2922:
+         mov	cx, 10
+         idiv	cx
+         mov	cl, 3
+         shl	dx, cl
+         mov	bx, [bp+DominoSpriteArray]
+         shl	bx, 1
+         mov	ax, word_D27E[bx]
+
+loc_2934:				; CODE XREF: PutAntSprite+DEj
+         add	ax, dx
+         mov	[bp+var_14], ax
+         push	ax		; SpriteOfs
+         push	[bp+Ypos]	; Ypos
+         push	[bp+Xpos]	; Xpos
+         call	PutSprite	; put a	sprite.	The sprite contains addictional	information at the
+        */
+    }
+    if (animation >= AntAnimCarryLeft && animation <= AntAnimCarryStopRight)
+    {
+      /* put the domino image of the carried domino */
+      int a = animation - AntAnimCarryLeft;
+
+      dst.x = (blockX-2)*gr->blockX()+gr->getCarryOffsetX(a, animationImage);
+      dst.y = (blockY)*gr->blockY()-gr->getCarriedDomino(a, carriedDomino-1)->h+screenBlock+gr->antDisplace()+gr->getCarryOffsetY(a, animationImage);
+      dst.w = gr->blockX();
+      dst.h = gr->blockY();
+      SDL_BlitSurface(gr->getCarriedDomino(a, carriedDomino-1), 0, video, &dst);
+    }
+  }
+
+  if (gr->getAnt(animation, animationImage))
+  {
+    dst.x = (blockX-2)*gr->blockX();
+    dst.y = (blockY)*gr->blockY()-gr->getAnt(animation, animationImage)->h+screenBlock+gr->antDisplace();
+    dst.w = gr->blockX();
+    dst.h = gr->blockY();
+    SDL_BlitSurface(gr->getAnt(animation, animationImage), 0, video, &dst);
+  }
+
+  /* what comes now, is to put the ladders back in front of the ant,
+   * we don't need to do that, if the ant is on the ladder
+   */
+
+  if (animation >= AntAnimLadder1 && animation <= AntAnimLadder4) return;
+  if (animation >= AntAnimCarryLadder1 && animation <= AntAnimCarryLadder4) return;
+  if (animation >= AntAnimXXX1 && animation <= AntAnimXXX4) return;
+
+  if (level->getFg(blockX, blockY) == level_c::FgElementPlatformLadderUp)
+  {
+    dst.x = (blockX)*gr->blockX();
+    dst.y = (blockY)*gr->blockY();
+    dst.w = gr->blockX();
+    dst.h = gr->blockY();
+    SDL_BlitSurface(gr->getFgTile(level_c::FgElementLadderMiddle), 0, video, &dst);
+  }
+  else
+  {
+    if (level->getFg(blockX, blockY) == level_c::FgElementPlatformLadderDown ||
+        level->getFg(blockX, blockY) == level_c::FgElementLadder)
+    {
+      dst.x = (blockX)*gr->blockX();
+      dst.y = (blockY)*gr->blockY();
+      dst.w = gr->blockX();
+      dst.h = gr->blockY();
+      SDL_BlitSurface(gr->getFgTile(level_c::FgElementLadder), 0, video, &dst);
+    }
+  }
+
+  if (blockY > 0 &&
+      level->getFg(blockX, blockY-1) == level_c::FgElementPlatformLadderDown ||
+      level->getFg(blockX, blockY-1) == level_c::FgElementLadder)
+  {
+    dst.x = (blockX)*gr->blockX();
+    dst.y = (blockY-1)*gr->blockY();
+    dst.w = gr->blockX();
+    dst.h = gr->blockY();
+    SDL_BlitSurface(gr->getFgTile(level_c::FgElementLadder), 0, video, &dst);
+  }
+
+  if (blockX > 0 && level->isDirty(blockX-1, blockY))
+  {
+    if (level->getFg(blockX-1, blockY) == level_c::FgElementPlatformLadderUp)
+    {
+      dst.x = (blockX-1)*gr->blockX();
+      dst.y = (blockY)*gr->blockY();
+      dst.w = gr->blockX();
+      dst.h = gr->blockY();
+      SDL_BlitSurface(gr->getFgTile(level_c::FgElementLadderMiddle), 0, video, &dst);
+    }
+    else
+    {
+      if (level->getFg(blockX-1, blockY) == level_c::FgElementPlatformLadderDown ||
+          level->getFg(blockX-1, blockY) == level_c::FgElementLadder)
+      {
+        dst.x = (blockX-1)*gr->blockX();
+        dst.y = (blockY)*gr->blockY();
+        dst.w = gr->blockX();
+        dst.h = gr->blockY();
+        SDL_BlitSurface(gr->getFgTile(level_c::FgElementLadder), 0, video, &dst);
+      }
+    }
+    if (blockY > 0 &&
+        level->getFg(blockX-1, blockY-1) == level_c::FgElementPlatformLadderDown ||
+        level->getFg(blockX-1, blockY-1) == level_c::FgElementLadder)
+    {
+      dst.x = (blockX-1)*gr->blockX();
+      dst.y = (blockY-1)*gr->blockY();
+      dst.w = gr->blockX();
+      dst.h = gr->blockY();
+      SDL_BlitSurface(gr->getFgTile(level_c::FgElementLadder), 0, video, &dst);
+    }
+  }
+
+  if (blockX < 19 && level->isDirty(blockX+1, blockY))
+  {
+    if (level->getFg(blockX+1, blockY) == level_c::FgElementPlatformLadderUp)
+    {
+      dst.x = (blockX+1)*gr->blockX();
+      dst.y = (blockY)*gr->blockY();
+      dst.w = gr->blockX();
+      dst.h = gr->blockY();
+      SDL_BlitSurface(gr->getFgTile(level_c::FgElementLadderMiddle), 0, video, &dst);
+    }
+    else
+    {
+      if (level->getFg(blockX+1, blockY) == level_c::FgElementPlatformLadderDown ||
+          level->getFg(blockX+1, blockY) == level_c::FgElementLadder)
+      {
+        dst.x = (blockX+1)*gr->blockX();
+        dst.y = (blockY)*gr->blockY();
+        dst.w = gr->blockX();
+        dst.h = gr->blockY();
+        SDL_BlitSurface(gr->getFgTile(level_c::FgElementLadder), 0, video, &dst);
+      }
+    }
+    if (blockY > 0 &&
+        level->getFg(blockX+1, blockY-1) == level_c::FgElementPlatformLadderDown ||
+        level->getFg(blockX+1, blockY-1) == level_c::FgElementLadder)
+    {
+      dst.x = (blockX+1)*gr->blockX();
+      dst.y = (blockY-1)*gr->blockY();
+      dst.w = gr->blockX();
+      dst.h = gr->blockY();
+      SDL_BlitSurface(gr->getFgTile(level_c::FgElementLadder), 0, video, &dst);
+    }
+  }
 }
 
 void ant_c::setKeyStates(unsigned int km) {

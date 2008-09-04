@@ -25,6 +25,8 @@ class graphicsO_c : public graphics_c {
     virtual unsigned int antDisplace(void) { return 6*scale; }
     virtual unsigned int dominoDisplace(void) { return 4*scale; }
 
+    virtual signed int getCarryOffsetX(unsigned int animation, unsigned int image);
+    virtual signed int getCarryOffsetY(unsigned int animation, unsigned int image);
 
   private:
 

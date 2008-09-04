@@ -3,9 +3,12 @@
 graphics_c::graphics_c(void) {
 
   dominos.resize(numDominoTypes);
+  carriedDominos.resize(numDominoTypes);
 
-  for (unsigned int i = 0; i < numDominoTypes; i++)
+  for (unsigned int i = 0; i < numDominoTypes; i++) {
     dominos[i].resize(numDominos[i]);
+    carriedDominos[i].resize(10);
+  }
 
   ant.resize(numAntAnimations);
 
@@ -42,6 +45,10 @@ void graphics_c::addFgTile(SDL_Surface * v) {
 
 void graphics_c::setDomino(unsigned int type, unsigned int num, SDL_Surface * v) {
   dominos[type][num] = v;
+}
+
+void graphics_c::setCarriedDomino(unsigned int type, unsigned int num, SDL_Surface * v) {
+  carriedDominos[type][num] = v;
 }
 
 void graphics_c::addAnt(unsigned int anim, signed char yOffset, SDL_Surface * v, bool free) {
@@ -81,5 +88,10 @@ graphics_c::~graphics_c(void) {
     for (unsigned int j = 0; j < ant[i].size(); j++)
       if (ant[i][j].free)
         SDL_FreeSurface(ant[i][j].v);
+
+  for (unsigned int i = 0; i < carriedDominos.size(); i++)
+    for (unsigned int j = 0; j < carriedDominos[i].size(); j++)
+      if (carriedDominos[i][j])
+        SDL_FreeSurface(carriedDominos[i][j]);
 }
 

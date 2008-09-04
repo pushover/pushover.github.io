@@ -35,6 +35,13 @@ class graphics_c {
     SDL_Surface * getAnt(unsigned int animation, unsigned int step) { return ant[animation][step].v; }
     int getAntOffset(unsigned int animation, unsigned int step) { return ant[animation][step].ofs; }
     unsigned int getAntImages(unsigned int animation) { return ant[animation].size(); }
+    SDL_Surface * getCarriedDomino(unsigned int domino, unsigned int image) { return carriedDominos[domino][image]; }
+
+    // these are offsets that are used together with carried domino to displace
+    // that domino
+    virtual signed int getCarryOffsetX(unsigned int animation, unsigned int image) = 0;
+    virtual signed int getCarryOffsetY(unsigned int animation, unsigned int image) = 0;
+
 
     virtual void loadTheme(const char *name) = 0;
 
@@ -51,6 +58,7 @@ class graphics_c {
 
     // sets a specific domino for a specific domino type and animation state
     void setDomino(unsigned int type, unsigned int num, SDL_Surface * v);
+    void setCarriedDomino(unsigned int type, unsigned int num, SDL_Surface * v);
 
     // add an image to a specific ant animation, the new image is added at the end
     // you must also provide an y-offset used when animating to displace the image
@@ -66,6 +74,7 @@ class graphics_c {
     std::vector<std::vector<SDL_Surface *> > fgTiles;
 
     std::vector<std::vector<SDL_Surface *> > dominos;
+    std::vector<std::vector<SDL_Surface *> > carriedDominos;
 
     typedef struct {
       SDL_Surface * v;
