@@ -976,9 +976,20 @@ unsigned int ant_c::SFStartFallingRight(void) {
 
 unsigned int ant_c::SFFalling(void) {
 
+  if (animationImage == 1 && fallingHight == 2) {
+    // play sound
+  }
+
   if (animateAnt(0)) {
-    blockY++;
-    fallingHight++;
+
+    if (fallingHight == 1 && carriedDomino != 0) {
+      level->putDownDomino(blockX, blockY, carriedDomino);
+      level->fallingDomino(blockX, blockY);
+      carriedDomino = 0;
+    }
+
+    animation = AntAnimFalling;
+    blockY = blockY+1 < 12 ? blockY+1 : 12;
     return AntAnimNothing;
   }
 
