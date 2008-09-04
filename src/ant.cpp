@@ -100,94 +100,40 @@ void ant_c::draw(SDL_Surface * video) {
 
   SDL_Rect dst;
 
-  int screenXpos = blockX*16;
-  int screenYpos = blockY*16 + screenBlock + 6;
-
   if (blockX < 0 || blockX > 19 || blockY < 0 || blockY > 13) return;
 
   if (carriedDomino != 0)
   {
     if (animation >= AntAnimPullOutLeft && animation <= AntAnimLoosingDominoLeft)
     {
-      /*  put domino image of normal domino
-         mov	ax, AntAnimation ; which ant animation is playing
-         sub	ax, AntAnimPullOutLeft
-         mov	si, AntAnimationStep ; which image of the Ant animation	is visible
-         mov	cl, 2
-         shl	si, cl
-         mov	bx, ax
-         shl	bx, 1
-         add	si, AntSpriteOffsets[bx]
-         mov	al, [si+1]
-         cbw
-         add	ax, [bp+ScreenYpos]
-         mov	[bp+Ypos], ax
-         mov	al, [si]
-         cbw
-         add	ax, [bp+ScreenXpos]
-         mov	[bp+Xpos], ax
-         mov	ax, [si+2]
-         mov	[bp+DominoSpriteArray],	ax
-         cmp	ax, 32
-         jge	loc_291C
+      dst.w = gr->blockX();
+      dst.h = gr->blockY();
 
-         cmp	ax, 7
-         jz	loc_2900
+      int a = animation - AntAnimPullOutLeft;
 
-         cmp	CurrentlyCarriedDomino,	cl
-         jz	loc_28FB
+      dst.x = (blockX-2)*gr->blockX();
+      dst.y = (blockY)*gr->blockY()+screenBlock+gr->antDisplace();
 
-         cmp	CurrentlyCarriedDomino,	3
-         jz	loc_28FB
+      dst.y += gr->getMoveOffsetY(a, animationImage);
+      dst.x += gr->getMoveOffsetX(a, animationImage);
 
-         cmp	CurrentlyCarriedDomino,	4
-         jz	loc_28FB
+      int img = gr->getMoveImage(a, animationImage);
 
-         cmp	CurrentlyCarriedDomino,	0Ah
-         jnz	loc_2900
+      if (img < 32)
+      {
+        if (img != 7 && (carriedDomino == 2 || carriedDomino == 3 || carriedDomino == 4 || carriedDomino == 10))
+        {
+          img = 7;
+        }
 
-
-loc_28FB:				; CODE XREF: PutAntSprite+A8j
-         mov	[bp+DominoSpriteArray],	7
-
-loc_2900:				; CODE XREF: PutAntSprite+A2j
-         mov	al, CurrentlyCarriedDomino
-         cbw
-         dec	ax
-         cwd
-         mov	cx, 0Ah
-         idiv	cx
-         mov	bx, dx
-         shl	bx, 1
-         mov	ax, DominoStoneArray[bx] ; An array of pointers	to arrays of sprites containing	the dominos
-         mov	dx, [bp+DominoSpriteArray]
-         mov	cl, 3
-         shl	dx, cl
-         jmp	short loc_2934
-
-loc_291C:				; CODE XREF: PutAntSprite+9Dj
-         mov	al, CurrentlyCarriedDomino
-         cbw
-         dec	ax
-         cwd
-
-loc_2922:
-         mov	cx, 10
-         idiv	cx
-         mov	cl, 3
-         shl	dx, cl
-         mov	bx, [bp+DominoSpriteArray]
-         shl	bx, 1
-         mov	ax, word_D27E[bx]
-
-loc_2934:				; CODE XREF: PutAntSprite+DEj
-         add	ax, dx
-         mov	[bp+var_14], ax
-         push	ax		; SpriteOfs
-         push	[bp+Ypos]	; Ypos
-         push	[bp+Xpos]	; Xpos
-         call	PutSprite	; put a	sprite.	The sprite contains addictional	information at the
-        */
+        dst.y -= gr->getDomino((carriedDomino -1) % 10, img)->h;
+        SDL_BlitSurface(gr->getDomino((carriedDomino - 1) % 10, img), 0, video, &dst);
+      }
+      else
+      {
+        dst.y -= gr->getCarriedDomino(img-32, (carriedDomino -1) % 10)->h;
+        SDL_BlitSurface(gr->getCarriedDomino(img-32, (carriedDomino-1)%10), 0, video, &dst);
+      }
     }
     if (animation >= AntAnimCarryLeft && animation <= AntAnimCarryStopRight)
     {

@@ -27,6 +27,9 @@ class graphicsO_c : public graphics_c {
 
     virtual signed int getCarryOffsetX(unsigned int animation, unsigned int image);
     virtual signed int getCarryOffsetY(unsigned int animation, unsigned int image);
+    virtual signed int getMoveOffsetX(unsigned int animation, unsigned int image);
+    virtual signed int getMoveOffsetY(unsigned int animation, unsigned int image);
+    virtual signed int getMoveImage(unsigned int animation, unsigned int image);
 
   private:
 

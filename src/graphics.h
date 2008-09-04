@@ -42,6 +42,9 @@ class graphics_c {
     virtual signed int getCarryOffsetX(unsigned int animation, unsigned int image) = 0;
     virtual signed int getCarryOffsetY(unsigned int animation, unsigned int image) = 0;
 
+    virtual signed int getMoveOffsetX(unsigned int animation, unsigned int image) = 0;
+    virtual signed int getMoveOffsetY(unsigned int animation, unsigned int image) = 0;
+    virtual signed int getMoveImage(unsigned int animation, unsigned int image) = 0;
 
     virtual void loadTheme(const char *name) = 0;
 

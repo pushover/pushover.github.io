@@ -392,6 +392,27 @@ static signed int offsets[12][16] = {
 signed int graphicsO_c::getCarryOffsetX(unsigned int animation, unsigned int image) { return scale*offsets[animation][2*image+0]; }
 signed int graphicsO_c::getCarryOffsetY(unsigned int animation, unsigned int image) { return scale*offsets[animation][2*image+1]; }
 
+static signed int moveOffsets[10][64] = {
+  {    0, -2, 7, 0, 0, -2, 7, 0, 0, -2, 7, 0, -1, -1, 7, 0, -2, 0, 7, 0, -2, 0, 7, 0, -2, 0, 7, 0, -2, 0, 7, 0,
+       -2, 0, 7, 0, -2, 0, 7, 0, -2, 0, 7, 0, -2, -1, 9, 0, 0, -3, 32, 0, -1, -3, 32, 0, -4, -3, 32, 0,
+  }, { 0, -2, 7, 0, 0, -2, 7, 0, 0, -2, 7, 0, -1, -1, 7, 0, -2, 0, 7, 0, -2, 0, 7, 0, -2, 0, 7, 0, -2, 0, 7, 0,
+       -2, 0, 7, 0, -2, 0, 7, 0, -2, 0, 7, 0, -2, -1, 5, 0, -3, -3, 33, 0, -2, -3, 33, 0, -1, -3, 33, 0,
+  }, { -7, -3, 32, 0, -8, -3, 32, 0, -11, -3, 32, 0, -14, -3, 32, 0, -17, -3, 32, 0, -17, -1, 32, 0, -18, 0, 9, 0,
+       -18, 0, 7, 0, -18, 0, 7, 0, -18, 0, 7, 0, -18, 0, 7, 0, -18, 0, 7, 0, -17, -1, 7, 0, -16, -2, 7, 0,
+       -16, -2, 7, 0, -16, -2, 7, 0,
+  }, { 5, -3, 33, 0, 6, -3, 33, 0, 10, -2, 33, 0, 11, -3, 33, 0, 14, -3, 33, 0, 14, -1, 33, 0, 14, 0, 5, 0,
+       14, 0, 7, 0, 14, 0, 7, 0, 14, 0, 7, 0, 14, 0, 7, 0, 14, 0, 7, 0, 15, -1, 7, 0, 16, -2, 7, 0,
+       16, -2, 7, 0, 16, -2, 7, 0,
+  }, { 0, -3, 44, 0, 0, -3, 45, 0,
+  }, { -3, -3, 46, 0, -3, -3, 47, 0,
+  }, { 0, -3, 45, 0, 0, -3, 44, 0,
+  }, { -3, -3, 47, 0, -3, -3, 46, 0,
+  }, { -7, -3, 32, 0, -8, -3, 32, 0, -11, -3, 32, 0, -14, -3, 32, 0, 0, -3, 7, 0, 0, -3, 7, 0, 0, -3, 7, 0, 0, -3, 7, 0,
+  }, { 16, -3, 7, 0, 16, -3, 7, 0, 16, -3, 7, 0, 16, -3, 7, 0,
+  }
+};
 
-
+signed int graphicsO_c::getMoveOffsetX(unsigned int animation, unsigned int image) { return scale*moveOffsets[animation][4*image+0]; }
+signed int graphicsO_c::getMoveOffsetY(unsigned int animation, unsigned int image) { return scale*moveOffsets[animation][4*image+1]; }
+signed int graphicsO_c::getMoveImage(unsigned int animation, unsigned int image) { return moveOffsets[animation][4*image+2]; }
 
