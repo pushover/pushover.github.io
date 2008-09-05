@@ -40,9 +40,11 @@ int main(int argn, char * argv[]) {
 
   bool exit = false;
 
+  Uint32 ticks = SDL_GetTicks();
+
   while (!exit) {
 
-    Uint32 ticks = SDL_GetTicks() + 1000/18;
+    ticks += 1000/18;
 
     {
       SDL_Event event; /* Event structure */
