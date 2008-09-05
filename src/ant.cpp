@@ -1587,7 +1587,7 @@ unsigned int ant_c::SFNextAction(void) {
       direction = -20;
       upChecker = true;
     }
-    else if (level->getFg(blockX, blockY) == level_c::FgElementPlatformLadderDown)
+    else if (level->getFg(blockX, blockY-1) == level_c::FgElementPlatformLadderDown)
     {
       animation = returnState = AntAnimLadder2;
       direction = -20;
