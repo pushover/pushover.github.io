@@ -39,6 +39,36 @@ class level_c {
     bool openDoorExit;
     bool openDoorEntry;
 
+    // calls the different states of the dominos
+    void callStateFunction(int type, int state, int x, int y, int x2, int y2);
+
+    void DTA_1(int x, int y, int x2, int y2);
+    void DTA_2(int x, int y, int x2, int y2);
+    void DTA_3(int x, int y, int x2, int y2);
+    void DTA_4(int x, int y, int x2, int y2);
+    void DTA_E(int x, int y, int x2, int y2);
+    void DTA_I(int x, int y, int x2, int y2);
+    void DTA_J(int x, int y, int x2, int y2);
+    void DTA_K(int x, int y, int x2, int y2);
+    void DTA_F(int x, int y, int x2, int y2);
+    void DTA_C(int x, int y, int x2, int y2);
+    void DTA_D(int x, int y, int x2, int y2);
+    void DTA_5(int x, int y, int x2, int y2);
+    void DTA_G(int x, int y, int x2, int y2);
+    void DTA_6(int x, int y, int x2, int y2);
+    void DTA_L(int x, int y, int x2, int y2);
+    void DTA_7(int x, int y, int x2, int y2);
+    void DTA_M(int x, int y, int x2, int y2);
+    void DTA_8(int x, int y, int x2, int y2);
+    void DTA_9(int x, int y, int x2, int y2);
+    void DTA_N(int x, int y, int x2, int y2);
+    void DTA_A(int x, int y, int x2, int y2);
+    void DTA_H(int x, int y, int x2, int y2);
+    void DTA_O(int x, int y, int x2, int y2);
+    void DTA_B(int x, int y, int x2, int y2);
+
+    bool triggerFalln;
+
   public:
 
     level_c(void);
@@ -102,6 +132,7 @@ class level_c {
     unsigned char  getFg(unsigned int x, unsigned int y) const { return level[y][x].fg; }
     unsigned char  getDominoType(unsigned int x, unsigned int y) const { return level[y][x].dominoType; }
     unsigned char  getDominoState(unsigned int x, unsigned int y) const { return level[y][x].dominoState; }
+    signed char  getDominoDir(unsigned int x, unsigned int y) const { return level[y][x].dominoDir; }
     unsigned char  getDominoExtra(unsigned int x, unsigned int y) const { return level[y][x].dominoExtra; }
 
     /* update the background where necessary */
@@ -119,6 +150,8 @@ class level_c {
     bool isExitDoorOpen(void) { return getFg(doorExitX, doorExitY) == FgElementDoor3; }
     unsigned int getEntryDoorPosX(void) { return doorEntryX; }
     unsigned int getEntryDoorPosY(void) { return doorEntryY; }
+
+    void performDominos(void);
 
     // query level information of certain places
     bool containsPlank(int x, int y);

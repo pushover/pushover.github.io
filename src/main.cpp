@@ -74,6 +74,7 @@ int main(int argn, char * argv[]) {
 
     l.performDoors();
     a.performAnimation();
+    l.performDominos();
 
     l.updateBackground(gr);
     l.drawDominos(video, gr);
