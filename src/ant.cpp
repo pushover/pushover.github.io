@@ -286,17 +286,17 @@ void ant_c::performAnimation(void) {
   // TODO: we need to check for changes and create dirty blocks
   //
   // for the moment a simple version that marks some blocks aroud the ant
-  level->markDirty(blockX, blockY);
-  level->markDirty(blockX-1, blockY);
-  level->markDirty(blockX+1, blockY);
-
-  level->markDirty(blockX, blockY+1);
   level->markDirty(blockX, blockY-1);
-
   level->markDirty(blockX-1, blockY-1);
-  level->markDirty(blockX-1, blockY+1);
   level->markDirty(blockX+1, blockY-1);
-  level->markDirty(blockX+1, blockY+1);
+
+  level->markDirty(blockX, blockY);
+  level->markDirty(blockX, blockY-2);
+
+  level->markDirty(blockX-1, blockY-2);
+  level->markDirty(blockX-1, blockY);
+  level->markDirty(blockX+1, blockY-2);
+  level->markDirty(blockX+1, blockY);
 }
 
 unsigned int ant_c::callStateFunction(unsigned int state) {
