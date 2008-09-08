@@ -153,7 +153,9 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
           dst.w = gr->blockX();
           dst.h = gr->blockY();
           SDL_BlitSurface(gr->getFgTile(FgElementLadder2), 0, target, &dst);
-	} else if (getFg(x, y) == FgElementPlatformLadderUp) {
+	}
+        else if (getFg(x, y) == FgElementPlatformLadderUp)
+        {
           SDL_Rect dst;
           dst.x = x*gr->blockX();
           dst.y = y*gr->blockY();
@@ -683,6 +685,80 @@ void level_c::DTA_I(int x, int y, int x2, int y2) {
   DTA_4(x, y, x2, y2);
 
 }
+
+bool level_c::isTherePlatform(int x, int y) {
+
+  switch (level[y][x].fg)
+  {
+    case FgElementEmpty:              return false;
+    case FgElementPlatformStart:      return true;
+    case FgElementPlatformMiddle:     return true;
+    case FgElementPlatformEnd:        return true;
+    case FgElementPlatformLadderDown: return true;
+    case FgElementLadder:             return false;
+    case FgElementPlatformLadderUp:   return true;
+    case FgElementPlatformStep1:      return true;
+    case FgElementPlatformStep2:      return true;
+    case FgElementPlatformStep3:      return false;
+    case FgElementPlatformStep4:      return false;
+    case FgElementPlatformStep5:      return true;
+    case FgElementPlatformStep6:      return true;
+    case FgElementPlatformStep7:      return false;
+    case FgElementPlatformStep8:      return false;
+    case FgElementPlatformWrongDoor:  return false;
+    case FgElementPlatformStack:      return true;
+    case FgElementLadderMiddle:       return false;
+    case FgElementPlatformStrip:      return true;
+    case FgElementLadder2:            return false;
+    case FgElementDoor0:              return false;
+    case FgElementDoor1:              return false;
+    case FgElementDoor2:              return false;
+    case FgElementDoor3:              return false;
+    default:                          return false;
+  }
+}
+
+void level_c::DominoCrash(int x, int y, int type, int extra) {
+
+    int next = level[y][x].dominoType;
+
+    if ((next == DominoTypeStandard || next == DominoTypeCrash4) &&
+        (type == DominoTypeStandard || type == DominoTypeCrash4))
+    {
+        next = DominoTypeCrash4;
+    }
+    else if ((next == DominoTypeBlocker || next == DominoTypeCrash3) &&
+             (type == DominoTypeBlocker || type == DominoTypeCrash3))
+    {
+        next = DominoTypeCrash3;
+    }
+    else
+    {
+        next = DominoTypeCrash2;
+    }
+
+    level[y][x].dominoType = next;
+    level[y][x].dominoState = 1;
+    level[y][x].dominoDir = 1;
+    if (level[y][x].dominoExtra == 0x70 || extra == 0x70 || level[y][x].dominoExtra == 0x60 || extra == 0x60)
+    {
+        level[y][x].dominoExtra = 0x70;
+        level[y][x].dominoYOffset &= 0xFC;
+    }
+    else
+    {
+        level[y][x].dominoExtra = 0;
+    }
+
+    markDirty(x-1, y);
+    markDirty(x, y);
+    markDirty(x+1, y);
+
+// 		mov	ax, 4
+// 		push	ax
+// 		call	SomethingWithSound
+}
+
 void level_c::DTA_E(int x, int y, int x2, int y2) {
 
   if (level[y][x].dominoExtra == 0x40)
@@ -699,16 +775,750 @@ void level_c::DTA_E(int x, int y, int x2, int y2) {
     return;
   }
 
-  if (level[y+1][x].dominoYOffset != 0)
+  if (level[y][x].dominoYOffset != 0)
   {
+    if (level[y][x].dominoYOffset != 12) {
+      level[y][x].dominoYOffset += 4;
+      markDirty(x, y+1);
+      markDirty(x, y);
+      return;
+    }
 
+    if (y < 12)
+    {
+      level[y+1][x].dominoType = level[y][x].dominoType;
+      level[y+1][x].dominoState = level[y][x].dominoState;
+      level[y+1][x].dominoDir = level[y][x].dominoDir;
+      level[y+1][x].dominoYOffset = 0;
+      level[y+1][x].dominoExtra = 0x70;
+    }
+
+    level[y][x].dominoType = DominoTypeEmpty;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoDir = 0;
+    level[y][x].dominoYOffset = 0;
+    level[y][x].dominoExtra = 0;
+
+    markDirty(x, y+1);
+    markDirty(x, y);
+    return;
   }
+
+  if (isTherePlatform(x, y))
+  {
+    if (getDominoType(x, y+1) != DominoTypeEmpty)
+    {
+        DominoCrash(x, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
+    }
+
+    level[y][x].dominoExtra = 0;
+
+    if (level[y][x].fg == 8 || level[y][x].fg == 11)
+    {
+      level[y][x].dominoYOffset = 8;
+    }
+
+    markDirty(x, y);
+    markDirty(x, y+1);
+    return;
+  }
+
+  if (y >= 12 || level[y+1][x].dominoType == DominoTypeEmpty)
+  {
+    level[y][x].dominoYOffset += 4;
+    markDirty(x, y);
+    markDirty(x, y+1);
+    return;
+  }
+
+  if (level[y][x].dominoType != DominoTypeSplitter)
+  {
+    DominoCrash(x, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
+
+    level[y][x].dominoType = DominoTypeEmpty;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoDir = 0;
+    level[y][x].dominoYOffset = 0;
+    level[y][x].dominoExtra = 0;
+
+    markDirty(x, y);
+    markDirty(x, y+1);
+
+    return;
+  }
+
+  pushDomino(x, y+1, -1);
+
+  level[y+1][x].dominoExtra = level[y][x].dominoType;
+  level[y][x].dominoType = DominoTypeEmpty;
+  level[y][x].dominoState = 0;
+  level[y][x].dominoDir = 0;
+  level[y][x].dominoYOffset = 0;
+  level[y][x].dominoExtra = 0;
+
+  markDirty(x, y);
+  markDirty(x, y+1);
 }
-void level_c::DTA_7(int x, int y, int x2, int y2) {
-}
+
 void level_c::DTA_C(int x, int y, int x2, int y2) {
+
+// var_6		= byte ptr -6
+// var_4		= byte ptr -4
+// var_2		= byte ptr -2
+// Xpos		= word ptr  4
+// Ypos		= word ptr  6
+// LeveldataEntry	= word ptr  8
+//
+// 		push	bp
+// 		mov	bp, sp
+// 		sub	sp, 6
+// 		push	di
+// 		push	si
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+4]
+// 		cbw
+// 		mov	si, ax
+// 		shl	si, 1
+// 		mov	al, byte ptr DominoTypeAnimAction[si] ;	a callback function for	each domino type for each possible animation state
+// 					; the real array is below this are just	the missing entries for	the empty domino type
+// 		mov	[bp+var_2], al
+// 		mov	al, byte ptr (DominoTypeAnimAction+1)[si] ; a callback function	for each domino	type for each possible animation state
+// 					; the real array is below this are just	the missing entries for	the empty domino type
+// 		mov	[bp+var_6], al
+// 		cmp	[bp+var_2], 3
+// 		jnz	loc_6BA4
+//
+// 		cmp	[bp+Xpos], 0
+// 		jle	loc_6B75
+//
+// 		mov	ax, 160
+// 		imul	[bp+Ypos]
+// 		mov	di, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		cmp	(AntAnimBArray+36h)[bx+di], 0Ah	; probalby LevelDat_srcPtr_6
+// 		jz	loc_6BC3
+//
+//
+// loc_6B75:				; CODE XREF: DTA_C+2Bj
+// 		mov	ax, 160
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		cmp	(AntAnimBArray+37h)[bx+si], DominoTypeEmpty ; probalby LevelDat_srcPtr_5
+// 		jz	loc_6BC0
+//
+// 		mov	ax, 0FFFFh
+// 		push	ax		; Direction
+// 		push	[bp+Ypos]	; Ypos
+// 		mov	ax, [bp+Xpos]
+// 		dec	ax
+// 		push	ax		; Xpos
+// 		call	PushDomino	; starts the domino at position	falling	in the given direction
+//
+// 		add	sp, 6
+// 		or	ax, ax
+// 		jz	loc_6BC3
+//
+// 		jmp	short loc_6BC0
+//
+// loc_6BA4:				; CODE XREF: DTA_C+25j
+// 		cmp	[bp+var_2], 2
+// 		jnz	loc_6BC3
+//
+// 		mov	ax, 160
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		cmp	(AntAnimBArray+37h)[bx+si], 0 ;	probalby LevelDat_srcPtr_5
+// 		jnz	loc_6BC3
+//
+//
+// loc_6BC0:				; CODE XREF: DTA_C+57j	DTA_C+6Fj
+// 		dec	[bp+var_2]
+//
+// loc_6BC3:				; CODE XREF: DTA_C+41j	DTA_C+6Dj ...
+// 		cmp	[bp+var_6], 3
+// 		jnz	loc_6C0C
+//
+// 		cmp	[bp+Xpos], 13h
+// 		jge	loc_6BDE
+//
+// 		mov	ax, 160
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+//
+// loc_6BDE:				; CODE XREF: DTA_C+9Bj
+// 		mov	ax, 160
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		cmp	(LevelData_srcPtr+0Bh)[bx+si], 0 ; 260 tiles per level,	8 bytes	per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		jz	loc_6C28
+//
+// 		mov	ax, 1
+// 		push	ax		; Direction
+// 		push	[bp+Ypos]	; Ypos
+// 		mov	ax, [bp+Xpos]
+// 		inc	ax
+// 		push	ax		; Xpos
+// 		call	PushDomino	; starts the domino at position	falling	in the given direction
+//
+// 		add	sp, 6
+// 		or	ax, ax
+// 		jz	loc_6C2B
+//
+// 		jmp	short loc_6C28
+//
+// loc_6C0C:				; CODE XREF: DTA_C+95j
+// 		cmp	[bp+var_6], 2
+// 		jnz	loc_6C2B
+//
+// 		mov	ax, 160
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		cmp	(LevelData_srcPtr+0Bh)[bx+si], 0 ; 260 tiles per level,	8 bytes	per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		jnz	loc_6C2B
+//
+//
+// loc_6C28:				; CODE XREF: DTA_C+C0j	DTA_C+D8j
+// 		dec	[bp+var_6]
+//
+// loc_6C2B:				; CODE XREF: DTA_C+D6j	DTA_C+DEj ...
+// 		mov	[bp+var_4], 0
+// 		jmp	short loc_6C35
+//
+// loc_6C32:				; CODE XREF: DTA_C+118j DTA_C+121j
+// 		inc	[bp+var_4]
+//
+// loc_6C35:				; CODE XREF: DTA_C+FDj
+// 		cmp	[bp+var_4], 0Eh
+// 		jge	loc_6C55
+//
+// 		mov	al, [bp+var_4]
+// 		cbw
+// 		mov	si, ax
+// 		shl	si, 1
+// 		mov	al, [bp+var_2]
+// 		cmp	byte ptr (DominoTypeAnimAction+2)[si], al ; a callback function	for each domino	type for each possible animation state
+// 					; the real array is below this are just	the missing entries for	the empty domino type
+// 		jnz	loc_6C32
+//
+// 		mov	al, [bp+var_6]
+// 		cmp	byte ptr (DominoTypeAnimAction+3)[si], al ; a callback function	for each domino	type for each possible animation state
+// 					; the real array is below this are just	the missing entries for	the empty domino type
+// 		jnz	loc_6C32
+//
+//
+// loc_6C55:				; CODE XREF: DTA_C+107j
+// 		inc	[bp+var_4]
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bp+var_4]
+// 		cmp	[bx+4],	al
+// 		jz	loc_6C8F
+//
+// 		mov	[bx+4],	al
+// 		mov	ax, 14h
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		add	si, [bp+Xpos]
+// 		mov	(DirtyBlocksPrefix+13h)[si], 1 ; 2 additional lines of direty blocks
+// 					; to access blocks above the screen without additional checks
+// 		mov	(DirtyBlocksPrefix+14h)[si], 1 ; 2 additional lines of direty blocks
+// 					; to access blocks above the screen without additional checks
+// 		mov	(DirtyBlocksPrefix+15h)[si], 1 ; 2 additional lines of direty blocks
+// 					; to access blocks above the screen without additional checks
+// 		mov	(DirtyBlocksPrefix+27h)[si], 1 ; 2 additional lines of direty blocks
+// 					; to access blocks above the screen without additional checks
+// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	(DirtyBlocks+1)[si], 1 ; changed blocks	on screen, there are 20	blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+//
+// loc_6C8F:				; CODE XREF: DTA_C+12Fj
+
+    return;
+
+}
+
+void level_c::DTA_7(int x, int y, int x2, int y2) {
+// var_8		= word ptr -8
+// var_6		= byte ptr -6
+// var_4		= byte ptr -4
+// var_2		= byte ptr -2
+// Xpos		= word ptr  4
+// Ypos		= word ptr  6
+// LeveldataEntry	= word ptr  8
+//
+// 		push	bp
+// 		mov	bp, sp
+// 		sub	sp, 8
+// 		push	si
+// 		mov	[bp+var_8], 0
+// 		cmp	[bp+Xpos], 2
+// 		jl	loc_72FA
+//
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		mov	al, (AntAnimBArray+2Eh)[bx+si] ; 6 ant sprites
+// 		jmp	short loc_72FC
+//
+// loc_72FA:				; CODE XREF: DTA_7+10j
+// 		sub	al, al
+//
+// loc_72FC:				; CODE XREF: DTA_7+25j
+// 		mov	[bp+var_2], al
+// 		cmp	[bp+Xpos], 1
+// 		jl	loc_731A
+//
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		mov	al, (AntAnimBArray+36h)[bx+si] ; 6 ant sprites
+// 		jmp	short loc_731C
+//
+// loc_731A:				; CODE XREF: DTA_7+31j
+// 		sub	al, al
+//
+// loc_731C:				; CODE XREF: DTA_7+46j
+// 		mov	[bp+var_4], al
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+2]
+// 		mov	[bp+var_6], al
+// 		cmp	al, 1
+// 		jz	loc_7333
+//
+// 		cmp	al, 12h
+// 		jz	loc_7333
+//
+// 		jmp	loc_741E
+//
+// loc_7333:				; CODE XREF: DTA_7+58j	DTA_7+5Cj
+// 		cmp	[bp+var_4], 3
+// 		jz	loc_7349
+//
+// 		cmp	[bp+var_4], 0
+// 		jnz	loc_7350
+//
+// 		cmp	[bp+var_2], 3
+// 		jnz	loc_7350
+//
+// 		mov	[bp+var_2], 2
+//
+// loc_7349:				; CODE XREF: DTA_7+65j
+// 		mov	[bp+var_4], 2
+// 		jmp	short loc_735A
+//
+// loc_7350:				; CODE XREF: DTA_7+6Bj	DTA_7+71j
+// 		cmp	[bp+var_4], 12h
+// 		jnz	loc_7364
+//
+// 		mov	[bp+var_4], 1
+//
+// loc_735A:				; CODE XREF: DTA_7+7Bj
+// 		cmp	[bp+var_6], 1
+// 		jnz	loc_737E
+//
+//
+// loc_7360:				; CODE XREF: DTA_7+AAj
+// 		mov	al, 2
+// 		jmp	short loc_7380
+//
+// loc_7364:				; CODE XREF: DTA_7+82j
+// 		cmp	[bp+var_4], 0
+// 		jnz	loc_7388
+//
+// 		cmp	[bp+var_2], 12h
+// 		jnz	loc_7388
+//
+// 		mov	[bp+var_2], 1
+// 		mov	[bp+var_4], 2
+// 		cmp	[bp+var_6], 1
+// 		jz	loc_7360
+//
+//
+// loc_737E:				; CODE XREF: DTA_7+8Cj
+// 		mov	al, 3
+//
+// loc_7380:				; CODE XREF: DTA_7+90j
+// 		mov	[bp+var_6], al
+// 		mov	[bp+var_8], 1
+//
+// loc_7388:				; CODE XREF: DTA_7+96j	DTA_7+9Cj
+// 		cmp	[bp+var_8], 0
+// 		jnz	loc_7391
+//
+// 		jmp	loc_741E
+//
+// loc_7391:				; CODE XREF: DTA_7+BAj
+// 		cmp	[bp+Xpos], 2
+// 		jl	loc_73BD
+//
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		mov	al, [bp+var_2]
+// 		mov	(AntAnimBArray+2Eh)[bx+si], al ; 6 ant sprites
+// 		mov	ax, 14h
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	byte ptr [bx+si+7A0h], 1
+//
+// loc_73BD:				; CODE XREF: DTA_7+C3j
+// 		cmp	[bp+Xpos], 1
+// 		jl	loc_73D9
+//
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		mov	al, [bp+var_4]
+// 		mov	(AntAnimBArray+36h)[bx+si], al ; probalby LevelDat_srcPtr_6
+//
+// loc_73D9:				; CODE XREF: DTA_7+EFj
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bp+var_6]
+// 		mov	[bx+2],	al
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+5], 0
+// 		mov	ax, 14h
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		add	si, [bp+Xpos]
+// 		mov	(DirtyBlocksPrefix+13h)[si], 1 ; 2 additional lines of direty blocks
+// 					; to access blocks above the screen without additional checks
+// 		mov	(DirtyBlocksPrefix+14h)[si], 1 ; 2 additional lines of direty blocks
+// 					; to access blocks above the screen without additional checks
+// 		mov	(DirtyBlocksPrefix+27h)[si], 1 ; 2 additional lines of direty blocks
+// 					; to access blocks above the screen without additional checks
+// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	SecondPageDirty[si], 1 ; if set	then we	can NOT	copy the static	level from
+// 					; background probably because it changed
+// 		mov	(AntAnimDArray+4Fh)[si], 1 ; dirty page	-1
+// 		mov	(AntAnimDArray+4Eh)[si], 1 ; dirty page	-2
+// 		pop	si
+// 		mov	sp, bp
+// 		pop	bp
+// 		retn
+//
+// loc_741E:				; CODE XREF: DTA_7+5Ej	DTA_7+BCj
+// 		push	[bp+LeveldataEntry]
+// 		push	[bp+Ypos]
+// 		push	[bp+Xpos]
+// 		call	DTA_1
+//
+// 		add	sp, 6
+// 		pop	si
+// 		mov	sp, bp
+// 		pop	bp
+// 		retn
 }
 void level_c::DTA_M(int x, int y, int x2, int y2) {
+
+// var_8		= word ptr -8
+// var_6		= byte ptr -6
+// var_4		= byte ptr -4
+// CurrentLevelForeground=	byte ptr -2
+// Xpos		= word ptr  4
+// Ypos		= word ptr  6
+// LeveldataEntry	= word ptr  8
+//
+// 		push	bp
+// 		mov	bp, sp
+// 		sub	sp, 8
+// 		push	si
+// 		mov	[bp+var_8], 0
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+LevelDataForeground]
+// 		mov	[bp+CurrentLevelForeground], al
+// 		cmp	[bp+Xpos], 18
+// 		jg	loc_7462
+//
+// 		mov	ax, 160
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		mov	al, (LevelData_srcPtr+0Ah)[bx+si] ; 260	tiles per level, 8 bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		jmp	short loc_7464
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_7462:				; CODE XREF: DTA_M+19j
+// 		sub	al, al
+//
+// loc_7464:				; CODE XREF: DTA_M+2Ej
+// 		mov	[bp+var_4], al
+// 		cmp	[bp+Xpos], 11h
+// 		jg	loc_7482
+//
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		mov	al, (LevelData_srcPtr+12h)[bx+si] ; 260	tiles per level, 8 bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		jmp	short loc_7484
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_7482:				; CODE XREF: DTA_M+39j
+// 		sub	al, al
+//
+// loc_7484:				; CODE XREF: DTA_M+4Ej
+// 		mov	[bp+var_6], al
+// 		cmp	[bp+CurrentLevelForeground], 3
+// 		jz	loc_7496
+//
+// 		cmp	[bp+CurrentLevelForeground], 12h
+// 		jz	loc_7496
+//
+// 		jmp	loc_75B4
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_7496:				; CODE XREF: DTA_M+59j	DTA_M+5Fj
+// 		cmp	[bp+var_4], 1
+// 		jnz	loc_74B2
+//
+// 		cmp	[bp+CurrentLevelForeground], 3
+// 		jnz	loc_74A6
+//
+// 		mov	al, 2
+// 		jmp	short loc_74A8
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_74A6:				; CODE XREF: DTA_M+6Ej
+// 		mov	al, 1
+//
+// loc_74A8:				; CODE XREF: DTA_M+72j
+// 		mov	[bp+CurrentLevelForeground], al
+// 		mov	[bp+var_4], 2
+// 		jmp	short loc_7517
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+// 		align 2
+//
+// loc_74B2:				; CODE XREF: DTA_M+68j
+// 		cmp	[bp+var_4], 0
+// 		jnz	loc_74D8
+//
+// 		cmp	[bp+var_6], 1
+// 		jnz	loc_74D8
+//
+// 		cmp	[bp+CurrentLevelForeground], 3
+// 		jnz	loc_74C8
+//
+// 		mov	al, 2
+// 		jmp	short loc_74CA
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_74C8:				; CODE XREF: DTA_M+90j
+// 		mov	al, 1
+//
+// loc_74CA:				; CODE XREF: DTA_M+94j
+// 		mov	[bp+CurrentLevelForeground], al
+// 		mov	[bp+var_4], 2
+// 		mov	[bp+var_6], 2
+// 		jmp	short loc_7517
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+// 		align 2
+//
+// loc_74D8:				; CODE XREF: DTA_M+84j	DTA_M+8Aj
+// 		cmp	[bp+var_4], 12h
+// 		jnz	loc_74F4
+//
+// 		cmp	[bp+CurrentLevelForeground], 3
+// 		jnz	loc_74E8
+//
+// 		mov	al, 2
+// 		jmp	short loc_74EA
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_74E8:				; CODE XREF: DTA_M+B0j
+// 		mov	al, 1
+//
+// loc_74EA:				; CODE XREF: DTA_M+B4j
+// 		mov	[bp+CurrentLevelForeground], al
+// 		mov	[bp+var_4], 3
+// 		jmp	short loc_7517
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+// 		align 2
+//
+// loc_74F4:				; CODE XREF: DTA_M+AAj
+// 		cmp	[bp+var_4], 0
+// 		jnz	loc_751C
+//
+// 		cmp	[bp+var_6], 12h
+// 		jnz	loc_751C
+//
+// 		cmp	[bp+CurrentLevelForeground], 3
+// 		jnz	loc_750A
+//
+// 		mov	al, 2
+// 		jmp	short loc_750C
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_750A:				; CODE XREF: DTA_M+D2j
+// 		mov	al, 1
+//
+// loc_750C:				; CODE XREF: DTA_M+D6j
+// 		mov	[bp+CurrentLevelForeground], al
+// 		mov	[bp+var_4], 2
+// 		mov	[bp+var_6], 3
+//
+// loc_7517:				; CODE XREF: DTA_M+7Dj	DTA_M+A3j ...
+// 		mov	[bp+var_8], 1
+//
+// loc_751C:				; CODE XREF: DTA_M+C6j	DTA_M+CCj
+// 		cmp	[bp+var_8], 0
+// 		jnz	loc_7525
+//
+// 		jmp	loc_75B4
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_7525:				; CODE XREF: DTA_M+EEj
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bp+CurrentLevelForeground]
+// 		mov	[bx+2],	al
+// 		cmp	[bp+Xpos], 12h
+// 		jg	loc_754A
+//
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		mov	al, [bp+var_4]
+// 		mov	(LevelData_srcPtr+0Ah)[bx+si], al ; 260	tiles per level, 8 bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+//
+// loc_754A:				; CODE XREF: DTA_M+100j
+// 		cmp	[bp+Xpos], 11h
+// 		jg	loc_7576
+//
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		mov	al, [bp+var_6]
+// 		mov	[bx+si+4B0Ah], al
+// 		mov	ax, 14h
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	byte ptr [bx+si+7A4h], 1
+//
+// loc_7576:				; CODE XREF: DTA_M+11Cj
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+5], 0
+// 		mov	ax, 14h
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		add	si, [bp+Xpos]
+// 		mov	(DirtyBlocksPrefix+15h)[si], 1 ; 2 additional lines of direty blocks
+// 					; to access blocks above the screen without additional checks
+// 		mov	(DirtyBlocksPrefix+14h)[si], 1 ; 2 additional lines of direty blocks
+// 					; to access blocks above the screen without additional checks
+// 		mov	(DirtyBlocks+1)[si], 1 ; changed blocks	on screen, there are 20	blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	SecondPageDirty[si], 1 ; if set	then we	can NOT	copy the static	level from
+// 					; background probably because it changed
+// 		mov	(SecondPageDirty+1)[si], 1 ; if	set then we can	NOT copy the static level from
+// 					; background probably because it changed
+// 		mov	(SecondPageDirty+2)[si], 1 ; if	set then we can	NOT copy the static level from
+// 					; background probably because it changed
+// 		pop	si
+// 		mov	sp, bp
+// 		pop	bp
+// 		retn
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_75B4:				; CODE XREF: DTA_M+61j	DTA_M+F0j
+// 		push	[bp+LeveldataEntry]
+// 		push	[bp+Ypos]
+// 		push	[bp+Xpos]
+// 		call	DTA_K
+//
+// 		add	sp, 6
+// 		pop	si
+// 		mov	sp, bp
+// 		pop	bp
+// 		retn
+
 }
 void level_c::DTA_A(int x, int y, int x2, int y2) {
 }
@@ -716,10 +1526,242 @@ void level_c::DTA_O(int x, int y, int x2, int y2) {
 }
 void level_c::DTA_H(int x, int y, int x2, int y2) {
 }
+
 void level_c::DTA_K(int x, int y, int x2, int y2) {
+    int fg;
+
+    if (x < 19)
+        fg = level[y][x+1].fg;
+    else
+        fg = 0;
+
+    if (fg == FgElementLadder)
+        fg = 0;
+
+    if ((getFg(x, y) == FgElementPlatformEnd ||
+            getFg(x, y) == FgElementPlatformStrip)
+            &&
+            fg == FgElementEmpty
+            )
+    {
+
+        if (getDominoType(x+1, y+1) != DominoTypeEmpty)
+        {
+            DominoCrash(x+1, y+1, getDominoType(x, y), getDominoExtra(x, y));
+            level[y][x].dominoType = 0;
+            level[y][x].dominoState = 0;
+            level[y][x].dominoDir = 0;
+
+            markDirty(x, y-1);
+            markDirty(x+1, y-1);
+            markDirty(x, y);
+            markDirty(x+1, y);
+        }
+        else
+        {
+            level[y][x+1].dominoType = getDominoType(x, y);
+            level[y][x+1].dominoState = 2;
+            level[y][x+1].dominoDir = getDominoDir(x, y);
+            level[y][x+1].dominoYOffset = 2;
+            level[y][x+1].dominoExtra = 0x70;
+
+// 		mov	ax, 0Ah
+// 		push	ax
+// 		call	SomethingWithSound
+//
+            level[y][x].dominoType = 0;
+            level[y][x].dominoState = 0;
+            level[y][x].dominoDir = 0;
+
+            markDirty(x, y-1);
+            markDirty(x+1, y-1);
+            markDirty(x, y);
+            markDirty(x+1, y);
+        }
+    }
+    else
+    {
+        if (x < 19 && level[y][x].fg == FgElementPlatformStep1 && fg == FgElementPlatformStep2)
+        {
+            if (level[y][x+1].dominoType != DominoTypeEmpty)
+            {
+                DominoCrash(x+1, y, level[y][x].dominoType, level[y][x].dominoExtra);
+            }
+            else
+            {
+                level[y][x+1].dominoType = level[y][x].dominoType;
+                level[y][x+1].dominoState = 2;
+                level[y][x+1].dominoDir = level[y][x].dominoDir;
+                level[y][x+1].dominoYOffset = 2;
+                level[y][x+1].dominoExtra = 0x40;
+            }
+
+            level[y][x].dominoType = 0;
+            level[y][x].dominoState = 0;
+            level[y][x].dominoDir = 0;
+            level[y][x].dominoYOffset = 0;
+
+            markDirty(x, y-1);
+            markDirty(x+1, y-1);
+            markDirty(x, y);
+            markDirty(x+1, y);
+
+            return;
+        }
+
+        if (x < 19 && y < 11 && getFg(x, y) == FgElementPlatformStep2)
+        {
+            if (level[y+1][x+1].dominoType != 0)
+            {
+                DominoCrash(x+1, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
+            }
+            else
+            {
+                level[y+1][x+1].dominoType = level[y][x].dominoType;
+                level[y+1][x+1].dominoState = 2;
+                level[y+1][x+1].dominoDir = level[y][x].dominoDir;
+                level[y+1][x+1].dominoYOffset = -6;
+                level[y+1][x+1].dominoExtra = 0x40;
+            }
+
+            level[y][x].dominoType = 0;
+            level[y][x].dominoState = 0;
+            level[y][x].dominoDir = 0;
+            level[y][x].dominoYOffset = 0;
+
+            markDirty(x, y-1);
+            markDirty(x+1, y-1);
+            markDirty(x, y);
+            markDirty(x+1, y);
+
+            return;
+        }
+
+        level[y][x].dominoDir = 0;
+        return;
+    }
+
 }
+
 void level_c::DTA_1(int x, int y, int x2, int y2) {
+
+    int fg;
+
+    if (x > 0)
+        fg = level[y][x-1].fg;
+    else
+        fg = 0;
+
+    if (fg == FgElementLadder)
+        fg = 0;
+
+    if ((getFg(x, y) == FgElementPlatformStart ||
+            getFg(x, y) == FgElementLadder2)
+            &&
+            fg == FgElementEmpty
+            )
+    {
+
+        if (getDominoType(x-1, y+1) != DominoTypeEmpty)
+        {
+            DominoCrash(x-1, y+1, getDominoType(x, y), getDominoExtra(x, y));
+            level[y][x].dominoType = 0;
+            level[y][x].dominoState = 0;
+            level[y][x].dominoDir = 0;
+
+            markDirty(x, y-1);
+            markDirty(x-1, y-1);
+            markDirty(x, y);
+            markDirty(x-1, y);
+
+            return;
+        }
+        else
+        {
+            level[y+1][x-1].dominoType = getDominoType(x, y);
+            level[y+1][x-1].dominoState = 0xE;
+            level[y+1][x-1].dominoDir = getDominoDir(x, y);
+            level[y+1][x-1].dominoYOffset = 2;
+            level[y+1][x-1].dominoExtra = 0x70;
+
+// 		mov	ax, 0Ah
+// 		push	ax
+// 		call	SomethingWithSound
+//
+            level[y][x].dominoType = 0;
+            level[y][x].dominoState = 0;
+            level[y][x].dominoDir = 0;
+
+            markDirty(x, y-1);
+            markDirty(x-1, y-1);
+            markDirty(x, y);
+            markDirty(x-1, y);
+        }
+    }
+    else
+    {
+        if (x > 0 && level[y][x].fg == FgElementPlatformStep6 && fg == FgElementPlatformStep5)
+        {
+            if (level[y][x-1].dominoType != DominoTypeEmpty)
+            {
+                DominoCrash(x-1, y, level[y][x].dominoType, level[y][x].dominoExtra);
+            }
+            else
+            {
+                level[y][x-1].dominoType = level[y][x].dominoType;
+                level[y][x-1].dominoState = 0xE;
+                level[y][x-1].dominoDir = level[y][x].dominoDir;
+                level[y][x-1].dominoYOffset = 2;
+                level[y][x-1].dominoExtra = 0x40;
+            }
+
+            level[y][x].dominoType = 0;
+            level[y][x].dominoState = 0;
+            level[y][x].dominoDir = 0;
+            level[y][x].dominoYOffset = 0;
+
+            markDirty(x, y-1);
+            markDirty(x-1, y-1);
+            markDirty(x, y);
+            markDirty(x-1, y);
+
+            return;
+        }
+
+        if (x > 0 && y < 11 && getFg(x, y) == FgElementPlatformStep5)
+        {
+            if (level[y+1][x-1].dominoType != 0)
+            {
+                DominoCrash(x-1, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
+            }
+            else
+            {
+                level[y+1][x-1].dominoType = level[y][x].dominoType;
+                level[y+1][x-1].dominoState = 0xE;
+                level[y+1][x-1].dominoDir = level[y][x].dominoDir;
+                level[y+1][x-1].dominoYOffset = -6;
+                level[y+1][x-1].dominoExtra = 0x40;
+            }
+
+            level[y][x].dominoType = 0;
+            level[y][x].dominoState = 0;
+            level[y][x].dominoDir = 0;
+            level[y][x].dominoYOffset = 0;
+
+            markDirty(x, y-1);
+            markDirty(x-1, y-1);
+            markDirty(x, y);
+            markDirty(x-1, y);
+
+            return;
+        }
+
+        level[y][x].dominoDir = 0;
+        return;
+    }
+
 }
+
 void level_c::DTA_6(int x, int y, int x2, int y2) {
 }
 void level_c::DTA_L(int x, int y, int x2, int y2) {

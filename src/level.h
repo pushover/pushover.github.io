@@ -42,6 +42,9 @@ class level_c {
     // calls the different states of the dominos
     void callStateFunction(int type, int state, int x, int y, int x2, int y2);
 
+    bool isTherePlatform(int x, int y);
+    void DominoCrash(int x, int y, int type, int extra);
+
     void DTA_1(int x, int y, int x2, int y2);
     void DTA_2(int x, int y, int x2, int y2);
     void DTA_3(int x, int y, int x2, int y2);
