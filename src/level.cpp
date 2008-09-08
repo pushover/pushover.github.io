@@ -105,7 +105,7 @@ void level_c::updateBackground(graphics_c * gr) {
 void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
   for (unsigned int y = 0; y < 13; y++)
     for (unsigned int x = 0; x < 20; x++) {
-      if ((dynamicDirty[y] >> x) & 1) {
+      if ((dynamicDirty[y] >> x) & 1 || true) {
 
         /* copy background from background surface */
         {
@@ -120,7 +120,11 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
           src.h = gr->blockY();
           SDL_BlitSurface(background, &src, target, &dst);
         }
-
+      }
+    }
+  for (unsigned int y = 0; y < 13; y++)
+    for (unsigned int x = 0; x < 20; x++) {
+      if ((dynamicDirty[y] >> x) & 1 || true) {
         /* paint the foreground */
         if (getDominoType(x, y) > 0) {
           SDL_Surface * v = gr->getDomino(getDominoType(x, y)-1, getDominoState(x, y)-1);
@@ -129,7 +133,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
 
             SDL_Rect dst;
             dst.x = (x-2)*gr->blockX();
-            dst.y = y*gr->blockY()-v->h + gr->dominoDisplace();
+            dst.y = y*gr->blockY()-v->h + gr->dominoDisplace() + level[y][x].dominoYOffset*2;
             dst.w = v->w;
             dst.h = v->h;
             SDL_BlitSurface(v, 0, target, &dst);
@@ -141,7 +145,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
   // repaint the ladders in front of dominos
   for (unsigned int y = 0; y < 13; y++)
     for (unsigned int x = 0; x < 20; x++) {
-      if ((dynamicDirty[y] >> x) & 1) {
+      if ((dynamicDirty[y] >> x) & 1 || true) {
         if (getFg(x, y) == FgElementPlatformLadderDown || getFg(x, y) == FgElementLadder) {
           SDL_Rect dst;
           dst.x = x*gr->blockX();
@@ -158,8 +162,24 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
           SDL_BlitSurface(gr->getFgTile(FgElementLadderMiddle), 0, target, &dst);
 	}
       }
-      dynamicDirty[y] &= ~(1 << x);
     }
+
+  for (unsigned int y = 0; y < 13; y++)
+    for (unsigned int x = 0; x < 20; x++) {
+      SDL_Rect dst;
+      dst.w = dst.h = 4;
+      dst.x = x*gr->blockX();
+      dst.y = y*gr->blockY();
+      Uint32 color = ((dynamicDirty[y] >> x) & 1)
+        ? SDL_MapRGB(target->format, 255, 0, 0)
+        : SDL_MapRGB(target->format, 0, 0, 0);
+      SDL_FillRect(target, &dst, color);
+    }
+
+  for (unsigned int y = 0; y < 13; y++) {
+    dynamicDirty[y] = 0;
+  }
+
 }
 
 void level_c::performDoors(void) {
