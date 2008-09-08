@@ -42,9 +42,11 @@ int main(int argn, char * argv[]) {
 
   Uint32 ticks = SDL_GetTicks();
 
+  int tickDiv = 18;
+
   while (!exit) {
 
-    ticks += 1000/18;
+    ticks += 1000/tickDiv;
 
     {
       SDL_Event event; /* Event structure */
@@ -52,8 +54,12 @@ int main(int argn, char * argv[]) {
       while(SDL_PollEvent(&event)) {  /* Loop until there are no events left on the queue */
         switch(event.type) { /* Process the appropiate event type */
           case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
+
             if (event.key.keysym.sym == SDLK_ESCAPE)
               exit = true;
+            if (event.key.keysym.sym == SDLK_s)
+              tickDiv = 19-tickDiv;
+
             break;
         }
 
