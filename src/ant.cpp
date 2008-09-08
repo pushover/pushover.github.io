@@ -1485,7 +1485,7 @@ unsigned int ant_c::SFNextAction(void) {
       animation = returnState = AntAnimJunpDownRight;
       direction = 1;
     }
-    else if (level->getFg(blockX, blockY) == level_c::FgElementPlatformStep6)
+    else if (level->getFg(blockX, blockY) == level_c::FgElementPlatformStep5)
     {
       animation = returnState = AntAnimJunpUpRight;
       direction = 1;
