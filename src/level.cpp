@@ -1678,11 +1678,11 @@ void level_c::DTA_1(int x, int y, int x2, int y2) {
         }
         else
         {
-            level[y+1][x-1].dominoType = getDominoType(x, y);
-            level[y+1][x-1].dominoState = 0xE;
-            level[y+1][x-1].dominoDir = getDominoDir(x, y);
-            level[y+1][x-1].dominoYOffset = 2;
-            level[y+1][x-1].dominoExtra = 0x70;
+            level[y][x-1].dominoType = getDominoType(x, y);
+            level[y][x-1].dominoState = 0xE;
+            level[y][x-1].dominoDir = getDominoDir(x, y);
+            level[y][x-1].dominoYOffset = 2;
+            level[y][x-1].dominoExtra = 0x70;
 
 // 		mov	ax, 0Ah
 // 		push	ax

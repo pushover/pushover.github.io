@@ -83,27 +83,27 @@ class level_c {
 
     /* Foreground elements */
     enum {
-      FgElementEmpty,
+      FgElementEmpty,              // 0
       FgElementPlatformStart,
       FgElementPlatformMiddle,
       FgElementPlatformEnd,
       FgElementPlatformLadderDown,
-      FgElementLadder,
+      FgElementLadder,             // 5
       FgElementPlatformLadderUp,
       FgElementPlatformStep1,
       FgElementPlatformStep2,
       FgElementPlatformStep3,
-      FgElementPlatformStep4,
+      FgElementPlatformStep4,      // 10
       FgElementPlatformStep5,
       FgElementPlatformStep6,
       FgElementPlatformStep7,
       FgElementPlatformStep8,
-      FgElementPlatformWrongDoor,
+      FgElementPlatformWrongDoor,  // 15
       FgElementPlatformStack,
       FgElementLadderMiddle,
       FgElementPlatformStrip,
       FgElementLadder2,
-      FgElementDoor0,
+      FgElementDoor0,              // 20
       FgElementDoor1,
       FgElementDoor2,
       FgElementDoor3
