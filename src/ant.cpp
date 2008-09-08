@@ -91,6 +91,8 @@ void ant_c::init(level_c * l, graphics_c * graph) {
   inactiveTimer = 0;
   numPushsLeft = 1;
   fallingHight = 0;
+  direction = 1;
+  pushDelay = 0;
 
   level = l;
   gr = graph;

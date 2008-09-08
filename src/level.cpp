@@ -34,6 +34,7 @@ void level_c::load(const char * name) {
     level[i/20][i%20].dominoState = 8;
     level[i/20][i%20].dominoDir = 0;
     level[i/20][i%20].dominoYOffset = 0;
+    level[i/20][i%20].dominoExtra = 0;
   }
 
   /* copy theme */
