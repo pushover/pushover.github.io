@@ -503,10 +503,10 @@ unsigned int ant_c::SFPushSpecialRight(void) {
 
 unsigned int ant_c::SFPushLeft(void) {
   if (animationImage == 1) {
-    if (level->pushDomino(blockX-1, blockY, -1)) {
+    if (!level->pushDomino(blockX-1, blockY, -1)) {
       if (pushDelay == 0) {
 
-        switch(level->getDominoType(blockX, blockY)) {
+        switch(level->getDominoType(blockX-1, blockY)) {
           case level_c::DominoTypeBlocker:
             pushDelay = 5;
             pushAnimation = AntAnimPushDelayLeft;
@@ -526,7 +526,6 @@ unsigned int ant_c::SFPushLeft(void) {
             pushAnimation = AntAnimPushRiserLeft;
             break;
         }
-
       }
     }
   }
@@ -549,7 +548,7 @@ unsigned int ant_c::SFPushLeft(void) {
 
 unsigned int ant_c::SFPushRight(void) {
   if (animationImage == 1) {
-    if (level->pushDomino(blockX+1, blockY, 1)) {
+    if (!level->pushDomino(blockX+1, blockY, 1)) {
       if (pushDelay == 0) {
 
         switch(level->getDominoType(blockX+1, blockY)) {
