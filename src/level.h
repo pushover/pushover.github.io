@@ -161,7 +161,7 @@ class level_c {
     bool noGround(int x, int y, bool onLadder);  // returns true, if the ant can't stand
 
     int pickUpDomino(int x, int y);  // removes the domino from that position and returns the domino type
-    void putDownDomino(int x, int y, int domino);
+    void putDownDomino(int x, int y, int domino, bool pushin);
     void fallingDomino(int x, int y);
 
     bool pushDomino(int x, int y, int dir);

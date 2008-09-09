@@ -634,7 +634,7 @@ unsigned int ant_c::SFLooseRight(void) {
   }
 
   if (animationImage == 4) {
-    level->putDownDomino(blockX+1, blockY, carriedDomino);
+    level->putDownDomino(blockX+1, blockY, carriedDomino, false);
     level->fallingDomino(blockX+1, blockY);
     carriedDomino = 0;
   } else if (animationImage == 6) {
@@ -656,7 +656,7 @@ unsigned int ant_c::SFLooseLeft(void) {
   if (animationImage == 4) {
     blockX--;
   } else if (animationImage == 6) {
-    level->putDownDomino(blockX, blockY, carriedDomino);
+    level->putDownDomino(blockX, blockY, carriedDomino, false);
     level->fallingDomino(blockX, blockY);
     carriedDomino = 0;
   }
@@ -705,7 +705,7 @@ unsigned int ant_c::SFPushInLeft(void) {
 
   blockX--;
   animation = AntAnimWalkLeft;
-  level->putDownDomino(blockX, blockY, carriedDomino);
+  level->putDownDomino(blockX, blockY, carriedDomino, true);
   carriedDomino = 0;
 
   return AntAnimNothing;
@@ -717,7 +717,7 @@ unsigned int ant_c::SFPushInRight(void) {
 
   blockX++;
   animation = AntAnimWalkRight;
-  level->putDownDomino(blockX, blockY, carriedDomino);
+  level->putDownDomino(blockX, blockY, carriedDomino, true);
   carriedDomino = 0;
 
   return AntAnimNothing;
@@ -984,7 +984,7 @@ unsigned int ant_c::SFFalling(void) {
   if (animateAnt(0)) {
 
     if (fallingHight == 1 && carriedDomino != 0) {
-      level->putDownDomino(blockX, blockY, carriedDomino);
+      level->putDownDomino(blockX, blockY, carriedDomino, false);
       level->fallingDomino(blockX, blockY);
       carriedDomino = 0;
     }

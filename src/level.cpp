@@ -250,19 +250,22 @@ int level_c::pickUpDomino(int x, int y) {
   return dom;
 }
 
-void level_c::putDownDomino(int x, int y, int domino) {
+void level_c::putDownDomino(int x, int y, int domino, bool pushin) {
 
   if (level[y][x].dominoType != 0) {
 
-    // TODO:::: crash
+    if (pushin)
+      DominoCrash(x, y, domino, 0);
+    else
+      DominoCrash(x, y, domino, 0x70);
 
   } else if (x > 0 && level[y][x-1].dominoType && level[y][x-1].dominoState >= 12) {
 
-    // TODO:::: crash
+    DominoCrash(x, y, domino, 0);
 
   } else if (x < 19 && level[y][x+1].dominoType && level[y][x-1].dominoState <= 4) {
 
-    // TODO:::: crash
+    DominoCrash(x, y, domino, 0);
 
   } else {
 
@@ -297,7 +300,7 @@ bool level_c::pushDomino(int x, int y, int dir) {
     case DominoTypeSplitter:
       if (getDominoDir(x, y) != 0)
       {
-        // crash
+        DominoCrash(x, y, level[y][x+dir].dominoYOffset, level[y][x+dir].dominoExtra);
         return false;
       }
       break;
@@ -324,6 +327,7 @@ bool level_c::pushDomino(int x, int y, int dir) {
     case DominoTypeBlocker:
        if (getDominoDir(x, y) == -dir)
        {
+         DominoCrash(x, y, level[y][x+dir].dominoYOffset, level[y][x+dir].dominoExtra);
          // crash
          return false;
        }
@@ -683,7 +687,6 @@ void level_c::DTA_I(int x, int y, int x2, int y2) {
   level[y][x].dominoDir = -1;
   pushDomino(x2+1, y2, 1);
   DTA_4(x, y, x2, y2);
-
 }
 
 bool level_c::isTherePlatform(int x, int y) {
@@ -759,6 +762,7 @@ void level_c::DominoCrash(int x, int y, int type, int extra) {
 // 		call	SomethingWithSound
 }
 
+// vertial stone
 void level_c::DTA_E(int x, int y, int x2, int y2) {
 
   if (level[y][x].dominoExtra == 0x40)
@@ -832,7 +836,7 @@ void level_c::DTA_E(int x, int y, int x2, int y2) {
     return;
   }
 
-  if (level[y][x].dominoType != DominoTypeSplitter)
+  if (level[y+1][x].dominoType != DominoTypeSplitter)
   {
     DominoCrash(x, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
 
@@ -861,212 +865,90 @@ void level_c::DTA_E(int x, int y, int x2, int y2) {
   markDirty(x, y+1);
 }
 
+// splitter parts falling further
 void level_c::DTA_C(int x, int y, int x2, int y2) {
 
-// var_6		= byte ptr -6
-// var_4		= byte ptr -4
-// var_2		= byte ptr -2
-// Xpos		= word ptr  4
-// Ypos		= word ptr  6
-// LeveldataEntry	= word ptr  8
-//
-// 		push	bp
-// 		mov	bp, sp
-// 		sub	sp, 6
-// 		push	di
-// 		push	si
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+4]
-// 		cbw
-// 		mov	si, ax
-// 		shl	si, 1
-// 		mov	al, byte ptr DominoTypeAnimAction[si] ;	a callback function for	each domino type for each possible animation state
-// 					; the real array is below this are just	the missing entries for	the empty domino type
-// 		mov	[bp+var_2], al
-// 		mov	al, byte ptr (DominoTypeAnimAction+1)[si] ; a callback function	for each domino	type for each possible animation state
-// 					; the real array is below this are just	the missing entries for	the empty domino type
-// 		mov	[bp+var_6], al
-// 		cmp	[bp+var_2], 3
-// 		jnz	loc_6BA4
-//
-// 		cmp	[bp+Xpos], 0
-// 		jle	loc_6B75
-//
-// 		mov	ax, 160
-// 		imul	[bp+Ypos]
-// 		mov	di, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		cmp	(AntAnimBArray+36h)[bx+di], 0Ah	; probalby LevelDat_srcPtr_6
-// 		jz	loc_6BC3
-//
-//
-// loc_6B75:				; CODE XREF: DTA_C+2Bj
-// 		mov	ax, 160
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		cmp	(AntAnimBArray+37h)[bx+si], DominoTypeEmpty ; probalby LevelDat_srcPtr_5
-// 		jz	loc_6BC0
-//
-// 		mov	ax, 0FFFFh
-// 		push	ax		; Direction
-// 		push	[bp+Ypos]	; Ypos
-// 		mov	ax, [bp+Xpos]
-// 		dec	ax
-// 		push	ax		; Xpos
-// 		call	PushDomino	; starts the domino at position	falling	in the given direction
-//
-// 		add	sp, 6
-// 		or	ax, ax
-// 		jz	loc_6BC3
-//
-// 		jmp	short loc_6BC0
-//
-// loc_6BA4:				; CODE XREF: DTA_C+25j
-// 		cmp	[bp+var_2], 2
-// 		jnz	loc_6BC3
-//
-// 		mov	ax, 160
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		cmp	(AntAnimBArray+37h)[bx+si], 0 ;	probalby LevelDat_srcPtr_5
-// 		jnz	loc_6BC3
-//
-//
-// loc_6BC0:				; CODE XREF: DTA_C+57j	DTA_C+6Fj
-// 		dec	[bp+var_2]
-//
-// loc_6BC3:				; CODE XREF: DTA_C+41j	DTA_C+6Dj ...
-// 		cmp	[bp+var_6], 3
-// 		jnz	loc_6C0C
-//
-// 		cmp	[bp+Xpos], 13h
-// 		jge	loc_6BDE
-//
-// 		mov	ax, 160
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-//
-// loc_6BDE:				; CODE XREF: DTA_C+9Bj
-// 		mov	ax, 160
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		cmp	(LevelData_srcPtr+0Bh)[bx+si], 0 ; 260 tiles per level,	8 bytes	per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		jz	loc_6C28
-//
-// 		mov	ax, 1
-// 		push	ax		; Direction
-// 		push	[bp+Ypos]	; Ypos
-// 		mov	ax, [bp+Xpos]
-// 		inc	ax
-// 		push	ax		; Xpos
-// 		call	PushDomino	; starts the domino at position	falling	in the given direction
-//
-// 		add	sp, 6
-// 		or	ax, ax
-// 		jz	loc_6C2B
-//
-// 		jmp	short loc_6C28
-//
-// loc_6C0C:				; CODE XREF: DTA_C+95j
-// 		cmp	[bp+var_6], 2
-// 		jnz	loc_6C2B
-//
-// 		mov	ax, 160
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		cmp	(LevelData_srcPtr+0Bh)[bx+si], 0 ; 260 tiles per level,	8 bytes	per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		jnz	loc_6C2B
-//
-//
-// loc_6C28:				; CODE XREF: DTA_C+C0j	DTA_C+D8j
-// 		dec	[bp+var_6]
-//
-// loc_6C2B:				; CODE XREF: DTA_C+D6j	DTA_C+DEj ...
-// 		mov	[bp+var_4], 0
-// 		jmp	short loc_6C35
-//
-// loc_6C32:				; CODE XREF: DTA_C+118j DTA_C+121j
-// 		inc	[bp+var_4]
-//
-// loc_6C35:				; CODE XREF: DTA_C+FDj
-// 		cmp	[bp+var_4], 0Eh
-// 		jge	loc_6C55
-//
-// 		mov	al, [bp+var_4]
-// 		cbw
-// 		mov	si, ax
-// 		shl	si, 1
-// 		mov	al, [bp+var_2]
-// 		cmp	byte ptr (DominoTypeAnimAction+2)[si], al ; a callback function	for each domino	type for each possible animation state
-// 					; the real array is below this are just	the missing entries for	the empty domino type
-// 		jnz	loc_6C32
-//
-// 		mov	al, [bp+var_6]
-// 		cmp	byte ptr (DominoTypeAnimAction+3)[si], al ; a callback function	for each domino	type for each possible animation state
-// 					; the real array is below this are just	the missing entries for	the empty domino type
-// 		jnz	loc_6C32
-//
-//
-// loc_6C55:				; CODE XREF: DTA_C+107j
-// 		inc	[bp+var_4]
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bp+var_4]
-// 		cmp	[bx+4],	al
-// 		jz	loc_6C8F
-//
-// 		mov	[bx+4],	al
-// 		mov	ax, 14h
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		add	si, [bp+Xpos]
-// 		mov	(DirtyBlocksPrefix+13h)[si], 1 ; 2 additional lines of direty blocks
-// 					; to access blocks above the screen without additional checks
-// 		mov	(DirtyBlocksPrefix+14h)[si], 1 ; 2 additional lines of direty blocks
-// 					; to access blocks above the screen without additional checks
-// 		mov	(DirtyBlocksPrefix+15h)[si], 1 ; 2 additional lines of direty blocks
-// 					; to access blocks above the screen without additional checks
-// 		mov	(DirtyBlocksPrefix+27h)[si], 1 ; 2 additional lines of direty blocks
-// 					; to access blocks above the screen without additional checks
-// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	(DirtyBlocks+1)[si], 1 ; changed blocks	on screen, there are 20	blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-//
-// loc_6C8F:				; CODE XREF: DTA_C+12Fj
+    static const int SplitterLookup[] = {
+        0, 0,
+        1, 1,
+        2, 2,
+        3, 3,
+        4, 4,
+        5, 5,
+        6, 6,
+        7, 7,
+        8, 8,
+        2, 1,
+        1, 2,
+        3, 1,
+        1, 3,
+        2, 3,
+        3, 2
+    };
 
-    return;
+    int a = SplitterLookup[level[y][x].dominoState*2+1];
+    int b = SplitterLookup[level[y][x].dominoState*2];
 
+    if (a == 3)
+    {
+        if (x > 0 && level[y][x-1].fg != 0xA)
+        {
+            if (level[y][x-1].dominoType == DominoTypeEmpty)
+            {
+                a--;
+            }
+            else if (pushDomino(x-1, y, -1))
+            {
+                a--;
+            }
+        }
+    }
+    else if (a == 2 && level[y][x-1].dominoType == 0)
+    {
+        a--;
+    }
+
+    if (b == 3)
+    {
+        if (x < 19)
+        {
+            if (level[y][x+1].dominoType == DominoTypeEmpty)
+            {
+                b--;
+            }
+            else if (pushDomino(x+1, y, 1))
+            {
+                b--;
+            }
+        }
+    }
+    else if (b == 2 && level[y][x+1].dominoType == 0)
+    {
+        b--;
+    }
+
+    for (int i = 0; i < 15; i++)
+    {
+        if (SplitterLookup[2*i+1] == a && SplitterLookup[2*i] == b)
+        {
+            if (level[y][x].dominoState != i)
+            {
+                level[y][x].dominoState = i;
+                markDirty(x, y);
+                markDirty(x+1, y);
+                markDirty(x-1, y);
+                markDirty(x, y-1);
+                markDirty(x-1, y-1);
+                markDirty(x+1, y-1);
+            }
+            return;
+        }
+    }
+
+    printf("oops missing splitter image");
 }
 
+// bridger left
 void level_c::DTA_7(int x, int y, int x2, int y2) {
 // var_8		= word ptr -8
 // var_6		= byte ptr -6
@@ -1253,6 +1135,8 @@ void level_c::DTA_7(int x, int y, int x2, int y2) {
 // 		pop	bp
 // 		retn
 }
+
+// Brider right
 void level_c::DTA_M(int x, int y, int x2, int y2) {
 
 // var_8		= word ptr -8
@@ -1289,8 +1173,6 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 // 					; 1 Byte Y-Offset
 // 		jmp	short loc_7464
 //
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
 // loc_7462:				; CODE XREF: DTA_M+19j
 // 		sub	al, al
 //
@@ -1314,8 +1196,6 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 // 					; 1 Byte Y-Offset
 // 		jmp	short loc_7484
 //
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
 // loc_7482:				; CODE XREF: DTA_M+39j
 // 		sub	al, al
 //
@@ -1329,8 +1209,6 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 //
 // 		jmp	loc_75B4
 //
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
 // loc_7496:				; CODE XREF: DTA_M+59j	DTA_M+5Fj
 // 		cmp	[bp+var_4], 1
 // 		jnz	loc_74B2
@@ -1341,8 +1219,6 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 // 		mov	al, 2
 // 		jmp	short loc_74A8
 //
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
 // loc_74A6:				; CODE XREF: DTA_M+6Ej
 // 		mov	al, 1
 //
@@ -1350,9 +1226,6 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 // 		mov	[bp+CurrentLevelForeground], al
 // 		mov	[bp+var_4], 2
 // 		jmp	short loc_7517
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-// 		align 2
 //
 // loc_74B2:				; CODE XREF: DTA_M+68j
 // 		cmp	[bp+var_4], 0
@@ -1367,8 +1240,6 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 // 		mov	al, 2
 // 		jmp	short loc_74CA
 //
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
 // loc_74C8:				; CODE XREF: DTA_M+90j
 // 		mov	al, 1
 //
@@ -1377,9 +1248,6 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 // 		mov	[bp+var_4], 2
 // 		mov	[bp+var_6], 2
 // 		jmp	short loc_7517
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-// 		align 2
 //
 // loc_74D8:				; CODE XREF: DTA_M+84j	DTA_M+8Aj
 // 		cmp	[bp+var_4], 12h
@@ -1391,8 +1259,6 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 // 		mov	al, 2
 // 		jmp	short loc_74EA
 //
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
 // loc_74E8:				; CODE XREF: DTA_M+B0j
 // 		mov	al, 1
 //
@@ -1400,9 +1266,6 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 // 		mov	[bp+CurrentLevelForeground], al
 // 		mov	[bp+var_4], 3
 // 		jmp	short loc_7517
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-// 		align 2
 //
 // loc_74F4:				; CODE XREF: DTA_M+AAj
 // 		cmp	[bp+var_4], 0
@@ -1416,8 +1279,6 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 //
 // 		mov	al, 2
 // 		jmp	short loc_750C
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 //
 // loc_750A:				; CODE XREF: DTA_M+D2j
 // 		mov	al, 1
@@ -1435,8 +1296,6 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 // 		jnz	loc_7525
 //
 // 		jmp	loc_75B4
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 //
 // loc_7525:				; CODE XREF: DTA_M+EEj
 // 		mov	bx, [bp+LeveldataEntry]
@@ -1505,8 +1364,6 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 // 		pop	bp
 // 		retn
 //
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
 // loc_75B4:				; CODE XREF: DTA_M+61j	DTA_M+F0j
 // 		push	[bp+LeveldataEntry]
 // 		push	[bp+Ypos]
@@ -1520,13 +1377,659 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 // 		retn
 
 }
+
+
+// riser
 void level_c::DTA_A(int x, int y, int x2, int y2) {
-}
-void level_c::DTA_O(int x, int y, int x2, int y2) {
-}
-void level_c::DTA_H(int x, int y, int x2, int y2) {
+
+// var_6		= word ptr -6
+// var_4		= byte ptr -4
+// var_2		= byte ptr -2
+// Xpos		= word ptr  4
+// Ypos		= word ptr  6
+// LeveldataEntry	= word ptr  8
+//
+// 		push	bp
+// 		mov	bp, sp
+// 		sub	sp, 6
+// 		push	di
+// 		push	si
+// 		mov	bx, [bp+LeveldataEntry]
+// 		cmp	byte ptr [bx+7], 50h ; 'P'
+// 		jnz	loc_7664
+//
+// 		mov	[bp+var_6], 1
+// 		jmp	short loc_7669
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_7664:				; CODE XREF: DTA_A+Fj
+// 		mov	[bp+var_6], 2
+//
+// loc_7669:				; CODE XREF: DTA_A+16j
+// 		cmp	[bp+Xpos], 0
+// 		jle	loc_768A
+//
+// 		mov	ax, [bp+Ypos]
+// 		sub	ax, [bp+var_6]
+// 		mov	cx, 0A0h ; ' '
+// 		imul	cx
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		mov	al, [bx+si+4AF2h]
+// 		jmp	short loc_768C
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+// 		align 2
+//
+// loc_768A:				; CODE XREF: DTA_A+21j
+// 		sub	al, al
+//
+// loc_768C:				; CODE XREF: DTA_A+3Bj
+// 		mov	[bp+var_2], al
+// 		mov	ax, [bp+Ypos]
+// 		sub	ax, [bp+var_6]
+// 		mov	cx, 0A0h ; ' '
+// 		imul	cx
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		mov	al, [bx+si+4AFAh]
+// 		mov	[bp+var_4], al
+// 		cmp	al, 1
+// 		jz	loc_76B5
+//
+// 		cmp	al, 12h
+// 		jz	loc_76B5
+//
+// 		jmp	loc_776C
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_76B5:				; CODE XREF: DTA_A+60j	DTA_A+64j
+// 		cmp	[bp+var_2], 0
+// 		jz	loc_76BE
+//
+// 		jmp	loc_776C
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_76BE:				; CODE XREF: DTA_A+6Dj
+// 		cmp	[bp+var_6], 1
+// 		jnz	loc_76F6
+//
+// 		mov	si, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	si, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		add	si, ax
+// 		mov	(AntAnimBArray+3Bh)[si], 60h ; '`' ; 6 ant sprites
+// 		mov	(AntAnimBArray+37h)[si], 0Ah ; 6 ant sprites
+// 		mov	(AntAnimBArray+38h)[si], 0Eh ; 6 ant sprites
+// 		mov	(AntAnimBArray+39h)[si], 0FFh ;	6 ant sprites
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+6]
+// 		sub	al, 2
+// 		mov	[si+4AF6h], al
+// 		jmp	short loc_772B
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+// 		align 2
+//
+// loc_76F6:				; CODE XREF: DTA_A+76j
+// 		cmp	[bp+Ypos], 0
+// 		jle	loc_772B
+//
+// 		mov	si, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	si, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		add	si, ax
+// 		mov	(AntAnimKArray+4Fh)[si], 60h ; '`' ; 15 ant sprites
+// 		mov	(AntAnimKArray+4Bh)[si], 0Ah ; 15 ant sprites
+// 		mov	(AntAnimKArray+4Ch)[si], 0Eh ; 15 ant sprites
+// 		mov	(AntAnimKArray+4Dh)[si], 0FFh ;	15 ant sprites
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+6]
+// 		add	al, 0Eh
+// 		mov	[si+4A56h], al
+//
+// loc_772B:				; CODE XREF: DTA_A+A7j	DTA_A+AEj
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+4], 0
+// 		mov	byte ptr [bx+5], 0
+// 		mov	byte ptr [bx+6], 0
+// 		mov	byte ptr [bx+7], 0
+// 		mov	ax, [bp+Ypos]
+// 		sub	ax, [bp+var_6]
+// 		mov	cx, 14h
+// 		imul	cx
+// 		mov	si, ax
+// 		add	si, [bp+Xpos]
+// 		mov	(DirtyBlocks+14h)[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	(DirtyBlocks+13h)[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	byte ptr [si+7A1h], 1
+// 		pop	si
+// 		pop	di
+// 		mov	sp, bp
+// 		pop	bp
+// 		retn
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_776C:				; CODE XREF: DTA_A+66j	DTA_A+6Fj
+// 		cmp	[bp+var_4], 0
+// 		jnz	loc_77DA
+//
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+4], 0
+// 		mov	byte ptr [bx+5], 0
+// 		mov	byte ptr [bx+6], 0
+// 		mov	byte ptr [bx+7], 0
+// 		mov	si, [bp+Ypos]
+// 		sub	si, [bp+var_6]
+// 		mov	di, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	di, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	si
+// 		add	di, ax
+// 		mov	(LevelData_srcPtr+0A7h)[di], 60h ; '`' ; 260 tiles per level, 8 bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	(LevelData_srcPtr+0A3h)[di], 0Ah ; 260 tiles per level,	8 bytes	per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	(LevelData_srcPtr+0A4h)[di], 8 ; 260 tiles per level, 8	bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	(LevelData_srcPtr+0A5h)[di], 0FFh ; 260	tiles per level, 8 bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	(LevelData_srcPtr+0A6h)[di], 0 ; 260 tiles per level, 8	bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	ax, 14h
+// 		imul	si
+// 		mov	di, ax
+// 		add	di, [bp+Xpos]
+// 		mov	(DirtyBlocks+14h)[di], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	DirtyBlocks[di], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	(DirtyBlocks+13h)[di], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	byte ptr [di+7A1h], 1
+// 		pop	si
+// 		pop	di
+// 		mov	sp, bp
+// 		pop	bp
+// 		retn
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_77DA:				; CODE XREF: DTA_A+124j
+// 		mov	bx, [bp+LeveldataEntry]
+// 		cmp	byte ptr [bx+7], 50h ; 'P'
+// 		jz	loc_7829
+//
+// 		mov	si, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	si, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		add	si, ax
+// 		mov	al, [bx+3]
+// 		mov	(AntAnimKArray+53h)[si], al ; 15 ant sprites
+// 		mov	al, [bx+4]
+// 		mov	(AntAnimKArray+54h)[si], al ; 15 ant sprites
+// 		mov	al, [bx+5]
+// 		mov	(AntAnimKArray+55h)[si], al ; 15 ant sprites
+// 		mov	al, [bx+6]
+// 		add	al, 10h
+// 		mov	(AntAnimKArray+56h)[si], al ; 15 ant sprites
+// 		mov	(AntAnimKArray+57h)[si], 50h ; 'P' ; 15 ant sprites
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+4], 0
+// 		mov	byte ptr [bx+5], 0
+// 		mov	byte ptr [bx+6], 0
+// 		mov	byte ptr [bx+7], 0
+//
+// loc_7829:				; CODE XREF: DTA_A+195j
+// 		pop	si
+// 		pop	di
+// 		mov	sp, bp
+// 		pop	bp
+// 		retn
 }
 
+
+// Riser
+void level_c::DTA_O(int x, int y, int x2, int y2) {
+
+// var_6		= word ptr -6
+// var_4		= byte ptr -4
+// var_2		= byte ptr -2
+// Xpos		= word ptr  4
+// Ypos		= word ptr  6
+// LeveldataEntry	= word ptr  8
+//
+// 		push	bp
+// 		mov	bp, sp
+// 		sub	sp, 6
+// 		push	di
+// 		push	si
+// 		mov	bx, [bp+LeveldataEntry]
+// 		cmp	byte ptr [bx+7], 50h ; 'P'
+// 		jnz	loc_7A40
+//
+// 		mov	[bp+var_6], 1
+// 		jmp	short loc_7A45
+//
+// loc_7A40:				; CODE XREF: DTA_O+Fj
+// 		mov	[bp+var_6], 2
+//
+// loc_7A45:				; CODE XREF: DTA_O+16j
+// 		cmp	[bp+Xpos], 13h
+// 		jge	loc_7A66
+//
+// 		mov	ax, [bp+Ypos]
+// 		sub	ax, [bp+var_6]
+// 		mov	cx, 0A0h ; ' '
+// 		imul	cx
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		mov	al, (LevelData_srcPtr+0Ah)[bx+si] ; 260	tiles per level, 8 bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		jmp	short loc_7A68
+//
+// loc_7A66:				; CODE XREF: DTA_O+21j
+// 		sub	al, al
+//
+// loc_7A68:				; CODE XREF: DTA_O+3Bj
+// 		mov	[bp+var_2], al
+// 		mov	ax, [bp+Ypos]
+// 		sub	ax, [bp+var_6]
+// 		mov	cx, 0A0h ; ' '
+// 		imul	cx
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		mov	al, (LevelData_srcPtr+2)[bx+si]	; 260 tiles per	level, 8 bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	[bp+var_4], al
+// 		cmp	al, cl
+// 		jz	loc_7A91
+//
+// 		cmp	al, 12h
+// 		jz	loc_7A91
+//
+// 		jmp	loc_7B48
+//
+// loc_7A91:				; CODE XREF: DTA_O+60j	DTA_O+64j
+// 		cmp	[bp+var_2], 0
+// 		jz	loc_7A9A
+//
+// 		jmp	loc_7B48
+//
+// loc_7A9A:				; CODE XREF: DTA_O+6Dj
+// 		cmp	[bp+var_6], 1
+// 		jnz	loc_7AD2
+//
+// 		mov	si, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	si, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		add	si, ax
+// 		mov	(LevelData_srcPtr+0Fh)[si], 60h	; '`' ; 260 tiles per level, 8 bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	(LevelData_srcPtr+0Bh)[si], 0Ah	; 260 tiles per	level, 8 bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	(LevelData_srcPtr+0Ch)[si], 2 ;	260 tiles per level, 8 bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	(LevelData_srcPtr+0Dh)[si], 1 ;	260 tiles per level, 8 bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+6]
+// 		sub	al, 2
+// 		mov	(LevelData_srcPtr+0Eh)[si], al ; 260 tiles per level, 8	bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		jmp	short loc_7B07
+//
+//
+// loc_7AD2:				; CODE XREF: DTA_O+76j
+// 		cmp	[bp+Ypos], 0
+// 		jle	loc_7B07
+//
+// 		mov	si, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	si, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		add	si, ax
+// 		mov	byte ptr [si+4A67h], 60h ; '`'
+// 		mov	byte ptr [si+4A63h], 0Ah
+// 		mov	byte ptr [si+4A64h], 2
+// 		mov	byte ptr [si+4A65h], 1
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+6]
+// 		add	al, 0Eh
+// 		mov	[si+4A66h], al
+//
+// loc_7B07:				; CODE XREF: DTA_O+A7j	DTA_O+AEj
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+4], 0
+// 		mov	byte ptr [bx+5], 0
+// 		mov	byte ptr [bx+6], 0
+// 		mov	byte ptr [bx+7], 0
+// 		mov	ax, [bp+Ypos]
+// 		sub	ax, [bp+var_6]
+// 		mov	cx, 14h
+// 		imul	cx
+// 		mov	si, ax
+// 		add	si, [bp+Xpos]
+// 		mov	(DirtyBlocks+14h)[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	(DirtyBlocks+15h)[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	(DirtyBlocks+1)[si], 1 ; changed blocks	on screen, there are 20	blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		pop	si
+// 		pop	di
+// 		mov	sp, bp
+// 		pop	bp
+// 		retn
+//
+// loc_7B48:				; CODE XREF: DTA_O+66j	DTA_O+6Fj
+// 		cmp	[bp+var_4], 0
+// 		jnz	loc_7BB6
+//
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+4], 0
+// 		mov	byte ptr [bx+5], 0
+// 		mov	byte ptr [bx+6], 0
+// 		mov	byte ptr [bx+7], 0
+// 		mov	si, [bp+Ypos]
+// 		sub	si, [bp+var_6]
+// 		mov	di, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	di, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	si
+// 		add	di, ax
+// 		mov	(LevelData_srcPtr+0A7h)[di], 60h ; '`' ; 260 tiles per level, 8 bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	(LevelData_srcPtr+0A3h)[di], 0Ah ; 260 tiles per level,	8 bytes	per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	(LevelData_srcPtr+0A4h)[di], 8 ; 260 tiles per level, 8	bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	(LevelData_srcPtr+0A5h)[di], 1 ; 260 tiles per level, 8	bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	(LevelData_srcPtr+0A6h)[di], 0 ; 260 tiles per level, 8	bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		mov	ax, 14h
+// 		imul	si
+// 		mov	di, ax
+// 		add	di, [bp+Xpos]
+// 		mov	(DirtyBlocks+14h)[di], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	DirtyBlocks[di], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	(DirtyBlocks+15h)[di], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	(DirtyBlocks+1)[di], 1 ; changed blocks	on screen, there are 20	blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		pop	si
+// 		pop	di
+// 		mov	sp, bp
+// 		pop	bp
+// 		retn
+//
+// loc_7BB6:				; CODE XREF: DTA_O+124j
+// 		mov	bx, [bp+LeveldataEntry]
+// 		cmp	byte ptr [bx+7], 50h ; 'P'
+// 		jz	loc_7C05
+//
+// 		mov	si, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	si, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		add	si, ax
+// 		mov	al, [bx+3]
+// 		mov	[si+4A5Bh], al
+// 		mov	al, [bx+4]
+// 		mov	[si+4A5Ch], al
+// 		mov	al, [bx+5]
+// 		mov	[si+4A5Dh], al
+// 		mov	al, [bx+6]
+// 		add	al, 10h
+// 		mov	[si+4A5Eh], al
+// 		mov	byte ptr [si+4A5Fh], 50h ; 'P'
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+4], 0
+// 		mov	byte ptr [bx+5], 0
+// 		mov	byte ptr [bx+6], 0
+// 		mov	byte ptr [bx+7], 0
+//
+// loc_7C05:				; CODE XREF: DTA_O+195j
+// 		pop	si
+// 		pop	di
+// 		mov	sp, bp
+// 		pop	bp
+// 		retn
+
+}
+
+// riser risign vertically
+void level_c::DTA_H(int x, int y, int x2, int y2) {
+
+    int riserDir = level[y][x].dominoDir;
+
+    if (level[y][x].dominoExtra == 0x60)
+    {
+        if (level[y][x].dominoYOffset == 4 && y > 1)
+        {
+            if (isTherePlatform(x, y-2))
+            {
+                if (level[y][x].fg == 0xA || level[y][x].fg == 0xD)
+                {
+                    level[y][x].dominoState = 16;
+                    level[y][x].dominoExtra = 0x50;
+
+                    markDirty(x, y);
+                    markDirty(x, y-2);
+                    markDirty(x, y-1);
+                    return;
+                }
+            }
+        }
+        if (level[y][x].dominoYOffset == -6 && y > 1)
+        {
+
+            if (isTherePlatform(x, y-2))
+            {
+                if (level[y][x].fg == 9 || level[y][x].fg == 0xE)
+                {
+                    level[y][x].dominoState = 16;
+                    level[y][x].dominoExtra = 0x50;
+                    markDirty(x, y);
+                    markDirty(x, y-2);
+                    markDirty(x, y-1);
+                    return;
+                }
+            }
+        }
+        if (level[y][x].dominoYOffset == -10)
+        {
+            if (y > 1)
+            {
+                if (isTherePlatform(x, y-2))
+                {
+                    level[y][x].dominoState = 16;
+                    level[y][x].dominoExtra = 0;
+
+                    markDirty(x, y);
+                    markDirty(x, y-2);
+                    markDirty(x, y-1);
+                    return;
+                }
+            }
+
+            if (y > 0)
+            {
+                level[y-1][x].dominoExtra = 0x60;
+                level[y-1][x].dominoYOffset = 4;
+                level[y-1][x].dominoDir = level[y][x].dominoDir;
+                level[y-1][x].dominoState = 8;
+                level[y-1][x].dominoType = DominoTypeRiser;
+            }
+
+            level[y][x].dominoType = 0;
+            level[y][x].dominoState = 0;
+            level[y][x].dominoDir = 0;
+            level[y][x].dominoYOffset = 0;
+            level[y][x].dominoExtra = 0;
+
+            markDirty(x, y);
+            markDirty(x, y-2);
+            markDirty(x, y-1);
+            return;
+        }
+
+        if (level[y][x].dominoYOffset == -8 && y > 1)
+        {
+            if (isTherePlatform(x, y-2))
+            {
+                level[y][x].dominoState = 16;
+            }
+        }
+
+        if (level[y][x].dominoYOffset == -6 && y > 1)
+        {
+            if (isTherePlatform(x, y-2))
+            {
+                level[y][x].dominoState = 17;
+            }
+        }
+        level[y][x].dominoYOffset -= 2;
+
+        markDirty(x, y);
+        markDirty(x, y-2);
+        markDirty(x, y-1);
+        return;
+    }
+
+    if (riserDir != 0)
+    {
+        if (level[y][x].dominoState == 16)
+            level[y][x].dominoState = 8;
+
+        DTA_4(x, y, x2, y2);
+    }
+}
+
+// Stone completely falln down right used for
+// standard, Trigger, Delay, Bridger
 void level_c::DTA_K(int x, int y, int x2, int y2) {
     int fg;
 
@@ -1643,6 +2146,8 @@ void level_c::DTA_K(int x, int y, int x2, int y2) {
 
 }
 
+// Stone completely falln down left used for
+// standard, Trigger, Delay, Bridger
 void level_c::DTA_1(int x, int y, int x2, int y2) {
 
     int fg;
@@ -1762,9 +2267,689 @@ void level_c::DTA_1(int x, int y, int x2, int y2) {
 
 }
 
+// Timbler falln down left
 void level_c::DTA_6(int x, int y, int x2, int y2) {
+
+
+// var_2		= byte ptr -2
+// Xpos		= word ptr  4
+// Ypos		= word ptr  6
+// LeveldataEntry	= word ptr  8
+//
+// 		push	bp
+// 		mov	bp, sp
+// 		sub	sp, 2
+// 		push	si
+// 		cmp	[bp+Xpos], 0
+// 		jle	loc_6DD0
+//
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		mov	al, (AntAnimBArray+36h)[bx+si] ; probalby LevelDat_srcPtr_6
+// 		jmp	short loc_6DD2
+//
+// loc_6DD0:				; CODE XREF: DTA_6+Bj
+// 		sub	al, al
+//
+// loc_6DD2:				; CODE XREF: DTA_6+20j
+// 		mov	[bp+var_2], al
+// 		cmp	al, 5
+// 		jnz	loc_6DDD
+//
+// 		mov	[bp+var_2], 0
+//
+// loc_6DDD:				; CODE XREF: DTA_6+29j
+// 		mov	bx, [bp+LeveldataEntry]
+// 		cmp	byte ptr [bx+2], 1
+// 		jz	loc_6DEF
+//
+// 		cmp	byte ptr [bx+2], 12h
+// 		jz	loc_6DEF
+//
+// 		jmp	loc_6E74
+//
+// loc_6DEF:				; CODE XREF: DTA_6+36j	DTA_6+3Cj
+// 		cmp	[bp+var_2], 0
+// 		jnz	loc_6E74
+//
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		cmp	byte ptr [bx+si+4B93h],	0
+// 		jz	loc_6E2C
+//
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+7]
+// 		cbw
+// 		push	ax		; DominoDelay
+// 		mov	al, [bx+3]
+// 		cbw
+// 		push	ax		; DominoType
+// 		mov	ax, [bp+Ypos]
+// 		inc	ax
+// 		push	ax		; Ypos
+// 		mov	ax, [bp+Xpos]
+// 		dec	ax
+// 		push	ax		; Xpos
+// 		call	DominoCrash
+//
+// 		add	sp, 8
+// 		jmp	short loc_6E65
+//
+// loc_6E2C:				; CODE XREF: DTA_6+5Bj
+// 		mov	si, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	si, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		add	si, ax
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+3]
+// 		mov	[si+4AF3h], al
+// 		mov	byte ptr [si+4AF4h], 0Eh
+// 		mov	al, [bx+5]
+// 		mov	[si+4AF5h], al
+// 		mov	byte ptr [si+4AF6h], 2
+// 		mov	byte ptr [si+4AF7h], 70h ; 'p'
+// 		mov	ax, 0Ah
+// 		push	ax
+// 		call	SomethingWithSound
+//
+// 		add	sp, 2
+//
+// loc_6E65:				; CODE XREF: DTA_6+7Aj
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+4], 0
+// 		mov	byte ptr [bx+5], 0
+// 		mov	ax, 14h
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		add	si, [bp+Xpos]
+// 		mov	byte ptr [si+78Dh], 1
+// 		mov	byte ptr [si+78Eh], 1
+// 		mov	byte ptr [si+7A1h], 1
+// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+ 		return;
+//
+// loc_6E74:				; CODE XREF: DTA_6+3Ej	DTA_6+45j
+// 		cmp	[bp+Xpos], 0
+// 		jg	loc_6E7D
+//
+// 		jmp	loc_6F0A
+//
+// loc_6E7D:				; CODE XREF: DTA_6+CAj
+// 		mov	bx, [bp+LeveldataEntry]
+// 		cmp	byte ptr [bx+2], 0Ch
+// 		jz	loc_6E89
+//
+// 		jmp	loc_6F0A
+//
+// loc_6E89:				; CODE XREF: DTA_6+D6j
+// 		cmp	[bp+var_2], 0Bh
+// 		jnz	loc_6F0A
+//
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		cmp	byte ptr [bx+si+4AF3h],	0
+// 		jz	loc_6EC4
+//
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+7]
+// 		cbw
+// 		push	ax		; DominoDelay
+// 		mov	al, [bx+3]
+// 		cbw
+// 		push	ax		; DominoType
+// 		push	[bp+Ypos]	; Ypos
+// 		mov	ax, [bp+Xpos]
+// 		dec	ax
+// 		push	ax		; Xpos
+// 		call	DominoCrash
+//
+// 		add	sp, 8
+// 		jmp	short loc_6EF3
+//
+// loc_6EC4:				; CODE XREF: DTA_6+F5j
+// 		mov	si, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	si, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		add	si, ax
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+3]
+// 		mov	[si+4AF3h], al
+// 		mov	byte ptr [si+4AF4h], 0Eh
+// 		mov	al, [bx+5]
+// 		mov	[si+4AF5h], al
+// 		mov	byte ptr [si+4AF6h], 2
+// 		mov	byte ptr [si+4AF7h], 40h ; '@'
+//
+// loc_6EF3:				; CODE XREF: DTA_6+112j
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+4], 0
+// 		mov	byte ptr [bx+5], 0
+// 		mov	byte ptr [bx+6], 0
+// 		mov	ax, 14h
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		add	si, [bp+Xpos]
+// 		mov	byte ptr [si+78Dh], 1
+// 		mov	byte ptr [si+78Eh], 1
+// 		mov	byte ptr [si+7A1h], 1
+// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+ 		return;
+//
+// loc_6F0A:				; CODE XREF: DTA_6+CCj	DTA_6+D8j ...
+// 		cmp	[bp+Xpos], 0
+// 		jg	loc_6F13
+//
+// 		jmp	loc_6FB2
+//
+// loc_6F13:				; CODE XREF: DTA_6+160j
+// 		cmp	[bp+Ypos], 0Bh
+// 		jl	loc_6F1C
+//
+// 		jmp	loc_6FB2
+//
+// loc_6F1C:				; CODE XREF: DTA_6+169j
+// 		mov	bx, [bp+LeveldataEntry]
+// 		cmp	byte ptr [bx+2], 0Bh
+// 		jz	loc_6F28
+//
+// 		jmp	loc_6FB2
+//
+// loc_6F28:				; CODE XREF: DTA_6+175j
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		cmp	byte ptr [bx+si+4B93h],	0
+// 		jz	loc_6F5E
+//
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+7]
+// 		cbw
+// 		push	ax		; DominoDelay
+// 		mov	al, [bx+3]
+// 		cbw
+// 		push	ax		; DominoType
+// 		mov	ax, [bp+Ypos]
+// 		inc	ax
+// 		push	ax		; Ypos
+// 		mov	ax, [bp+Xpos]
+// 		dec	ax
+// 		push	ax		; Xpos
+// 		call	DominoCrash
+//
+// 		add	sp, 8
+// 		jmp	short loc_6F8D
+//
+// loc_6F5E:				; CODE XREF: DTA_6+18Ej
+// 		mov	si, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	si, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		add	si, ax
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+3]
+// 		mov	[si+4B93h], al
+// 		mov	byte ptr [si+4B94h], 0Eh
+// 		mov	al, [bx+5]
+// 		mov	[si+4B95h], al
+// 		mov	byte ptr [si+4B96h], 0FAh ; 'ú'
+// 		mov	byte ptr [si+4B97h], 40h ; '@'
+//
+// loc_6F8D:				; CODE XREF: DTA_6+1ADj
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+4], 0
+// 		mov	byte ptr [bx+5], 0
+// 		mov	byte ptr [bx+6], 0
+// 		mov	ax, 14h
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	byte ptr [bx+si+7B5h], 1
+// 		mov	ax, 14h
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		add	si, [bp+Xpos]
+// 		mov	byte ptr [si+78Dh], 1
+// 		mov	byte ptr [si+78Eh], 1
+// 		mov	byte ptr [si+7A1h], 1
+// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+ 		return;
+//
+// loc_6FB2:				; CODE XREF: DTA_6+162j DTA_6+16Bj ...
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		cmp	byte ptr [bx+si+4AF3h],	0
+// 		jz	loc_6FE6
+//
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+7]
+// 		cbw
+// 		push	ax		; DominoDelay
+// 		mov	al, [bx+3]
+// 		cbw
+// 		push	ax		; DominoType
+// 		push	[bp+Ypos]	; Ypos
+// 		mov	ax, [bp+Xpos]
+// 		dec	ax
+// 		push	ax		; Xpos
+// 		call	DominoCrash
+//
+// 		add	sp, 8
+// 		jmp	short loc_7009
+//
+// loc_6FE6:				; CODE XREF: DTA_6+218j
+// 		mov	si, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	si, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		add	si, ax
+// 		mov	byte ptr [si+4AF3h], 6
+// 		mov	byte ptr [si+4AF4h], 0Eh
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+5]
+// 		mov	[si+4AF5h], al
+//
+// loc_7009:				; CODE XREF: DTA_6+235j
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+5], 0
+// 		mov	ax, 14h
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		add	si, [bp+Xpos]
+// 		mov	byte ptr [si+78Dh], 1
+// 		mov	byte ptr [si+78Eh], 1
+// 		mov	byte ptr [si+7A1h], 1
+// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+ 		return;
+
 }
+
+// Tumbler falln down right
 void level_c::DTA_L(int x, int y, int x2, int y2) {
+
+// var_2		= byte ptr -2
+// Xpos		= word ptr  4
+// Ypos		= word ptr  6
+// LeveldataEntry	= word ptr  8
+//
+// 		push	bp
+// 		mov	bp, sp
+// 		sub	sp, 2
+// 		push	si
+// 		cmp	[bp+Xpos], 13h
+// 		jge	loc_705A
+//
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		mov	al, (LevelData_srcPtr+0Ah)[bx+si] ; 260	tiles per level, 8 bytes per tile
+// 					;
+// 					; 2 bytes background
+// 					; 1 bytes foreground
+// 					; 1 Byte domino	type
+// 					; 1 Byte domino	state (animation state
+// 					; 1 Byte Y-Offset
+// 		jmp	short loc_705C
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_705A:				; CODE XREF: DTA_L+Bj
+// 		sub	al, al
+//
+// loc_705C:				; CODE XREF: DTA_L+20j
+// 		mov	[bp+var_2], al
+// 		cmp	al, 5
+// 		jnz	loc_7067
+//
+// 		mov	[bp+var_2], 0
+//
+// loc_7067:				; CODE XREF: DTA_L+29j
+// 		mov	bx, [bp+LeveldataEntry]
+// 		cmp	byte ptr [bx+2], 3
+// 		jz	loc_7079
+//
+// 		cmp	byte ptr [bx+2], 12h
+// 		jz	loc_7079
+//
+// 		jmp	loc_70FE
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_7079:				; CODE XREF: DTA_L+36j	DTA_L+3Cj
+// 		cmp	[bp+var_2], 0
+// 		jnz	loc_70FE
+//
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		cmp	byte ptr [bx+si+4BA3h],	0
+// 		jz	loc_70B6
+//
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+7]
+// 		cbw
+// 		push	ax		; DominoDelay
+// 		mov	al, [bx+3]
+// 		cbw
+// 		push	ax		; DominoType
+// 		mov	ax, [bp+Ypos]
+// 		inc	ax
+// 		push	ax		; Ypos
+// 		mov	ax, [bp+Xpos]
+// 		inc	ax
+// 		push	ax		; Xpos
+// 		call	DominoCrash
+//
+// 		add	sp, 8
+// 		jmp	short loc_70EF
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+// 		nop
+// 		nop
+//
+// loc_70B6:				; CODE XREF: DTA_L+5Bj
+// 		mov	si, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	si, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		add	si, ax
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+3]
+// 		mov	[si+4B03h], al
+// 		mov	byte ptr [si+4B04h], 2
+// 		mov	al, [bx+5]
+// 		mov	[si+4B05h], al
+// 		mov	byte ptr [si+4B06h], 2
+// 		mov	byte ptr [si+4B07h], 70h ; 'p'
+// 		mov	ax, 0Ah
+// 		push	ax
+// 		call	SomethingWithSound
+//
+// 		add	sp, 2
+//
+// loc_70EF:				; CODE XREF: DTA_L+7Aj
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+4], 0
+// 		jmp	loc_72AA
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+// 		align 2
+//
+// loc_70FE:				; CODE XREF: DTA_L+3Ej	DTA_L+45j
+// 		cmp	[bp+Xpos], 13h
+// 		jl	loc_7107
+//
+// 		jmp	loc_7194
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_7107:				; CODE XREF: DTA_L+CAj
+// 		mov	bx, [bp+LeveldataEntry]
+// 		cmp	byte ptr [bx+2], 7
+// 		jz	loc_7113
+//
+// 		jmp	loc_7194
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_7113:				; CODE XREF: DTA_L+D6j
+// 		cmp	[bp+var_2], 8
+// 		jnz	loc_7194
+//
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		cmp	byte ptr [bx+si+4B03h],	0
+// 		jz	loc_714E
+//
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+7]
+// 		cbw
+// 		push	ax		; DominoDelay
+// 		mov	al, [bx+3]
+// 		cbw
+// 		push	ax		; DominoType
+// 		push	[bp+Ypos]	; Ypos
+// 		mov	ax, [bp+Xpos]
+// 		inc	ax
+// 		push	ax		; Xpos
+// 		call	DominoCrash
+//
+// 		add	sp, 8
+// 		jmp	short loc_717D
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+// 		nop
+// 		nop
+//
+// loc_714E:				; CODE XREF: DTA_L+F5j
+// 		mov	si, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	si, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		add	si, ax
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+3]
+// 		mov	[si+4B03h], al
+// 		mov	byte ptr [si+4B04h], 2
+// 		mov	al, [bx+5]
+// 		mov	[si+4B05h], al
+// 		mov	byte ptr [si+4B06h], 2
+// 		mov	byte ptr [si+4B07h], 40h ; '@'
+//
+// loc_717D:				; CODE XREF: DTA_L+112j
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+4], 0
+// 		mov	byte ptr [bx+5], 0
+// 		mov	byte ptr [bx+6], 0
+// 		jmp	loc_72AE
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+// 		align 2
+//
+// loc_7194:				; CODE XREF: DTA_L+CCj	DTA_L+D8j ...
+// 		cmp	[bp+Xpos], 13h
+// 		jl	loc_719D
+//
+// 		jmp	loc_724C
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_719D:				; CODE XREF: DTA_L+160j
+// 		cmp	[bp+Ypos], 0Bh
+// 		jl	loc_71A6
+//
+// 		jmp	loc_724C
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_71A6:				; CODE XREF: DTA_L+169j
+// 		mov	bx, [bp+LeveldataEntry]
+// 		cmp	byte ptr [bx+2], 8
+// 		jz	loc_71B2
+//
+// 		jmp	loc_724C
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_71B2:				; CODE XREF: DTA_L+175j
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		cmp	byte ptr [bx+si+4BA3h],	0
+// 		jz	loc_71F8
+//
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+7]
+// 		cbw
+// 		push	ax		; DominoDelay
+// 		mov	al, [bx+3]
+// 		cbw
+// 		push	ax		; DominoType
+// 		mov	ax, [bp+Ypos]
+// 		inc	ax
+// 		push	ax		; Ypos
+// 		mov	ax, [bp+Xpos]
+// 		inc	ax
+// 		push	ax		; Xpos
+// 		call	DominoCrash
+//
+// 		add	sp, 8
+// 		cmp	CopyProtectionFailure, 0 ; when	1 copy protection failed
+// 		jz	loc_7227
+//
+// 		push	TxtProtectionViolation2	; MsgStringOfs
+// 		call	CleanupAndExitWithMesg
+//
+// 		add	sp, 2
+// 		jmp	short loc_7227
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_71F8:				; CODE XREF: DTA_L+18Ej
+// 		mov	si, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	si, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		add	si, ax
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+3]
+// 		mov	[si+4BA3h], al
+// 		mov	byte ptr [si+4BA4h], 2
+// 		mov	al, [bx+5]
+// 		mov	[si+4BA5h], al
+// 		mov	byte ptr [si+4BA6h], 0FAh ; 'ú'
+// 		mov	byte ptr [si+4BA7h], 40h ; '@'
+//
+// loc_7227:				; CODE XREF: DTA_L+1B2j DTA_L+1BEj
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	byte ptr [bx+3], 0
+// 		mov	byte ptr [bx+4], 0
+// 		mov	byte ptr [bx+5], 0
+// 		mov	byte ptr [bx+6], 0
+// 		mov	ax, 14h
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	byte ptr [bx+si+7B7h], 1
+// 		jmp	short loc_72AE
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+//
+// loc_724C:				; CODE XREF: DTA_L+162j DTA_L+16Bj ...
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		mov	bx, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	bx, cl
+// 		cmp	byte ptr [bx+si+4B03h],	0
+// 		jz	loc_7280
+//
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+7]
+// 		cbw
+// 		push	ax		; DominoDelay
+// 		mov	al, [bx+3]
+// 		cbw
+// 		push	ax		; DominoType
+// 		push	[bp+Ypos]	; Ypos
+// 		mov	ax, [bp+Xpos]
+// 		inc	ax
+// 		push	ax		; Xpos
+// 		call	DominoCrash
+//
+// 		add	sp, 8
+// 		jmp	short loc_72A3
+//
+// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+// 		align 2
+//
+// loc_7280:				; CODE XREF: DTA_L+228j
+// 		mov	si, [bp+Xpos]
+// 		mov	cl, 3
+// 		shl	si, cl
+// 		mov	ax, 0A0h ; ' '
+// 		imul	[bp+Ypos]
+// 		add	si, ax
+// 		mov	byte ptr [si+4B03h], 6
+// 		mov	byte ptr [si+4B04h], 2
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	al, [bx+5]
+// 		mov	[si+4B05h], al
+//
+// loc_72A3:				; CODE XREF: DTA_L+245j
+// 		mov	bx, [bp+LeveldataEntry]
+// 		mov	byte ptr [bx+3], 0
+//
+// loc_72AA:				; CODE XREF: DTA_L+C2j
+// 		mov	byte ptr [bx+5], 0
+//
+// loc_72AE:				; CODE XREF: DTA_L+158j DTA_L+212j
+// 		mov	ax, 14h
+// 		imul	[bp+Ypos]
+// 		mov	si, ax
+// 		add	si, [bp+Xpos]
+// 		mov	byte ptr [si+78Eh], 1
+// 		mov	byte ptr [si+78Fh], 1
+// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		mov	(DirtyBlocks+1)[si], 1 ; changed blocks	on screen, there are 20	blocks per row and 13 blocks
+// 					; the last block is only halve.	There are 2 additional rows at the bottom
+// 		pop	si
+// 		mov	sp, bp
+// 		pop	bp
+// 		retn
+
 }
 
 void level_c::callStateFunction(int type, int state, int x, int y, int x2, int y2) {
