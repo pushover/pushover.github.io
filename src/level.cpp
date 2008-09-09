@@ -170,8 +170,8 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
     for (unsigned int x = 0; x < 20; x++) {
       SDL_Rect dst;
       dst.w = dst.h = 4;
-      dst.x = x*gr->blockX();
-      dst.y = y*gr->blockY();
+      dst.x = x*gr->blockX()+gr->blockX()/2-2;
+      dst.y = y*gr->blockY()+gr->blockY()/2-2;
       Uint32 color = ((dynamicDirty[y] >> x) & 1)
         ? SDL_MapRGB(target->format, 255, 0, 0)
         : SDL_MapRGB(target->format, 0, 0, 0);
