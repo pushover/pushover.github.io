@@ -622,14 +622,14 @@ void level_c::DTA_3(int x, int y, int x2, int y2) {
     }
   }
 
-  if (getDominoType(x+1, y) == DominoTypeSplitter && getDominoState(x+1, y) != 8)
+  if (getDominoType(x-1, y) == DominoTypeSplitter && getDominoState(x-1, y) != 8)
   {
     if (pushDomino(x2-1, y2, -1))
       DTA_4(x, y, x2, y2);
     return;
   }
 
-  if (getDominoType(x+1, y) != DominoTypeEmpty && getDominoState(x+1, y) < 8)
+  if (getDominoType(x-1, y) != DominoTypeEmpty && getDominoState(x-1, y) < 8)
   {
     if (pushDomino(x2-1, y2, -1))
       DTA_4(x, y, x2, y2);
