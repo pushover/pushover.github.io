@@ -950,432 +950,254 @@ void level_c::DTA_C(int x, int y, int x2, int y2) {
 
 // bridger left
 void level_c::DTA_7(int x, int y, int x2, int y2) {
-// var_8		= word ptr -8
-// var_6		= byte ptr -6
-// var_4		= byte ptr -4
-// var_2		= byte ptr -2
-// Xpos		= word ptr  4
-// Ypos		= word ptr  6
-// LeveldataEntry	= word ptr  8
-//
-// 		push	bp
-// 		mov	bp, sp
-// 		sub	sp, 8
-// 		push	si
-// 		mov	[bp+var_8], 0
-// 		cmp	[bp+Xpos], 2
-// 		jl	loc_72FA
-//
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		mov	al, (AntAnimBArray+2Eh)[bx+si] ; 6 ant sprites
-// 		jmp	short loc_72FC
-//
-// loc_72FA:				; CODE XREF: DTA_7+10j
-// 		sub	al, al
-//
-// loc_72FC:				; CODE XREF: DTA_7+25j
-// 		mov	[bp+var_2], al
-// 		cmp	[bp+Xpos], 1
-// 		jl	loc_731A
-//
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		mov	al, (AntAnimBArray+36h)[bx+si] ; 6 ant sprites
-// 		jmp	short loc_731C
-//
-// loc_731A:				; CODE XREF: DTA_7+31j
-// 		sub	al, al
-//
-// loc_731C:				; CODE XREF: DTA_7+46j
-// 		mov	[bp+var_4], al
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+2]
-// 		mov	[bp+var_6], al
-// 		cmp	al, 1
-// 		jz	loc_7333
-//
-// 		cmp	al, 12h
-// 		jz	loc_7333
-//
-// 		jmp	loc_741E
-//
-// loc_7333:				; CODE XREF: DTA_7+58j	DTA_7+5Cj
-// 		cmp	[bp+var_4], 3
-// 		jz	loc_7349
-//
-// 		cmp	[bp+var_4], 0
-// 		jnz	loc_7350
-//
-// 		cmp	[bp+var_2], 3
-// 		jnz	loc_7350
-//
-// 		mov	[bp+var_2], 2
-//
-// loc_7349:				; CODE XREF: DTA_7+65j
-// 		mov	[bp+var_4], 2
-// 		jmp	short loc_735A
-//
-// loc_7350:				; CODE XREF: DTA_7+6Bj	DTA_7+71j
-// 		cmp	[bp+var_4], 12h
-// 		jnz	loc_7364
-//
-// 		mov	[bp+var_4], 1
-//
-// loc_735A:				; CODE XREF: DTA_7+7Bj
-// 		cmp	[bp+var_6], 1
-// 		jnz	loc_737E
-//
-//
-// loc_7360:				; CODE XREF: DTA_7+AAj
-// 		mov	al, 2
-// 		jmp	short loc_7380
-//
-// loc_7364:				; CODE XREF: DTA_7+82j
-// 		cmp	[bp+var_4], 0
-// 		jnz	loc_7388
-//
-// 		cmp	[bp+var_2], 12h
-// 		jnz	loc_7388
-//
-// 		mov	[bp+var_2], 1
-// 		mov	[bp+var_4], 2
-// 		cmp	[bp+var_6], 1
-// 		jz	loc_7360
-//
-//
-// loc_737E:				; CODE XREF: DTA_7+8Cj
-// 		mov	al, 3
-//
-// loc_7380:				; CODE XREF: DTA_7+90j
-// 		mov	[bp+var_6], al
-// 		mov	[bp+var_8], 1
-//
-// loc_7388:				; CODE XREF: DTA_7+96j	DTA_7+9Cj
-// 		cmp	[bp+var_8], 0
-// 		jnz	loc_7391
-//
-// 		jmp	loc_741E
-//
-// loc_7391:				; CODE XREF: DTA_7+BAj
-// 		cmp	[bp+Xpos], 2
-// 		jl	loc_73BD
-//
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		mov	al, [bp+var_2]
-// 		mov	(AntAnimBArray+2Eh)[bx+si], al ; 6 ant sprites
-// 		mov	ax, 14h
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	byte ptr [bx+si+7A0h], 1
-//
-// loc_73BD:				; CODE XREF: DTA_7+C3j
-// 		cmp	[bp+Xpos], 1
-// 		jl	loc_73D9
-//
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		mov	al, [bp+var_4]
-// 		mov	(AntAnimBArray+36h)[bx+si], al ; probalby LevelDat_srcPtr_6
-//
-// loc_73D9:				; CODE XREF: DTA_7+EFj
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bp+var_6]
-// 		mov	[bx+2],	al
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+5], 0
-// 		mov	ax, 14h
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		add	si, [bp+Xpos]
-// 		mov	(DirtyBlocksPrefix+13h)[si], 1 ; 2 additional lines of direty blocks
-// 					; to access blocks above the screen without additional checks
-// 		mov	(DirtyBlocksPrefix+14h)[si], 1 ; 2 additional lines of direty blocks
-// 					; to access blocks above the screen without additional checks
-// 		mov	(DirtyBlocksPrefix+27h)[si], 1 ; 2 additional lines of direty blocks
-// 					; to access blocks above the screen without additional checks
-// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	SecondPageDirty[si], 1 ; if set	then we	can NOT	copy the static	level from
-// 					; background probably because it changed
-// 		mov	(AntAnimDArray+4Fh)[si], 1 ; dirty page	-1
-// 		mov	(AntAnimDArray+4Eh)[si], 1 ; dirty page	-2
-// 		pop	si
-// 		mov	sp, bp
-// 		pop	bp
-// 		retn
-//
-// loc_741E:				; CODE XREF: DTA_7+5Ej	DTA_7+BCj
-// 		push	[bp+LeveldataEntry]
-// 		push	[bp+Ypos]
-// 		push	[bp+Xpos]
-// 		call	DTA_1
-//
-// 		add	sp, 6
-// 		pop	si
-// 		mov	sp, bp
-// 		pop	bp
-// 		retn
+
+  int fg2;
+
+  if (x >= 2)
+  {
+    fg2 = level[y][x-2].fg;
+  }
+  else
+  {
+    fg2 = 0;
+  }
+
+  int fg1;
+
+  if (x >= 1)
+  {
+    fg1 = level[y][x-1].fg;
+  }
+  else
+  {
+    fg1 = 0;
+  }
+
+  int fg = level[y][x].fg;
+
+  if (fg != FgElementPlatformStart && fg != FgElementPlatformStrip)
+  {
+    DTA_1(x, y, x2, y2);
+    return;
+  }
+
+  int doit = 0;
+
+  if (fg1 == 3)
+  {
+    fg1 = 2;
+    if (fg == 1)
+    {
+      fg = 2;
+    }
+    else
+    {
+      fg = 3;
+    }
+    doit = 1;
+  }
+  else if (fg1 != 0 || fg2 != 3)
+  {
+    if (fg1 == 18)
+    {
+      fg1 = 1;
+      if (fg == 1)
+      {
+        fg = 2;
+      }
+      else
+      {
+        fg = 3;
+      }
+      doit = 1;
+    }
+    else
+    {
+      if (fg1 == 0 && fg2 == 18)
+      {
+        fg2 = 1;
+        fg1 = 2;
+        if (fg == 1)
+        {
+          fg = 2;
+        }
+        else
+        {
+          fg = 3;
+        }
+        doit = 1;
+      }
+    }
+  }
+  else
+  {
+    fg2 = 2;
+    fg1 = 2;
+    if (fg == 1)
+    {
+      fg = 2;
+    }
+    else
+    {
+      fg = 3;
+    }
+    doit = 1;
+  }
+
+  if (doit == 0)
+  {
+    DTA_1(x, y, x2, y2);
+    return;
+  }
+
+  if (x >= 2)
+  {
+    level[y][x-2].fg = fg2;
+    markDirty(x-2, y);
+  }
+
+  if (x >= 1)
+  {
+    level[y][x-1].fg = fg1;
+  }
+
+  level[y][x].fg = fg;
+  level[y][x].dominoType = 0;
+  level[y][x].dominoDir = 0;
+  markDirty(x, y);
+  markDirty(x-1, y);
+  markDirty(x, y-1);
+  markDirty(x-1, y-1);
+
+  staticDirty[y] |= 1 << x;
+  staticDirty[y] |= 1 << (x-1);
+  staticDirty[y] |= 1 << (x-2);
 }
 
 // Brider right
 void level_c::DTA_M(int x, int y, int x2, int y2) {
 
-// var_8		= word ptr -8
-// var_6		= byte ptr -6
-// var_4		= byte ptr -4
-// CurrentLevelForeground=	byte ptr -2
-// Xpos		= word ptr  4
-// Ypos		= word ptr  6
-// LeveldataEntry	= word ptr  8
-//
-// 		push	bp
-// 		mov	bp, sp
-// 		sub	sp, 8
-// 		push	si
-// 		mov	[bp+var_8], 0
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+LevelDataForeground]
-// 		mov	[bp+CurrentLevelForeground], al
-// 		cmp	[bp+Xpos], 18
-// 		jg	loc_7462
-//
-// 		mov	ax, 160
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		mov	al, (LevelData_srcPtr+0Ah)[bx+si] ; 260	tiles per level, 8 bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		jmp	short loc_7464
-//
-// loc_7462:				; CODE XREF: DTA_M+19j
-// 		sub	al, al
-//
-// loc_7464:				; CODE XREF: DTA_M+2Ej
-// 		mov	[bp+var_4], al
-// 		cmp	[bp+Xpos], 11h
-// 		jg	loc_7482
-//
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		mov	al, (LevelData_srcPtr+12h)[bx+si] ; 260	tiles per level, 8 bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		jmp	short loc_7484
-//
-// loc_7482:				; CODE XREF: DTA_M+39j
-// 		sub	al, al
-//
-// loc_7484:				; CODE XREF: DTA_M+4Ej
-// 		mov	[bp+var_6], al
-// 		cmp	[bp+CurrentLevelForeground], 3
-// 		jz	loc_7496
-//
-// 		cmp	[bp+CurrentLevelForeground], 12h
-// 		jz	loc_7496
-//
-// 		jmp	loc_75B4
-//
-// loc_7496:				; CODE XREF: DTA_M+59j	DTA_M+5Fj
-// 		cmp	[bp+var_4], 1
-// 		jnz	loc_74B2
-//
-// 		cmp	[bp+CurrentLevelForeground], 3
-// 		jnz	loc_74A6
-//
-// 		mov	al, 2
-// 		jmp	short loc_74A8
-//
-// loc_74A6:				; CODE XREF: DTA_M+6Ej
-// 		mov	al, 1
-//
-// loc_74A8:				; CODE XREF: DTA_M+72j
-// 		mov	[bp+CurrentLevelForeground], al
-// 		mov	[bp+var_4], 2
-// 		jmp	short loc_7517
-//
-// loc_74B2:				; CODE XREF: DTA_M+68j
-// 		cmp	[bp+var_4], 0
-// 		jnz	loc_74D8
-//
-// 		cmp	[bp+var_6], 1
-// 		jnz	loc_74D8
-//
-// 		cmp	[bp+CurrentLevelForeground], 3
-// 		jnz	loc_74C8
-//
-// 		mov	al, 2
-// 		jmp	short loc_74CA
-//
-// loc_74C8:				; CODE XREF: DTA_M+90j
-// 		mov	al, 1
-//
-// loc_74CA:				; CODE XREF: DTA_M+94j
-// 		mov	[bp+CurrentLevelForeground], al
-// 		mov	[bp+var_4], 2
-// 		mov	[bp+var_6], 2
-// 		jmp	short loc_7517
-//
-// loc_74D8:				; CODE XREF: DTA_M+84j	DTA_M+8Aj
-// 		cmp	[bp+var_4], 12h
-// 		jnz	loc_74F4
-//
-// 		cmp	[bp+CurrentLevelForeground], 3
-// 		jnz	loc_74E8
-//
-// 		mov	al, 2
-// 		jmp	short loc_74EA
-//
-// loc_74E8:				; CODE XREF: DTA_M+B0j
-// 		mov	al, 1
-//
-// loc_74EA:				; CODE XREF: DTA_M+B4j
-// 		mov	[bp+CurrentLevelForeground], al
-// 		mov	[bp+var_4], 3
-// 		jmp	short loc_7517
-//
-// loc_74F4:				; CODE XREF: DTA_M+AAj
-// 		cmp	[bp+var_4], 0
-// 		jnz	loc_751C
-//
-// 		cmp	[bp+var_6], 12h
-// 		jnz	loc_751C
-//
-// 		cmp	[bp+CurrentLevelForeground], 3
-// 		jnz	loc_750A
-//
-// 		mov	al, 2
-// 		jmp	short loc_750C
-//
-// loc_750A:				; CODE XREF: DTA_M+D2j
-// 		mov	al, 1
-//
-// loc_750C:				; CODE XREF: DTA_M+D6j
-// 		mov	[bp+CurrentLevelForeground], al
-// 		mov	[bp+var_4], 2
-// 		mov	[bp+var_6], 3
-//
-// loc_7517:				; CODE XREF: DTA_M+7Dj	DTA_M+A3j ...
-// 		mov	[bp+var_8], 1
-//
-// loc_751C:				; CODE XREF: DTA_M+C6j	DTA_M+CCj
-// 		cmp	[bp+var_8], 0
-// 		jnz	loc_7525
-//
-// 		jmp	loc_75B4
-//
-// loc_7525:				; CODE XREF: DTA_M+EEj
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bp+CurrentLevelForeground]
-// 		mov	[bx+2],	al
-// 		cmp	[bp+Xpos], 12h
-// 		jg	loc_754A
-//
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		mov	al, [bp+var_4]
-// 		mov	(LevelData_srcPtr+0Ah)[bx+si], al ; 260	tiles per level, 8 bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-//
-// loc_754A:				; CODE XREF: DTA_M+100j
-// 		cmp	[bp+Xpos], 11h
-// 		jg	loc_7576
-//
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		mov	al, [bp+var_6]
-// 		mov	[bx+si+4B0Ah], al
-// 		mov	ax, 14h
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	byte ptr [bx+si+7A4h], 1
-//
-// loc_7576:				; CODE XREF: DTA_M+11Cj
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+5], 0
-// 		mov	ax, 14h
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		add	si, [bp+Xpos]
-// 		mov	(DirtyBlocksPrefix+15h)[si], 1 ; 2 additional lines of direty blocks
-// 					; to access blocks above the screen without additional checks
-// 		mov	(DirtyBlocksPrefix+14h)[si], 1 ; 2 additional lines of direty blocks
-// 					; to access blocks above the screen without additional checks
-// 		mov	(DirtyBlocks+1)[si], 1 ; changed blocks	on screen, there are 20	blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	SecondPageDirty[si], 1 ; if set	then we	can NOT	copy the static	level from
-// 					; background probably because it changed
-// 		mov	(SecondPageDirty+1)[si], 1 ; if	set then we can	NOT copy the static level from
-// 					; background probably because it changed
-// 		mov	(SecondPageDirty+2)[si], 1 ; if	set then we can	NOT copy the static level from
-// 					; background probably because it changed
-// 		pop	si
-// 		mov	sp, bp
-// 		pop	bp
-// 		retn
-//
-// loc_75B4:				; CODE XREF: DTA_M+61j	DTA_M+F0j
-// 		push	[bp+LeveldataEntry]
-// 		push	[bp+Ypos]
-// 		push	[bp+Xpos]
-// 		call	DTA_K
-//
-// 		add	sp, 6
-// 		pop	si
-// 		mov	sp, bp
-// 		pop	bp
-// 		retn
+  int fg2;
 
+  if (x < 18)
+  {
+    fg2 = level[y][x+2].fg;
+  }
+  else
+  {
+    fg2 = 0;
+  }
+
+  int fg1;
+
+  if (x < 19)
+  {
+    fg1 = level[y][x+1].fg;
+  }
+  else
+  {
+    fg1 = 0;
+  }
+
+  int fg = level[y][x].fg;
+
+  if (fg != FgElementPlatformEnd && fg != FgElementPlatformStrip)
+  {
+    DTA_K(x, y, x2, y2);
+    return;
+  }
+
+  int doit = 0;
+
+  if (fg1 == 1)
+  {
+    if (fg == 3)
+    {
+      fg = 2;
+    }
+    else
+    {
+      fg = 1;
+    }
+    fg1 = 2;
+    doit = 1;
+  }
+  else if (fg1 != 0 || fg2 != 1)
+  {
+    if (fg1 == 18)
+    {
+      fg1 = 1;
+      if (fg == 3)
+      {
+        fg = 2;
+      }
+      else
+      {
+        fg = 1;
+      }
+      doit = 1;
+    }
+    else
+    {
+      if (fg1 == 0 && fg2 == 18)
+      {
+        fg2 = 3;
+        fg1 = 2;
+        if (fg == 3)
+        {
+          fg = 2;
+        }
+        else
+        {
+          fg = 1;
+        }
+        doit = 1;
+      }
+    }
+  }
+  else
+  {
+    fg2 = 2;
+    fg1 = 2;
+    if (fg == 3)
+    {
+      fg = 2;
+    }
+    else
+    {
+      fg = 1;
+    }
+    doit = 1;
+  }
+
+  if (doit == 0)
+  {
+    DTA_1(x, y, x2, y2);
+    return;
+  }
+
+  if (x < 18)
+  {
+    level[y][x+2].fg = fg2;
+    markDirty(x+2, y);
+  }
+
+  if (x < 19)
+  {
+    level[y][x+1].fg = fg1;
+  }
+
+  level[y][x].fg = fg;
+  level[y][x].dominoType = 0;
+  level[y][x].dominoDir = 0;
+  markDirty(x, y);
+  markDirty(x+1, y);
+  markDirty(x, y-1);
+  markDirty(x+1, y-1);
+
+  staticDirty[y] |= 1 << x;
+  staticDirty[y] |= 1 << (x+1);
+  staticDirty[y] |= 1 << (x+2);
 }
 
 
