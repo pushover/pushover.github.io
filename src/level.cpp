@@ -2161,7 +2161,7 @@ void level_c::DTA_1(int x, int y, int x2, int y2) {
         fg = 0;
 
     if ((getFg(x, y) == FgElementPlatformStart ||
-            getFg(x, y) == FgElementLadder2)
+            getFg(x, y) == FgElementPlatformStrip)
             &&
             fg == FgElementEmpty
             )
