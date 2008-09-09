@@ -2270,686 +2270,244 @@ void level_c::DTA_1(int x, int y, int x2, int y2) {
 // Timbler falln down left
 void level_c::DTA_6(int x, int y, int x2, int y2) {
 
+  int fg;
 
-// var_2		= byte ptr -2
-// Xpos		= word ptr  4
-// Ypos		= word ptr  6
-// LeveldataEntry	= word ptr  8
-//
-// 		push	bp
-// 		mov	bp, sp
-// 		sub	sp, 2
-// 		push	si
-// 		cmp	[bp+Xpos], 0
-// 		jle	loc_6DD0
-//
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		mov	al, (AntAnimBArray+36h)[bx+si] ; probalby LevelDat_srcPtr_6
-// 		jmp	short loc_6DD2
-//
-// loc_6DD0:				; CODE XREF: DTA_6+Bj
-// 		sub	al, al
-//
-// loc_6DD2:				; CODE XREF: DTA_6+20j
-// 		mov	[bp+var_2], al
-// 		cmp	al, 5
-// 		jnz	loc_6DDD
-//
-// 		mov	[bp+var_2], 0
-//
-// loc_6DDD:				; CODE XREF: DTA_6+29j
-// 		mov	bx, [bp+LeveldataEntry]
-// 		cmp	byte ptr [bx+2], 1
-// 		jz	loc_6DEF
-//
-// 		cmp	byte ptr [bx+2], 12h
-// 		jz	loc_6DEF
-//
-// 		jmp	loc_6E74
-//
-// loc_6DEF:				; CODE XREF: DTA_6+36j	DTA_6+3Cj
-// 		cmp	[bp+var_2], 0
-// 		jnz	loc_6E74
-//
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		cmp	byte ptr [bx+si+4B93h],	0
-// 		jz	loc_6E2C
-//
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+7]
-// 		cbw
-// 		push	ax		; DominoDelay
-// 		mov	al, [bx+3]
-// 		cbw
-// 		push	ax		; DominoType
-// 		mov	ax, [bp+Ypos]
-// 		inc	ax
-// 		push	ax		; Ypos
-// 		mov	ax, [bp+Xpos]
-// 		dec	ax
-// 		push	ax		; Xpos
-// 		call	DominoCrash
-//
-// 		add	sp, 8
-// 		jmp	short loc_6E65
-//
-// loc_6E2C:				; CODE XREF: DTA_6+5Bj
-// 		mov	si, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	si, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		add	si, ax
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+3]
-// 		mov	[si+4AF3h], al
-// 		mov	byte ptr [si+4AF4h], 0Eh
-// 		mov	al, [bx+5]
-// 		mov	[si+4AF5h], al
-// 		mov	byte ptr [si+4AF6h], 2
-// 		mov	byte ptr [si+4AF7h], 70h ; 'p'
+  if (x > 0)
+    fg = level[y][x-1].fg;
+  else
+    fg = 0;
+
+  if (fg == FgElementLadder)
+    fg = 0;
+
+  if ((level[y][x].fg == FgElementPlatformStart || level[y][x].fg == FgElementPlatformStrip) && fg == 0)
+  {
+    if (level[y+1][x-1].dominoType != 0)
+    {
+      DominoCrash(x-1, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
+    }
+    else
+    {
+      level[y][x-1].dominoType = level[y][x].dominoType;
+      level[y][x-1].dominoState = 14;
+      level[y][x-1].dominoDir = level[y][x].dominoDir;
+      level[y][x-1].dominoYOffset = 2;
+      level[y][x-1].dominoExtra = 0x70;
+
 // 		mov	ax, 0Ah
 // 		push	ax
 // 		call	SomethingWithSound
-//
-// 		add	sp, 2
-//
-// loc_6E65:				; CODE XREF: DTA_6+7Aj
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+4], 0
-// 		mov	byte ptr [bx+5], 0
-// 		mov	ax, 14h
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		add	si, [bp+Xpos]
-// 		mov	byte ptr [si+78Dh], 1
-// 		mov	byte ptr [si+78Eh], 1
-// 		mov	byte ptr [si+7A1h], 1
-// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
- 		return;
-//
-// loc_6E74:				; CODE XREF: DTA_6+3Ej	DTA_6+45j
-// 		cmp	[bp+Xpos], 0
-// 		jg	loc_6E7D
-//
-// 		jmp	loc_6F0A
-//
-// loc_6E7D:				; CODE XREF: DTA_6+CAj
-// 		mov	bx, [bp+LeveldataEntry]
-// 		cmp	byte ptr [bx+2], 0Ch
-// 		jz	loc_6E89
-//
-// 		jmp	loc_6F0A
-//
-// loc_6E89:				; CODE XREF: DTA_6+D6j
-// 		cmp	[bp+var_2], 0Bh
-// 		jnz	loc_6F0A
-//
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		cmp	byte ptr [bx+si+4AF3h],	0
-// 		jz	loc_6EC4
-//
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+7]
-// 		cbw
-// 		push	ax		; DominoDelay
-// 		mov	al, [bx+3]
-// 		cbw
-// 		push	ax		; DominoType
-// 		push	[bp+Ypos]	; Ypos
-// 		mov	ax, [bp+Xpos]
-// 		dec	ax
-// 		push	ax		; Xpos
-// 		call	DominoCrash
-//
-// 		add	sp, 8
-// 		jmp	short loc_6EF3
-//
-// loc_6EC4:				; CODE XREF: DTA_6+F5j
-// 		mov	si, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	si, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		add	si, ax
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+3]
-// 		mov	[si+4AF3h], al
-// 		mov	byte ptr [si+4AF4h], 0Eh
-// 		mov	al, [bx+5]
-// 		mov	[si+4AF5h], al
-// 		mov	byte ptr [si+4AF6h], 2
-// 		mov	byte ptr [si+4AF7h], 40h ; '@'
-//
-// loc_6EF3:				; CODE XREF: DTA_6+112j
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+4], 0
-// 		mov	byte ptr [bx+5], 0
-// 		mov	byte ptr [bx+6], 0
-// 		mov	ax, 14h
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		add	si, [bp+Xpos]
-// 		mov	byte ptr [si+78Dh], 1
-// 		mov	byte ptr [si+78Eh], 1
-// 		mov	byte ptr [si+7A1h], 1
-// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
- 		return;
-//
-// loc_6F0A:				; CODE XREF: DTA_6+CCj	DTA_6+D8j ...
-// 		cmp	[bp+Xpos], 0
-// 		jg	loc_6F13
-//
-// 		jmp	loc_6FB2
-//
-// loc_6F13:				; CODE XREF: DTA_6+160j
-// 		cmp	[bp+Ypos], 0Bh
-// 		jl	loc_6F1C
-//
-// 		jmp	loc_6FB2
-//
-// loc_6F1C:				; CODE XREF: DTA_6+169j
-// 		mov	bx, [bp+LeveldataEntry]
-// 		cmp	byte ptr [bx+2], 0Bh
-// 		jz	loc_6F28
-//
-// 		jmp	loc_6FB2
-//
-// loc_6F28:				; CODE XREF: DTA_6+175j
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		cmp	byte ptr [bx+si+4B93h],	0
-// 		jz	loc_6F5E
-//
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+7]
-// 		cbw
-// 		push	ax		; DominoDelay
-// 		mov	al, [bx+3]
-// 		cbw
-// 		push	ax		; DominoType
-// 		mov	ax, [bp+Ypos]
-// 		inc	ax
-// 		push	ax		; Ypos
-// 		mov	ax, [bp+Xpos]
-// 		dec	ax
-// 		push	ax		; Xpos
-// 		call	DominoCrash
-//
-// 		add	sp, 8
-// 		jmp	short loc_6F8D
-//
-// loc_6F5E:				; CODE XREF: DTA_6+18Ej
-// 		mov	si, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	si, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		add	si, ax
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+3]
-// 		mov	[si+4B93h], al
-// 		mov	byte ptr [si+4B94h], 0Eh
-// 		mov	al, [bx+5]
-// 		mov	[si+4B95h], al
-// 		mov	byte ptr [si+4B96h], 0FAh ; 'ú'
-// 		mov	byte ptr [si+4B97h], 40h ; '@'
-//
-// loc_6F8D:				; CODE XREF: DTA_6+1ADj
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+4], 0
-// 		mov	byte ptr [bx+5], 0
-// 		mov	byte ptr [bx+6], 0
-// 		mov	ax, 14h
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	byte ptr [bx+si+7B5h], 1
-// 		mov	ax, 14h
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		add	si, [bp+Xpos]
-// 		mov	byte ptr [si+78Dh], 1
-// 		mov	byte ptr [si+78Eh], 1
-// 		mov	byte ptr [si+7A1h], 1
-// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
- 		return;
-//
-// loc_6FB2:				; CODE XREF: DTA_6+162j DTA_6+16Bj ...
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		cmp	byte ptr [bx+si+4AF3h],	0
-// 		jz	loc_6FE6
-//
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+7]
-// 		cbw
-// 		push	ax		; DominoDelay
-// 		mov	al, [bx+3]
-// 		cbw
-// 		push	ax		; DominoType
-// 		push	[bp+Ypos]	; Ypos
-// 		mov	ax, [bp+Xpos]
-// 		dec	ax
-// 		push	ax		; Xpos
-// 		call	DominoCrash
-//
-// 		add	sp, 8
-// 		jmp	short loc_7009
-//
-// loc_6FE6:				; CODE XREF: DTA_6+218j
-// 		mov	si, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	si, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		add	si, ax
-// 		mov	byte ptr [si+4AF3h], 6
-// 		mov	byte ptr [si+4AF4h], 0Eh
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+5]
-// 		mov	[si+4AF5h], al
-//
-// loc_7009:				; CODE XREF: DTA_6+235j
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+5], 0
-// 		mov	ax, 14h
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		add	si, [bp+Xpos]
-// 		mov	byte ptr [si+78Dh], 1
-// 		mov	byte ptr [si+78Eh], 1
-// 		mov	byte ptr [si+7A1h], 1
-// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
- 		return;
+    }
+
+    level[y][x].dominoType = 0;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoDir = 0;
+
+    markDirty(x, y);
+    markDirty(x-1, y);
+    markDirty(x, y-1);
+    markDirty(x-1, y-1);
+
+    return;
+  }
+
+  if (x > 0 && level[y][x].fg == FgElementPlatformStep6 && fg == FgElementPlatformStep5)
+  {
+    if (level[y][x-1].dominoType != 0)
+    {
+      DominoCrash(x-1, y, level[y][x].dominoType, level[y][x].dominoExtra);
+    }
+    else
+    {
+      level[y][x-1].dominoType = level[y][x].dominoType;
+      level[y][x-1].dominoState = 14;
+      level[y][x-1].dominoDir = level[y][x].dominoDir;
+      level[y][x-1].dominoYOffset = 2;
+      level[y][x-1].dominoExtra = 0x40;
+    }
+
+    level[y][x].dominoType = 0;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoDir = 0;
+    level[y][x].dominoYOffset = 0;
+
+    markDirty(x, y);
+    markDirty(x-1, y);
+    markDirty(x, y-1);
+    markDirty(x-1, y-1);
+
+    return;
+  }
+
+  if (x > 0 && y < 11 && level[y][x].fg == FgElementPlatformStep5)
+  {
+    if (level[y+1][x-1].dominoType != 0)
+    {
+      DominoCrash(x-1, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
+    }
+    else
+    {
+      level[y+1][x-1].dominoType = level[y][x].dominoType;
+      level[y+1][x-1].dominoState = 14;
+      level[y+1][x-1].dominoDir = level[y][x].dominoDir;
+      level[y+1][x-1].dominoYOffset = -6;
+      level[y+1][x-1].dominoExtra = 0x40;
+    }
+
+    level[y][x].dominoType = 0;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoDir = 0;
+    level[y][x].dominoYOffset = 0;
+
+    markDirty(x, y);
+    markDirty(x-1, y);
+    markDirty(x, y-1);
+    markDirty(x-1, y-1);
+
+    return;
+  }
+
+  if (level[y][x-1].dominoType != 0)
+  {
+    DominoCrash(x-1, y, level[y][x].dominoType, level[y][x].dominoExtra);
+  }
+  else
+  {
+    level[y][x-1].dominoType = DominoTypeTumbler;
+    level[y][x-1].dominoState = 14;
+    level[y][x-1].dominoDir = level[y][x].dominoDir;
+    level[y][x-1].dominoYOffset = 0;
+  }
+
+  level[y][x].dominoType = 0;
+  level[y][x].dominoDir = 0;
+
+  markDirty(x, y);
+  markDirty(x-1, y);
+  markDirty(x, y-1);
+  markDirty(x-1, y-1);
+
 
 }
 
 // Tumbler falln down right
 void level_c::DTA_L(int x, int y, int x2, int y2) {
 
-// var_2		= byte ptr -2
-// Xpos		= word ptr  4
-// Ypos		= word ptr  6
-// LeveldataEntry	= word ptr  8
-//
-// 		push	bp
-// 		mov	bp, sp
-// 		sub	sp, 2
-// 		push	si
-// 		cmp	[bp+Xpos], 13h
-// 		jge	loc_705A
-//
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		mov	al, (LevelData_srcPtr+0Ah)[bx+si] ; 260	tiles per level, 8 bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		jmp	short loc_705C
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
-// loc_705A:				; CODE XREF: DTA_L+Bj
-// 		sub	al, al
-//
-// loc_705C:				; CODE XREF: DTA_L+20j
-// 		mov	[bp+var_2], al
-// 		cmp	al, 5
-// 		jnz	loc_7067
-//
-// 		mov	[bp+var_2], 0
-//
-// loc_7067:				; CODE XREF: DTA_L+29j
-// 		mov	bx, [bp+LeveldataEntry]
-// 		cmp	byte ptr [bx+2], 3
-// 		jz	loc_7079
-//
-// 		cmp	byte ptr [bx+2], 12h
-// 		jz	loc_7079
-//
-// 		jmp	loc_70FE
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
-// loc_7079:				; CODE XREF: DTA_L+36j	DTA_L+3Cj
-// 		cmp	[bp+var_2], 0
-// 		jnz	loc_70FE
-//
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		cmp	byte ptr [bx+si+4BA3h],	0
-// 		jz	loc_70B6
-//
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+7]
-// 		cbw
-// 		push	ax		; DominoDelay
-// 		mov	al, [bx+3]
-// 		cbw
-// 		push	ax		; DominoType
-// 		mov	ax, [bp+Ypos]
-// 		inc	ax
-// 		push	ax		; Ypos
-// 		mov	ax, [bp+Xpos]
-// 		inc	ax
-// 		push	ax		; Xpos
-// 		call	DominoCrash
-//
-// 		add	sp, 8
-// 		jmp	short loc_70EF
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-// 		nop
-// 		nop
-//
-// loc_70B6:				; CODE XREF: DTA_L+5Bj
-// 		mov	si, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	si, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		add	si, ax
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+3]
-// 		mov	[si+4B03h], al
-// 		mov	byte ptr [si+4B04h], 2
-// 		mov	al, [bx+5]
-// 		mov	[si+4B05h], al
-// 		mov	byte ptr [si+4B06h], 2
-// 		mov	byte ptr [si+4B07h], 70h ; 'p'
+  int fg;
+
+  if (x < 19)
+    fg = level[y][x+1].fg;
+  else
+    fg = 0;
+
+  if (fg == FgElementLadder)
+    fg = 0;
+
+  if ((level[y][x].fg == FgElementPlatformEnd || level[y][x].fg == FgElementPlatformStrip) && fg == 0)
+  {
+    if (level[y+1][x+1].dominoType != 0)
+    {
+      DominoCrash(x+1, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
+    }
+    else
+    {
+      level[y][x+1].dominoType = level[y][x].dominoType;
+      level[y][x+1].dominoState = 2;
+      level[y][x+1].dominoDir = level[y][x].dominoDir;
+      level[y][x+1].dominoYOffset = 2;
+      level[y][x+1].dominoExtra = 0x70;
+
 // 		mov	ax, 0Ah
 // 		push	ax
 // 		call	SomethingWithSound
-//
-// 		add	sp, 2
-//
-// loc_70EF:				; CODE XREF: DTA_L+7Aj
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+4], 0
-// 		jmp	loc_72AA
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-// 		align 2
-//
-// loc_70FE:				; CODE XREF: DTA_L+3Ej	DTA_L+45j
-// 		cmp	[bp+Xpos], 13h
-// 		jl	loc_7107
-//
-// 		jmp	loc_7194
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
-// loc_7107:				; CODE XREF: DTA_L+CAj
-// 		mov	bx, [bp+LeveldataEntry]
-// 		cmp	byte ptr [bx+2], 7
-// 		jz	loc_7113
-//
-// 		jmp	loc_7194
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
-// loc_7113:				; CODE XREF: DTA_L+D6j
-// 		cmp	[bp+var_2], 8
-// 		jnz	loc_7194
-//
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		cmp	byte ptr [bx+si+4B03h],	0
-// 		jz	loc_714E
-//
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+7]
-// 		cbw
-// 		push	ax		; DominoDelay
-// 		mov	al, [bx+3]
-// 		cbw
-// 		push	ax		; DominoType
-// 		push	[bp+Ypos]	; Ypos
-// 		mov	ax, [bp+Xpos]
-// 		inc	ax
-// 		push	ax		; Xpos
-// 		call	DominoCrash
-//
-// 		add	sp, 8
-// 		jmp	short loc_717D
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-// 		nop
-// 		nop
-//
-// loc_714E:				; CODE XREF: DTA_L+F5j
-// 		mov	si, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	si, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		add	si, ax
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+3]
-// 		mov	[si+4B03h], al
-// 		mov	byte ptr [si+4B04h], 2
-// 		mov	al, [bx+5]
-// 		mov	[si+4B05h], al
-// 		mov	byte ptr [si+4B06h], 2
-// 		mov	byte ptr [si+4B07h], 40h ; '@'
-//
-// loc_717D:				; CODE XREF: DTA_L+112j
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+4], 0
-// 		mov	byte ptr [bx+5], 0
-// 		mov	byte ptr [bx+6], 0
-// 		jmp	loc_72AE
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-// 		align 2
-//
-// loc_7194:				; CODE XREF: DTA_L+CCj	DTA_L+D8j ...
-// 		cmp	[bp+Xpos], 13h
-// 		jl	loc_719D
-//
-// 		jmp	loc_724C
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
-// loc_719D:				; CODE XREF: DTA_L+160j
-// 		cmp	[bp+Ypos], 0Bh
-// 		jl	loc_71A6
-//
-// 		jmp	loc_724C
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
-// loc_71A6:				; CODE XREF: DTA_L+169j
-// 		mov	bx, [bp+LeveldataEntry]
-// 		cmp	byte ptr [bx+2], 8
-// 		jz	loc_71B2
-//
-// 		jmp	loc_724C
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
-// loc_71B2:				; CODE XREF: DTA_L+175j
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		cmp	byte ptr [bx+si+4BA3h],	0
-// 		jz	loc_71F8
-//
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+7]
-// 		cbw
-// 		push	ax		; DominoDelay
-// 		mov	al, [bx+3]
-// 		cbw
-// 		push	ax		; DominoType
-// 		mov	ax, [bp+Ypos]
-// 		inc	ax
-// 		push	ax		; Ypos
-// 		mov	ax, [bp+Xpos]
-// 		inc	ax
-// 		push	ax		; Xpos
-// 		call	DominoCrash
-//
-// 		add	sp, 8
-// 		cmp	CopyProtectionFailure, 0 ; when	1 copy protection failed
-// 		jz	loc_7227
-//
-// 		push	TxtProtectionViolation2	; MsgStringOfs
-// 		call	CleanupAndExitWithMesg
-//
-// 		add	sp, 2
-// 		jmp	short loc_7227
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
-// loc_71F8:				; CODE XREF: DTA_L+18Ej
-// 		mov	si, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	si, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		add	si, ax
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+3]
-// 		mov	[si+4BA3h], al
-// 		mov	byte ptr [si+4BA4h], 2
-// 		mov	al, [bx+5]
-// 		mov	[si+4BA5h], al
-// 		mov	byte ptr [si+4BA6h], 0FAh ; 'ú'
-// 		mov	byte ptr [si+4BA7h], 40h ; '@'
-//
-// loc_7227:				; CODE XREF: DTA_L+1B2j DTA_L+1BEj
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+4], 0
-// 		mov	byte ptr [bx+5], 0
-// 		mov	byte ptr [bx+6], 0
-// 		mov	ax, 14h
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	byte ptr [bx+si+7B7h], 1
-// 		jmp	short loc_72AE
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
-// loc_724C:				; CODE XREF: DTA_L+162j DTA_L+16Bj ...
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		cmp	byte ptr [bx+si+4B03h],	0
-// 		jz	loc_7280
-//
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+7]
-// 		cbw
-// 		push	ax		; DominoDelay
-// 		mov	al, [bx+3]
-// 		cbw
-// 		push	ax		; DominoType
-// 		push	[bp+Ypos]	; Ypos
-// 		mov	ax, [bp+Xpos]
-// 		inc	ax
-// 		push	ax		; Xpos
-// 		call	DominoCrash
-//
-// 		add	sp, 8
-// 		jmp	short loc_72A3
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-// 		align 2
-//
-// loc_7280:				; CODE XREF: DTA_L+228j
-// 		mov	si, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	si, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		add	si, ax
-// 		mov	byte ptr [si+4B03h], 6
-// 		mov	byte ptr [si+4B04h], 2
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+5]
-// 		mov	[si+4B05h], al
-//
-// loc_72A3:				; CODE XREF: DTA_L+245j
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	byte ptr [bx+3], 0
-//
-// loc_72AA:				; CODE XREF: DTA_L+C2j
-// 		mov	byte ptr [bx+5], 0
-//
-// loc_72AE:				; CODE XREF: DTA_L+158j DTA_L+212j
-// 		mov	ax, 14h
-// 		imul	[bp+Ypos]
-// 		mov	si, ax
-// 		add	si, [bp+Xpos]
-// 		mov	byte ptr [si+78Eh], 1
-// 		mov	byte ptr [si+78Fh], 1
-// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	(DirtyBlocks+1)[si], 1 ; changed blocks	on screen, there are 20	blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		pop	si
-// 		mov	sp, bp
-// 		pop	bp
-// 		retn
+    }
 
+    level[y][x].dominoType = 0;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoDir = 0;
+
+    markDirty(x, y);
+    markDirty(x+1, y);
+    markDirty(x, y-1);
+    markDirty(x+1, y-1);
+
+    return;
+  }
+
+  if (x < 19 && level[y][x].fg == FgElementPlatformStep1 && fg == FgElementPlatformStep2)
+  {
+    if (level[y][x+1].dominoType != 0)
+    {
+      DominoCrash(x+1, y, level[y][x].dominoType, level[y][x].dominoExtra);
+    }
+    else
+    {
+      level[y][x+1].dominoType = level[y][x].dominoType;
+      level[y][x+1].dominoState = 2;
+      level[y][x+1].dominoDir = level[y][x].dominoDir;
+      level[y][x+1].dominoYOffset = 2;
+      level[y][x+1].dominoExtra = 0x40;
+    }
+
+    level[y][x].dominoType = 0;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoDir = 0;
+    level[y][x].dominoYOffset = 0;
+
+    markDirty(x, y);
+    markDirty(x+1, y);
+    markDirty(x, y-1);
+    markDirty(x+1, y-1);
+
+    return;
+  }
+
+  if (x < 19 && y < 11 && level[y][x].fg == FgElementPlatformStep2)
+  {
+    if (level[y+1][x+1].dominoType != 0)
+    {
+      DominoCrash(x+1, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
+    }
+    else
+    {
+      level[y+1][x+1].dominoType = level[y][x].dominoType;
+      level[y+1][x+1].dominoState = 2;
+      level[y+1][x+1].dominoDir = level[y][x].dominoDir;
+      level[y+1][x+1].dominoYOffset = -6;
+      level[y+1][x+1].dominoExtra = 0x40;
+    }
+
+    level[y][x].dominoType = 0;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoDir = 0;
+    level[y][x].dominoYOffset = 0;
+
+    markDirty(x, y);
+    markDirty(x+1, y);
+    markDirty(x, y-1);
+    markDirty(x+1, y-1);
+
+    return;
+  }
+
+  if (level[y][x+1].dominoType != 0)
+  {
+    DominoCrash(x+1, y, level[y][x].dominoType, level[y][x].dominoExtra);
+  }
+  else
+  {
+    level[y][x+1].dominoType = DominoTypeTumbler;
+    level[y][x+1].dominoState = 2;
+    level[y][x+1].dominoDir = level[y][x].dominoDir;
+  }
+
+  level[y][x].dominoType = 0;
+  level[y][x].dominoDir = 0;
+
+  markDirty(x, y);
+  markDirty(x+1, y);
+  markDirty(x, y-1);
+  markDirty(x+1, y-1);
 }
 
 void level_c::callStateFunction(int type, int state, int x, int y, int x2, int y2) {
