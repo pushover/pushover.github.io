@@ -620,8 +620,11 @@ unsigned int ant_c::SFEnterDominosRight(void) {
 
 unsigned int ant_c::SFXXX7(void) {
   if (animateAnt(0))
+  {
     animation = AntAnimLoosingDominoRight;
-  return animation;
+    return animation;
+  }
+  return AntAnimXXX7;
 }
 
 unsigned int ant_c::SFLooseRight(void) {
@@ -655,7 +658,7 @@ unsigned int ant_c::SFLooseLeft(void) {
 
   if (animationImage == 4) {
     blockX--;
-  } else if (animationImage == 6) {
+  } else if (animationImage == 8) {
     level->putDownDomino(blockX, blockY, carriedDomino, false);
     level->fallingDomino(blockX, blockY);
     carriedDomino = 0;
