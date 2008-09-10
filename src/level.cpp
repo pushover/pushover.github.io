@@ -1204,542 +1204,190 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 // riser
 void level_c::DTA_A(int x, int y, int x2, int y2) {
 
-// var_6		= word ptr -6
-// var_4		= byte ptr -4
-// var_2		= byte ptr -2
-// Xpos		= word ptr  4
-// Ypos		= word ptr  6
-// LeveldataEntry	= word ptr  8
-//
-// 		push	bp
-// 		mov	bp, sp
-// 		sub	sp, 6
-// 		push	di
-// 		push	si
-// 		mov	bx, [bp+LeveldataEntry]
-// 		cmp	byte ptr [bx+7], 50h ; 'P'
-// 		jnz	loc_7664
-//
-// 		mov	[bp+var_6], 1
-// 		jmp	short loc_7669
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
-// loc_7664:				; CODE XREF: DTA_A+Fj
-// 		mov	[bp+var_6], 2
-//
-// loc_7669:				; CODE XREF: DTA_A+16j
-// 		cmp	[bp+Xpos], 0
-// 		jle	loc_768A
-//
-// 		mov	ax, [bp+Ypos]
-// 		sub	ax, [bp+var_6]
-// 		mov	cx, 0A0h ; ' '
-// 		imul	cx
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		mov	al, [bx+si+4AF2h]
-// 		jmp	short loc_768C
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-// 		align 2
-//
-// loc_768A:				; CODE XREF: DTA_A+21j
-// 		sub	al, al
-//
-// loc_768C:				; CODE XREF: DTA_A+3Bj
-// 		mov	[bp+var_2], al
-// 		mov	ax, [bp+Ypos]
-// 		sub	ax, [bp+var_6]
-// 		mov	cx, 0A0h ; ' '
-// 		imul	cx
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		mov	al, [bx+si+4AFAh]
-// 		mov	[bp+var_4], al
-// 		cmp	al, 1
-// 		jz	loc_76B5
-//
-// 		cmp	al, 12h
-// 		jz	loc_76B5
-//
-// 		jmp	loc_776C
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
-// loc_76B5:				; CODE XREF: DTA_A+60j	DTA_A+64j
-// 		cmp	[bp+var_2], 0
-// 		jz	loc_76BE
-//
-// 		jmp	loc_776C
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
-// loc_76BE:				; CODE XREF: DTA_A+6Dj
-// 		cmp	[bp+var_6], 1
-// 		jnz	loc_76F6
-//
-// 		mov	si, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	si, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		add	si, ax
-// 		mov	(AntAnimBArray+3Bh)[si], 60h ; '`' ; 6 ant sprites
-// 		mov	(AntAnimBArray+37h)[si], 0Ah ; 6 ant sprites
-// 		mov	(AntAnimBArray+38h)[si], 0Eh ; 6 ant sprites
-// 		mov	(AntAnimBArray+39h)[si], 0FFh ;	6 ant sprites
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+6]
-// 		sub	al, 2
-// 		mov	[si+4AF6h], al
-// 		jmp	short loc_772B
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-// 		align 2
-//
-// loc_76F6:				; CODE XREF: DTA_A+76j
-// 		cmp	[bp+Ypos], 0
-// 		jle	loc_772B
-//
-// 		mov	si, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	si, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		add	si, ax
-// 		mov	(AntAnimKArray+4Fh)[si], 60h ; '`' ; 15 ant sprites
-// 		mov	(AntAnimKArray+4Bh)[si], 0Ah ; 15 ant sprites
-// 		mov	(AntAnimKArray+4Ch)[si], 0Eh ; 15 ant sprites
-// 		mov	(AntAnimKArray+4Dh)[si], 0FFh ;	15 ant sprites
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+6]
-// 		add	al, 0Eh
-// 		mov	[si+4A56h], al
-//
-// loc_772B:				; CODE XREF: DTA_A+A7j	DTA_A+AEj
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+4], 0
-// 		mov	byte ptr [bx+5], 0
-// 		mov	byte ptr [bx+6], 0
-// 		mov	byte ptr [bx+7], 0
-// 		mov	ax, [bp+Ypos]
-// 		sub	ax, [bp+var_6]
-// 		mov	cx, 14h
-// 		imul	cx
-// 		mov	si, ax
-// 		add	si, [bp+Xpos]
-// 		mov	(DirtyBlocks+14h)[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	(DirtyBlocks+13h)[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	byte ptr [si+7A1h], 1
-// 		pop	si
-// 		pop	di
-// 		mov	sp, bp
-// 		pop	bp
-// 		retn
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
-// loc_776C:				; CODE XREF: DTA_A+66j	DTA_A+6Fj
-// 		cmp	[bp+var_4], 0
-// 		jnz	loc_77DA
-//
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+4], 0
-// 		mov	byte ptr [bx+5], 0
-// 		mov	byte ptr [bx+6], 0
-// 		mov	byte ptr [bx+7], 0
-// 		mov	si, [bp+Ypos]
-// 		sub	si, [bp+var_6]
-// 		mov	di, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	di, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	si
-// 		add	di, ax
-// 		mov	(LevelData_srcPtr+0A7h)[di], 60h ; '`' ; 260 tiles per level, 8 bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	(LevelData_srcPtr+0A3h)[di], 0Ah ; 260 tiles per level,	8 bytes	per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	(LevelData_srcPtr+0A4h)[di], 8 ; 260 tiles per level, 8	bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	(LevelData_srcPtr+0A5h)[di], 0FFh ; 260	tiles per level, 8 bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	(LevelData_srcPtr+0A6h)[di], 0 ; 260 tiles per level, 8	bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	ax, 14h
-// 		imul	si
-// 		mov	di, ax
-// 		add	di, [bp+Xpos]
-// 		mov	(DirtyBlocks+14h)[di], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	DirtyBlocks[di], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	(DirtyBlocks+13h)[di], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	byte ptr [di+7A1h], 1
-// 		pop	si
-// 		pop	di
-// 		mov	sp, bp
-// 		pop	bp
-// 		retn
-//
-// ; ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-//
-// loc_77DA:				; CODE XREF: DTA_A+124j
-// 		mov	bx, [bp+LeveldataEntry]
-// 		cmp	byte ptr [bx+7], 50h ; 'P'
-// 		jz	loc_7829
-//
-// 		mov	si, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	si, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		add	si, ax
-// 		mov	al, [bx+3]
-// 		mov	(AntAnimKArray+53h)[si], al ; 15 ant sprites
-// 		mov	al, [bx+4]
-// 		mov	(AntAnimKArray+54h)[si], al ; 15 ant sprites
-// 		mov	al, [bx+5]
-// 		mov	(AntAnimKArray+55h)[si], al ; 15 ant sprites
-// 		mov	al, [bx+6]
-// 		add	al, 10h
-// 		mov	(AntAnimKArray+56h)[si], al ; 15 ant sprites
-// 		mov	(AntAnimKArray+57h)[si], 50h ; 'P' ; 15 ant sprites
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+4], 0
-// 		mov	byte ptr [bx+5], 0
-// 		mov	byte ptr [bx+6], 0
-// 		mov	byte ptr [bx+7], 0
-//
-// loc_7829:				; CODE XREF: DTA_A+195j
-// 		pop	si
-// 		pop	di
-// 		mov	sp, bp
-// 		pop	bp
-// 		retn
+  int a;
+
+  if (level[y][x].dominoExtra == 0x50)
+    a = 1;
+  else
+    a = 2;
+
+  int b;
+  if (x > 0)
+    b = level[y][x-1].fg;
+  else
+    b = FgElementEmpty;
+
+  int c;
+  c = level[y-a][x].fg;
+
+  if ((c == FgElementPlatformStart || c == FgElementPlatformStrip) &&
+      b == FgElementEmpty)
+  {
+    if (a == 1)
+    {
+      level[y][x-1].dominoExtra = 0x60;
+      level[y][x-1].dominoType = DominoTypeRiser;
+      level[y][x-1].dominoState = 14;
+      level[y][x-1].dominoDir = -1;
+      level[y][x-1].dominoYOffset = level[y][x].dominoYOffset-2;
+    }
+    else
+    {
+      if (y > 0)
+      {
+        level[y-1][x-1].dominoExtra = 0x60;
+        level[y-1][x-1].dominoType = DominoTypeRiser;
+        level[y-1][x-1].dominoState = 14;
+        level[y-1][x-1].dominoDir = -1;
+        level[y-1][x-1].dominoYOffset = level[y][x].dominoYOffset+14;
+      }
+    }
+
+    level[y][x].dominoType = DominoTypeEmpty;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoDir = 0;
+    level[y][x].dominoYOffset = 0;
+    level[y][x].dominoExtra = 0;
+
+    markDirty(x, y-a);
+    markDirty(x-1, y-a);
+    markDirty(x, y-a+1);
+    markDirty(x-1, y-a+1);
+
+    return;
+  }
+
+  if (c == 0)
+  {
+    level[y][x].dominoType = DominoTypeEmpty;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoDir = 0;
+    level[y][x].dominoYOffset = 0;
+    level[y][x].dominoExtra = 0;
+
+    level[y+1-a][x].dominoExtra = 0x60;
+    level[y+1-a][x].dominoType = DominoTypeRiser;
+    level[y+1-a][x].dominoState = 8;
+    level[y+1-a][x].dominoDir = -1;
+    level[y+1-a][x].dominoYOffset = 0;
+
+    markDirty(x, y-a);
+    markDirty(x-1, y-a);
+    markDirty(x, y-a+1);
+    markDirty(x-1, y-a+1);
+
+    return;
+  }
+
+  if (level[y][x].dominoExtra != 0x50)
+  {
+    level[y-1][x].dominoType = level[y][x].dominoType;
+    level[y-1][x].dominoState = level[y][x].dominoState;
+    level[y-1][x].dominoDir = level[y][x].dominoDir;
+    level[y-1][x].dominoYOffset = level[y][x].dominoYOffset+16;
+    level[y-1][x].dominoExtra = 0x50;
+
+    level[y][x].dominoType = DominoTypeEmpty;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoDir = 0;
+    level[y][x].dominoYOffset = 0;
+    level[y][x].dominoExtra = 0;
+  }
 }
 
 
 // Riser
 void level_c::DTA_O(int x, int y, int x2, int y2) {
 
-// var_6		= word ptr -6
-// var_4		= byte ptr -4
-// var_2		= byte ptr -2
-// Xpos		= word ptr  4
-// Ypos		= word ptr  6
-// LeveldataEntry	= word ptr  8
-//
-// 		push	bp
-// 		mov	bp, sp
-// 		sub	sp, 6
-// 		push	di
-// 		push	si
-// 		mov	bx, [bp+LeveldataEntry]
-// 		cmp	byte ptr [bx+7], 50h ; 'P'
-// 		jnz	loc_7A40
-//
-// 		mov	[bp+var_6], 1
-// 		jmp	short loc_7A45
-//
-// loc_7A40:				; CODE XREF: DTA_O+Fj
-// 		mov	[bp+var_6], 2
-//
-// loc_7A45:				; CODE XREF: DTA_O+16j
-// 		cmp	[bp+Xpos], 13h
-// 		jge	loc_7A66
-//
-// 		mov	ax, [bp+Ypos]
-// 		sub	ax, [bp+var_6]
-// 		mov	cx, 0A0h ; ' '
-// 		imul	cx
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		mov	al, (LevelData_srcPtr+0Ah)[bx+si] ; 260	tiles per level, 8 bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		jmp	short loc_7A68
-//
-// loc_7A66:				; CODE XREF: DTA_O+21j
-// 		sub	al, al
-//
-// loc_7A68:				; CODE XREF: DTA_O+3Bj
-// 		mov	[bp+var_2], al
-// 		mov	ax, [bp+Ypos]
-// 		sub	ax, [bp+var_6]
-// 		mov	cx, 0A0h ; ' '
-// 		imul	cx
-// 		mov	si, ax
-// 		mov	bx, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	bx, cl
-// 		mov	al, (LevelData_srcPtr+2)[bx+si]	; 260 tiles per	level, 8 bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	[bp+var_4], al
-// 		cmp	al, cl
-// 		jz	loc_7A91
-//
-// 		cmp	al, 12h
-// 		jz	loc_7A91
-//
-// 		jmp	loc_7B48
-//
-// loc_7A91:				; CODE XREF: DTA_O+60j	DTA_O+64j
-// 		cmp	[bp+var_2], 0
-// 		jz	loc_7A9A
-//
-// 		jmp	loc_7B48
-//
-// loc_7A9A:				; CODE XREF: DTA_O+6Dj
-// 		cmp	[bp+var_6], 1
-// 		jnz	loc_7AD2
-//
-// 		mov	si, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	si, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		add	si, ax
-// 		mov	(LevelData_srcPtr+0Fh)[si], 60h	; '`' ; 260 tiles per level, 8 bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	(LevelData_srcPtr+0Bh)[si], 0Ah	; 260 tiles per	level, 8 bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	(LevelData_srcPtr+0Ch)[si], 2 ;	260 tiles per level, 8 bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	(LevelData_srcPtr+0Dh)[si], 1 ;	260 tiles per level, 8 bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+6]
-// 		sub	al, 2
-// 		mov	(LevelData_srcPtr+0Eh)[si], al ; 260 tiles per level, 8	bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		jmp	short loc_7B07
-//
-//
-// loc_7AD2:				; CODE XREF: DTA_O+76j
-// 		cmp	[bp+Ypos], 0
-// 		jle	loc_7B07
-//
-// 		mov	si, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	si, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		add	si, ax
-// 		mov	byte ptr [si+4A67h], 60h ; '`'
-// 		mov	byte ptr [si+4A63h], 0Ah
-// 		mov	byte ptr [si+4A64h], 2
-// 		mov	byte ptr [si+4A65h], 1
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	al, [bx+6]
-// 		add	al, 0Eh
-// 		mov	[si+4A66h], al
-//
-// loc_7B07:				; CODE XREF: DTA_O+A7j	DTA_O+AEj
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+4], 0
-// 		mov	byte ptr [bx+5], 0
-// 		mov	byte ptr [bx+6], 0
-// 		mov	byte ptr [bx+7], 0
-// 		mov	ax, [bp+Ypos]
-// 		sub	ax, [bp+var_6]
-// 		mov	cx, 14h
-// 		imul	cx
-// 		mov	si, ax
-// 		add	si, [bp+Xpos]
-// 		mov	(DirtyBlocks+14h)[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	DirtyBlocks[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	(DirtyBlocks+15h)[si], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	(DirtyBlocks+1)[si], 1 ; changed blocks	on screen, there are 20	blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		pop	si
-// 		pop	di
-// 		mov	sp, bp
-// 		pop	bp
-// 		retn
-//
-// loc_7B48:				; CODE XREF: DTA_O+66j	DTA_O+6Fj
-// 		cmp	[bp+var_4], 0
-// 		jnz	loc_7BB6
-//
-// 		mov	bx, [bp+LeveldataEntry]
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+4], 0
-// 		mov	byte ptr [bx+5], 0
-// 		mov	byte ptr [bx+6], 0
-// 		mov	byte ptr [bx+7], 0
-// 		mov	si, [bp+Ypos]
-// 		sub	si, [bp+var_6]
-// 		mov	di, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	di, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	si
-// 		add	di, ax
-// 		mov	(LevelData_srcPtr+0A7h)[di], 60h ; '`' ; 260 tiles per level, 8 bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	(LevelData_srcPtr+0A3h)[di], 0Ah ; 260 tiles per level,	8 bytes	per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	(LevelData_srcPtr+0A4h)[di], 8 ; 260 tiles per level, 8	bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	(LevelData_srcPtr+0A5h)[di], 1 ; 260 tiles per level, 8	bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	(LevelData_srcPtr+0A6h)[di], 0 ; 260 tiles per level, 8	bytes per tile
-// 					;
-// 					; 2 bytes background
-// 					; 1 bytes foreground
-// 					; 1 Byte domino	type
-// 					; 1 Byte domino	state (animation state
-// 					; 1 Byte Y-Offset
-// 		mov	ax, 14h
-// 		imul	si
-// 		mov	di, ax
-// 		add	di, [bp+Xpos]
-// 		mov	(DirtyBlocks+14h)[di], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	DirtyBlocks[di], 1 ; changed blocks on screen, there are 20 blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	(DirtyBlocks+15h)[di], 1 ; changed blocks on screen, there are 20 blocks per row and 13	blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		mov	(DirtyBlocks+1)[di], 1 ; changed blocks	on screen, there are 20	blocks per row and 13 blocks
-// 					; the last block is only halve.	There are 2 additional rows at the bottom
-// 		pop	si
-// 		pop	di
-// 		mov	sp, bp
-// 		pop	bp
-// 		retn
-//
-// loc_7BB6:				; CODE XREF: DTA_O+124j
-// 		mov	bx, [bp+LeveldataEntry]
-// 		cmp	byte ptr [bx+7], 50h ; 'P'
-// 		jz	loc_7C05
-//
-// 		mov	si, [bp+Xpos]
-// 		mov	cl, 3
-// 		shl	si, cl
-// 		mov	ax, 0A0h ; ' '
-// 		imul	[bp+Ypos]
-// 		add	si, ax
-// 		mov	al, [bx+3]
-// 		mov	[si+4A5Bh], al
-// 		mov	al, [bx+4]
-// 		mov	[si+4A5Ch], al
-// 		mov	al, [bx+5]
-// 		mov	[si+4A5Dh], al
-// 		mov	al, [bx+6]
-// 		add	al, 10h
-// 		mov	[si+4A5Eh], al
-// 		mov	byte ptr [si+4A5Fh], 50h ; 'P'
-// 		mov	byte ptr [bx+3], 0
-// 		mov	byte ptr [bx+4], 0
-// 		mov	byte ptr [bx+5], 0
-// 		mov	byte ptr [bx+6], 0
-// 		mov	byte ptr [bx+7], 0
-//
-// loc_7C05:				; CODE XREF: DTA_O+195j
-// 		pop	si
-// 		pop	di
-// 		mov	sp, bp
-// 		pop	bp
-// 		retn
+  int a;
 
+  if (level[y][x].dominoExtra == 0x50)
+    a = 1;
+  else
+    a = 2;
+
+  int b;
+  if (x < 19)
+    b = level[y][x+1].fg;
+  else
+    b = FgElementEmpty;
+
+  int c;
+  c = level[y-a][x].fg;
+
+  if ((c == FgElementPlatformEnd || c == FgElementPlatformStrip) &&
+      b == FgElementEmpty)
+  {
+    if (a == 1)
+    {
+      level[y][x+1].dominoExtra = 0x60;
+      level[y][x+1].dominoType = DominoTypeRiser;
+      level[y][x+1].dominoState = 2;
+      level[y][x+1].dominoDir = 1;
+      level[y][x+1].dominoYOffset = level[y][x].dominoYOffset-2;
+    }
+    else
+    {
+      if (y > 0)
+      {
+        level[y-1][x+1].dominoExtra = 0x60;
+        level[y-1][x+1].dominoType = DominoTypeRiser;
+        level[y-1][x+1].dominoState = 2;
+        level[y-1][x+1].dominoDir = 1;
+        level[y-1][x+1].dominoYOffset = level[y][x].dominoYOffset+14;
+      }
+    }
+
+    level[y][x].dominoType = DominoTypeEmpty;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoDir = 0;
+    level[y][x].dominoYOffset = 0;
+    level[y][x].dominoExtra = 0;
+
+    markDirty(x, y-a);
+    markDirty(x+1, y-a);
+    markDirty(x, y-a+1);
+    markDirty(x+1, y-a+1);
+
+    return;
+  }
+
+  if (c == 0)
+  {
+    level[y][x].dominoType = DominoTypeEmpty;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoDir = 0;
+    level[y][x].dominoYOffset = 0;
+    level[y][x].dominoExtra = 0;
+
+    level[y+1-a][x].dominoExtra = 0x60;
+    level[y+1-a][x].dominoType = DominoTypeRiser;
+    level[y+1-a][x].dominoState = 8;
+    level[y+1-a][x].dominoDir = 1;
+    level[y+1-a][x].dominoYOffset = 0;
+
+    markDirty(x, y-a);
+    markDirty(x+1, y-a);
+    markDirty(x, y-a+1);
+    markDirty(x+1, y-a+1);
+
+    return;
+  }
+
+  if (level[y][x].dominoExtra != 0x50)
+  {
+    level[y-1][x].dominoType = level[y][x].dominoType;
+    level[y-1][x].dominoState = level[y][x].dominoState;
+    level[y-1][x].dominoDir = level[y][x].dominoDir;
+    level[y-1][x].dominoYOffset = level[y][x].dominoYOffset+16;
+    level[y-1][x].dominoExtra = 0x50;
+
+    level[y][x].dominoType = DominoTypeEmpty;
+    level[y][x].dominoState = 0;
+    level[y][x].dominoDir = 0;
+    level[y][x].dominoYOffset = 0;
+    level[y][x].dominoExtra = 0;
+  }
 }
 
 // riser risign vertically
