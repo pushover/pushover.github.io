@@ -102,7 +102,7 @@ void level_c::updateBackground(graphics_c * gr) {
     }
 }
 
-void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
+void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
   for (unsigned int y = 0; y < 13; y++)
     for (unsigned int x = 0; x < 20; x++) {
       if ((dynamicDirty[y] >> x) & 1 || true) {
@@ -166,17 +166,26 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr) {
       }
     }
 
-  for (unsigned int y = 0; y < 13; y++)
-    for (unsigned int x = 0; x < 20; x++) {
-      SDL_Rect dst;
-      dst.w = dst.h = 4;
-      dst.x = x*gr->blockX()+gr->blockX()/2-2;
-      dst.y = y*gr->blockY()+gr->blockY()/2-2;
-      Uint32 color = ((dynamicDirty[y] >> x) & 1)
-        ? SDL_MapRGB(target->format, 255, 0, 0)
-        : SDL_MapRGB(target->format, 0, 0, 0);
-      SDL_FillRect(target, &dst, color);
-    }
+  if (debug)
+  {
+    for (unsigned int y = 0; y < 13; y++)
+      for (unsigned int x = 0; x < 20; x++) {
+
+        if ((dynamicDirty[y] >> x) & 1)
+        {
+          for (int h = 0; h < gr->blockY(); h+=2)
+          {
+            SDL_Rect dst;
+            dst.w = gr->blockX();
+            dst.h = 1;
+            dst.x = x*gr->blockX();
+            dst.y = y*gr->blockY()+h;
+            Uint32 color = SDL_MapRGB(target->format, 0, 0, 0);
+            SDL_FillRect(target, &dst, color);
+          }
+        }
+      }
+  }
 
   for (unsigned int y = 0; y < 13; y++) {
     dynamicDirty[y] = 0;

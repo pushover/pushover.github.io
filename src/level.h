@@ -142,7 +142,7 @@ class level_c {
     void updateBackground(graphics_c * gr);
 
     /* draw the changed stuff into the target surface */
-    void drawDominos(SDL_Surface * target, graphics_c * gr);
+    void drawDominos(SDL_Surface * target, graphics_c * gr, bool debug);
 
     /* opens and closes doors */
     void performDoors(void);

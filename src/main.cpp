@@ -43,6 +43,7 @@ int main(int argn, char * argv[]) {
   Uint32 ticks = SDL_GetTicks();
 
   int tickDiv = 18;
+  bool debug = false;
 
   while (!exit) {
 
@@ -59,6 +60,8 @@ int main(int argn, char * argv[]) {
               exit = true;
             if (event.key.keysym.sym == SDLK_s)
               tickDiv = 19-tickDiv;
+            if (event.key.keysym.sym == SDLK_d)
+              debug = !debug;
 
             break;
         }
@@ -83,7 +86,7 @@ int main(int argn, char * argv[]) {
     l.performDominos();
 
     l.updateBackground(gr);
-    l.drawDominos(video, gr);
+    l.drawDominos(video, gr, debug);
     a.draw(video);
 
     SDL_Flip(video);
