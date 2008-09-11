@@ -296,11 +296,11 @@ void level_c::putDownDomino(int x, int y, int domino, bool pushin) {
     else
       DominoCrash(x, y, domino, 0x70);
   }
-  else if (x > 0 && level[y][x-1].dominoType && level[y][x-1].dominoState >= 12)
+  else if (x > 0 && (level[y][x-1].dominoType != DominoTypeEmpty) && (level[y][x-1].dominoState >= 12))
   { // there is no domino in our place but the left neighbor is falling towards us
     DominoCrash(x, y, domino, 0);
   }
-  else if (x < 19 && level[y][x+1].dominoType && level[y][x-1].dominoState <= 4)
+  else if (x < 19 && (level[y][x+1].dominoType != DominoTypeEmpty) && level[y][x+1].dominoState <= 4)
   { // there is no domino in our place but the right neighbor is falling towards us
     DominoCrash(x, y, domino, 0);
   }
