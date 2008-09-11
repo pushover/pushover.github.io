@@ -4,6 +4,10 @@
 
 #include <SDL.h>
 
+#include <vector>
+
+#include <stdio.h>
+
 const char * themes[] = {
   "AZTEC",
   "CASTLE",
@@ -18,6 +22,76 @@ const char * themes[] = {
   "OPTION"
 };
 
+std::vector<int> recorder;
+bool play;
+unsigned int playpos;
+
+void record(const char * level) {
+
+    int num = 0;
+    FILE * f = 0;
+
+    do {
+        num++;
+
+        if (f) fclose(f);
+
+        char fname[200];
+
+        snprintf(fname, 200, "recordings/%05i.rec", num);
+        f = fopen(fname, "r");
+
+    } while (f);
+
+    char fname[200];
+
+    snprintf(fname, 200, "recordings/%05i.rec", num);
+    f = fopen(fname, "w");
+
+    fprintf(f, "%s\n", level);
+
+    int val = recorder[0];
+    int cnt = 1;
+    unsigned int pos = 1;
+
+    while (pos < recorder.size()) {
+
+        if (recorder[pos] != val) {
+            fprintf(f, "%i %i\n", cnt, val);
+            val = recorder[pos];
+            cnt = 1;
+        }
+        else
+        {
+            cnt++;
+        }
+        pos++;
+    }
+
+    fprintf(f, "%i %i\n", cnt, val);
+    fclose(f);
+}
+
+const char * loadrecord(const char * file) {
+    FILE * f = fopen(file, "r");
+
+    static char level[200];
+    fgets(level, 200, f);
+
+    // remove the newline at the end
+    level[strlen(level)-1] = 0;
+
+    while (!feof(f))
+    {
+        int cnt, val;
+        fscanf(f, "%i %i\n", &cnt, &val);
+        for (int i = 0; i < cnt; i++)
+            recorder.push_back(val);
+    }
+
+    printf("record builds on level %s\n", level);
+    return level;
+}
 
 int main(int argn, char * argv[]) {
 
@@ -30,7 +104,17 @@ int main(int argn, char * argv[]) {
 
   level_c l;
 
-  l.load(argv[1]);
+  if (strcmp(argv[1], "-r") == 0)
+  {
+      l.load(loadrecord(argv[2]));
+      play = true;
+      playpos = 0;
+  }
+  else
+  {
+      l.load(argv[1]);
+      play = false;
+  }
 
   gr->setTheme(l.getTheme());
 
@@ -49,26 +133,34 @@ int main(int argn, char * argv[]) {
 
     ticks += 1000/tickDiv;
 
+    unsigned int keyMask = 0;
+
+    if (play && playpos < recorder.size())
     {
-      SDL_Event event; /* Event structure */
+        keyMask = recorder[playpos++];
+    }
+    else
+    {
+        SDL_Event event; /* Event structure */
 
-      while(SDL_PollEvent(&event)) {  /* Loop until there are no events left on the queue */
-        switch(event.type) { /* Process the appropiate event type */
-          case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
+        while(SDL_PollEvent(&event)) {  /* Loop until there are no events left on the queue */
+            switch(event.type) { /* Process the appropiate event type */
+                case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
 
-            if (event.key.keysym.sym == SDLK_ESCAPE)
-              exit = true;
-            if (event.key.keysym.sym == SDLK_s)
-              tickDiv = 19-tickDiv;
-            if (event.key.keysym.sym == SDLK_d)
-              debug = !debug;
+                    if (event.key.keysym.sym == SDLK_ESCAPE)
+                        exit = true;
+                    if (event.key.keysym.sym == SDLK_s)
+                        tickDiv = 19-tickDiv;
+                    if (event.key.keysym.sym == SDLK_d)
+                        debug = !debug;
+                    if (event.key.keysym.sym == SDLK_r)
+                        record(argv[1]);
 
-            break;
+                    break;
+            }
+
         }
-
         Uint8 *keystate = SDL_GetKeyState(NULL);
-
-        unsigned int keyMask = 0;
 
         if ( keystate[SDLK_UP] ) keyMask |= KEY_UP;
         if ( keystate[SDLK_DOWN] ) keyMask |= KEY_DOWN;
@@ -76,10 +168,9 @@ int main(int argn, char * argv[]) {
         if ( keystate[SDLK_RIGHT] ) keyMask |= KEY_RIGHT;
         if ( keystate[SDLK_SPACE] ) keyMask |= KEY_ACTION;
 
-        a.setKeyStates(keyMask);
-
-      }
+        recorder.push_back(keyMask);
     }
+    a.setKeyStates(keyMask);
 
     l.performDoors();
     a.performAnimation();
