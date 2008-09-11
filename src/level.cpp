@@ -181,7 +181,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
           dst.w = gr->blockX();
           dst.h = gr->blockY();
           SDL_BlitSurface(gr->getFgTile(FgElementLadder2), 0, target, &dst);
-	}
+        }
         else if (getFg(x, y) == FgElementPlatformLadderUp)
         {
           SDL_Rect dst;
@@ -190,7 +190,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
           dst.w = gr->blockX();
           dst.h = gr->blockY();
           SDL_BlitSurface(gr->getFgTile(FgElementLadderMiddle), 0, target, &dst);
-	}
+        }
       }
     }
 
@@ -342,7 +342,7 @@ bool level_c::pushDomino(int x, int y, int dir) {
       }
       break;
 
-    // there is never a problem with those types
+      // there is never a problem with those types
     case DominoTypeExploder:
     case DominoTypeDelay:
     case DominoTypeVanisher:
@@ -354,21 +354,21 @@ bool level_c::pushDomino(int x, int y, int dir) {
     case DominoTypeCrash4:
     case DominoTypeCrash5:
     case DominoTypeRiserCont:
-       break;
+      break;
 
-    // the following stones must not fall against the push direction
+      // the following stones must not fall against the push direction
     case DominoTypeTumbler:
     case DominoTypeBridger:
     case DominoTypeTrigger:
     case DominoTypeEmpty:
     case DominoTypeStandard:
     case DominoTypeBlocker:
-       if (getDominoDir(x, y) == -dir)
-       {
-         DominoCrash(x, y, level[y][x+dir].dominoYOffset, level[y][x+dir].dominoExtra);
-         return false;
-       }
-       break;
+      if (getDominoDir(x, y) == -dir)
+      {
+        DominoCrash(x, y, level[y][x+dir].dominoYOffset, level[y][x+dir].dominoExtra);
+        return false;
+      }
+      break;
   }
 
   // now push the dominos, we only push, if the domino is not already falling
@@ -388,8 +388,8 @@ bool level_c::pushDomino(int x, int y, int dir) {
       }
       break;
 
-    // the splitter is special it only falls in the left direction
-    // even though the pieces fall in both directions
+      // the splitter is special it only falls in the left direction
+      // even though the pieces fall in both directions
     case DominoTypeSplitter:
       if (getDominoState(x, y) == 8) {
         // play dound
@@ -398,10 +398,10 @@ bool level_c::pushDomino(int x, int y, int dir) {
       }
       break;
 
-    // the exploder only explosed and does not fall in one direction
-    // so dir is always set to -1
-    // we also need to delay the domino falling against this domino, so
-    // return false
+      // the exploder only explosed and does not fall in one direction
+      // so dir is always set to -1
+      // we also need to delay the domino falling against this domino, so
+      // return false
     case DominoTypeExploder:
       if (getDominoState(x, y) == 8) {
         // play dound
@@ -415,9 +415,9 @@ bool level_c::pushDomino(int x, int y, int dir) {
       }
       break;
 
-    // for the delay we additionally check, if the delay timer is
-    // already running, if it is, we don't push
-    // otherwise we start the delay
+      // for the delay we additionally check, if the delay timer is
+      // already running, if it is, we don't push
+      // otherwise we start the delay
     case DominoTypeDelay:
       if (getDominoState(x, y) == 8) {
         if (getDominoExtra(x, y) == 0) {
@@ -430,8 +430,8 @@ bool level_c::pushDomino(int x, int y, int dir) {
       }
       break;
 
-    // we return false then pushing the riser, because it will rise
-    // and the domino has to wait
+      // we return false then pushing the riser, because it will rise
+      // and the domino has to wait
     case DominoTypeRiser:
       if (getDominoState(x, y) == 16) {
         level[y][x].dominoDir = dir;
@@ -449,8 +449,8 @@ bool level_c::pushDomino(int x, int y, int dir) {
       }
       break;
 
-    // for this types we always return false to stop dominos
-    // falling against this block
+      // for this types we always return false to stop dominos
+      // falling against this block
     case DominoTypeBlocker:
     case DominoTypeCrash0:
     case DominoTypeCrash1:
@@ -482,20 +482,20 @@ void level_c::DTA_N(int x, int y) {
 // this is for the blocker splitter and exploder dominos, when they
 // are falling after beeing lost when going over the edge
 // we check, if we are still falling and only handle the falling case
-void level_c::DTA_F(int x, int y) {
-  if (getDominoExtra(x, y) == 0x70)
-    DTA_E(x, y);
-}
+  void level_c::DTA_F(int x, int y) {
+    if (getDominoExtra(x, y) == 0x70)
+      DTA_E(x, y);
+  }
 
 // this is for the delay domino. We check, if we are falling down when
 // falling over the edge or when the delay time is up
 // if the delay time is still running, decrement and wait
-void level_c::DTA_G(int x, int y) {
-  if (getDominoExtra(x, y) <= 1 || getDominoExtra(x, y) == 0x70)
-    DTA_E(x, y);
-  else
-    level[y][x].dominoExtra--;
-}
+  void level_c::DTA_G(int x, int y) {
+    if (getDominoExtra(x, y) <= 1 || getDominoExtra(x, y) == 0x70)
+      DTA_E(x, y);
+    else
+      level[y][x].dominoExtra--;
+  }
 
 // crash case with dust clouds, we need to call DTA_E because
 // dominos might crash in the air and the rubble needs to fall down
@@ -835,49 +835,49 @@ bool level_c::isTherePlatform(int x, int y) {
 // handle dominos crashing into something
 void level_c::DominoCrash(int x, int y, int type, int extra) {
 
-    // what do we crash into?
-    int next = level[y][x].dominoType;
+  // what do we crash into?
+  int next = level[y][x].dominoType;
 
-    // if all participating parts are completely yellow
-    // the result is a yellow pile
-    if ((next == DominoTypeStandard || next == DominoTypeCrash4) &&
-        (type == DominoTypeStandard || type == DominoTypeCrash4))
-    {
-        next = DominoTypeCrash4;
-    }
-    // if all parts are red, the pile is red
-    else if ((next == DominoTypeBlocker || next == DominoTypeCrash3) &&
-             (type == DominoTypeBlocker || type == DominoTypeCrash3))
-    {
-        next = DominoTypeCrash3;
-    }
-    // otherwise it is mixed color
-    else
-    {
-        next = DominoTypeCrash2;
-    }
+  // if all participating parts are completely yellow
+  // the result is a yellow pile
+  if ((next == DominoTypeStandard || next == DominoTypeCrash4) &&
+      (type == DominoTypeStandard || type == DominoTypeCrash4))
+  {
+    next = DominoTypeCrash4;
+  }
+  // if all parts are red, the pile is red
+  else if ((next == DominoTypeBlocker || next == DominoTypeCrash3) &&
+      (type == DominoTypeBlocker || type == DominoTypeCrash3))
+  {
+    next = DominoTypeCrash3;
+  }
+  // otherwise it is mixed color
+  else
+  {
+    next = DominoTypeCrash2;
+  }
 
-    // set the resulting domino animation
-    level[y][x].dominoType = next;
-    level[y][x].dominoState = 1;
-    level[y][x].dominoDir = 1;
-    if (level[y][x].dominoExtra == 0x70 || extra == 0x70 || level[y][x].dominoExtra == 0x60 || extra == 0x60)
-    {
-        level[y][x].dominoExtra = 0x70;
-        level[y][x].dominoYOffset &= 0xFC;
-    }
-    else
-    {
-        level[y][x].dominoExtra = 0;
-    }
+  // set the resulting domino animation
+  level[y][x].dominoType = next;
+  level[y][x].dominoState = 1;
+  level[y][x].dominoDir = 1;
+  if (level[y][x].dominoExtra == 0x70 || extra == 0x70 || level[y][x].dominoExtra == 0x60 || extra == 0x60)
+  {
+    level[y][x].dominoExtra = 0x70;
+    level[y][x].dominoYOffset &= 0xFC;
+  }
+  else
+  {
+    level[y][x].dominoExtra = 0;
+  }
 
-    markDirty(x-1, y);
-    markDirty(x, y);
-    markDirty(x+1, y);
+  markDirty(x-1, y);
+  markDirty(x, y);
+  markDirty(x+1, y);
 
-// 		mov	ax, 4
-// 		push	ax
-// 		call	SomethingWithSound
+  // 		mov	ax, 4
+  // 		push	ax
+  // 		call	SomethingWithSound
 }
 
 // vertial stone
@@ -924,7 +924,6 @@ void level_c::DTA_E(int x, int y) {
     // remove the old domino
     level[y][x].dominoType = DominoTypeEmpty;
     level[y][x].dominoState = 0;
-    level[y][x].dominoState = 0;
     level[y][x].dominoDir = 0;
     level[y][x].dominoYOffset = 0;
     level[y][x].dominoExtra = 0;
@@ -941,7 +940,7 @@ void level_c::DTA_E(int x, int y) {
     // we still crash if there is a domino below us
     if (getDominoType(x, y+1) != DominoTypeEmpty)
     {
-        DominoCrash(x, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
+      DominoCrash(x, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
     }
 
     // no more falling
@@ -1005,94 +1004,94 @@ void level_c::DTA_E(int x, int y) {
 // splitter parts falling further
 void level_c::DTA_C(int x, int y) {
 
-    // this table contains the positions of the 2 splitter halves
-    // for each splitter state, 8 = vertial, 1 = horizontal
-    static const int SplitterLookup[] = {
-        0, 0,
-        1, 1,
-        2, 2,
-        3, 3,
-        4, 4,
-        5, 5,
-        6, 6,
-        7, 7,
-        8, 8,
-        2, 1,
-        1, 2,
-        3, 1,
-        1, 3,
-        2, 3,
-        3, 2
-    };
+  // this table contains the positions of the 2 splitter halves
+  // for each splitter state, 8 = vertial, 1 = horizontal
+  static const int SplitterLookup[] = {
+    0, 0,
+    1, 1,
+    2, 2,
+    3, 3,
+    4, 4,
+    5, 5,
+    6, 6,
+    7, 7,
+    8, 8,
+    2, 1,
+    1, 2,
+    3, 1,
+    1, 3,
+    2, 3,
+    3, 2
+  };
 
-    // first find the positions of the 2 halves for the
-    // current state
-    int a = SplitterLookup[level[y][x].dominoState*2+1];
-    int b = SplitterLookup[level[y][x].dominoState*2];
+  // first find the positions of the 2 halves for the
+  // current state
+  int a = SplitterLookup[level[y][x].dominoState*2+1];
+  int b = SplitterLookup[level[y][x].dominoState*2];
 
-    // calculate the new position of the left halve
-    if (a == 3)
+  // calculate the new position of the left halve
+  if (a == 3)
+  {
+    // left halve is at a pushing place, check if we hit the wall
+    if (x > 0 && level[y][x-1].fg != 0xA)
     {
-        // left halve is at a pushing place, check if we hit the wall
-        if (x > 0 && level[y][x-1].fg != 0xA)
-        {
-            // no wall, check, if we hit a domino and if so try to push it
-            if (level[y][x-1].dominoType == DominoTypeEmpty)
-            {
-                a--;
-            }
-            else if (pushDomino(x-1, y, -1))
-            {
-                a--;
-            }
-        }
-    }
-    else if (a == 2 && level[y][x-1].dominoType == 0)
-    {
+      // no wall, check, if we hit a domino and if so try to push it
+      if (level[y][x-1].dominoType == DominoTypeEmpty)
+      {
         a--;
+      }
+      else if (pushDomino(x-1, y, -1))
+      {
+        a--;
+      }
     }
+  }
+  else if (a == 2 && level[y][x-1].dominoType == 0)
+  {
+    a--;
+  }
 
-    // same as above but for right halve
-    if (b == 3)
+  // same as above but for right halve
+  if (b == 3)
+  {
+    if (x < 19)
     {
-        if (x < 19)
-        {
-            if (level[y][x+1].dominoType == DominoTypeEmpty)
-            {
-                b--;
-            }
-            else if (pushDomino(x+1, y, 1))
-            {
-                b--;
-            }
-        }
-    }
-    else if (b == 2 && level[y][x+1].dominoType == 0)
-    {
+      if (level[y][x+1].dominoType == DominoTypeEmpty)
+      {
         b--;
+      }
+      else if (pushDomino(x+1, y, 1))
+      {
+        b--;
+      }
     }
+  }
+  else if (b == 2 && level[y][x+1].dominoType == 0)
+  {
+    b--;
+  }
 
-    // now find the new state of the plitter domino
-    for (int i = 0; i < 15; i++)
+  // now find the new state of the plitter domino
+  for (int i = 0; i < 15; i++)
+  {
+    if (SplitterLookup[2*i+1] == a && SplitterLookup[2*i] == b)
     {
-        if (SplitterLookup[2*i+1] == a && SplitterLookup[2*i] == b)
-        {
-            if (level[y][x].dominoState != i)
-            {
-                level[y][x].dominoState = i;
-                markDirty(x, y);
-                markDirty(x+1, y);
-                markDirty(x-1, y);
-                markDirty(x, y-1);
-                markDirty(x-1, y-1);
-                markDirty(x+1, y-1);
-            }
-            return;
-        }
+      if (level[y][x].dominoState != i)
+      {
+        level[y][x].dominoState = i;
+        markDirty(x, y);
+        markDirty(x+1, y);
+        markDirty(x-1, y);
+        markDirty(x, y-1);
+        markDirty(x-1, y-1);
+        markDirty(x+1, y-1);
+      }
+      return;
     }
+  }
 
-    // this must not happen...
-    printf("oops missing splitter image");
+  // this must not happen...
+  printf("oops missing splitter image");
 }
 
 // bridger left this is mainly a lot of ifs to
@@ -1544,226 +1543,226 @@ void level_c::DTA_O(int x, int y) {
 // riser risign vertically
 void level_c::DTA_H(int x, int y) {
 
-    int riserDir = level[y][x].dominoDir;
+  int riserDir = level[y][x].dominoDir;
 
-    if (level[y][x].dominoExtra == 0x60)
+  if (level[y][x].dominoExtra == 0x60)
+  {
+    if (level[y][x].dominoYOffset == 4 && y > 1)
     {
-        if (level[y][x].dominoYOffset == 4 && y > 1)
+      if (isTherePlatform(x, y-2))
+      {
+        if (level[y][x].fg == 0xA || level[y][x].fg == 0xD)
         {
-            if (isTherePlatform(x, y-2))
-            {
-                if (level[y][x].fg == 0xA || level[y][x].fg == 0xD)
-                {
-                    level[y][x].dominoState = 16;
-                    level[y][x].dominoExtra = 0x50;
+          level[y][x].dominoState = 16;
+          level[y][x].dominoExtra = 0x50;
 
-                    markDirty(x, y);
-                    markDirty(x, y-2);
-                    markDirty(x, y-1);
-                    return;
-                }
-            }
+          markDirty(x, y);
+          markDirty(x, y-2);
+          markDirty(x, y-1);
+          return;
         }
-        if (level[y][x].dominoYOffset == -6 && y > 1)
+      }
+    }
+    if (level[y][x].dominoYOffset == -6 && y > 1)
+    {
+
+      if (isTherePlatform(x, y-2))
+      {
+        if (level[y][x].fg == 9 || level[y][x].fg == 0xE)
         {
-
-            if (isTherePlatform(x, y-2))
-            {
-                if (level[y][x].fg == 9 || level[y][x].fg == 0xE)
-                {
-                    level[y][x].dominoState = 16;
-                    level[y][x].dominoExtra = 0x50;
-                    markDirty(x, y);
-                    markDirty(x, y-2);
-                    markDirty(x, y-1);
-                    return;
-                }
-            }
+          level[y][x].dominoState = 16;
+          level[y][x].dominoExtra = 0x50;
+          markDirty(x, y);
+          markDirty(x, y-2);
+          markDirty(x, y-1);
+          return;
         }
-        if (level[y][x].dominoYOffset == -10)
+      }
+    }
+    if (level[y][x].dominoYOffset == -10)
+    {
+      if (y > 1)
+      {
+        if (isTherePlatform(x, y-2))
         {
-            if (y > 1)
-            {
-                if (isTherePlatform(x, y-2))
-                {
-                    level[y][x].dominoState = 16;
-                    level[y][x].dominoExtra = 0;
+          level[y][x].dominoState = 16;
+          level[y][x].dominoExtra = 0;
 
-                    markDirty(x, y);
-                    markDirty(x, y-2);
-                    markDirty(x, y-1);
-                    return;
-                }
-            }
-
-            if (y > 0)
-            {
-                level[y-1][x].dominoExtra = 0x60;
-                level[y-1][x].dominoYOffset = 4;
-                level[y-1][x].dominoDir = level[y][x].dominoDir;
-                level[y-1][x].dominoState = 8;
-                level[y-1][x].dominoType = DominoTypeRiser;
-            }
-
-            level[y][x].dominoType = 0;
-            level[y][x].dominoState = 0;
-            level[y][x].dominoDir = 0;
-            level[y][x].dominoYOffset = 0;
-            level[y][x].dominoExtra = 0;
-
-            markDirty(x, y);
-            markDirty(x, y-2);
-            markDirty(x, y-1);
-            return;
+          markDirty(x, y);
+          markDirty(x, y-2);
+          markDirty(x, y-1);
+          return;
         }
+      }
 
-        if (level[y][x].dominoYOffset == -8 && y > 1)
-        {
-            if (isTherePlatform(x, y-2))
-            {
-                level[y][x].dominoState = 16;
-            }
-        }
+      if (y > 0)
+      {
+        level[y-1][x].dominoExtra = 0x60;
+        level[y-1][x].dominoYOffset = 4;
+        level[y-1][x].dominoDir = level[y][x].dominoDir;
+        level[y-1][x].dominoState = 8;
+        level[y-1][x].dominoType = DominoTypeRiser;
+      }
 
-        if (level[y][x].dominoYOffset == -6 && y > 1)
-        {
-            if (isTherePlatform(x, y-2))
-            {
-                level[y][x].dominoState = 17;
-            }
-        }
-        level[y][x].dominoYOffset -= 2;
+      level[y][x].dominoType = 0;
+      level[y][x].dominoState = 0;
+      level[y][x].dominoDir = 0;
+      level[y][x].dominoYOffset = 0;
+      level[y][x].dominoExtra = 0;
 
-        markDirty(x, y);
-        markDirty(x, y-2);
-        markDirty(x, y-1);
-        return;
+      markDirty(x, y);
+      markDirty(x, y-2);
+      markDirty(x, y-1);
+      return;
     }
 
-    if (riserDir != 0)
+    if (level[y][x].dominoYOffset == -8 && y > 1)
     {
-        if (level[y][x].dominoState == 16)
-            level[y][x].dominoState = 8;
-
-        DTA_4(x, y);
+      if (isTherePlatform(x, y-2))
+      {
+        level[y][x].dominoState = 16;
+      }
     }
+
+    if (level[y][x].dominoYOffset == -6 && y > 1)
+    {
+      if (isTherePlatform(x, y-2))
+      {
+        level[y][x].dominoState = 17;
+      }
+    }
+    level[y][x].dominoYOffset -= 2;
+
+    markDirty(x, y);
+    markDirty(x, y-2);
+    markDirty(x, y-1);
+    return;
+  }
+
+  if (riserDir != 0)
+  {
+    if (level[y][x].dominoState == 16)
+      level[y][x].dominoState = 8;
+
+    DTA_4(x, y);
+  }
 }
 
 // Stone completely falln down right used for
 // standard, Trigger, Delay, Bridger
 void level_c::DTA_K(int x, int y) {
-    int fg;
+  int fg;
 
-    if (x < 19)
-        fg = level[y][x+1].fg;
-    else
-        fg = 0;
+  if (x < 19)
+    fg = level[y][x+1].fg;
+  else
+    fg = 0;
 
-    if (fg == FgElementLadder)
-        fg = 0;
+  if (fg == FgElementLadder)
+    fg = 0;
 
-    if ((getFg(x, y) == FgElementPlatformEnd ||
-            getFg(x, y) == FgElementPlatformStrip)
-            &&
-            fg == FgElementEmpty
-            )
+  if ((getFg(x, y) == FgElementPlatformEnd ||
+        getFg(x, y) == FgElementPlatformStrip)
+      &&
+      fg == FgElementEmpty
+     )
+  {
+
+    if (getDominoType(x+1, y+1) != DominoTypeEmpty)
     {
+      DominoCrash(x+1, y+1, getDominoType(x, y), getDominoExtra(x, y));
+      level[y][x].dominoType = 0;
+      level[y][x].dominoState = 0;
+      level[y][x].dominoDir = 0;
 
-        if (getDominoType(x+1, y+1) != DominoTypeEmpty)
-        {
-            DominoCrash(x+1, y+1, getDominoType(x, y), getDominoExtra(x, y));
-            level[y][x].dominoType = 0;
-            level[y][x].dominoState = 0;
-            level[y][x].dominoDir = 0;
-
-            markDirty(x, y-1);
-            markDirty(x+1, y-1);
-            markDirty(x, y);
-            markDirty(x+1, y);
-        }
-        else
-        {
-            level[y][x+1].dominoType = getDominoType(x, y);
-            level[y][x+1].dominoState = 2;
-            level[y][x+1].dominoDir = getDominoDir(x, y);
-            level[y][x+1].dominoYOffset = 2;
-            level[y][x+1].dominoExtra = 0x70;
-
-// 		mov	ax, 0Ah
-// 		push	ax
-// 		call	SomethingWithSound
-//
-            level[y][x].dominoType = 0;
-            level[y][x].dominoState = 0;
-            level[y][x].dominoDir = 0;
-
-            markDirty(x, y-1);
-            markDirty(x+1, y-1);
-            markDirty(x, y);
-            markDirty(x+1, y);
-        }
+      markDirty(x, y-1);
+      markDirty(x+1, y-1);
+      markDirty(x, y);
+      markDirty(x+1, y);
     }
     else
     {
-        if (x < 19 && level[y][x].fg == FgElementPlatformStep1 && fg == FgElementPlatformStep2)
-        {
-            if (level[y][x+1].dominoType != DominoTypeEmpty)
-            {
-                DominoCrash(x+1, y, level[y][x].dominoType, level[y][x].dominoExtra);
-            }
-            else
-            {
-                level[y][x+1].dominoType = level[y][x].dominoType;
-                level[y][x+1].dominoState = 2;
-                level[y][x+1].dominoDir = level[y][x].dominoDir;
-                level[y][x+1].dominoYOffset = 2;
-                level[y][x+1].dominoExtra = 0x40;
-            }
+      level[y][x+1].dominoType = getDominoType(x, y);
+      level[y][x+1].dominoState = 2;
+      level[y][x+1].dominoDir = getDominoDir(x, y);
+      level[y][x+1].dominoYOffset = 2;
+      level[y][x+1].dominoExtra = 0x70;
 
-            level[y][x].dominoType = 0;
-            level[y][x].dominoState = 0;
-            level[y][x].dominoDir = 0;
-            level[y][x].dominoYOffset = 0;
+      // 		mov	ax, 0Ah
+      // 		push	ax
+      // 		call	SomethingWithSound
+      //
+      level[y][x].dominoType = 0;
+      level[y][x].dominoState = 0;
+      level[y][x].dominoDir = 0;
 
-            markDirty(x, y-1);
-            markDirty(x+1, y-1);
-            markDirty(x, y);
-            markDirty(x+1, y);
-
-            return;
-        }
-
-        if (x < 19 && y < 11 && getFg(x, y) == FgElementPlatformStep2)
-        {
-            if (level[y+1][x+1].dominoType != 0)
-            {
-                DominoCrash(x+1, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
-            }
-            else
-            {
-                level[y+1][x+1].dominoType = level[y][x].dominoType;
-                level[y+1][x+1].dominoState = 2;
-                level[y+1][x+1].dominoDir = level[y][x].dominoDir;
-                level[y+1][x+1].dominoYOffset = -6;
-                level[y+1][x+1].dominoExtra = 0x40;
-            }
-
-            level[y][x].dominoType = 0;
-            level[y][x].dominoState = 0;
-            level[y][x].dominoDir = 0;
-            level[y][x].dominoYOffset = 0;
-
-            markDirty(x, y-1);
-            markDirty(x+1, y-1);
-            markDirty(x, y);
-            markDirty(x+1, y);
-
-            return;
-        }
-
-        level[y][x].dominoDir = 0;
-        return;
+      markDirty(x, y-1);
+      markDirty(x+1, y-1);
+      markDirty(x, y);
+      markDirty(x+1, y);
     }
+  }
+  else
+  {
+    if (x < 19 && level[y][x].fg == FgElementPlatformStep1 && fg == FgElementPlatformStep2)
+    {
+      if (level[y][x+1].dominoType != DominoTypeEmpty)
+      {
+        DominoCrash(x+1, y, level[y][x].dominoType, level[y][x].dominoExtra);
+      }
+      else
+      {
+        level[y][x+1].dominoType = level[y][x].dominoType;
+        level[y][x+1].dominoState = 2;
+        level[y][x+1].dominoDir = level[y][x].dominoDir;
+        level[y][x+1].dominoYOffset = 2;
+        level[y][x+1].dominoExtra = 0x40;
+      }
+
+      level[y][x].dominoType = 0;
+      level[y][x].dominoState = 0;
+      level[y][x].dominoDir = 0;
+      level[y][x].dominoYOffset = 0;
+
+      markDirty(x, y-1);
+      markDirty(x+1, y-1);
+      markDirty(x, y);
+      markDirty(x+1, y);
+
+      return;
+    }
+
+    if (x < 19 && y < 11 && getFg(x, y) == FgElementPlatformStep2)
+    {
+      if (level[y+1][x+1].dominoType != 0)
+      {
+        DominoCrash(x+1, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
+      }
+      else
+      {
+        level[y+1][x+1].dominoType = level[y][x].dominoType;
+        level[y+1][x+1].dominoState = 2;
+        level[y+1][x+1].dominoDir = level[y][x].dominoDir;
+        level[y+1][x+1].dominoYOffset = -6;
+        level[y+1][x+1].dominoExtra = 0x40;
+      }
+
+      level[y][x].dominoType = 0;
+      level[y][x].dominoState = 0;
+      level[y][x].dominoDir = 0;
+      level[y][x].dominoYOffset = 0;
+
+      markDirty(x, y-1);
+      markDirty(x+1, y-1);
+      markDirty(x, y);
+      markDirty(x+1, y);
+
+      return;
+    }
+
+    level[y][x].dominoDir = 0;
+    return;
+  }
 
 }
 
@@ -1771,120 +1770,120 @@ void level_c::DTA_K(int x, int y) {
 // standard, Trigger, Delay, Bridger
 void level_c::DTA_1(int x, int y) {
 
-    int fg;
+  int fg;
 
-    if (x > 0)
-        fg = level[y][x-1].fg;
-    else
-        fg = 0;
+  if (x > 0)
+    fg = level[y][x-1].fg;
+  else
+    fg = 0;
 
-    if (fg == FgElementLadder)
-        fg = 0;
+  if (fg == FgElementLadder)
+    fg = 0;
 
-    if ((getFg(x, y) == FgElementPlatformStart ||
-            getFg(x, y) == FgElementPlatformStrip)
-            &&
-            fg == FgElementEmpty
-            )
+  if ((getFg(x, y) == FgElementPlatformStart ||
+        getFg(x, y) == FgElementPlatformStrip)
+      &&
+      fg == FgElementEmpty
+     )
+  {
+
+    if (getDominoType(x-1, y+1) != DominoTypeEmpty)
     {
+      DominoCrash(x-1, y+1, getDominoType(x, y), getDominoExtra(x, y));
+      level[y][x].dominoType = 0;
+      level[y][x].dominoState = 0;
+      level[y][x].dominoDir = 0;
 
-        if (getDominoType(x-1, y+1) != DominoTypeEmpty)
-        {
-            DominoCrash(x-1, y+1, getDominoType(x, y), getDominoExtra(x, y));
-            level[y][x].dominoType = 0;
-            level[y][x].dominoState = 0;
-            level[y][x].dominoDir = 0;
+      markDirty(x, y-1);
+      markDirty(x-1, y-1);
+      markDirty(x, y);
+      markDirty(x-1, y);
 
-            markDirty(x, y-1);
-            markDirty(x-1, y-1);
-            markDirty(x, y);
-            markDirty(x-1, y);
-
-            return;
-        }
-        else
-        {
-            level[y][x-1].dominoType = getDominoType(x, y);
-            level[y][x-1].dominoState = 0xE;
-            level[y][x-1].dominoDir = getDominoDir(x, y);
-            level[y][x-1].dominoYOffset = 2;
-            level[y][x-1].dominoExtra = 0x70;
-
-// 		mov	ax, 0Ah
-// 		push	ax
-// 		call	SomethingWithSound
-//
-            level[y][x].dominoType = 0;
-            level[y][x].dominoState = 0;
-            level[y][x].dominoDir = 0;
-
-            markDirty(x, y-1);
-            markDirty(x-1, y-1);
-            markDirty(x, y);
-            markDirty(x-1, y);
-        }
+      return;
     }
     else
     {
-        if (x > 0 && level[y][x].fg == FgElementPlatformStep6 && fg == FgElementPlatformStep5)
-        {
-            if (level[y][x-1].dominoType != DominoTypeEmpty)
-            {
-                DominoCrash(x-1, y, level[y][x].dominoType, level[y][x].dominoExtra);
-            }
-            else
-            {
-                level[y][x-1].dominoType = level[y][x].dominoType;
-                level[y][x-1].dominoState = 0xE;
-                level[y][x-1].dominoDir = level[y][x].dominoDir;
-                level[y][x-1].dominoYOffset = 2;
-                level[y][x-1].dominoExtra = 0x40;
-            }
+      level[y][x-1].dominoType = getDominoType(x, y);
+      level[y][x-1].dominoState = 0xE;
+      level[y][x-1].dominoDir = getDominoDir(x, y);
+      level[y][x-1].dominoYOffset = 2;
+      level[y][x-1].dominoExtra = 0x70;
 
-            level[y][x].dominoType = 0;
-            level[y][x].dominoState = 0;
-            level[y][x].dominoDir = 0;
-            level[y][x].dominoYOffset = 0;
+      // 		mov	ax, 0Ah
+      // 		push	ax
+      // 		call	SomethingWithSound
+      //
+      level[y][x].dominoType = 0;
+      level[y][x].dominoState = 0;
+      level[y][x].dominoDir = 0;
 
-            markDirty(x, y-1);
-            markDirty(x-1, y-1);
-            markDirty(x, y);
-            markDirty(x-1, y);
-
-            return;
-        }
-
-        if (x > 0 && y < 11 && getFg(x, y) == FgElementPlatformStep5)
-        {
-            if (level[y+1][x-1].dominoType != 0)
-            {
-                DominoCrash(x-1, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
-            }
-            else
-            {
-                level[y+1][x-1].dominoType = level[y][x].dominoType;
-                level[y+1][x-1].dominoState = 0xE;
-                level[y+1][x-1].dominoDir = level[y][x].dominoDir;
-                level[y+1][x-1].dominoYOffset = -6;
-                level[y+1][x-1].dominoExtra = 0x40;
-            }
-
-            level[y][x].dominoType = 0;
-            level[y][x].dominoState = 0;
-            level[y][x].dominoDir = 0;
-            level[y][x].dominoYOffset = 0;
-
-            markDirty(x, y-1);
-            markDirty(x-1, y-1);
-            markDirty(x, y);
-            markDirty(x-1, y);
-
-            return;
-        }
-
-        level[y][x].dominoDir = 0;
-        return;
+      markDirty(x, y-1);
+      markDirty(x-1, y-1);
+      markDirty(x, y);
+      markDirty(x-1, y);
     }
+  }
+  else
+  {
+    if (x > 0 && level[y][x].fg == FgElementPlatformStep6 && fg == FgElementPlatformStep5)
+    {
+      if (level[y][x-1].dominoType != DominoTypeEmpty)
+      {
+        DominoCrash(x-1, y, level[y][x].dominoType, level[y][x].dominoExtra);
+      }
+      else
+      {
+        level[y][x-1].dominoType = level[y][x].dominoType;
+        level[y][x-1].dominoState = 0xE;
+        level[y][x-1].dominoDir = level[y][x].dominoDir;
+        level[y][x-1].dominoYOffset = 2;
+        level[y][x-1].dominoExtra = 0x40;
+      }
+
+      level[y][x].dominoType = 0;
+      level[y][x].dominoState = 0;
+      level[y][x].dominoDir = 0;
+      level[y][x].dominoYOffset = 0;
+
+      markDirty(x, y-1);
+      markDirty(x-1, y-1);
+      markDirty(x, y);
+      markDirty(x-1, y);
+
+      return;
+    }
+
+    if (x > 0 && y < 11 && getFg(x, y) == FgElementPlatformStep5)
+    {
+      if (level[y+1][x-1].dominoType != 0)
+      {
+        DominoCrash(x-1, y+1, level[y][x].dominoType, level[y][x].dominoExtra);
+      }
+      else
+      {
+        level[y+1][x-1].dominoType = level[y][x].dominoType;
+        level[y+1][x-1].dominoState = 0xE;
+        level[y+1][x-1].dominoDir = level[y][x].dominoDir;
+        level[y+1][x-1].dominoYOffset = -6;
+        level[y+1][x-1].dominoExtra = 0x40;
+      }
+
+      level[y][x].dominoType = 0;
+      level[y][x].dominoState = 0;
+      level[y][x].dominoDir = 0;
+      level[y][x].dominoYOffset = 0;
+
+      markDirty(x, y-1);
+      markDirty(x-1, y-1);
+      markDirty(x, y);
+      markDirty(x-1, y);
+
+      return;
+    }
+
+    level[y][x].dominoDir = 0;
+    return;
+  }
 
 }
 
@@ -1915,9 +1914,9 @@ void level_c::DTA_6(int x, int y) {
       level[y][x-1].dominoYOffset = 2;
       level[y][x-1].dominoExtra = 0x70;
 
-// 		mov	ax, 0Ah
-// 		push	ax
-// 		call	SomethingWithSound
+      // 		mov	ax, 0Ah
+      // 		push	ax
+      // 		call	SomethingWithSound
     }
 
     level[y][x].dominoType = 0;
@@ -2038,9 +2037,9 @@ void level_c::DTA_L(int x, int y) {
       level[y][x+1].dominoYOffset = 2;
       level[y][x+1].dominoExtra = 0x70;
 
-// 		mov	ax, 0Ah
-// 		push	ax
-// 		call	SomethingWithSound
+      // 		mov	ax, 0Ah
+      // 		push	ax
+      // 		call	SomethingWithSound
     }
 
     level[y][x].dominoType = 0;
@@ -2152,10 +2151,10 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
     case  13: DTA_J(x, y); break;
     case  14: DTA_K(x, y); break;
 
-    // DominoTypeBlocker
+              // DominoTypeBlocker
     case  24: DTA_F(x, y); break;
 
-    // DominoTypeSplitter
+              // DominoTypeSplitter
     case  35: DTA_C(x, y); break;
     case  36: DTA_C(x, y); break;
     case  37: DTA_D(x, y); break;
@@ -2170,7 +2169,7 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
     case  46: DTA_C(x, y); break;
     case  47: DTA_C(x, y); break;
 
-    // DominoTypeExploder
+              // DominoTypeExploder
     case  51: DTA_5(x, y); break;
     case  52: DTA_4(x, y); break;
     case  53: DTA_4(x, y); break;
@@ -2180,7 +2179,7 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
     case  57: DTA_4(x, y); break;
     case  58: DTA_F(x, y); break;
 
-    // DominoTypeDelay
+              // DominoTypeDelay
     case  68: DTA_1(x, y); break;
     case  69: DTA_2(x, y); break;
     case  70: DTA_3(x, y); break;
@@ -2197,7 +2196,7 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
     case  81: DTA_J(x, y); break;
     case  82: DTA_K(x, y); break;
 
-    // DominoTypeTumbler
+              // DominoTypeTumbler
     case  85: DTA_6(x, y); break;
     case  86: DTA_2(x, y); break;
     case  87: DTA_3(x, y); break;
@@ -2214,7 +2213,7 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
     case  98: DTA_J(x, y); break;
     case  99: DTA_L(x, y); break;
 
-    // DominoTypeBridger
+              // DominoTypeBridger
     case 102: DTA_7(x, y); break;
     case 103: DTA_2(x, y); break;
     case 104: DTA_3(x, y); break;
@@ -2231,7 +2230,7 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
     case 115: DTA_J(x, y); break;
     case 116: DTA_M(x, y); break;
 
-    // DominoTypeVanisher
+              // DominoTypeVanisher
     case 119: DTA_8(x, y); break;
     case 120: DTA_4(x, y); break;
     case 121: DTA_3(x, y); break;
@@ -2248,7 +2247,7 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
     case 132: DTA_4(x, y); break;
     case 133: DTA_8(x, y); break;
 
-    // DominoTypeTrigger
+              // DominoTypeTrigger
     case 136: DTA_9(x, y); break;
     case 137: DTA_2(x, y); break;
     case 138: DTA_3(x, y); break;
@@ -2265,7 +2264,7 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
     case 149: DTA_J(x, y); break;
     case 150: DTA_N(x, y); break;
 
-    // DominoTypeRiser
+              // DominoTypeRiser
     case 153: DTA_A(x, y); break;
     case 154: DTA_4(x, y); break;
     case 155: DTA_3(x, y); break;
@@ -2284,50 +2283,50 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
     case 168: DTA_H(x, y); break;
     case 169: DTA_H(x, y); break;
 
-    // DominoTypeCrash0
+              // DominoTypeCrash0
     case 170: DTA_B(x, y); break;
     case 171: DTA_B(x, y); break;
     case 172: DTA_B(x, y); break;
     case 173: DTA_B(x, y); break;
     case 174: DTA_B(x, y); break;
 
-    // DominoTypeCrash1
+              // DominoTypeCrash1
     case 187: DTA_B(x, y); break;
     case 188: DTA_B(x, y); break;
     case 189: DTA_B(x, y); break;
     case 190: DTA_B(x, y); break;
     case 191: DTA_B(x, y); break;
 
-    // DominoTypeCrash2
+              // DominoTypeCrash2
     case 204: DTA_B(x, y); break;
     case 205: DTA_B(x, y); break;
     case 206: DTA_B(x, y); break;
     case 207: DTA_B(x, y); break;
     case 208: DTA_B(x, y); break;
 
-    // DominoTypeCrash3
+              // DominoTypeCrash3
     case 221: DTA_B(x, y); break;
     case 222: DTA_B(x, y); break;
     case 223: DTA_B(x, y); break;
     case 224: DTA_B(x, y); break;
     case 225: DTA_B(x, y); break;
 
-    // DominoTypeCrash4
+              // DominoTypeCrash4
     case 238: DTA_B(x, y); break;
     case 239: DTA_B(x, y); break;
     case 240: DTA_B(x, y); break;
     case 241: DTA_B(x, y); break;
     case 242: DTA_B(x, y); break;
 
-    // DominoTypeCrash5
+              // DominoTypeCrash5
     case 255: DTA_B(x, y); break;
     case 256: DTA_B(x, y); break;
     case 257: DTA_B(x, y); break;
 
     case 259: DTA_B(x, y); break;
 
-    // DominoTypeRiserCont
-    // DominoTypeQuaver
+              // DominoTypeRiserCont
+              // DominoTypeQuaver
   }
 }
 
