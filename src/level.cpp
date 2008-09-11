@@ -54,7 +54,7 @@ void level_c::load(const char * name) {
   delete [] dat;
 
   for (unsigned int i = 0; i < 13; i++)
-    staticDirty[i] = dynamicDirty[i] = 0xFFFFFFFF;
+    staticDirty[i] = dynamicDirty[i] = 0xFFFFF;
 
   triggerFalln = false;
 }
@@ -123,11 +123,15 @@ void level_c::updateBackground(graphics_c * gr) {
             *((uint32_t*)(((uint8_t*)background->pixels) + (y*gr->blockY()+i) * background->pitch +
                   background->format->BytesPerPixel*(x*gr->blockX()+j))) = col;
           }
-
-        /* remove dirty bit */
-        staticDirty[y] &= ~(1 << x);
       }
     }
+  for (unsigned int y = 0; y < 13; y++)
+    staticDirty[y] = 0;
+}
+
+void level_c::clearDirty(void) {
+  for (unsigned int y = 0; y < 13; y++)
+    dynamicDirty[y] = 0;
 }
 
 void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
@@ -216,11 +220,6 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
         }
       }
   }
-
-  for (unsigned int y = 0; y < 13; y++) {
-    dynamicDirty[y] = 0;
-  }
-
 }
 
 void level_c::performDoors(void) {

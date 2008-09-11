@@ -129,6 +129,8 @@ int main(int argn, char * argv[]) {
   int tickDiv = 18;
   bool debug = false;
   bool finishCheckDone = false;
+  bool pause = false;
+  SDL_Rect rects[10*13];
 
   while (!exit) {
 
@@ -144,7 +146,7 @@ int main(int argn, char * argv[]) {
     {
         SDL_Event event; /* Event structure */
 
-        while(SDL_PollEvent(&event)) {  /* Loop until there are no events left on the queue */
+        while(SDL_PollEvent(&event) || pause) {  /* Loop until there are no events left on the queue */
             switch(event.type) { /* Process the appropiate event type */
                 case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
 
@@ -156,6 +158,10 @@ int main(int argn, char * argv[]) {
                         debug = !debug;
                     if (event.key.keysym.sym == SDLK_r)
                         record(argv[1]);
+                    if (event.key.keysym.sym == SDLK_p) {
+                        pause = !pause;
+                        ticks = SDL_GetTicks() + 1000/tickDiv;
+                    }
 
                     break;
             }
@@ -185,7 +191,6 @@ int main(int argn, char * argv[]) {
       }
     }
 
-
     a.setKeyStates(keyMask);
 
     l.performDoors();
@@ -199,7 +204,41 @@ int main(int argn, char * argv[]) {
     if (debug)
       l.print();
 
-    SDL_Flip(video);
+    if (debug)
+    {
+      SDL_Flip(video);
+    }
+    else
+    {
+      int numrects = 0;
+
+      for (int y = 0; y < 12; y++)
+      {
+        int rowStart = -1;
+
+        for (int x = 0; x < 21; x++)
+        {
+          if (l.isDirty(x, y) && (x < 20))
+          {
+            if (rowStart == -1)
+              rowStart = x;
+          }
+          else if (rowStart != -1)
+          {
+            rects[numrects].y = gr->blockY()*y;
+            rects[numrects].x = gr->blockX()*rowStart;
+            rects[numrects].h = gr->blockY();
+            rects[numrects].w = gr->blockX()*(x-rowStart);
+            numrects++;
+            rowStart = -1;
+          }
+        }
+      }
+      printf("%i\n", numrects);
+      SDL_UpdateRects(video, numrects, rects);
+    }
+
+    l.clearDirty();
 
     if (l.triggerIsFalln() && !a.isVisible()) {
       if (!play)
