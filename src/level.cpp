@@ -175,7 +175,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
 
         if ((dynamicDirty[y] >> x) & 1)
         {
-          for (int h = 0; h < gr->blockY(); h+=2)
+          for (unsigned int h = 0; h < gr->blockY(); h+=2)
           {
             SDL_Rect dst;
             dst.w = gr->blockX();
@@ -442,13 +442,13 @@ bool level_c::pushDomino(int x, int y, int dir) {
 
 // the 2 tigger falln functions. They just call the
 // normal domino falln function and additionally set the trigger bit
-void level_c::DTA_9(int x, int y, int x2, int y2) {
-  DTA_1(x, y, x2, y2);
+void level_c::DTA_9(int x, int y) {
+  DTA_1(x, y);
 
   triggerFalln = true;
 }
-void level_c::DTA_N(int x, int y, int x2, int y2) {
-  DTA_K(x, y, x2, y2);
+void level_c::DTA_N(int x, int y) {
+  DTA_K(x, y);
 
   triggerFalln = true;
 }
@@ -456,50 +456,50 @@ void level_c::DTA_N(int x, int y, int x2, int y2) {
 // this is for the blocker splitter and exploder dominos, when they
 // are falling after beeing lost when going over the edge
 // we check, if we are still falling and only handle the falling case
-void level_c::DTA_F(int x, int y, int x2, int y2) {
+void level_c::DTA_F(int x, int y) {
   if (getDominoExtra(x, y) == 0x70)
-    DTA_E(x, y, x2, y2);
+    DTA_E(x, y);
 }
 
 // this is for the delay domino. We check, if we are falling down when
 // falling over the edge or when the delay time is up
 // if the delay time is still running, decrement and wait
-void level_c::DTA_G(int x, int y, int x2, int y2) {
+void level_c::DTA_G(int x, int y) {
   if (getDominoExtra(x, y) <= 1 || getDominoExtra(x, y) == 0x70)
-    DTA_E(x, y, x2, y2);
+    DTA_E(x, y);
   else
     level[y][x].dominoExtra--;
 }
 
 // crash case with dust clouds, we need to call DTA_E because
 // dominos might crash in the air and the rubble needs to fall down
-void level_c::DTA_B(int x, int y, int x2, int y2) {
-  DTA_E(x, y, x2, y2);
+void level_c::DTA_B(int x, int y) {
+  DTA_E(x, y);
 
-  markDirty(x2+1, y2);
-  markDirty(x2+1, y2-1);
+  markDirty(x+1, y);
+  markDirty(x+1, y-1);
 }
 
 // splitter opening simply call the normal domino falling
 // function and mark some more blocks because we split left and
 // right and the normal function will only mark one side
-void level_c::DTA_D(int x, int y, int x2, int y2) {
-  markDirty(x2+1, y2-1);
-  markDirty(x2+1, y2);
+void level_c::DTA_D(int x, int y) {
+  markDirty(x+1, y-1);
+  markDirty(x+1, y);
 
-  DTA_4(x, y, x2, y2);
+  DTA_4(x, y);
 
   if (getDominoState(x, y) == 5)
-    markDirty(x2, y2-2);
+    markDirty(x, y-2);
 }
 
 // the final vansher state, remove the vanisher
 // from the level and mark things dirty
-void level_c::DTA_8(int x, int y, int x2, int y2) {
-  markDirty(x2, y2);
-  markDirty(x2+getDominoDir(x, y), y2);
-  markDirty(x2, y2-1);
-  markDirty(x2+getDominoDir(x, y), y2-1);
+void level_c::DTA_8(int x, int y) {
+  markDirty(x, y);
+  markDirty(x+getDominoDir(x, y), y);
+  markDirty(x, y-1);
+  markDirty(x+getDominoDir(x, y), y-1);
 
   level[y][x].dominoType = DominoTypeEmpty;
   level[y][x].dominoDir = 0;
@@ -507,18 +507,18 @@ void level_c::DTA_8(int x, int y, int x2, int y2) {
 }
 
 // this is the nearly falln down left case
-void level_c::DTA_2(int x, int y, int x2, int y2) {
+void level_c::DTA_2(int x, int y) {
 
   if (getDominoExtra(x, y) == 0x40 || getDominoExtra(x, y) == 0x70)
   {
-    DTA_4(x, y, x2, y2);
+    DTA_4(x, y);
     return;
   }
 
   // if we move in the other direction (e.g. tumbler) simply continue
   if (getDominoDir(x, y) == 1)
   {
-    DTA_4(x, y, x2, y2);
+    DTA_4(x, y);
     return;
   }
 
@@ -540,23 +540,23 @@ void level_c::DTA_2(int x, int y, int x2, int y2) {
       getDominoState(x-2, y) != 12 &&
       getDominoState(x-2, y) != 13)
   {
-    DTA_4(x, y, x2, y2);
+    DTA_4(x, y);
   }
 }
 
 // nearly falln down right
-void level_c::DTA_J(int x, int y, int x2, int y2) {
+void level_c::DTA_J(int x, int y) {
 
   if (getDominoExtra(x, y) == 0x40 || getDominoExtra(x, y) == 0x70)
   {
-    DTA_4(x, y, x2, y2);
+    DTA_4(x, y);
     return;
   }
 
   // if we fall in the other direction (tumbler) we simply contnue
   if (getDominoDir(x, y) == -1)
   {
-    DTA_4(x, y, x2, y2);
+    DTA_4(x, y);
     return;
   }
 
@@ -578,12 +578,12 @@ void level_c::DTA_J(int x, int y, int x2, int y2) {
       getDominoState(x+2, y) != 11 &&
       getDominoState(x+2, y) != 14)
   {
-    DTA_4(x, y, x2, y2);
+    DTA_4(x, y);
   }
 }
 
 // normal falling case
-void level_c::DTA_4(int x, int y, int x2, int y2) {
+void level_c::DTA_4(int x, int y) {
   if (getDominoExtra(x, y) == 0x40 || getDominoExtra(x, y) == 0x70)
   {
     level[y][x].dominoYOffset += 2;
@@ -628,7 +628,7 @@ void level_c::DTA_4(int x, int y, int x2, int y2) {
 }
 
 // exploder making its hole
-void level_c::DTA_5(int x, int y, int x2, int y2) {
+void level_c::DTA_5(int x, int y) {
 
   level[y][x].dominoType = 0;
   level[y][x].dominoState = 0;
@@ -666,28 +666,28 @@ void level_c::DTA_5(int x, int y, int x2, int y2) {
 }
 
 // hitting next domino to the left
-void level_c::DTA_3(int x, int y, int x2, int y2) {
+void level_c::DTA_3(int x, int y) {
 
   // if we hit a step, stop falling
-  if (x2 > 0 && getFg(x2-1, y2) == FgElementPlatformStep4)
+  if (x > 0 && getFg(x-1, y) == FgElementPlatformStep4)
     return;
 
-  if (level[y][x].dominoYOffset == 8 && x2 > 0 && getFg(x2-1, y2) == FgElementPlatformStep1)
+  if (level[y][x].dominoYOffset == 8 && x > 0 && getFg(x-1, y) == FgElementPlatformStep1)
     return;
 
   // if the next somino is empty, continue falling
   if (getDominoType(x-1, y) == DominoTypeEmpty) {
-    DTA_4(x, y, x2, y2);
+    DTA_4(x, y);
     return;
   }
 
   // if the next domino is not a blocker and not a delay, we
   // simply push that domino and continue falling
-  if (getDominoType(x2-1, y2) != DominoTypeBlocker &&
-      getDominoType(x2-1, y2) != DominoTypeDelay)
+  if (getDominoType(x-1, y) != DominoTypeBlocker &&
+      getDominoType(x-1, y) != DominoTypeDelay)
   {
-    if (pushDomino(x2-1, y2, -1))
-      DTA_4(x, y, x2, y2);
+    if (pushDomino(x-1, y, -1))
+      DTA_4(x, y);
     return;
   }
 
@@ -696,7 +696,7 @@ void level_c::DTA_3(int x, int y, int x2, int y2) {
   if (getDominoType(x-1, y) == DominoTypeDelay)
   {
     if (getDominoState(x-1, y) != 8) {
-      DTA_4(x, y, x2, y2);
+      DTA_4(x, y);
       return;
     }
   }
@@ -705,72 +705,72 @@ void level_c::DTA_3(int x, int y, int x2, int y2) {
   // we try to continue falling
   if (getDominoType(x+1, y) == DominoTypeSplitter && getDominoState(x+1, y) != 8)
   {
-    if (pushDomino(x2-1, y2, -1))
-      DTA_4(x, y, x2, y2);
+    if (pushDomino(x-1, y, -1))
+      DTA_4(x, y);
     return;
   }
 
   // if there is a domino to the right of us that has falln we try to continue
   if (getDominoType(x+1, y) != DominoTypeEmpty && getDominoState(x+1, y) < 8)
   {
-    if (pushDomino(x2-1, y2, -1))
-      DTA_4(x, y, x2, y2);
+    if (pushDomino(x-1, y, -1))
+      DTA_4(x, y);
     return;
   }
 
   // now the only case left is to reverse direction but still push the domino to our left
   level[y][x].dominoDir = 1;
-  pushDomino(x2-1, y2, -1);
-  DTA_4(x, y, x2, y2);
+  pushDomino(x-1, y, -1);
+  DTA_4(x, y);
 }
 
 // same as DTA_3 but for the right direction
-void level_c::DTA_I(int x, int y, int x2, int y2) {
+void level_c::DTA_I(int x, int y) {
 
-  if (x2 < 19 && getFg(x2+1, y2) == FgElementPlatformStep7)
+  if (x < 19 && getFg(x+1, y) == FgElementPlatformStep7)
     return;
 
-  if (level[y][x].dominoYOffset == 8 && x2 < 19 && getFg(x2-1, y2) == FgElementPlatformStep6)
+  if (level[y][x].dominoYOffset == 8 && x < 19 && getFg(x-1, y) == FgElementPlatformStep6)
     return;
 
   if (getDominoType(x+1, y) == DominoTypeEmpty) {
-    DTA_4(x, y, x2, y2);
+    DTA_4(x, y);
     return;
   }
 
-  if (getDominoType(x2+1, y2) != DominoTypeBlocker &&
-      getDominoType(x2+1, y2) != DominoTypeDelay)
+  if (getDominoType(x+1, y) != DominoTypeBlocker &&
+      getDominoType(x+1, y) != DominoTypeDelay)
   {
-    if (pushDomino(x2+1, y2, 1))
-      DTA_4(x, y, x2, y2);
+    if (pushDomino(x+1, y, 1))
+      DTA_4(x, y);
     return;
   }
 
   if (getDominoType(x+1, y) == DominoTypeDelay)
   {
     if (getDominoState(x+1, y) != 8) {
-      DTA_4(x, y, x2, y2);
+      DTA_4(x, y);
       return;
     }
   }
 
   if (getDominoType(x-1, y) == DominoTypeSplitter && getDominoState(x-1, y) != 8)
   {
-    if (pushDomino(x2+1, y2, 1))
-      DTA_4(x, y, x2, y2);
+    if (pushDomino(x+1, y, 1))
+      DTA_4(x, y);
     return;
   }
 
   if (getDominoType(x-1, y) != DominoTypeEmpty && getDominoState(x-1, y) > 8)
   {
-    if (pushDomino(x2+1, y2, 1))
-      DTA_4(x, y, x2, y2);
+    if (pushDomino(x+1, y, 1))
+      DTA_4(x, y);
     return;
   }
 
   level[y][x].dominoDir = -1;
-  pushDomino(x2+1, y2, 1);
-  DTA_4(x, y, x2, y2);
+  pushDomino(x+1, y, 1);
+  DTA_4(x, y);
 }
 
 // return true, if there is a platform at the given position
@@ -855,7 +855,7 @@ void level_c::DominoCrash(int x, int y, int type, int extra) {
 }
 
 // vertial stone
-void level_c::DTA_E(int x, int y, int x2, int y2) {
+void level_c::DTA_E(int x, int y) {
 
   if (level[y][x].dominoExtra == 0x40)
   {
@@ -868,7 +868,7 @@ void level_c::DTA_E(int x, int y, int x2, int y2) {
   {
     if (level[y][x].dominoDir != 0)
     {
-      DTA_4(x, y, x2, y2);
+      DTA_4(x, y);
     }
     return;
   }
@@ -977,7 +977,7 @@ void level_c::DTA_E(int x, int y, int x2, int y2) {
 }
 
 // splitter parts falling further
-void level_c::DTA_C(int x, int y, int x2, int y2) {
+void level_c::DTA_C(int x, int y) {
 
     // this table contains the positions of the 2 splitter halves
     // for each splitter state, 8 = vertial, 1 = horizontal
@@ -1072,7 +1072,7 @@ void level_c::DTA_C(int x, int y, int x2, int y2) {
 // bridger left this is mainly a lot of ifs to
 // find out the new level elements that need to
 // be placed
-void level_c::DTA_7(int x, int y, int x2, int y2) {
+void level_c::DTA_7(int x, int y) {
 
   int fg2;
 
@@ -1100,7 +1100,7 @@ void level_c::DTA_7(int x, int y, int x2, int y2) {
 
   if (fg != FgElementPlatformStart && fg != FgElementPlatformStrip)
   {
-    DTA_1(x, y, x2, y2);
+    DTA_1(x, y);
     return;
   }
 
@@ -1171,7 +1171,7 @@ void level_c::DTA_7(int x, int y, int x2, int y2) {
   // continue downwards
   if (doit == 0)
   {
-    DTA_1(x, y, x2, y2);
+    DTA_1(x, y);
     return;
   }
 
@@ -1200,7 +1200,7 @@ void level_c::DTA_7(int x, int y, int x2, int y2) {
 }
 
 // Brider right same as DTA_7 but for other direction
-void level_c::DTA_M(int x, int y, int x2, int y2) {
+void level_c::DTA_M(int x, int y) {
 
   int fg2;
 
@@ -1228,7 +1228,7 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 
   if (fg != FgElementPlatformEnd && fg != FgElementPlatformStrip)
   {
-    DTA_K(x, y, x2, y2);
+    DTA_K(x, y);
     return;
   }
 
@@ -1297,7 +1297,7 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 
   if (doit == 0)
   {
-    DTA_K(x, y, x2, y2);
+    DTA_K(x, y);
     return;
   }
 
@@ -1327,7 +1327,7 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 
 
 // riser
-void level_c::DTA_A(int x, int y, int x2, int y2) {
+void level_c::DTA_A(int x, int y) {
 
   int a;
 
@@ -1422,7 +1422,7 @@ void level_c::DTA_A(int x, int y, int x2, int y2) {
 
 
 // Riser
-void level_c::DTA_O(int x, int y, int x2, int y2) {
+void level_c::DTA_O(int x, int y) {
 
   int a;
 
@@ -1516,7 +1516,7 @@ void level_c::DTA_O(int x, int y, int x2, int y2) {
 }
 
 // riser risign vertically
-void level_c::DTA_H(int x, int y, int x2, int y2) {
+void level_c::DTA_H(int x, int y) {
 
     int riserDir = level[y][x].dominoDir;
 
@@ -1619,13 +1619,13 @@ void level_c::DTA_H(int x, int y, int x2, int y2) {
         if (level[y][x].dominoState == 16)
             level[y][x].dominoState = 8;
 
-        DTA_4(x, y, x2, y2);
+        DTA_4(x, y);
     }
 }
 
 // Stone completely falln down right used for
 // standard, Trigger, Delay, Bridger
-void level_c::DTA_K(int x, int y, int x2, int y2) {
+void level_c::DTA_K(int x, int y) {
     int fg;
 
     if (x < 19)
@@ -1743,7 +1743,7 @@ void level_c::DTA_K(int x, int y, int x2, int y2) {
 
 // Stone completely falln down left used for
 // standard, Trigger, Delay, Bridger
-void level_c::DTA_1(int x, int y, int x2, int y2) {
+void level_c::DTA_1(int x, int y) {
 
     int fg;
 
@@ -1863,7 +1863,7 @@ void level_c::DTA_1(int x, int y, int x2, int y2) {
 }
 
 // Tumbler falln down left
-void level_c::DTA_6(int x, int y, int x2, int y2) {
+void level_c::DTA_6(int x, int y) {
 
   int fg;
 
@@ -1986,7 +1986,7 @@ void level_c::DTA_6(int x, int y, int x2, int y2) {
 }
 
 // Tumbler falln down right
-void level_c::DTA_L(int x, int y, int x2, int y2) {
+void level_c::DTA_L(int x, int y) {
 
   int fg;
 
@@ -2105,200 +2105,200 @@ void level_c::DTA_L(int x, int y, int x2, int y2) {
   markDirty(x+1, y-1);
 }
 
-void level_c::callStateFunction(int type, int state, int x, int y, int x2, int y2) {
+void level_c::callStateFunction(int type, int state, int x, int y) {
 
   switch ((type-1)*17+state-1) {
 
     // DominoTypeStandard
-    case   0: DTA_1(x, y, x2, y2); break;
-    case   1: DTA_2(x, y, x2, y2); break;
-    case   2: DTA_3(x, y, x2, y2); break;
-    case   3: DTA_4(x, y, x2, y2); break;
-    case   4: DTA_4(x, y, x2, y2); break;
-    case   5: DTA_4(x, y, x2, y2); break;
-    case   6: DTA_4(x, y, x2, y2); break;
-    case   7: DTA_E(x, y, x2, y2); break;
-    case   8: DTA_4(x, y, x2, y2); break;
-    case   9: DTA_4(x, y, x2, y2); break;
-    case  10: DTA_4(x, y, x2, y2); break;
-    case  11: DTA_4(x, y, x2, y2); break;
-    case  12: DTA_I(x, y, x2, y2); break;
-    case  13: DTA_J(x, y, x2, y2); break;
-    case  14: DTA_K(x, y, x2, y2); break;
+    case   0: DTA_1(x, y); break;
+    case   1: DTA_2(x, y); break;
+    case   2: DTA_3(x, y); break;
+    case   3: DTA_4(x, y); break;
+    case   4: DTA_4(x, y); break;
+    case   5: DTA_4(x, y); break;
+    case   6: DTA_4(x, y); break;
+    case   7: DTA_E(x, y); break;
+    case   8: DTA_4(x, y); break;
+    case   9: DTA_4(x, y); break;
+    case  10: DTA_4(x, y); break;
+    case  11: DTA_4(x, y); break;
+    case  12: DTA_I(x, y); break;
+    case  13: DTA_J(x, y); break;
+    case  14: DTA_K(x, y); break;
 
     // DominoTypeBlocker
-    case  24: DTA_F(x, y, x2, y2); break;
+    case  24: DTA_F(x, y); break;
 
     // DominoTypeSplitter
-    case  35: DTA_C(x, y, x2, y2); break;
-    case  36: DTA_C(x, y, x2, y2); break;
-    case  37: DTA_D(x, y, x2, y2); break;
-    case  38: DTA_D(x, y, x2, y2); break;
-    case  39: DTA_D(x, y, x2, y2); break;
-    case  40: DTA_D(x, y, x2, y2); break;
-    case  41: DTA_F(x, y, x2, y2); break;
-    case  42: DTA_C(x, y, x2, y2); break;
-    case  43: DTA_C(x, y, x2, y2); break;
-    case  44: DTA_C(x, y, x2, y2); break;
-    case  45: DTA_C(x, y, x2, y2); break;
-    case  46: DTA_C(x, y, x2, y2); break;
-    case  47: DTA_C(x, y, x2, y2); break;
+    case  35: DTA_C(x, y); break;
+    case  36: DTA_C(x, y); break;
+    case  37: DTA_D(x, y); break;
+    case  38: DTA_D(x, y); break;
+    case  39: DTA_D(x, y); break;
+    case  40: DTA_D(x, y); break;
+    case  41: DTA_F(x, y); break;
+    case  42: DTA_C(x, y); break;
+    case  43: DTA_C(x, y); break;
+    case  44: DTA_C(x, y); break;
+    case  45: DTA_C(x, y); break;
+    case  46: DTA_C(x, y); break;
+    case  47: DTA_C(x, y); break;
 
     // DominoTypeExploder
-    case  51: DTA_5(x, y, x2, y2); break;
-    case  52: DTA_4(x, y, x2, y2); break;
-    case  53: DTA_4(x, y, x2, y2); break;
-    case  54: DTA_4(x, y, x2, y2); break;
-    case  55: DTA_4(x, y, x2, y2); break;
-    case  56: DTA_4(x, y, x2, y2); break;
-    case  57: DTA_4(x, y, x2, y2); break;
-    case  58: DTA_F(x, y, x2, y2); break;
+    case  51: DTA_5(x, y); break;
+    case  52: DTA_4(x, y); break;
+    case  53: DTA_4(x, y); break;
+    case  54: DTA_4(x, y); break;
+    case  55: DTA_4(x, y); break;
+    case  56: DTA_4(x, y); break;
+    case  57: DTA_4(x, y); break;
+    case  58: DTA_F(x, y); break;
 
     // DominoTypeDelay
-    case  68: DTA_1(x, y, x2, y2); break;
-    case  69: DTA_2(x, y, x2, y2); break;
-    case  70: DTA_3(x, y, x2, y2); break;
-    case  71: DTA_4(x, y, x2, y2); break;
-    case  72: DTA_4(x, y, x2, y2); break;
-    case  73: DTA_4(x, y, x2, y2); break;
-    case  74: DTA_4(x, y, x2, y2); break;
-    case  75: DTA_G(x, y, x2, y2); break;
-    case  76: DTA_4(x, y, x2, y2); break;
-    case  77: DTA_4(x, y, x2, y2); break;
-    case  78: DTA_4(x, y, x2, y2); break;
-    case  79: DTA_4(x, y, x2, y2); break;
-    case  80: DTA_I(x, y, x2, y2); break;
-    case  81: DTA_J(x, y, x2, y2); break;
-    case  82: DTA_K(x, y, x2, y2); break;
+    case  68: DTA_1(x, y); break;
+    case  69: DTA_2(x, y); break;
+    case  70: DTA_3(x, y); break;
+    case  71: DTA_4(x, y); break;
+    case  72: DTA_4(x, y); break;
+    case  73: DTA_4(x, y); break;
+    case  74: DTA_4(x, y); break;
+    case  75: DTA_G(x, y); break;
+    case  76: DTA_4(x, y); break;
+    case  77: DTA_4(x, y); break;
+    case  78: DTA_4(x, y); break;
+    case  79: DTA_4(x, y); break;
+    case  80: DTA_I(x, y); break;
+    case  81: DTA_J(x, y); break;
+    case  82: DTA_K(x, y); break;
 
     // DominoTypeTumbler
-    case  85: DTA_6(x, y, x2, y2); break;
-    case  86: DTA_2(x, y, x2, y2); break;
-    case  87: DTA_3(x, y, x2, y2); break;
-    case  88: DTA_4(x, y, x2, y2); break;
-    case  89: DTA_4(x, y, x2, y2); break;
-    case  90: DTA_4(x, y, x2, y2); break;
-    case  91: DTA_4(x, y, x2, y2); break;
-    case  92: DTA_E(x, y, x2, y2); break;
-    case  93: DTA_4(x, y, x2, y2); break;
-    case  94: DTA_4(x, y, x2, y2); break;
-    case  95: DTA_4(x, y, x2, y2); break;
-    case  96: DTA_4(x, y, x2, y2); break;
-    case  97: DTA_I(x, y, x2, y2); break;
-    case  98: DTA_J(x, y, x2, y2); break;
-    case  99: DTA_L(x, y, x2, y2); break;
+    case  85: DTA_6(x, y); break;
+    case  86: DTA_2(x, y); break;
+    case  87: DTA_3(x, y); break;
+    case  88: DTA_4(x, y); break;
+    case  89: DTA_4(x, y); break;
+    case  90: DTA_4(x, y); break;
+    case  91: DTA_4(x, y); break;
+    case  92: DTA_E(x, y); break;
+    case  93: DTA_4(x, y); break;
+    case  94: DTA_4(x, y); break;
+    case  95: DTA_4(x, y); break;
+    case  96: DTA_4(x, y); break;
+    case  97: DTA_I(x, y); break;
+    case  98: DTA_J(x, y); break;
+    case  99: DTA_L(x, y); break;
 
     // DominoTypeBridger
-    case 102: DTA_7(x, y, x2, y2); break;
-    case 103: DTA_2(x, y, x2, y2); break;
-    case 104: DTA_3(x, y, x2, y2); break;
-    case 105: DTA_4(x, y, x2, y2); break;
-    case 106: DTA_4(x, y, x2, y2); break;
-    case 107: DTA_4(x, y, x2, y2); break;
-    case 108: DTA_4(x, y, x2, y2); break;
-    case 109: DTA_E(x, y, x2, y2); break;
-    case 110: DTA_4(x, y, x2, y2); break;
-    case 111: DTA_4(x, y, x2, y2); break;
-    case 112: DTA_4(x, y, x2, y2); break;
-    case 113: DTA_4(x, y, x2, y2); break;
-    case 114: DTA_I(x, y, x2, y2); break;
-    case 115: DTA_J(x, y, x2, y2); break;
-    case 116: DTA_M(x, y, x2, y2); break;
+    case 102: DTA_7(x, y); break;
+    case 103: DTA_2(x, y); break;
+    case 104: DTA_3(x, y); break;
+    case 105: DTA_4(x, y); break;
+    case 106: DTA_4(x, y); break;
+    case 107: DTA_4(x, y); break;
+    case 108: DTA_4(x, y); break;
+    case 109: DTA_E(x, y); break;
+    case 110: DTA_4(x, y); break;
+    case 111: DTA_4(x, y); break;
+    case 112: DTA_4(x, y); break;
+    case 113: DTA_4(x, y); break;
+    case 114: DTA_I(x, y); break;
+    case 115: DTA_J(x, y); break;
+    case 116: DTA_M(x, y); break;
 
     // DominoTypeVanisher
-    case 119: DTA_8(x, y, x2, y2); break;
-    case 120: DTA_4(x, y, x2, y2); break;
-    case 121: DTA_3(x, y, x2, y2); break;
-    case 122: DTA_4(x, y, x2, y2); break;
-    case 123: DTA_4(x, y, x2, y2); break;
-    case 124: DTA_4(x, y, x2, y2); break;
-    case 125: DTA_4(x, y, x2, y2); break;
-    case 126: DTA_E(x, y, x2, y2); break;
-    case 127: DTA_4(x, y, x2, y2); break;
-    case 128: DTA_4(x, y, x2, y2); break;
-    case 129: DTA_4(x, y, x2, y2); break;
-    case 130: DTA_4(x, y, x2, y2); break;
-    case 131: DTA_I(x, y, x2, y2); break;
-    case 132: DTA_4(x, y, x2, y2); break;
-    case 133: DTA_8(x, y, x2, y2); break;
+    case 119: DTA_8(x, y); break;
+    case 120: DTA_4(x, y); break;
+    case 121: DTA_3(x, y); break;
+    case 122: DTA_4(x, y); break;
+    case 123: DTA_4(x, y); break;
+    case 124: DTA_4(x, y); break;
+    case 125: DTA_4(x, y); break;
+    case 126: DTA_E(x, y); break;
+    case 127: DTA_4(x, y); break;
+    case 128: DTA_4(x, y); break;
+    case 129: DTA_4(x, y); break;
+    case 130: DTA_4(x, y); break;
+    case 131: DTA_I(x, y); break;
+    case 132: DTA_4(x, y); break;
+    case 133: DTA_8(x, y); break;
 
     // DominoTypeTrigger
-    case 136: DTA_9(x, y, x2, y2); break;
-    case 137: DTA_2(x, y, x2, y2); break;
-    case 138: DTA_3(x, y, x2, y2); break;
-    case 139: DTA_4(x, y, x2, y2); break;
-    case 140: DTA_4(x, y, x2, y2); break;
-    case 141: DTA_4(x, y, x2, y2); break;
-    case 142: DTA_4(x, y, x2, y2); break;
-    case 143: DTA_E(x, y, x2, y2); break;
-    case 144: DTA_4(x, y, x2, y2); break;
-    case 145: DTA_4(x, y, x2, y2); break;
-    case 146: DTA_4(x, y, x2, y2); break;
-    case 147: DTA_4(x, y, x2, y2); break;
-    case 148: DTA_I(x, y, x2, y2); break;
-    case 149: DTA_J(x, y, x2, y2); break;
-    case 150: DTA_N(x, y, x2, y2); break;
+    case 136: DTA_9(x, y); break;
+    case 137: DTA_2(x, y); break;
+    case 138: DTA_3(x, y); break;
+    case 139: DTA_4(x, y); break;
+    case 140: DTA_4(x, y); break;
+    case 141: DTA_4(x, y); break;
+    case 142: DTA_4(x, y); break;
+    case 143: DTA_E(x, y); break;
+    case 144: DTA_4(x, y); break;
+    case 145: DTA_4(x, y); break;
+    case 146: DTA_4(x, y); break;
+    case 147: DTA_4(x, y); break;
+    case 148: DTA_I(x, y); break;
+    case 149: DTA_J(x, y); break;
+    case 150: DTA_N(x, y); break;
 
     // DominoTypeRiser
-    case 153: DTA_A(x, y, x2, y2); break;
-    case 154: DTA_4(x, y, x2, y2); break;
-    case 155: DTA_3(x, y, x2, y2); break;
-    case 156: DTA_4(x, y, x2, y2); break;
-    case 157: DTA_4(x, y, x2, y2); break;
-    case 158: DTA_4(x, y, x2, y2); break;
-    case 159: DTA_4(x, y, x2, y2); break;
-    case 160: DTA_H(x, y, x2, y2); break;
-    case 161: DTA_4(x, y, x2, y2); break;
-    case 162: DTA_4(x, y, x2, y2); break;
-    case 163: DTA_4(x, y, x2, y2); break;
-    case 164: DTA_4(x, y, x2, y2); break;
-    case 165: DTA_I(x, y, x2, y2); break;
-    case 166: DTA_4(x, y, x2, y2); break;
-    case 167: DTA_O(x, y, x2, y2); break;
-    case 168: DTA_H(x, y, x2, y2); break;
-    case 169: DTA_H(x, y, x2, y2); break;
+    case 153: DTA_A(x, y); break;
+    case 154: DTA_4(x, y); break;
+    case 155: DTA_3(x, y); break;
+    case 156: DTA_4(x, y); break;
+    case 157: DTA_4(x, y); break;
+    case 158: DTA_4(x, y); break;
+    case 159: DTA_4(x, y); break;
+    case 160: DTA_H(x, y); break;
+    case 161: DTA_4(x, y); break;
+    case 162: DTA_4(x, y); break;
+    case 163: DTA_4(x, y); break;
+    case 164: DTA_4(x, y); break;
+    case 165: DTA_I(x, y); break;
+    case 166: DTA_4(x, y); break;
+    case 167: DTA_O(x, y); break;
+    case 168: DTA_H(x, y); break;
+    case 169: DTA_H(x, y); break;
 
     // DominoTypeCrash0
-    case 170: DTA_B(x, y, x2, y2); break;
-    case 171: DTA_B(x, y, x2, y2); break;
-    case 172: DTA_B(x, y, x2, y2); break;
-    case 173: DTA_B(x, y, x2, y2); break;
-    case 174: DTA_B(x, y, x2, y2); break;
+    case 170: DTA_B(x, y); break;
+    case 171: DTA_B(x, y); break;
+    case 172: DTA_B(x, y); break;
+    case 173: DTA_B(x, y); break;
+    case 174: DTA_B(x, y); break;
 
     // DominoTypeCrash1
-    case 187: DTA_B(x, y, x2, y2); break;
-    case 188: DTA_B(x, y, x2, y2); break;
-    case 189: DTA_B(x, y, x2, y2); break;
-    case 190: DTA_B(x, y, x2, y2); break;
-    case 191: DTA_B(x, y, x2, y2); break;
+    case 187: DTA_B(x, y); break;
+    case 188: DTA_B(x, y); break;
+    case 189: DTA_B(x, y); break;
+    case 190: DTA_B(x, y); break;
+    case 191: DTA_B(x, y); break;
 
     // DominoTypeCrash2
-    case 204: DTA_B(x, y, x2, y2); break;
-    case 205: DTA_B(x, y, x2, y2); break;
-    case 206: DTA_B(x, y, x2, y2); break;
-    case 207: DTA_B(x, y, x2, y2); break;
-    case 208: DTA_B(x, y, x2, y2); break;
+    case 204: DTA_B(x, y); break;
+    case 205: DTA_B(x, y); break;
+    case 206: DTA_B(x, y); break;
+    case 207: DTA_B(x, y); break;
+    case 208: DTA_B(x, y); break;
 
     // DominoTypeCrash3
-    case 221: DTA_B(x, y, x2, y2); break;
-    case 222: DTA_B(x, y, x2, y2); break;
-    case 223: DTA_B(x, y, x2, y2); break;
-    case 224: DTA_B(x, y, x2, y2); break;
-    case 225: DTA_B(x, y, x2, y2); break;
+    case 221: DTA_B(x, y); break;
+    case 222: DTA_B(x, y); break;
+    case 223: DTA_B(x, y); break;
+    case 224: DTA_B(x, y); break;
+    case 225: DTA_B(x, y); break;
 
     // DominoTypeCrash4
-    case 238: DTA_B(x, y, x2, y2); break;
-    case 239: DTA_B(x, y, x2, y2); break;
-    case 240: DTA_B(x, y, x2, y2); break;
-    case 241: DTA_B(x, y, x2, y2); break;
-    case 242: DTA_B(x, y, x2, y2); break;
+    case 238: DTA_B(x, y); break;
+    case 239: DTA_B(x, y); break;
+    case 240: DTA_B(x, y); break;
+    case 241: DTA_B(x, y); break;
+    case 242: DTA_B(x, y); break;
 
     // DominoTypeCrash5
-    case 255: DTA_B(x, y, x2, y2); break;
-    case 256: DTA_B(x, y, x2, y2); break;
-    case 257: DTA_B(x, y, x2, y2); break;
-    case 258: DTA_B(x, y, x2, y2); break;
-    case 259: DTA_B(x, y, x2, y2); break;
+    case 255: DTA_B(x, y); break;
+    case 256: DTA_B(x, y); break;
+    case 257: DTA_B(x, y); break;
+
+    case 259: DTA_B(x, y); break;
 
     // DominoTypeRiserCont
     // DominoTypeQuaver
@@ -2312,7 +2312,7 @@ void level_c::performDominos(void) {
       if (getDominoType(x, y) != DominoTypeEmpty &&
           getDominoState(x, y) != 0) {
 
-        callStateFunction(getDominoType(x, y), getDominoState(x, y), x, y, x, y);
+        callStateFunction(getDominoType(x, y), getDominoState(x, y), x, y);
 
         if (getDominoType(x, y) == DominoTypeRiser)
         {

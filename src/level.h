@@ -46,35 +46,35 @@ class level_c {
     bool openDoorEntry;
 
     // calls the different states of the dominos
-    void callStateFunction(int type, int state, int x, int y, int x2, int y2);
+    void callStateFunction(int type, int state, int x, int y);
 
     bool isTherePlatform(int x, int y);
     void DominoCrash(int x, int y, int type, int extra);
 
-    void DTA_1(int x, int y, int x2, int y2);
-    void DTA_2(int x, int y, int x2, int y2);
-    void DTA_3(int x, int y, int x2, int y2);
-    void DTA_4(int x, int y, int x2, int y2);
-    void DTA_E(int x, int y, int x2, int y2);
-    void DTA_I(int x, int y, int x2, int y2);
-    void DTA_J(int x, int y, int x2, int y2);
-    void DTA_K(int x, int y, int x2, int y2);
-    void DTA_F(int x, int y, int x2, int y2);
-    void DTA_C(int x, int y, int x2, int y2);
-    void DTA_D(int x, int y, int x2, int y2);
-    void DTA_5(int x, int y, int x2, int y2);
-    void DTA_G(int x, int y, int x2, int y2);
-    void DTA_6(int x, int y, int x2, int y2);
-    void DTA_L(int x, int y, int x2, int y2);
-    void DTA_7(int x, int y, int x2, int y2);
-    void DTA_M(int x, int y, int x2, int y2);
-    void DTA_8(int x, int y, int x2, int y2);
-    void DTA_9(int x, int y, int x2, int y2);
-    void DTA_N(int x, int y, int x2, int y2);
-    void DTA_A(int x, int y, int x2, int y2);
-    void DTA_H(int x, int y, int x2, int y2);
-    void DTA_O(int x, int y, int x2, int y2);
-    void DTA_B(int x, int y, int x2, int y2);
+    void DTA_1(int x, int y);
+    void DTA_2(int x, int y);
+    void DTA_3(int x, int y);
+    void DTA_4(int x, int y);
+    void DTA_E(int x, int y);
+    void DTA_I(int x, int y);
+    void DTA_J(int x, int y);
+    void DTA_K(int x, int y);
+    void DTA_F(int x, int y);
+    void DTA_C(int x, int y);
+    void DTA_D(int x, int y);
+    void DTA_5(int x, int y);
+    void DTA_G(int x, int y);
+    void DTA_6(int x, int y);
+    void DTA_L(int x, int y);
+    void DTA_7(int x, int y);
+    void DTA_M(int x, int y);
+    void DTA_8(int x, int y);
+    void DTA_9(int x, int y);
+    void DTA_N(int x, int y);
+    void DTA_A(int x, int y);
+    void DTA_H(int x, int y);
+    void DTA_O(int x, int y);
+    void DTA_B(int x, int y);
 
     bool triggerFalln;
 
