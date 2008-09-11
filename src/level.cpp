@@ -634,6 +634,7 @@ void level_c::DTA_4(int x, int y) {
   }
 
   markDirty(x, y);
+  markDirty(x, y-1);
 
   // add some dirty blocks depending on the direction we have falln
   if (getDominoState(x, y) > 8)
