@@ -180,6 +180,8 @@ int main(int argn, char * argv[]) {
     l.drawDominos(video, gr, debug);
     a.draw(video);
 
+    l.print();
+
     SDL_Flip(video);
 
     if (SDL_GetTicks() < ticks)

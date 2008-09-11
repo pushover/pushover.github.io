@@ -57,6 +57,32 @@ void level_c::load(const char * name) {
     staticDirty[i] = dynamicDirty[i] = 0xFFFFFFFF;
 }
 
+void level_c::print(void) {
+
+  char directions[] = "<0>";
+
+  for (unsigned int y = 0; y < 13; y++) {
+    for (unsigned int x = 0; x < 20; x++)
+      printf("%x", level[y][x].dominoType);
+    printf("  ");
+    for (unsigned int x = 0; x < 20; x++)
+      printf("%x", level[y][x].dominoState);
+    printf("  ");
+    for (unsigned int x = 0; x < 20; x++)
+      printf("%c", directions[level[y][x].dominoDir+1]);
+    printf("  ");
+    for (unsigned int x = 0; x < 20; x++)
+      printf("%c", 'a'+level[y][x].dominoYOffset);
+    printf("  ");
+    for (unsigned int x = 0; x < 20; x++)
+      printf("%02x", level[y][x].dominoExtra);
+    printf("\n");
+  }
+
+  printf("\n");
+
+}
+
 void level_c::updateBackground(graphics_c * gr) {
   for (unsigned int y = 0; y < 13; y++)
     for (unsigned int x = 0; x < 20; x++) {
