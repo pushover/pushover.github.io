@@ -1297,7 +1297,7 @@ void level_c::DTA_M(int x, int y, int x2, int y2) {
 
   if (doit == 0)
   {
-    DTA_1(x, y, x2, y2);
+    DTA_K(x, y, x2, y2);
     return;
   }
 
