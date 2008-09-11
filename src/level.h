@@ -180,4 +180,11 @@ class level_c {
 
 
     void print(void);
+
+    // check, if the level has been successfully solved
+    // if not the reason for failure is in fail
+    bool levelCompleted(int *fail);
+
+    bool triggerIsFalln(void) { return triggerFalln; }
+
 };

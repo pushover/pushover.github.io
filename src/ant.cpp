@@ -94,6 +94,8 @@ void ant_c::init(level_c * l, graphics_c * graph) {
   direction = 1;
   pushDelay = 0;
 
+  finalAnimationPlayed = levelFail = levelSuccess = false;
+
   level = l;
   gr = graph;
 }
@@ -440,7 +442,7 @@ unsigned int ant_c::SFXXX9(void) {
 
 unsigned int ant_c::SFEnterDoor(void) {
 
-  if (!animateAnt(0)) {
+  if (animateAnt(0)) {
     blockX = 200;
     blockY = 200;
 
@@ -1638,7 +1640,7 @@ unsigned int ant_c::SFNextAction(void) {
       }
     }
   }
-  else if (keyMask & KEY_DOWN)  //down
+  else if (keyMask & KEY_DOWN)
   {
     if (animation == AntAnimPushLeft ||
         animation == AntAnimPushRight)
@@ -1803,12 +1805,12 @@ unsigned int ant_c::SFNextAction(void) {
     inactiveTimer++;
     returnState = checkForNoKeyActions();
   }
-  else if (false /*TODO LevelCompletedSuccessfully*/)
+  else if (levelSuccess)
   {
     animation = returnState = AntAnimVictory;
     finalAnimationPlayed = 1;
   }
-  else if (0 /* TODO LevelFailReason*/)
+  else if (levelFail)
   {
     animation = returnState = AntAnimShrugging;
     finalAnimationPlayed = 1;
@@ -1827,5 +1829,14 @@ unsigned int ant_c::SFNextAction(void) {
   fallingHight = 0;
   return returnState;
 
+}
+
+void ant_c::success(void) {
+  levelSuccess = true;
+  level->openExitDoor(true);
+}
+
+void ant_c::fail(void) {
+  levelFail = true;
 }
 

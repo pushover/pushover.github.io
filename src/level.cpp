@@ -55,6 +55,8 @@ void level_c::load(const char * name) {
 
   for (unsigned int i = 0; i < 13; i++)
     staticDirty[i] = dynamicDirty[i] = 0xFFFFFFFF;
+
+  triggerFalln = false;
 }
 
 void level_c::print(void) {
@@ -2347,3 +2349,39 @@ void level_c::performDominos(void) {
         }
       }
 }
+
+bool level_c::levelCompleted(int *fail) {
+
+  for (int y = 0; y < 13; y++)
+    for (int x = 0; x < 20; x++) {
+      if (level[y][x].dominoType >= DominoTypeCrash0 &&
+          level[y][x].dominoType <= DominoTypeCrash5)
+      {
+        if (fail) *fail = 1;
+        return false;
+      }
+
+      if (level[y][x].dominoType != DominoTypeEmpty && level[y][x].dominoType != DominoTypeBlocker)
+      {
+        if (level[y][x].dominoType == DominoTypeSplitter)
+        {
+          if (level[y][x].dominoState > 2 && level[y][x].dominoState != 9 && level[y][x].dominoState != 10)
+          {
+            if (fail) *fail = 2;
+            return false;
+          }
+        }
+        else
+        {
+          if (level[y][x].dominoState > 2 && level[y][x].dominoState < 14)
+          {
+            if (fail) *fail = 2;
+            return false;
+          }
+        }
+      }
+    }
+
+  return true;
+}
+

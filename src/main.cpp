@@ -128,6 +128,7 @@ int main(int argn, char * argv[]) {
 
   int tickDiv = 18;
   bool debug = false;
+  bool finishCheckDone = false;
 
   while (!exit) {
 
@@ -170,6 +171,21 @@ int main(int argn, char * argv[]) {
 
         recorder.push_back(keyMask);
     }
+
+    if (l.triggerIsFalln() && !finishCheckDone)
+    {
+      finishCheckDone = true;
+      if (l.levelCompleted(0) && !a.carrySomething() && a.isLiving())
+      {
+        a.success();
+      }
+      else
+      {
+        a.fail();
+      }
+    }
+
+
     a.setKeyStates(keyMask);
 
     l.performDoors();
@@ -180,9 +196,16 @@ int main(int argn, char * argv[]) {
     l.drawDominos(video, gr, debug);
     a.draw(video);
 
-    l.print();
+    if (debug)
+      l.print();
 
     SDL_Flip(video);
+
+    if (l.triggerIsFalln() && !a.isVisible()) {
+      if (!play)
+        record(argv[1]);
+      exit = true;
+    }
 
     if (SDL_GetTicks() < ticks)
       SDL_Delay(ticks-SDL_GetTicks());

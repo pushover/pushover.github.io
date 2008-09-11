@@ -39,6 +39,8 @@ class ant_c {
     bool downChecker, upChecker;
     int numPushsLeft;
 
+    bool levelFail, levelSuccess;
+
   public:
 
     ant_c(void) {}
@@ -54,6 +56,14 @@ class ant_c {
     void draw(SDL_Surface * video);
 
     void setKeyStates(unsigned int keyMask);
+
+    bool carrySomething(void) { return carriedDomino != 0; }
+    bool isLiving(void) { return state != 64 && state != 65; }
+
+    void success(void);
+    void fail(void);
+
+    bool isVisible(void) { return blockX >= 0 && blockX < 20 && blockY >= 0 && blockY < 13; }
 
   private:
 
@@ -113,5 +123,4 @@ class ant_c {
     unsigned int checkForNoKeyActions(void);
     bool CanPlaceDomino(int x, int y, int ofs);
     bool PushableDomino(int x, int y, int ofs);
-
 };
