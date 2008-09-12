@@ -137,7 +137,7 @@ void graphicsO_c::loadGraphics(void) {
     }
 
   offset = 0;
-  for (unsigned int i = 12; i < 18; i++)
+  for (unsigned int i = 11; i < 18; i++)
     for (unsigned int j = 0; j < numDominos[i]; j++) {
 
       SDL_Surface * v = getSprite(d1 + offset, &offset, palette, scale);

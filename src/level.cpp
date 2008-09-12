@@ -161,16 +161,52 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
 
         // TODO: for splitters it is necessary to pain the splitting domino
         if (getDominoType(x, y) > 0) {
-          SDL_Surface * v = gr->getDomino(getDominoType(x, y)-1, getDominoState(x, y)-1);
 
-          if (v) {
+          if (getDominoType(x, y) == DominoTypeRiser)
+          {
+            unsigned int RiserImages[] = {7, 6, 0, 5, 0, 4, 0, 0, 0, 3, 0, 2, 0, 1, 0, 0};
+            // for the riser we need to check, if the riser is currently trying to stand up again
 
-            SDL_Rect dst;
-            dst.x = (x-2)*gr->blockX();
-            dst.y = y*gr->blockY()-v->h + gr->dominoDisplace() + level[y][x].dominoYOffset*2;
-            dst.w = v->w;
-            dst.h = v->h;
-            SDL_BlitSurface(v, 0, target, &dst);
+            unsigned int dt = DominoTypeRiser;
+            unsigned int di = getDominoState(x, y);
+            unsigned int xOfs = 2;
+            unsigned int yOfs = 0;
+
+            if ((getDominoDir(x, y) < 0 && di > 8 ||
+                getDominoDir(x, y) > 0 && di < 8) &&
+                di < 16)
+            {
+              dt = DominoTypeRiserCont;
+              di = RiserImages[di-1];
+              xOfs = 1;
+              yOfs = 2*4;
+            }
+
+            SDL_Surface * v = gr->getDomino(dt-1, di-1);
+
+            if (v) {
+
+              SDL_Rect dst;
+              dst.x = (x-xOfs)*gr->blockX();
+              dst.y = y*gr->blockY()-v->h + gr->dominoDisplace() + level[y][x].dominoYOffset*2 - yOfs;
+              dst.w = v->w;
+              dst.h = v->h;
+              SDL_BlitSurface(v, 0, target, &dst);
+            }
+          }
+          else
+          {
+            SDL_Surface * v = gr->getDomino(getDominoType(x, y)-1, getDominoState(x, y)-1);
+
+            if (v) {
+
+              SDL_Rect dst;
+              dst.x = (x-2)*gr->blockX();
+              dst.y = y*gr->blockY()-v->h + gr->dominoDisplace() + level[y][x].dominoYOffset*2;
+              dst.w = v->w;
+              dst.h = v->h;
+              SDL_BlitSurface(v, 0, target, &dst);
+            }
           }
         }
       }
