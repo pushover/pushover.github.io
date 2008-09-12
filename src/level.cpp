@@ -137,7 +137,7 @@ void level_c::clearDirty(void) {
 void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
   for (unsigned int y = 0; y < 13; y++)
     for (unsigned int x = 0; x < 20; x++) {
-      if ((dynamicDirty[y] >> x) & 1 || true) {
+      if ((dynamicDirty[y] >> x) & 1 || debug) {
 
         /* copy background from background surface */
         {
@@ -156,7 +156,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
     }
   for (unsigned int y = 0; y < 13; y++)
     for (unsigned int x = 0; x < 20; x++) {
-      if ((dynamicDirty[y] >> x) & 1 || true) {
+      if ((dynamicDirty[y] >> x) & 1 || debug) {
         /* paint the foreground */
 
         // TODO: for splitters it is necessary to pain the splitting domino
@@ -179,7 +179,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
   // repaint the ladders in front of dominos
   for (unsigned int y = 0; y < 13; y++)
     for (unsigned int x = 0; x < 20; x++) {
-      if ((dynamicDirty[y] >> x) & 1 || true) {
+      if ((dynamicDirty[y] >> x) & 1 || debug) {
         if (getFg(x, y) == FgElementPlatformLadderDown || getFg(x, y) == FgElementLadder) {
           SDL_Rect dst;
           dst.x = x*gr->blockX();

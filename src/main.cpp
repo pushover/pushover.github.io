@@ -234,7 +234,6 @@ int main(int argn, char * argv[]) {
           }
         }
       }
-      printf("%i\n", numrects);
       SDL_UpdateRects(video, numrects, rects);
     }
 
