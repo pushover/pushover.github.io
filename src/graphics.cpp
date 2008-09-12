@@ -63,8 +63,8 @@ void graphics_c::addAnt(unsigned int anim, signed char yOffset, SDL_Surface * v,
 
 const unsigned char graphics_c::numDominoTypes = 18;
 const unsigned char graphics_c::numDominos[numDominoTypes] = {
-  15, 15, 14, 8, 15, 15, 15, 15, 15,
-    17, 6, 6, 6, 6, 6, 6, 8, 1
+  15, 15, 14, 8, 15, 15, 15, 15, 15, 17, 6,
+  6, 6, 6, 6, 6, 8, 1
 };
 
 const unsigned char graphics_c::numAntAnimations = 66;
