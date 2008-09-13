@@ -1,6 +1,7 @@
 #include <SDL.h>
 #include <string>
 #include <vector>
+#include <map>
 
 /* this class contains all the informationf or all graphics */
 class graphics_c {
@@ -53,6 +54,9 @@ class graphics_c {
 
     static const unsigned char numAntAnimations;
 
+    void putText(SDL_Surface * v, int x, int y, const wchar_t * text, Uint8 r, Uint8 g, Uint8 b, bool shadow);
+    unsigned int textLen(const wchar_t * text, bool shadow);
+
   protected:
 
     /* some functions for the loaders to store the loaded images */
@@ -68,6 +72,8 @@ class graphics_c {
     // if free is false it is assumed that the Suface is used elsewhere and not freed
     // on deletion of object
     void addAnt(unsigned int anim, signed char yOffset, SDL_Surface * v, bool free = true);
+
+    void addBigGlyph(wchar_t c, SDL_Surface *);
 
   private:
 
@@ -88,5 +94,7 @@ class graphics_c {
     std::vector<std::vector<antSprite> > ant;
 
     unsigned int curTheme;
+
+    std::map<wchar_t, SDL_Surface *> bigFont;
 
 };
