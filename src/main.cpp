@@ -212,7 +212,7 @@ int main(int argn, char * argv[]) {
     {
       int numrects = 0;
 
-      for (int y = 0; y < 12; y++)
+      for (int y = 0; y < 13; y++)
       {
         int rowStart = -1;
 
@@ -227,7 +227,12 @@ int main(int argn, char * argv[]) {
           {
             rects[numrects].y = gr->blockY()*y;
             rects[numrects].x = gr->blockX()*rowStart;
-            rects[numrects].h = gr->blockY();
+
+            if (y == 12)
+              rects[numrects].h = gr->blockY()/2;
+            else
+              rects[numrects].h = gr->blockY();
+
             rects[numrects].w = gr->blockX()*(x-rowStart);
             numrects++;
             rowStart = -1;
