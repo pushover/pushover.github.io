@@ -245,8 +245,17 @@ int main(int argn, char * argv[]) {
     l.clearDirty();
 
     if (l.triggerIsFalln() && !a.isVisible()) {
-      if (!play)
-        record(argv[1]);
+
+      if (l.someTimeLeft())
+      {
+        if (!play)
+          record(argv[1]);
+      }
+      else
+      {
+        printf("Sorry You've been too slow\n");
+      }
+
       exit = true;
     }
 

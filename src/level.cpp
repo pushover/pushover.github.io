@@ -47,6 +47,7 @@ void level_c::load(const char * name) {
   doorExitX  = dat[1582];
   doorExitY  = dat[1583];
 
+  timeLeft = ((int)dat[0x774] * 60 + (int)dat[0x775]) * 18 + 17;
 
   level[doorEntryY][doorEntryX].fg = FgElementDoor0;
   openDoorEntry = openDoorExit = false;
@@ -135,6 +136,16 @@ void level_c::clearDirty(void) {
 }
 
 void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
+
+  markDirty(1, 11);
+  markDirty(2, 11);
+  markDirty(3, 11);
+
+  markDirty(1, 12);
+  markDirty(2, 12);
+  markDirty(3, 12);
+
+
   for (unsigned int y = 0; y < 13; y++)
     for (unsigned int x = 0; x < 20; x++) {
       if ((dynamicDirty[y] >> x) & 1 || debug) {
@@ -255,6 +266,25 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
           }
         }
       }
+  }
+
+  {
+    wchar_t time[6];
+
+    int tm = timeLeft/18;
+
+    if (timeLeft < 0)
+      tm = -tm+1;
+
+    if (timeLeft % 18 < 9)
+      swprintf(time, 6, L"%02i:%02i", tm/60, tm%60);
+    else
+      swprintf(time, 6, L"%02i %02i", tm/60, tm%60);
+
+    if (timeLeft >= 0)
+      gr->putText(target, 18*2, 186*2, time, 255, 255, 0, true);
+    else
+      gr->putText(target, 18*2, 186*2, time, 255, 0, 0, true);
   }
 }
 
@@ -2391,6 +2421,8 @@ void level_c::performDominos(void) {
           if (isDirty(x+1, y)) markDirty(x+1, y-1);
         }
       }
+
+  timeLeft--;
 }
 
 bool level_c::levelCompleted(int *fail) {

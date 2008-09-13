@@ -29,6 +29,9 @@ class level_c {
     // the positions of the 2 doors
     unsigned char doorEntryX, doorEntryY, doorExitX, doorExitY;
 
+    // the number of 1/18 seconds that are left for solving the level
+    int timeLeft;
+
     /* 2 bitmasks containing a bit for each block saying if it changed
      * there is one array for the static background and one for the dynamic
      * foreground with the dominos and the ant, the clock, ...
@@ -187,5 +190,7 @@ class level_c {
     bool levelCompleted(int *fail);
 
     bool triggerIsFalln(void) { return triggerFalln; }
+
+    bool someTimeLeft(void) { return timeLeft > 0; }
 
 };
