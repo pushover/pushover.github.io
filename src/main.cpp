@@ -122,10 +122,11 @@ int main(int argn, char * argv[]) {
 
   a.init(&l, gr);
 
-  bool exit = false;
+  l.updateBackground(gr);
 
   Uint32 ticks = SDL_GetTicks();
 
+  bool exit = false;
   int tickDiv = 18;
   bool debug = false;
   bool finishCheckDone = false;
