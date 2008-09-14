@@ -135,6 +135,20 @@ void level_c::clearDirty(void) {
     dynamicDirty[y] = 0;
 }
 
+static void PutSprite(int x, int y, SDL_Surface * v, SDL_Surface * target)
+{
+  if (v)
+  {
+    SDL_Rect dst;
+    dst.x = x-32-32-16;
+    dst.y = y - v->h;
+    dst.w = v->w;
+    dst.h = v->h;
+
+    SDL_BlitSurface(v, 0, target, &dst);
+  }
+}
+
 void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
 
   markDirty(1, 11);
@@ -165,63 +179,192 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
         }
       }
     }
-  for (unsigned int y = 0; y < 13; y++)
-    for (unsigned int x = 0; x < 20; x++) {
-      if ((dynamicDirty[y] >> x) & 1 || debug) {
-        /* paint the foreground */
 
-        // TODO: for splitters it is necessary to pain the splitting domino
-        if (getDominoType(x, y) > 0) {
+  static int XposOffset[] = {-16, -16,  0,-16,  0,  0, 0, 0, 0,  0, 0, 16,  0, 16, 16, 0};
+  static int YposOffset[] = { -8,  -6,  0, -4,  0, -2, 0, 0, 0, -2, 0, -4,  0, -6, -8, 0};
+  static int StoneImageOffset[] = {  7, 6, 0, 5, 0, 4, 0, 0, 0, 3, 0, 2, 0, 1, 0, 0};
 
-          if (getDominoType(x, y) == DominoTypeRiser)
-          {
-            unsigned int RiserImages[] = {7, 6, 0, 5, 0, 4, 0, 0, 0, 3, 0, 2, 0, 1, 0, 0};
-            // for the riser we need to check, if the riser is currently trying to stand up again
+  int SpriteYPos = 2*4;
 
-            unsigned int dt = DominoTypeRiser;
-            unsigned int di = getDominoState(x, y);
-            unsigned int xOfs = 2;
-            unsigned int yOfs = 0;
+  for (int y = 0; y < 13; y++, SpriteYPos += gr->blockY()) {
 
-            if ((getDominoDir(x, y) < 0 && di > 8 ||
-                getDominoDir(x, y) > 0 && di < 8) &&
-                di < 16)
-            {
-              dt = DominoTypeRiserCont;
-              di = RiserImages[di-1];
-              xOfs = 1;
-              yOfs = 2*4;
-            }
+    int SpriteXPos = 2*8;
 
-            SDL_Surface * v = gr->getDomino(dt-1, di-1);
+    for (int x = 0; x < 20; x++, SpriteXPos += gr->blockX()) {
 
-            if (v) {
+      if (!isDirty(x, y)) continue;
 
-              SDL_Rect dst;
-              dst.x = (x-xOfs)*gr->blockX();
-              dst.y = y*gr->blockY()-v->h + gr->dominoDisplace() + level[y][x].dominoYOffset*2 - yOfs;
-              dst.w = v->w;
-              dst.h = v->h;
-              SDL_BlitSurface(v, 0, target, &dst);
-            }
-          }
-          else
-          {
-            SDL_Surface * v = gr->getDomino(getDominoType(x, y)-1, getDominoState(x, y)-1);
-
-            if (v) {
-
-              SDL_Rect dst;
-              dst.x = (x-2)*gr->blockX();
-              dst.y = y*gr->blockY()-v->h + gr->dominoDisplace() + level[y][x].dominoYOffset*2;
-              dst.w = v->w;
-              dst.h = v->h;
-              SDL_BlitSurface(v, 0, target, &dst);
-            }
-          }
-        }
+      if (y < 12 && x > 0 && !isDirty(x-1, y+1) && level[y+1][x-1].dominoType != DominoTypeEmpty &&
+          (level[y+1][x-1].dominoState > 8 ||
+           level[y+1][x-1].dominoType == DominoTypeSplitter && level[y+1][x-1].dominoState != 8 ||
+           level[y+1][x-1].dominoState >= DominoTypeCrash0))
+      {
+        PutSprite(
+            SpriteXPos-gr->blockX(),
+            SpriteYPos+2*level[y+1][x-1].dominoYOffset+gr->blockY(),
+            gr->getDomino(level[y+1][x-1].dominoType-1, level[y+1][x-1].dominoState-1), target
+            );
       }
+
+      if (x > 0 && !isDirty(x-1, y+2) && level[y][x-1].dominoType != DominoTypeEmpty &&
+          (level[y][x-1].dominoState > 8 ||
+           level[y][x-1].dominoType == DominoTypeSplitter && level[y][x-1].dominoState != 8 ||
+           level[y][x-1].dominoType >= DominoTypeCrash0))
+      {
+        PutSprite(
+            SpriteXPos-gr->blockX(),
+            SpriteYPos+2*level[y][x-1].dominoYOffset,
+            gr->getDomino(level[y][x-1].dominoType-1, level[y][x-1].dominoState-1), target
+            );
+      }
+
+      if (y < 12 && !isDirty(x, y+1) && level[y+1][x].dominoType != DominoTypeEmpty)
+      {
+        PutSprite(
+            SpriteXPos,
+            SpriteYPos+2*level[y+1][x].dominoYOffset+gr->blockY(),
+            gr->getDomino(level[y+1][x].dominoType-1, level[y+1][x].dominoState-1), target
+            );
+      }
+
+      if (level[y][x].dominoType == DominoTypeSplitter &&
+          level[y][x].dominoState == 6 &&
+          level[y][x].dominoExtra != 0)
+      {
+        PutSprite(
+            SpriteXPos,
+            SpriteYPos-12,
+            gr->getDomino(level[y][x].dominoExtra-1, 7), target
+            );
+        level[y][x].dominoExtra = 0;
+      }
+
+
+      if (level[y][x].dominoType == DominoTypeRiser && level[y][x].dominoExtra == 0x60 &&
+          level[y][x].dominoState < 16 && level[y][x].dominoState != 8)
+      {
+        PutSprite(
+            SpriteXPos+2*XposOffset[level[y][x].dominoState],
+            SpriteYPos+2*YposOffset[level[y][x].dominoState]+2*level[y][x].dominoYOffset,
+            gr->getDomino(level[y][x].dominoType-1, 2*StoneImageOffset[level[y][x].dominoState]), target
+            );
+      }
+      else if (level[y][x].dominoType == DominoTypeRiser && level[y][x].dominoState == 1 && level[y][x].dominoExtra == 0 &&
+          level[y-2][x-1].fg == 0)
+      {
+        PutSprite(
+            2*XposOffset[level[y][x].dominoState-1]+SpriteXPos+2,
+            2*YposOffset[level[y][x].dominoState-1]+SpriteYPos+2*level[y][x].dominoYOffset,
+            gr->getDomino(DominoTypeRiserCont-1, level[y][x].dominoState-1), target
+            );
+      }
+      else if (level[y][x].dominoType == DominoTypeRiser && level[y][x].dominoState == 16 && level[y][x].dominoExtra == 0 &&
+          level[y-2][x+1].fg == 0)
+      {
+        PutSprite(
+            2*XposOffset[level[y][x].dominoState-1]+SpriteXPos-2,
+            2*YposOffset[level[y][x].dominoState-1]+SpriteYPos+2*level[y][x].dominoYOffset,
+            gr->getDomino(DominoTypeRiserCont-1, level[y][x].dominoState-1), target
+            );
+      }
+      else if (level[y][x].dominoType != DominoTypeEmpty)
+      {
+        PutSprite(
+            SpriteXPos,
+            SpriteYPos+2*level[y][x].dominoYOffset,
+            gr->getDomino(level[y][x].dominoType-1, level[y][x].dominoState-1), target
+            );
+      }
+
+      if (x < 19 && y < 12 && !isDirty(x+1, y+1) && level[y+1][x+1].dominoType != DominoTypeEmpty &&
+          (level[y+1][x+1].dominoState < 8 ||
+           level[y+1][x+1].dominoType == DominoTypeSplitter && level[y+1][x+1].dominoState != 8 ||
+           level[y+1][x+1].dominoType >= DominoTypeCrash0))
+      {
+
+        PutSprite(
+            SpriteXPos+gr->blockX(),
+            SpriteYPos+2*level[y+1][x+1].dominoYOffset+gr->blockY(),
+            gr->getDomino(level[y+1][x+1].dominoType-1, level[y+1][x+1].dominoState-1), target
+            );
+      }
+
+      if (x < 19 && !isDirty(x+1, y) && level[y][x+1].dominoType != DominoTypeEmpty &&
+          (level[y][x+1].dominoState < 8 ||
+           level[y][x+1].dominoType == DominoTypeSplitter && level[y][x+1].dominoState != 8 ||
+           level[y][x+1].dominoType >= DominoTypeCrash0))
+      {
+        PutSprite(
+            SpriteXPos+gr->blockX(),
+            SpriteYPos+2*level[y][x+1].dominoYOffset,
+            gr->getDomino(level[y][x+1].dominoType-1, level[y][x+1].dominoState-1), target
+            );
+      }
+
+      if (y >= 11) continue;
+
+      if (!isDirty(x, y+2) && level[y+2][x].dominoType == DominoTypeRiser)
+      {
+        PutSprite(
+            SpriteXPos,
+            SpriteYPos+2*level[y+2][x].dominoYOffset+2*gr->blockY(),
+            gr->getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1), target
+            );
+      }
+
+      if (x > 0 && !isDirty(x-1, y+2) && level[y+2][x-1].dominoType == DominoTypeRiser)
+      {
+
+        PutSprite(
+            SpriteXPos-gr->blockX(),
+            SpriteYPos+2*level[y+2][x-1].dominoYOffset+2*gr->blockY(),
+            gr->getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1), target
+            );
+      }
+
+      if (x < 19 && !isDirty(x+1, y+2) && level[y+2][x+1].dominoType == DominoTypeRiser)
+      {
+        PutSprite(
+            SpriteXPos+gr->blockX(),
+            SpriteYPos+2*level[y+2][x+1].dominoYOffset+2*gr->blockY(),
+            gr->getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1), target
+            );
+      }
+
+      if (level[y][x].dominoType != DominoTypeRiser) continue;
+
+      if (!isDirty(x, y+2) && level[y+2][x].dominoType != DominoTypeEmpty)
+      {
+
+        PutSprite(
+            SpriteXPos,
+            SpriteYPos+2*level[y+2][x].dominoYOffset+2*gr->blockY(),
+            gr->getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1), target
+            );
+      }
+
+      if (x > 0 && !isDirty(x-1, y+2) && level[y+2][x-1].dominoType != DominoTypeEmpty)
+      {
+        PutSprite(
+            SpriteXPos-gr->blockX(),
+            SpriteYPos+2*level[y+2][x-1].dominoYOffset+2*gr->blockY(),
+            gr->getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1), target
+            );
+      }
+
+      if (x >= 19) continue;
+
+      if (!isDirty(x+1, y+2)) continue;
+
+      if (level[y+2][x+1].dominoType == DominoTypeEmpty) continue;
+
+      PutSprite(
+          SpriteXPos+gr->blockX(),
+          SpriteYPos+2*level[y+2][x+1].dominoYOffset+2*gr->blockY(),
+          gr->getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1), target
+          );
     }
+  }
 
   // repaint the ladders in front of dominos
   for (unsigned int y = 0; y < 13; y++)
@@ -980,7 +1123,7 @@ void level_c::DTA_E(int x, int y) {
     // if we have not yet reached the next level of the level data
     if (level[y][x].dominoYOffset != 12) {
       level[y][x].dominoYOffset += 4;
-      markDirty(x, y+1);
+      markDirty(x, y-1);
       markDirty(x, y);
       return;
     }
