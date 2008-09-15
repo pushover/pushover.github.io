@@ -131,6 +131,7 @@ int main(int argn, char * argv[]) {
   bool debug = false;
   bool finishCheckDone = false;
   bool pause = false;
+  bool blocks = false;
   SDL_Rect rects[10*13];
 
   while (!exit) {
@@ -142,7 +143,7 @@ int main(int argn, char * argv[]) {
     {
       SDL_Event event; /* Event structure */
 
-      while(SDL_PollEvent(&event) || pause) {  /* Loop until there are no events left on the queue */
+      while(SDL_PollEvent(&event)) {  /* Loop until there are no events left on the queue */
         switch(event.type) { /* Process the appropiate event type */
           case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
 
@@ -156,6 +157,8 @@ int main(int argn, char * argv[]) {
               tickDiv = 18;
             if (event.key.keysym.sym == SDLK_d)
               debug = !debug;
+            if (event.key.keysym.sym == SDLK_b)
+              blocks = !blocks;
             if (event.key.keysym.sym == SDLK_r)
               record(argv[1]);
             if (event.key.keysym.sym == SDLK_p) {
@@ -198,20 +201,23 @@ int main(int argn, char * argv[]) {
       }
     }
 
-    a.setKeyStates(keyMask);
+    if (!pause)
+    {
+      a.setKeyStates(keyMask);
 
-    l.performDoors();
-    a.performAnimation();
-    l.performDominos();
+      l.performDoors();
+      a.performAnimation();
+      l.performDominos();
+    }
 
     l.updateBackground(gr);
-    l.drawDominos(video, gr, debug);
+    l.drawDominos(video, gr, blocks);
     a.draw(video);
 
     if (debug)
       l.print();
 
-    if (debug)
+    if (blocks)
     {
       SDL_Flip(video);
     }
