@@ -139,44 +139,50 @@ int main(int argn, char * argv[]) {
 
     unsigned int keyMask = 0;
 
+    {
+      SDL_Event event; /* Event structure */
+
+      while(SDL_PollEvent(&event) || pause) {  /* Loop until there are no events left on the queue */
+        switch(event.type) { /* Process the appropiate event type */
+          case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
+
+            if (event.key.keysym.sym == SDLK_ESCAPE)
+              exit = true;
+            if (event.key.keysym.sym == SDLK_s)
+              tickDiv = 1;
+            if (event.key.keysym.sym == SDLK_f)
+              tickDiv = 1000;
+            if (event.key.keysym.sym == SDLK_n)
+              tickDiv = 18;
+            if (event.key.keysym.sym == SDLK_d)
+              debug = !debug;
+            if (event.key.keysym.sym == SDLK_r)
+              record(argv[1]);
+            if (event.key.keysym.sym == SDLK_p) {
+              pause = !pause;
+              ticks = SDL_GetTicks() + 1000/tickDiv;
+            }
+
+            break;
+        }
+
+      }
+      Uint8 *keystate = SDL_GetKeyState(NULL);
+
+      if ( keystate[SDLK_UP] ) keyMask |= KEY_UP;
+      if ( keystate[SDLK_DOWN] ) keyMask |= KEY_DOWN;
+      if ( keystate[SDLK_LEFT] ) keyMask |= KEY_LEFT;
+      if ( keystate[SDLK_RIGHT] ) keyMask |= KEY_RIGHT;
+      if ( keystate[SDLK_SPACE] ) keyMask |= KEY_ACTION;
+    }
+
     if (play && playpos < recorder.size())
     {
-        keyMask = recorder[playpos++];
+      keyMask = recorder[playpos++];
     }
     else
     {
-        SDL_Event event; /* Event structure */
-
-        while(SDL_PollEvent(&event) || pause) {  /* Loop until there are no events left on the queue */
-            switch(event.type) { /* Process the appropiate event type */
-                case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
-
-                    if (event.key.keysym.sym == SDLK_ESCAPE)
-                        exit = true;
-                    if (event.key.keysym.sym == SDLK_s)
-                        tickDiv = 19-tickDiv;
-                    if (event.key.keysym.sym == SDLK_d)
-                        debug = !debug;
-                    if (event.key.keysym.sym == SDLK_r)
-                        record(argv[1]);
-                    if (event.key.keysym.sym == SDLK_p) {
-                        pause = !pause;
-                        ticks = SDL_GetTicks() + 1000/tickDiv;
-                    }
-
-                    break;
-            }
-
-        }
-        Uint8 *keystate = SDL_GetKeyState(NULL);
-
-        if ( keystate[SDLK_UP] ) keyMask |= KEY_UP;
-        if ( keystate[SDLK_DOWN] ) keyMask |= KEY_DOWN;
-        if ( keystate[SDLK_LEFT] ) keyMask |= KEY_LEFT;
-        if ( keystate[SDLK_RIGHT] ) keyMask |= KEY_RIGHT;
-        if ( keystate[SDLK_SPACE] ) keyMask |= KEY_ACTION;
-
-        recorder.push_back(keyMask);
+      recorder.push_back(keyMask);
     }
 
     if (l.triggerIsFalln() && !finishCheckDone)
