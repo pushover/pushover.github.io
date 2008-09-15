@@ -106,8 +106,8 @@ class ant_c {
     unsigned int SFPushRight(void);
     unsigned int SFPushSpecialLeft(void);
     unsigned int SFPushSpecialRight(void);
-    unsigned int SFXXX5(void);   // TODO whats this state????
-    unsigned int SFXXX6(void);   // TODO whats this state????
+    unsigned int SFPushDelayLeft(void);
+    unsigned int SFPushDelayRight(void);
     unsigned int SFGhost1(void);
     unsigned int SFGhost2(void);
     unsigned int SFEnterDoor(void);

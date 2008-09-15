@@ -43,12 +43,12 @@ typedef enum {
   AntAnimEnterRight,
   AntAnimPushLeft,
   AntAnimPushRight,
-  AntAnimPushDelayLeft,
-  AntAnimPushDelayRight,
+  AntAnimPushBlockerLeft,
+  AntAnimPushBlockerRight,
   AntAnimPushRiserLeft,
   AntAnimPushRiserRight,
-  AntAnimXXX5,
-  AntAnimXXX6,
+  AntAnimPushDelayLeft,
+  AntAnimPushDelayRight,
   AntAnimSuddenFallRight,
   AntAnimSuddenFallLeft,
   AntAnimFalling,
@@ -352,12 +352,12 @@ unsigned int ant_c::callStateFunction(unsigned int state) {
     case AntAnimEnterRight:                return SFEnterDominosRight();
     case AntAnimPushLeft:                  return SFPushLeft();
     case AntAnimPushRight:                 return SFPushRight();
-    case AntAnimPushDelayLeft:             return SFPushSpecialLeft();
-    case AntAnimPushDelayRight:            return SFPushSpecialRight();
+    case AntAnimPushBlockerLeft:           return SFPushSpecialLeft();
+    case AntAnimPushBlockerRight:          return SFPushSpecialRight();
     case AntAnimPushRiserLeft:             return SFPushSpecialLeft();
     case AntAnimPushRiserRight:            return SFPushSpecialRight();
-    case AntAnimXXX5:                      return SFXXX5();
-    case AntAnimXXX6:                      return SFXXX6();
+    case AntAnimPushDelayLeft:             return SFPushDelayLeft();
+    case AntAnimPushDelayRight:            return SFPushDelayRight();
     case AntAnimSuddenFallRight:           return SFStartFallingRight();
     case AntAnimSuddenFallLeft:            return SFStartFallingLeft();
     // 48
@@ -385,6 +385,11 @@ unsigned int ant_c::callStateFunction(unsigned int state) {
   }
 }
 
+// this function performs the animation by
+// increasing the animation step counter when
+// the animation delay has passed
+//
+// when the animation is finished the function returns true
 bool ant_c::animateAnt(unsigned int delay) {
 
   if (animationTimer > 0) {
@@ -405,6 +410,14 @@ bool ant_c::animateAnt(unsigned int delay) {
 
   return false;
 }
+
+// now lot of functions follow that are called when the ant is within
+// a certain state. The ant state and the ant animation is nearly always
+// the same but it can be different. For example when the current animation
+// is finished and we return to the state that decides on the next animation
+// only the state changes, the animation stays the same.
+
+// I will not comment all these functions
 
 unsigned int ant_c::SFStruck(void) {
   if (animateAnt(2))
@@ -446,9 +459,12 @@ unsigned int ant_c::SFXXX9(void) {
 unsigned int ant_c::SFEnterDoor(void) {
 
   if (animateAnt(0)) {
+
+    // make ant invisible
     blockX = 200;
     blockY = 200;
 
+    // close door
     level->openExitDoor(false);
   }
 
@@ -470,7 +486,9 @@ unsigned int ant_c::SFGhost2(void) {
   return animation;
 }
 
-unsigned int ant_c::SFXXX5(void) {
+// in the delay push functions we wait until the domino finally falls
+
+unsigned int ant_c::SFPushDelayLeft(void) {
   if (animateAnt(5) || level->pushDomino(blockX-1, blockY, -1)) {
     animationImage = 9;
     animation = AntAnimPushLeft;
@@ -479,7 +497,7 @@ unsigned int ant_c::SFXXX5(void) {
   return animation;
 }
 
-unsigned int ant_c::SFXXX6(void) {
+unsigned int ant_c::SFPushDelayRight(void) {
   if (animateAnt(5) || level->pushDomino(blockX+1, blockY, -1)) {
     animationImage = 9;
     animation = AntAnimPushRight;
@@ -506,6 +524,10 @@ unsigned int ant_c::SFPushSpecialRight(void) {
   return animation;
 }
 
+// pushing dominos functions, when the domino is not falling
+// normally the pushDOmino function returns false then
+// we branch into another animation
+
 unsigned int ant_c::SFPushLeft(void) {
   if (animationImage == 1) {
     if (!level->pushDomino(blockX-1, blockY, -1)) {
@@ -514,7 +536,7 @@ unsigned int ant_c::SFPushLeft(void) {
         switch(level->getDominoType(blockX-1, blockY)) {
           case level_c::DominoTypeBlocker:
             pushDelay = 5;
-            pushAnimation = AntAnimPushDelayLeft;
+            pushAnimation = AntAnimPushBlockerLeft;
             break;
 
           case level_c::DominoTypeExploder:
@@ -523,7 +545,7 @@ unsigned int ant_c::SFPushLeft(void) {
 
           case level_c::DominoTypeDelay:
             pushDelay = 5;
-            pushAnimation = AntAnimXXX5;
+            pushAnimation = AntAnimPushDelayLeft;
             break;
 
           case level_c::DominoTypeRiser:
@@ -559,7 +581,7 @@ unsigned int ant_c::SFPushRight(void) {
         switch(level->getDominoType(blockX+1, blockY)) {
           case level_c::DominoTypeBlocker:
             pushDelay = 5;
-            pushAnimation = AntAnimPushDelayRight;
+            pushAnimation = AntAnimPushBlockerRight;
             break;
 
           case level_c::DominoTypeExploder:
@@ -568,7 +590,7 @@ unsigned int ant_c::SFPushRight(void) {
 
           case level_c::DominoTypeDelay:
             pushDelay = 5;
-            pushAnimation = AntAnimXXX6;
+            pushAnimation = AntAnimPushDelayRight;
             break;
 
           case level_c::DominoTypeRiser:
@@ -602,10 +624,7 @@ unsigned int ant_c::SFEnterDominosLeft(void) {
     return animation;
 
   animation = AntAnimPushLeft;
-
-  // TODO: this is really mysterious why that strange animation???
-  // we her animation 36 here....
-  screenBlock = subBlock + gr->getAntOffset(38, animationImage);
+  screenBlock = subBlock + gr->getAntOffset(animation, animationImage);
 
   return AntAnimNothing;
 }
@@ -615,10 +634,7 @@ unsigned int ant_c::SFEnterDominosRight(void) {
     return animation;
 
   animation = AntAnimPushRight;
-
-  // TODO: this is really mysterious why that strange animation???
-  // we her animation 37 here....
-  screenBlock = subBlock + gr->getAntOffset(39, animationImage);
+  screenBlock = subBlock + gr->getAntOffset(animation, animationImage);
 
   return AntAnimNothing;
 }
@@ -714,7 +730,7 @@ unsigned int ant_c::SFPushInLeft(void) {
   blockX--;
   animation = AntAnimWalkLeft;
   level->putDownDomino(blockX, blockY, carriedDomino, true);
-  carriedDomino = 0;
+  carriedDomino = level_c::DominoTypeEmpty;
 
   return AntAnimNothing;
 }
@@ -726,7 +742,7 @@ unsigned int ant_c::SFPushInRight(void) {
   blockX++;
   animation = AntAnimWalkRight;
   level->putDownDomino(blockX, blockY, carriedDomino, true);
-  carriedDomino = 0;
+  carriedDomino = level_c::DominoTypeEmpty;
 
   return AntAnimNothing;
 }
@@ -896,6 +912,9 @@ unsigned int ant_c::SFJumpDownRight(void) {
   return AntAnimNothing;
 }
 
+
+// we wait until the door is open to enter
+// the level
 unsigned int ant_c::SFLeaveDoor(void) {
   level->openEntryDoor(true);
 
@@ -1014,30 +1033,36 @@ unsigned int ant_c::SFLanding(void) {
   return animation;
 }
 
+// this function checks for possible actions when
+// the user is inactive and the ant in stop state
 unsigned int ant_c::checkForNoKeyActions(void) {
+
   unsigned int ReturnAntState = AntAnimStop;
 
+  // if the user has prepared a push, we don't do anything
   if (animation == AntAnimPushRight || animation == AntAnimPushLeft)
   {
     return AntAnimNothing;
   }
+
+  // if we are on a ladder
   if (direction == -20 || direction == 20)
   {
 
+    // not long enough inactive
     if (inactiveTimer <= 40)
     {
       return ReturnAntState;
     }
+
     if (level->getFg(blockX, blockY) == level_c::FgElementPlatformLadderDown ||
         level->getFg(blockX, blockY) == level_c::FgElementPlatformLadderUp)
-
     {
       if (level->getFg(blockX-1, blockY) > level_c::FgElementEmpty &&
           level->getFg(blockX-1, blockY) != level_c::FgElementLadder)
       {
         if (carriedDomino != 0)
         {
-
           animation = ReturnAntState = AntAnimXXX4;
         }
         else
@@ -1060,7 +1085,6 @@ unsigned int ant_c::checkForNoKeyActions(void) {
       }
       if (carriedDomino != 0)
       {
-
         animation = ReturnAntState = AntAnimXXX3;
         direction = 1;
         return ReturnAntState;
@@ -1089,8 +1113,11 @@ unsigned int ant_c::checkForNoKeyActions(void) {
     }
     return ReturnAntState;
   }
+
+  // if we carry a domino and wait too long we try to set the domino down
   if (carriedDomino != 0)
   {
+    // stop immediately when no cursor key is given
     if (inactiveTimer == 1)
     {
       if (direction ==  -1)
@@ -1104,6 +1131,7 @@ unsigned int ant_c::checkForNoKeyActions(void) {
         return ReturnAntState;
       }
     }
+    // when waited for too long ... set domino down
     if (inactiveTimer > 40 &&
         CanPlaceDomino(blockX, blockY, 0))
     {
@@ -1125,6 +1153,8 @@ unsigned int ant_c::checkForNoKeyActions(void) {
     }
     return ReturnAntState;
   }
+
+  // is we are in front of an exploder -> push hands on ears
   if (level->getDominoType(blockX, blockY) == level_c::DominoTypeExploder)
   {
     if (animation == AntAnimInFrontOfExploderWait)
@@ -1134,6 +1164,8 @@ unsigned int ant_c::checkForNoKeyActions(void) {
     animation = AntAnimInFrontOfExploder;
     return AntAnimInFrontOfExploder;
   }
+
+  // tapping and yawning when nothing else is going on
   if (((inactiveTimer & 0x20) == 0x20) && ((inactiveTimer & 0x1F) == 5))
   {
     // same as below but with soundeffect
@@ -1229,8 +1261,6 @@ bool ant_c::PushableDomino(int x, int y, int ofs) {
 
   if (level->getDominoType(x, y) == level_c::DominoTypeEmpty) return true;
 
-
-
   if (ofs == -1)
   {
       return level->getDominoState(x, y) >= 8;
@@ -1239,15 +1269,19 @@ bool ant_c::PushableDomino(int x, int y, int ofs) {
   return level->getDominoState(x, y) <= 8;
 }
 
-
+// ok, this huge function determines what comes next
+// it decides this on the currently pressed keys and the surroundings
 unsigned int ant_c::SFNextAction(void) {
 
   animationImage = 0;
   unsigned int returnState;
 
+  // is true, when the ant is on a ladder
   bool onLadder = animation >= AntAnimLadder1 && animation <= AntAnimLadder4 ||
                   animation >= AntAnimCarryLadder1 && animation <= AntAnimCarryLadder4;
 
+  // when we hav no ground below us and are not on a ladder we need
+  // to fall down
   if (level->noGround(blockX, blockY, onLadder))
   {
     fallingHight++;
@@ -1260,6 +1294,9 @@ unsigned int ant_c::SFNextAction(void) {
     animation = returnState = AntAnimFalling;
     return returnState;
   }
+
+  // we can get killed by a domino when we are currently pushing something and a
+  // domino comes falling towards us
   if (animation == AntAnimPushLeft &&
       animationImage == 0)
   {
@@ -1290,7 +1327,9 @@ unsigned int ant_c::SFNextAction(void) {
       return returnState;
     }
   }
+
   returnState = AntAnimStop;
+
   if (!(keyMask & KEY_DOWN))
   {
     downChecker = false;
@@ -1556,7 +1595,6 @@ unsigned int ant_c::SFNextAction(void) {
           level->getDominoState(blockX-1, blockY) <= 8)
         )
     {
-
       if (direction == -1)
       {
         animation = returnState = AntAnimEnterDoor;
