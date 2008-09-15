@@ -87,8 +87,15 @@ void level_c::print(void) {
 }
 
 void level_c::updateBackground(graphics_c * gr) {
-  for (unsigned int y = 0; y < 13; y++)
+  for (unsigned int y = 0; y < 13; y++) {
+
+    // check, if the current row contains any dirty blocks and only iterate through it
+    // when that is the case
+    if (staticDirty[y] == 0) continue;
+
     for (unsigned int x = 0; x < 20; x++) {
+
+      // when the current block is dirty, recreate it
       if ((staticDirty[y] >> x) & 1) {
 
         SDL_Rect dst;
@@ -99,7 +106,7 @@ void level_c::updateBackground(graphics_c * gr) {
         SDL_BlitSurface(gr->getBgTile(getBg(x, y)), 0, background, &dst);
         SDL_BlitSurface(gr->getFgTile(getFg(x, y)), 0, background, &dst);
 
-        /* apply gradient effect */
+        // apply gradient effect
         for (unsigned int i = 0; i < gr->blockY() && y*gr->blockY()+i < (unsigned int)background->h; i++)
           for (unsigned int j = 0; j < gr->blockX(); j++) {
 
@@ -126,8 +133,10 @@ void level_c::updateBackground(graphics_c * gr) {
           }
       }
     }
-  for (unsigned int y = 0; y < 13; y++)
+
+    // remove all dirty marks for this block
     staticDirty[y] = 0;
+  }
 }
 
 void level_c::clearDirty(void) {
@@ -151,20 +160,45 @@ static void PutSprite(int x, int y, SDL_Surface * v, SDL_Surface * target)
 
 void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
 
-  markDirty(1, 11);
-  markDirty(2, 11);
-  markDirty(3, 11);
+  // the dirty marks for the clock
+  {
+    // calculate the second left
+    int tm = timeLeft/18;
 
-  markDirty(1, 12);
-  markDirty(2, 12);
-  markDirty(3, 12);
+    // if negative make positive again
+    if (timeLeft < 0)
+      tm = -tm+1;
 
+    int newSec = tm%60;
+    int newMin = tm/60;
+
+    if (newSec != Sec || timeLeft == -1)
+    {
+      markDirty(3, 11);
+      markDirty(3, 12);
+    }
+
+    if (newSec != Sec || newMin != Min || timeLeft % 18 == 17 || timeLeft % 18 == 8 || timeLeft == -1)
+    {
+      markDirty(2, 11);
+      markDirty(2, 12);
+    }
+
+    if (newMin != Min || timeLeft == -1)
+    {
+      markDirty(1, 11);
+      markDirty(1, 12);
+    }
+
+    Min = newMin;
+    Sec = newSec;
+  }
 
   for (unsigned int y = 0; y < 13; y++)
     for (unsigned int x = 0; x < 20; x++) {
       if ((dynamicDirty[y] >> x) & 1 || debug) {
 
-        /* copy background from background surface */
+        // copy background from background surface
         {
           SDL_Rect src, dst;
           dst.x = x*gr->blockX();
@@ -184,6 +218,11 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
   static int YposOffset[] = { -8,  -6,  0, -4,  0, -2, 0, 0, 0, -2, 0, -4,  0, -6, -8, 0};
   static int StoneImageOffset[] = {  7, 6, 0, 5, 0, 4, 0, 0, 0, 3, 0, 2, 0, 1, 0, 0};
 
+  // the idea behind this code is to repaint the dirty blocks. Dominos that are actually
+  // within neighbor block must be repaint, too, when they might reach into the actual
+  // block. But painting the neighbors is only necessary, when they are not drawn on
+  // their own anyway, so always check for !dirty of the "homeblock" of each domino
+
   int SpriteYPos = 2*4;
 
   for (int y = 0; y < 13; y++, SpriteYPos += gr->blockY()) {
@@ -192,8 +231,9 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
 
     for (int x = 0; x < 20; x++, SpriteXPos += gr->blockX()) {
 
-      if (!isDirty(x, y)) continue;
+      if (!isDirty(x, y) && !debug) continue;
 
+      // paint the left neighbor domino, if it leans in our direction and is not painted on its own
       if (y < 12 && x > 0 && !isDirty(x-1, y+1) && level[y+1][x-1].dominoType != DominoTypeEmpty &&
           (level[y+1][x-1].dominoState > 8 ||
            level[y+1][x-1].dominoType == DominoTypeSplitter && level[y+1][x-1].dominoState != 8 ||
@@ -227,6 +267,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
             );
       }
 
+      // paint the splitting domino for the splitter
       if (level[y][x].dominoType == DominoTypeSplitter &&
           level[y][x].dominoState == 6 &&
           level[y][x].dominoExtra != 0)
@@ -239,7 +280,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
         level[y][x].dominoExtra = 0;
       }
 
-
+      // paint the actual domino but take care of the special cases of the raiser domino
       if (level[y][x].dominoType == DominoTypeRiser && level[y][x].dominoExtra == 0x60 &&
           level[y][x].dominoState < 16 && level[y][x].dominoState != 8)
       {
@@ -276,6 +317,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
             );
       }
 
+      // paint the right neighor if it is leaning in our direction
       if (x < 19 && y < 12 && !isDirty(x+1, y+1) && level[y+1][x+1].dominoType != DominoTypeEmpty &&
           (level[y+1][x+1].dominoState < 8 ||
            level[y+1][x+1].dominoType == DominoTypeSplitter && level[y+1][x+1].dominoState != 8 ||
@@ -411,19 +453,17 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
       }
   }
 
-  {
+  { // output the time
     wchar_t time[6];
 
-    int tm = timeLeft/18;
-
-    if (timeLeft < 0)
-      tm = -tm+1;
-
+    // care for the : between the minutes and seconds and
+    // make a string out of the time
     if (timeLeft % 18 < 9)
-      swprintf(time, 6, L"%02i:%02i", tm/60, tm%60);
+      swprintf(time, 6, L"%02i:%02i", Min, Sec);
     else
-      swprintf(time, 6, L"%02i %02i", tm/60, tm%60);
+      swprintf(time, 6, L"%02i %02i", Min, Sec);
 
+    // if time is negative print red, else yellow
     if (timeLeft >= 0)
       gr->putText(target, 18*2, 186*2, time, 255, 255, 0, true);
     else

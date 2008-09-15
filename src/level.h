@@ -31,6 +31,7 @@ class level_c {
 
     // the number of 1/18 seconds that are left for solving the level
     int timeLeft;
+    int Min, Sec;   // number of minutes and seconds shown in display
 
     /* 2 bitmasks containing a bit for each block saying if it changed
      * there is one array for the static background and one for the dynamic
