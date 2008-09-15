@@ -285,16 +285,16 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
           level[y][x].dominoState < 16 && level[y][x].dominoState != 8)
       {
         PutSprite(
-            SpriteXPos+2*XposOffset[level[y][x].dominoState],
-            SpriteYPos+2*YposOffset[level[y][x].dominoState]+2*level[y][x].dominoYOffset,
-            gr->getDomino(level[y][x].dominoType-1, 2*StoneImageOffset[level[y][x].dominoState]), target
+            SpriteXPos+2*XposOffset[level[y][x].dominoState-1],
+            SpriteYPos+2*YposOffset[level[y][x].dominoState-1]+2*level[y][x].dominoYOffset,
+            gr->getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
             );
       }
       else if (level[y][x].dominoType == DominoTypeRiser && level[y][x].dominoState == 1 && level[y][x].dominoExtra == 0 &&
           level[y-2][x-1].fg == 0)
       {
         PutSprite(
-            2*XposOffset[level[y][x].dominoState-1]+SpriteXPos+2,
+            2*XposOffset[level[y][x].dominoState-1]+SpriteXPos+2*2,
             2*YposOffset[level[y][x].dominoState-1]+SpriteYPos+2*level[y][x].dominoYOffset,
             gr->getDomino(DominoTypeRiserCont-1, level[y][x].dominoState-1), target
             );
@@ -303,7 +303,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
           level[y-2][x+1].fg == 0)
       {
         PutSprite(
-            2*XposOffset[level[y][x].dominoState-1]+SpriteXPos-2,
+            2*XposOffset[level[y][x].dominoState-1]+SpriteXPos-2*2,
             2*YposOffset[level[y][x].dominoState-1]+SpriteYPos+2*level[y][x].dominoYOffset,
             gr->getDomino(DominoTypeRiserCont-1, level[y][x].dominoState-1), target
             );
@@ -323,7 +323,6 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
            level[y+1][x+1].dominoType == DominoTypeSplitter && level[y+1][x+1].dominoState != 8 ||
            level[y+1][x+1].dominoType >= DominoTypeCrash0))
       {
-
         PutSprite(
             SpriteXPos+gr->blockX(),
             SpriteYPos+2*level[y+1][x+1].dominoYOffset+gr->blockY(),
@@ -356,7 +355,6 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
 
       if (x > 0 && !isDirty(x-1, y+2) && level[y+2][x-1].dominoType == DominoTypeRiser)
       {
-
         PutSprite(
             SpriteXPos-gr->blockX(),
             SpriteYPos+2*level[y+2][x-1].dominoYOffset+2*gr->blockY(),
@@ -377,7 +375,6 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
 
       if (!isDirty(x, y+2) && level[y+2][x].dominoType != DominoTypeEmpty)
       {
-
         PutSprite(
             SpriteXPos,
             SpriteYPos+2*level[y+2][x].dominoYOffset+2*gr->blockY(),
