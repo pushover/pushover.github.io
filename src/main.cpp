@@ -132,6 +132,7 @@ int main(int argn, char * argv[]) {
   bool finishCheckDone = false;
   bool pause = false;
   bool blocks = false;
+  bool singleStep = false;
   SDL_Rect rects[10*13];
 
   while (!exit) {
@@ -139,6 +140,8 @@ int main(int argn, char * argv[]) {
     ticks += 1000/tickDiv;
 
     unsigned int keyMask = 0;
+
+    if (singleStep) pause = true;
 
     {
       SDL_Event event; /* Event structure */
@@ -149,12 +152,18 @@ int main(int argn, char * argv[]) {
 
             if (event.key.keysym.sym == SDLK_ESCAPE)
               exit = true;
-            if (event.key.keysym.sym == SDLK_s)
+            if (event.key.keysym.sym == SDLK_s) {
               tickDiv = 1;
-            if (event.key.keysym.sym == SDLK_f)
+              ticks = SDL_GetTicks() + 1000/tickDiv;
+            }
+            if (event.key.keysym.sym == SDLK_f) {
               tickDiv = 1000;
-            if (event.key.keysym.sym == SDLK_n)
+              ticks = SDL_GetTicks() + 1000/tickDiv;
+            }
+            if (event.key.keysym.sym == SDLK_n) {
               tickDiv = 18;
+              ticks = SDL_GetTicks() + 1000/tickDiv;
+            }
             if (event.key.keysym.sym == SDLK_d)
               debug = !debug;
             if (event.key.keysym.sym == SDLK_b)
@@ -164,12 +173,17 @@ int main(int argn, char * argv[]) {
             if (event.key.keysym.sym == SDLK_p) {
               pause = !pause;
               ticks = SDL_GetTicks() + 1000/tickDiv;
+              singleStep = false;
             }
-
+            if (event.key.keysym.sym == SDLK_t) {
+              pause = false;
+              ticks = SDL_GetTicks();
+              singleStep = true;
+            }
             break;
         }
-
       }
+
       Uint8 *keystate = SDL_GetKeyState(NULL);
 
       if ( keystate[SDLK_UP] ) keyMask |= KEY_UP;
@@ -255,7 +269,8 @@ int main(int argn, char * argv[]) {
       SDL_UpdateRects(video, numrects, rects);
     }
 
-    l.clearDirty();
+    if (!pause && !singleStep)
+      l.clearDirty();
 
     if (l.triggerIsFalln() && !a.isVisible()) {
 
