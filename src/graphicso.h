@@ -31,6 +31,13 @@ class graphicsO_c : public graphics_c {
     virtual signed int getMoveOffsetY(unsigned int animation, unsigned int image);
     virtual signed int getMoveImage(unsigned int animation, unsigned int image);
 
+    virtual int timeXPos(void) { return scale*18; }
+    virtual int timeYPos(void) { return scale*186; }
+    virtual int getDominoYStart(void) { return scale*4; }
+    virtual int convertDominoX(int x) { return scale*x; }
+    virtual int convertDominoY(int y) { return scale*y; }
+    virtual int splitterY(void) { return scale*12; }
+
   private:
 
     std::string dataPath;

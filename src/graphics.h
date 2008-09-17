@@ -57,6 +57,15 @@ class graphics_c {
     void putText(SDL_Surface * v, int x, int y, const wchar_t * text, Uint8 r, Uint8 g, Uint8 b, bool shadow);
     unsigned int textLen(const wchar_t * text, bool shadow);
 
+    // the position of the time in the level
+    virtual int timeXPos(void) = 0;
+    virtual int timeYPos(void) = 0;
+
+    virtual int getDominoYStart(void) = 0;
+    virtual int convertDominoX(int x) = 0;
+    virtual int convertDominoY(int y) = 0;
+    virtual int splitterY(void) = 0;
+
   protected:
 
     /* some functions for the loaders to store the loaded images */
