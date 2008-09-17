@@ -296,7 +296,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
         PutSprite(
             2*XposOffset[level[y][x].dominoState-1]+SpriteXPos+2*2,
             2*YposOffset[level[y][x].dominoState-1]+SpriteYPos+2*level[y][x].dominoYOffset,
-            gr->getDomino(DominoTypeRiserCont-1, level[y][x].dominoState-1), target
+            gr->getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
             );
       }
       else if (level[y][x].dominoType == DominoTypeRiser && level[y][x].dominoState == 16 && level[y][x].dominoExtra == 0 &&
@@ -305,7 +305,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
         PutSprite(
             2*XposOffset[level[y][x].dominoState-1]+SpriteXPos-2*2,
             2*YposOffset[level[y][x].dominoState-1]+SpriteYPos+2*level[y][x].dominoYOffset,
-            gr->getDomino(DominoTypeRiserCont-1, level[y][x].dominoState-1), target
+            gr->getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
             );
       }
       else if (level[y][x].dominoType != DominoTypeEmpty)
@@ -1618,12 +1618,11 @@ void level_c::DTA_A(int x, int y) {
 
   int b;
   if (x > 0)
-    b = level[y][x-1].fg;
+    b = level[y-a][x-1].fg;
   else
     b = FgElementEmpty;
 
-  int c;
-  c = level[y-a][x].fg;
+  int c = level[y-a][x].fg;
 
   if ((c == FgElementPlatformStart || c == FgElementPlatformStrip) &&
       b == FgElementEmpty)
@@ -1713,12 +1712,11 @@ void level_c::DTA_O(int x, int y) {
 
   int b;
   if (x < 19)
-    b = level[y][x+1].fg;
+    b = level[y-a][x+1].fg;
   else
     b = FgElementEmpty;
 
-  int c;
-  c = level[y-a][x].fg;
+  int c = level[y-a][x].fg;
 
   if ((c == FgElementPlatformEnd || c == FgElementPlatformStrip) &&
       b == FgElementEmpty)
