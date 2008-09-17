@@ -278,6 +278,8 @@ int main(int argn, char * argv[]) {
       {
         if (!play)
           record(argv[1]);
+
+        printf("gratulation, you solved the level\n");
       }
       else
       {
