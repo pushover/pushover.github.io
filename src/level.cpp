@@ -62,6 +62,8 @@ void level_c::load(const char * name) {
     staticDirty[i] = dynamicDirty[i] = 0xFFFFF;
 
   triggerFalln = false;
+
+  Min = Sec = -1;
 }
 
 void level_c::print(void) {
