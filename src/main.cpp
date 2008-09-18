@@ -95,36 +95,63 @@ const char * loadrecord(const char * file) {
 
 int main(int argn, char * argv[]) {
 
-  graphics_c * gr = new graphicsO_c(".", 2);
+  bool useGraphics = true;
 
-  SDL_Init(SDL_INIT_VIDEO);
-  SDL_Surface *video = SDL_SetVideoMode(gr->resolutionX(), gr->resolutionY(), 24, 0);
+  enum {
+      NOTHING,
+      CHECK_FINISH
+  } operation = NOTHING;
 
-  gr->loadGraphics();
-
-  level_c l;
+  const char * levelName;
 
   if (strcmp(argv[1], "-r") == 0)
   {
-      l.load(loadrecord(argv[2]));
+      levelName = loadrecord(argv[2]);
       play = true;
       playpos = 0;
   }
+  else if (strcmp(argv[1], "-c") == 0)
+  {
+      levelName = loadrecord(argv[2]);
+      play = true;
+      playpos = 0;
+      operation = CHECK_FINISH;
+      useGraphics = false;
+  }
   else
   {
-      l.load(argv[1]);
+      levelName =  argv[1];
       play = false;
   }
 
-  gr->setTheme(l.getTheme());
+  graphics_c * gr = new graphicsO_c(".", 3);
+  SDL_Surface * video = 0;
+
+
+  if (useGraphics)
+  {
+    SDL_Init(SDL_INIT_VIDEO);
+    video = SDL_SetVideoMode(gr->resolutionX(), gr->resolutionY(), 24, 0);
+    gr->loadGraphics();
+  }
+
+  level_c l;
+  l.load(levelName);
+
+  if (useGraphics)
+    gr->setTheme(l.getTheme());
 
   ant_c a;
 
   a.init(&l, gr);
 
-  l.updateBackground(gr);
+  if (useGraphics)
+    l.updateBackground(gr);
 
-  Uint32 ticks = SDL_GetTicks();
+  Uint32 ticks = 0;
+
+  if (useGraphics)
+    ticks = SDL_GetTicks();
 
   bool exit = false;
   int tickDiv = 18;
@@ -143,6 +170,7 @@ int main(int argn, char * argv[]) {
 
     if (singleStep) pause = true;
 
+    if (useGraphics)
     {
       SDL_Event event; /* Event structure */
 
@@ -151,7 +179,10 @@ int main(int argn, char * argv[]) {
           case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
 
             if (event.key.keysym.sym == SDLK_ESCAPE)
-              exit = true;
+              if (play)
+                play = false;
+              else
+                exit = true;
             if (event.key.keysym.sym == SDLK_s) {
               tickDiv = 1;
               ticks = SDL_GetTicks() + 1000/tickDiv;
@@ -193,9 +224,10 @@ int main(int argn, char * argv[]) {
       if ( keystate[SDLK_SPACE] ) keyMask |= KEY_ACTION;
     }
 
-    if (play && playpos < recorder.size())
+    if (play)
     {
-      keyMask = recorder[playpos++];
+      if (playpos < recorder.size())
+        keyMask = recorder[playpos++];
     }
     else
     {
@@ -224,53 +256,77 @@ int main(int argn, char * argv[]) {
       l.performDominos();
     }
 
-    l.updateBackground(gr);
-    l.drawDominos(video, gr, blocks);
-    a.draw(video);
+    if (useGraphics)
+    {
+      l.updateBackground(gr);
+      l.drawDominos(video, gr, blocks);
+      a.draw(video);
+    }
 
     if (debug)
       l.print();
 
-    if (blocks)
+    if (useGraphics)
     {
-      SDL_Flip(video);
-    }
-    else
-    {
-      int numrects = 0;
-
-      for (int y = 0; y < 13; y++)
+      if (blocks)
       {
-        int rowStart = -1;
+        SDL_Flip(video);
+      }
+      else
+      {
+        int numrects = 0;
 
-        for (int x = 0; x < 21; x++)
+        for (int y = 0; y < 13; y++)
         {
-          if (l.isDirty(x, y) && (x < 20))
-          {
-            if (rowStart == -1)
-              rowStart = x;
-          }
-          else if (rowStart != -1)
-          {
-            rects[numrects].y = gr->blockY()*y;
-            rects[numrects].x = gr->blockX()*rowStart;
+          int rowStart = -1;
 
-            if (y == 12)
-              rects[numrects].h = gr->blockY()/2;
-            else
-              rects[numrects].h = gr->blockY();
+          for (int x = 0; x < 21; x++)
+          {
+            if (l.isDirty(x, y) && (x < 20))
+            {
+              if (rowStart == -1)
+                rowStart = x;
+            }
+            else if (rowStart != -1)
+            {
+              rects[numrects].y = gr->blockY()*y;
+              rects[numrects].x = gr->blockX()*rowStart;
 
-            rects[numrects].w = gr->blockX()*(x-rowStart);
-            numrects++;
-            rowStart = -1;
+              if (y == 12)
+                rects[numrects].h = gr->blockY()/2;
+              else
+                rects[numrects].h = gr->blockY();
+
+              rects[numrects].w = gr->blockX()*(x-rowStart);
+              numrects++;
+              rowStart = -1;
+            }
           }
         }
+        SDL_UpdateRects(video, numrects, rects);
       }
-      SDL_UpdateRects(video, numrects, rects);
     }
 
     if (!pause && !singleStep)
       l.clearDirty();
+
+    if (play)
+    {
+      if (playpos >= recorder.size())
+      {
+        if (operation == CHECK_FINISH)
+        {
+          if (l.triggerIsFalln() && !a.isVisible() && l.someTimeLeft())
+          {
+            printf("check successful\n");
+            ::exit(0);
+          } else {
+            printf("check NOT successful\n");
+            ::exit(1);
+          }
+        }
+      }
+    }
 
     if (l.triggerIsFalln() && !a.isVisible()) {
 
@@ -289,11 +345,21 @@ int main(int argn, char * argv[]) {
       exit = true;
     }
 
-    if (SDL_GetTicks() < ticks)
-      SDL_Delay(ticks-SDL_GetTicks());
+    if (useGraphics)
+    {
+      if (SDL_GetTicks() < ticks)
+        SDL_Delay(ticks-SDL_GetTicks());
+    }
   }
 
-  delete gr;
+  if (operation == CHECK_FINISH)
+  {
+    printf("check NOT successful\n");
+    ::exit(1);
+  }
+
+  if (useGraphics)
+    delete gr;
 
   return 0;
 }

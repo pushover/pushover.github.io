@@ -34,7 +34,7 @@ class graphics_c {
 
     SDL_Surface * getDomino(unsigned int domino, unsigned int image) { return dominos[domino][image]; }
     SDL_Surface * getAnt(unsigned int animation, unsigned int step) { return ant[animation][step].v; }
-    int getAntOffset(unsigned int animation, unsigned int step) { return ant[animation][step].ofs; }
+    int getAntOffset(unsigned int animation, unsigned int step) { return step<ant[animation].size()?ant[animation][step].ofs:0; }
     unsigned int getAntImages(unsigned int animation) { return ant[animation].size(); }
     SDL_Surface * getCarriedDomino(unsigned int domino, unsigned int image) { return carriedDominos[domino][image]; }
 
@@ -80,7 +80,7 @@ class graphics_c {
     // you must also provide an y-offset used when animating to displace the image
     // if free is false it is assumed that the Suface is used elsewhere and not freed
     // on deletion of object
-    void addAnt(unsigned int anim, signed char yOffset, SDL_Surface * v, bool free = true);
+    void addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free = true);
 
     void addBigGlyph(wchar_t c, SDL_Surface *);
 

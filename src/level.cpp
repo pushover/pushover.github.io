@@ -7,8 +7,12 @@
 
 level_c::level_c(void) {
   SDL_Surface * vid = SDL_GetVideoSurface();
-  background = SDL_CreateRGBSurface(0, vid->w, vid->h, 32,
-      vid->format->Rmask, vid->format->Gmask, vid->format->Bmask, 0);
+
+  if (vid)
+    background = SDL_CreateRGBSurface(0, vid->w, vid->h, 32,
+        vid->format->Rmask, vid->format->Gmask, vid->format->Bmask, 0);
+  else
+    background = 0;
 }
 
 level_c::~level_c(void) {

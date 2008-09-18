@@ -92,7 +92,7 @@ unsigned int graphicsO_c::getAnimation(unsigned char * data, unsigned char anim,
 
     int ofs = ((signed char)data[yOffset+j]);
 
-    addAnt(anim, scale*ofs, v);
+    addAnt(anim, j, scale*ofs, v);
   }
 
   return offset;
@@ -178,8 +178,8 @@ void graphicsO_c::loadGraphics(void) {
   // the inverse order
   for (unsigned int i = 28; i <= 29; i++)
     for (unsigned int j = 0; j < getAntImages(i-2); j++)
-      addAnt(i, getAntOffset(i-2, getAntImages(i-2)-j-1),
-                getAnt      (i-2, getAntImages(i-2)-j-1), false);
+      addAnt(i, j, getAntOffset(i-2, getAntImages(i-2)-j-1),
+                   getAnt      (i-2, getAntImages(i-2)-j-1), false);
 
   // load animation 30
   offset += getAnimation(a1+offset, 30, palette);
@@ -201,7 +201,7 @@ void graphicsO_c::loadGraphics(void) {
   // 44 and 45 are again copied from for animations before
   for (unsigned int i = 44; i <= 45; i++)
     for (unsigned int j = 0; j < getAntImages(i-4); j++)
-      addAnt(i, getAntOffset(i-4, j), getAnt(i-4, j), false);
+      addAnt(i, j, getAntOffset(i-4, j), getAnt(i-4, j), false);
 
   offset += getAnimation(a2+offset, 46, palette);
 
@@ -213,8 +213,8 @@ void graphicsO_c::loadGraphics(void) {
     offset += getAnimation(a3+offset, i, palette);
 
   // 50 is copied it is the last images of the animation before
-  addAnt(50, getAntOffset(49, getAntImages(49)-1),
-             getAnt      (49, getAntImages(49)-1), false);
+  addAnt(50, 0, getAntOffset(49, getAntImages(49)-1),
+                getAnt      (49, getAntImages(49)-1), false);
 
   for (unsigned int i = 51; i <= 65; i++)
     offset += getAnimation(a3+offset, i, palette);

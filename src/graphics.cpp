@@ -1,5 +1,16 @@
 #include "graphics.h"
 
+const unsigned char graphics_c::numAntAnimations = 66;
+const unsigned char numAntAnimationsImages[graphics_c::numAntAnimations] = {
+
+ 6, 6, 6, 6, 4, 4, 8, 8, 8, 8, 6, 6, 6, 6, 6,
+ 6, 8, 8, 8, 8, 1, 1, 15, 15, 16, 16, 2, 2, 2,
+ 2, 13, 17, 0, 1, 2, 6, 7, 7, 12, 12, 8, 8, 4,
+ 4, 8, 8, 6, 6, 4, 3, 1, 15, 2, 4, 7, 3, 7, 4,
+ 11, 11, 8, 8, 8, 1, 1, 13
+
+};
+
 graphics_c::graphics_c(void) {
 
   dominos.resize(numDominoTypes);
@@ -12,6 +23,9 @@ graphics_c::graphics_c(void) {
 
   ant.resize(numAntAnimations);
 
+  for (unsigned int i = 0; i < numAntAnimations; i++) {
+    ant[i].resize(numAntAnimationsImages[i]);
+  }
 }
 
 void graphics_c::setTheme(const char *name) {
@@ -51,14 +65,14 @@ void graphics_c::setCarriedDomino(unsigned int type, unsigned int num, SDL_Surfa
   carriedDominos[type][num] = v;
 }
 
-void graphics_c::addAnt(unsigned int anim, signed char yOffset, SDL_Surface * v, bool free) {
+void graphics_c::addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free) {
 
   antSprite s;
   s.v = v;
   s.ofs = yOffset;
   s.free = free;
 
-  ant[anim].push_back(s);
+  ant[anim][img] = s;
 }
 
 const unsigned char graphics_c::numDominoTypes = 18;
@@ -67,7 +81,6 @@ const unsigned char graphics_c::numDominos[numDominoTypes] = {
   6, 6, 6, 6, 6, 8, 1
 };
 
-const unsigned char graphics_c::numAntAnimations = 66;
 
 graphics_c::~graphics_c(void) {
 
