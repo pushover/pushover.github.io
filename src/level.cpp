@@ -2630,9 +2630,32 @@ bool level_c::levelCompleted(int *fail) {
             return false;
           }
         }
-        else
+        else if (level[y][x].dominoType != DominoTypeTrigger)
         {
           if (level[y][x].dominoState > 2 && level[y][x].dominoState < 14)
+          {
+            if (level[y][x].dominoState > 3 && level[y][x].dominoState < 13)
+            {
+              // here we certainly fail
+              if (fail) *fail = 2;
+              return false;
+            }
+            else
+            {
+              // in this case we might still succeed, wne we lean against a block
+              if (level[y][x-1].fg != FgElementPlatformStep4 &&
+                  level[y][x-1].fg != FgElementPlatformStep7)
+              {
+              // here we lean against a step
+              if (fail) *fail = 2;
+              return false;
+              }
+            }
+          }
+        }
+        else
+        {
+          if (level[y][x].dominoState == 8)
           {
             if (fail) *fail = 2;
             return false;
