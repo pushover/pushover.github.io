@@ -2642,8 +2642,14 @@ bool level_c::levelCompleted(int *fail) {
             else
             {
               // in this case we might still succeed, wne we lean against a block
-              if (level[y][x-1].fg != FgElementPlatformStep4 &&
-                  level[y][x-1].fg != FgElementPlatformStep7)
+              if (
+                  level[y][x-1].fg != FgElementPlatformStep4 &&
+                  level[y][x-1].fg != FgElementPlatformStep7 &&
+                  level[y][x+1].fg != FgElementPlatformStep4 &&
+                  level[y][x+1].fg != FgElementPlatformStep7 &&
+                  level[y][x-1].dominoType != DominoTypeBlocker &&
+                  level[y][x+1].dominoType != DominoTypeBlocker
+                 )
               {
               // here we lean against a step
               if (fail) *fail = 2;
