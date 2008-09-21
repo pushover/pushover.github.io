@@ -1810,7 +1810,7 @@ void level_c::DTA_H(int x, int y) {
     {
       if (isTherePlatform(x, y-2))
       {
-        if (level[y][x].fg == 0xA || level[y][x].fg == 0xD)
+        if (level[y-1][x].fg == 0xA || level[y-1][x].fg == 0xD)
         {
           level[y][x].dominoState = 16;
           level[y][x].dominoExtra = 0x50;
@@ -1824,10 +1824,9 @@ void level_c::DTA_H(int x, int y) {
     }
     if (level[y][x].dominoYOffset == -6 && y > 1)
     {
-
       if (isTherePlatform(x, y-2))
       {
-        if (level[y][x].fg == 9 || level[y][x].fg == 0xE)
+        if (level[y-1][x].fg == 9 || level[y-1][x].fg == 0xE)
         {
           level[y][x].dominoState = 16;
           level[y][x].dominoExtra = 0x50;
