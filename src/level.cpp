@@ -909,7 +909,7 @@ void level_c::DTA_4(int x, int y) {
   if (level[y][x].dominoType == DominoTypeRiser)
   {
     markDirty(x+getDominoDir(x, y), y-2);
-    markDirty(x-getDominoDir(x, y), y);
+    markDirty(x-getDominoDir(x, y), y-2);
     markDirty(x, y-2);
   }
 }
