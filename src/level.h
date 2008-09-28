@@ -108,15 +108,15 @@ class level_c {
       FgElementPlatformStep6,
       FgElementPlatformStep7,
       FgElementPlatformStep8,
-      FgElementPlatformWrongDoor,  // 15
-      FgElementPlatformStack,
-      FgElementLadderMiddle,
+      FgElementPlatformWrongDoor,  // 15  unused
+      FgElementPlatformStack,      //     unused
+      FgElementLadderMiddle,       //     used for ladder redraw but not in level
       FgElementPlatformStrip,
-      FgElementLadder2,
+      FgElementLadder2,            //     used for ladder redraw but not in level
       FgElementDoor0,              // 20
-      FgElementDoor1,
-      FgElementDoor2,
-      FgElementDoor3
+      FgElementDoor1,              // used in door animation, but not in level
+      FgElementDoor2,              // used in door animation, but not in level
+      FgElementDoor3               // used in door animation, but not in level
     };
 
     enum {
