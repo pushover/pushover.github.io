@@ -5,6 +5,11 @@
 
 #include <stdio.h>
 
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+
 level_c::level_c(void) {
   SDL_Surface * vid = SDL_GetVideoSurface();
 
@@ -19,7 +24,9 @@ level_c::~level_c(void) {
   SDL_FreeSurface(background);
 }
 
-void level_c::load(const std::string & name) {
+void level_c::load_binary(const std::string & name) {
+
+  this->name = name;
 
   char fname[200];
 
@@ -64,6 +71,284 @@ void level_c::load(const std::string & name) {
   triggerFalln = false;
 
   Min = Sec = -1;
+}
+
+const std::string level_c::dominoChars =
+  "_" /* DominoTypeEmpty    */
+  "I" /* DominoTypeStandard */
+  "#" /* DominoTypeStopper  */
+  "Y" /* DominoTypeSplitter */
+  "*" /* DominoTypeExploder */
+  "?" /* DominoTypeDelay    */
+  "O" /* DominoTypeTumbler  */
+  "=" /* DominoTypeBridger  */
+  ":" /* DominoTypeVanish   */
+  "!" /* DominoTypeTrigger  */
+  "A" /* DominoTypeAscender */
+  ;
+
+bool level_c::isDominoChar(char ch) {
+  return dominoChars.find_first_of(ch) != std::string::npos;
+}
+
+void level_c::load(const std::string & filename) {
+
+  std::ifstream f(filename.c_str());
+  std::vector<std::string> lines;
+
+  for (std::string line; std::getline(f, line); )
+    if (line.size() > 0 && line[0] == '|') {
+      if (line.size() >= 2)
+        lines.push_back(line.substr(2, std::string::npos));
+      else
+        lines.push_back("");
+    }
+
+  if (lines.size() != 29)
+    throw std::exception();
+
+  name = lines[0];
+  theme = lines[1];
+
+  std::istringstream timeStream(lines[2]);
+  unsigned int timeMinutes;
+  timeStream >> timeMinutes;
+  if (timeStream.get() != ':')
+    throw std::exception();
+  unsigned int timeSeconds;
+  timeStream >> timeSeconds;
+  if (!timeStream.eof() || !timeStream)
+    throw std::exception();
+  timeLeft = (((timeMinutes * 60) + timeSeconds) * 18) + 17;
+
+  std::string levelLines[13];
+  for (unsigned int y = 0; y < 13; y++) {
+    levelLines[y] = lines[3+y];
+    if (levelLines[y].size() > 20)
+      throw std::exception();
+    /* padding with spaces to the whole width */
+    levelLines[y] += std::string(20-levelLines[y].size(), ' ');
+  }
+
+  bool doorEntryDefined = false;
+  bool doorExitDefined = false;
+  for (unsigned int y = 0; y < 13; y++) {
+    for (unsigned int x = 0; x < 20; x++) {
+
+      level[y][x].dominoType = DominoTypeEmpty;
+      level[y][x].dominoState = 8;
+      level[y][x].dominoDir = 0;
+      level[y][x].dominoYOffset = 0;
+      level[y][x].dominoExtra = 0;
+
+      switch (levelLines[y][x]) {
+
+        case '1':
+          if (doorEntryDefined)
+            throw std::exception();
+          doorEntryDefined = true;
+          doorEntryX = x;
+          doorEntryY = y;
+          level[y][x].fg = FgElementDoor0;
+          break;
+
+        case '2':
+          if (doorExitDefined)
+            throw std::exception();
+          doorExitDefined = true;
+          doorExitX = x;
+          doorExitY = y;
+          level[y][x].fg = FgElementDoor0;
+          break;
+
+        case ' ':
+        case '^':
+          if (x > 0 && levelLines[y][x-1] == '/')
+            level[y][x].fg = FgElementPlatformStep8;
+          else
+            level[y][x].fg = FgElementEmpty;
+          break;
+
+        case '\\':
+          if (y <= 0 || x <= 0)
+            throw std::exception();
+          level[y-1][x-1].fg = FgElementPlatformStep1;
+          level[y-1][x  ].fg = FgElementPlatformStep2;
+          level[y  ][x-1].fg = FgElementPlatformStep3;
+          level[y  ][x  ].fg = FgElementPlatformStep4;
+          break;
+
+        case '/':
+          if (y <= 0 || x+1 >= 20)
+            throw std::exception();
+          level[y-1][x  ].fg = FgElementPlatformStep5;
+          level[y-1][x+1].fg = FgElementPlatformStep6;
+          level[y  ][x  ].fg = FgElementPlatformStep7;
+          break;
+
+        case 'H':
+        case 'V':
+          level[y][x].fg = FgElementLadder;
+          break;
+
+        case '.':
+          level[y][x].fg = FgElementPlatformStrip;
+          break;
+
+        default:
+          std::string::size_type dt = dominoChars.find_first_of(levelLines[y][x]);
+          if (dt == std::string::npos)
+            throw std::exception();
+          level[y][x].dominoType = dt;
+
+          bool ladderAbove   = y > 0
+                               && levelLines[y-1][x] == 'H';
+          bool ladderBelow   = y+1 < 13
+                               && (levelLines[y+1][x] == 'H'
+                                   || levelLines[y+1][x] == 'V'
+                                   || levelLines[y+1][x] == '^');
+          bool platformLeft  = x <= 0
+                               || isDominoChar(levelLines[y][x-1])
+                               || levelLines[y][x-1] == '\\';
+          bool platformRight = x+1 >= 20
+                               || isDominoChar(levelLines[y][x+1])
+                               || levelLines[y][x+1] == '/';
+          if (ladderBelow)
+            level[y][x].fg = FgElementPlatformLadderDown;
+          else if (ladderAbove)
+            level[y][x].fg = FgElementPlatformLadderUp;
+          else if (!platformLeft && !platformRight)
+            level[y][x].fg = FgElementPlatformStrip;
+          else if (!platformLeft)
+            level[y][x].fg = FgElementPlatformStart;
+          else if (!platformRight)
+            level[y][x].fg = FgElementPlatformEnd;
+          else
+            level[y][x].fg = FgElementPlatformMiddle;
+      }
+    }
+  }
+
+  if (!doorEntryDefined)
+    throw std::exception();
+  if (!doorExitDefined)
+    throw std::exception();
+
+  for (unsigned int y = 0; y < 13; y++) {
+    std::istringstream line(lines[3+13+y]);
+    for (unsigned int x = 0; x < 20; x++) {
+      line >> level[y][x].bg;
+      if (!line)
+        throw std::exception();
+    }
+    if (!line.eof())
+      throw std::exception();
+  }
+
+  openDoorEntry = openDoorExit = false;
+  for (unsigned int i = 0; i < 13; i++)
+    staticDirty[i] = dynamicDirty[i] = 0xFFFFF;
+  triggerFalln = false;
+}
+
+void level_c::save(const std::string & filename) const {
+
+  std::ofstream f(filename.c_str());
+
+  unsigned int timeSeconds = timeLeft/18;
+  f <<
+  "#!/usr/bin/env pushover\n"
+  "\n"
+  "Level name\n"
+  "| " << name << "\n"
+  "\n"
+  "Theme\n"
+  "| " << getTheme() << "\n"
+  "\n"
+  "Time\n"
+  "| " << (timeSeconds / 60) << ':'
+       << ((timeSeconds % 60) / 10) << ((timeSeconds % 60) % 10) << "\n"
+  "\n"
+  "Level\n"
+  "+-" << std::string(20, '-') << "\n";
+
+  for (unsigned int y = 0; y < 13; y++) {
+    std::string line = "| ";
+    for (unsigned int x = 0; x < 20; x++) {
+      if (x == doorEntryX && y == doorEntryY)
+        line += '1';
+      else if (x == doorExitX && y == doorExitY)
+        line += '2';
+      else switch (level[y][x].fg) {
+        case FgElementEmpty:
+        case FgElementPlatformStep2:
+        case FgElementPlatformStep3:
+        case FgElementPlatformStep5:
+        case FgElementPlatformStep8:
+        case FgElementDoor0:
+        case FgElementDoor1:
+        case FgElementDoor2:
+        case FgElementDoor3:
+          if (y > 0 && level[y-1][x].fg == FgElementPlatformLadderDown)
+            line += '^';
+          else
+            line += ' ';
+          break;
+        case FgElementPlatformStep4:
+          line += '\\';
+          break;
+        case FgElementPlatformStep7:
+          line += '/';
+          break;
+        case FgElementLadder:
+          if (y+1 >= 13
+              || level[y+1][x].fg == FgElementPlatformLadderDown
+              || level[y+1][x].fg == FgElementPlatformLadderUp)
+            line += 'H';
+          else
+            line += 'V';
+          break;
+        default:
+          unsigned char dt = level[y][x].dominoType;
+          if (dt == DominoTypeEmpty
+              && level[y][x].fg == FgElementPlatformStrip)
+            line += '.';
+          else if (dt < dominoChars.size())
+            line += dominoChars[dt];
+          else
+            throw std::exception();
+      }
+    }
+    f << line.substr(0, line.find_last_not_of(' ')+1) << '\n';
+  }
+
+  f <<
+  "+-" << std::string(20, '-') << "\n"
+  "\n"
+  "Background Layer 1\n"
+  "+" << std::string((3+1)*20, '-') << "\n";
+
+  for (unsigned int y = 0; y < 13; y++) {
+    f << '|';
+    for (unsigned int x = 0; x < 20; x++)
+      f << ' ' << std::setw(3) << level[y][x].bg;
+    f << '\n';
+  }
+
+  f <<
+  "+" << std::string((3+1)*20, '-') << "\n";
+}
+
+bool level_c::operator==(const level_c & other) const {
+  return
+    name == other.name &&
+    theme == other.theme &&
+    timeLeft == other.timeLeft &&
+    memcmp(level, other.level, sizeof(level)) == 0 &&
+    doorEntryX == other.doorEntryX &&
+    doorEntryY == other.doorEntryY &&
+    doorExitX == other.doorExitX &&
+    doorExitY == other.doorExitY;
 }
 
 void level_c::print(void) {

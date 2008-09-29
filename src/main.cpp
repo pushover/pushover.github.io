@@ -122,7 +122,7 @@ int main(int argn, char * argv[]) {
   }
 
   level_c l;
-  l.load(levelName);
+  l.load_binary(levelName);
 
   if (useGraphics)
     gr->setTheme(l.getTheme());

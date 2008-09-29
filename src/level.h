@@ -7,6 +7,9 @@ class level_c {
 
   private:
 
+    static const std::string dominoChars;
+    static bool isDominoChar(char ch);
+
     typedef struct levelEntry {
       unsigned short bg;
       unsigned char fg;
@@ -25,6 +28,7 @@ class level_c {
 
     levelEntry level[13][20];
 
+    std::string name;
     std::string theme;
 
     // the positions of the 2 doors
@@ -88,7 +92,11 @@ class level_c {
     level_c(void);
     ~level_c(void);
 
-    void load(const std::string & name);
+    void load_binary(const std::string & name);
+
+    void load(const std::string & filename);
+    void save(const std::string & filename) const;
+    bool operator==(const level_c & other) const;
 
     const std::string getTheme(void) const { return theme; }
 
