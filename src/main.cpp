@@ -8,20 +8,6 @@
 
 #include <stdio.h>
 
-const char * themes[] = {
-  "AZTEC",
-  "CASTLE",
-  "CAVERN",
-  "DUNGEON",
-  "ELECTRO",
-  "GREEK",
-  "JAPANESE",
-  "MECHANIC",
-  "SPACE",
-  "TOXCITY",
-  "OPTION"
-};
-
 std::vector<int> recorder;
 bool play;
 unsigned int playpos;
