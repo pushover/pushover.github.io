@@ -316,8 +316,8 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
         level[y][x].dominoExtra = 0;
       }
 
-      // paint the actual domino but take care of the special cases of the raiser domino
-      if (level[y][x].dominoType == DominoTypeRiser && level[y][x].dominoExtra == 0x60 &&
+      // paint the actual domino but take care of the special cases of the ascender domino
+      if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoExtra == 0x60 &&
           level[y][x].dominoState < 16 && level[y][x].dominoState != 8)
       {
         PutSprite(4,
@@ -326,7 +326,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
             gr->getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
             );
       }
-      else if (level[y][x].dominoType == DominoTypeRiser && level[y][x].dominoState == 1 && level[y][x].dominoExtra == 0 &&
+      else if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoState == 1 && level[y][x].dominoExtra == 0 &&
           level[y-2][x-1].fg == 0)
       {
         PutSprite(5,
@@ -335,7 +335,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
             gr->getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
             );
       }
-      else if (level[y][x].dominoType == DominoTypeRiser && level[y][x].dominoState == 16 && level[y][x].dominoExtra == 0 &&
+      else if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoState == 16 && level[y][x].dominoExtra == 0 &&
           level[y-2][x+1].fg == 0)
       {
         PutSprite(6,
@@ -380,7 +380,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
 
       if (y >= 11) continue;
 
-      if (!isDirty(x, y+2) && level[y+2][x].dominoType == DominoTypeRiser)
+      if (!isDirty(x, y+2) && level[y+2][x].dominoType == DominoTypeAscender)
       {
         PutSprite(10,
             SpriteXPos,
@@ -389,7 +389,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
             );
       }
 
-      if (x > 0 && !isDirty(x-1, y+2) && level[y+2][x-1].dominoType == DominoTypeRiser)
+      if (x > 0 && !isDirty(x-1, y+2) && level[y+2][x-1].dominoType == DominoTypeAscender)
       {
         PutSprite(11,
             SpriteXPos-gr->blockX(),
@@ -398,7 +398,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
             );
       }
 
-      if (x < 19 && !isDirty(x+1, y+2) && level[y+2][x+1].dominoType == DominoTypeRiser)
+      if (x < 19 && !isDirty(x+1, y+2) && level[y+2][x+1].dominoType == DominoTypeAscender)
       {
         PutSprite(12,
             SpriteXPos+gr->blockX(),
@@ -407,7 +407,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
             );
       }
 
-      if (level[y][x].dominoType != DominoTypeRiser) continue;
+      if (level[y][x].dominoType != DominoTypeAscender) continue;
 
       if (!isDirty(x, y+2) && level[y+2][x].dominoType != DominoTypeEmpty)
       {
@@ -598,7 +598,7 @@ void level_c::putDownDomino(int x, int y, int domino, bool pushin) {
 }
 
 void level_c::fallingDomino(int x, int y) {
-  if (level[y][x].dominoType == DominoTypeRiser)
+  if (level[y][x].dominoType == DominoTypeAscender)
     level[y][x].dominoExtra = 0x60;
   else
     level[y][x].dominoExtra = 0x70;
@@ -628,8 +628,8 @@ bool level_c::pushDomino(int x, int y, int dir) {
       // there is never a problem with those types
     case DominoTypeExploder:
     case DominoTypeDelay:
-    case DominoTypeVanisher:
-    case DominoTypeRiser:
+    case DominoTypeVanish:
+    case DominoTypeAscender:
     case DominoTypeCrash0:
     case DominoTypeCrash1:
     case DominoTypeCrash2:
@@ -645,7 +645,7 @@ bool level_c::pushDomino(int x, int y, int dir) {
     case DominoTypeTrigger:
     case DominoTypeEmpty:
     case DominoTypeStandard:
-    case DominoTypeBlocker:
+    case DominoTypeStopper:
       if (getDominoDir(x, y) == -dir)
       {
         DominoCrash(x, y, level[y][x+dir].dominoYOffset, level[y][x+dir].dominoExtra);
@@ -662,7 +662,7 @@ bool level_c::pushDomino(int x, int y, int dir) {
     case DominoTypeStandard:
     case DominoTypeTumbler:
     case DominoTypeBridger:
-    case DominoTypeVanisher:
+    case DominoTypeVanish:
     case DominoTypeTrigger:
       if (getDominoState(x, y) == 8) {
         // play sound
@@ -715,7 +715,7 @@ bool level_c::pushDomino(int x, int y, int dir) {
 
       // we return false then pushing the riser, because it will rise
       // and the domino has to wait
-    case DominoTypeRiser:
+    case DominoTypeAscender:
       if (getDominoState(x, y) == 16) {
         level[y][x].dominoDir = dir;
       }
@@ -734,7 +734,7 @@ bool level_c::pushDomino(int x, int y, int dir) {
 
       // for this types we always return false to stop dominos
       // falling against this block
-    case DominoTypeBlocker:
+    case DominoTypeStopper:
     case DominoTypeCrash0:
     case DominoTypeCrash1:
     case DominoTypeCrash2:
@@ -762,7 +762,7 @@ void level_c::DTA_N(int x, int y) {
   triggerFalln = true;
 }
 
-// this is for the blocker splitter and exploder dominos, when they
+// this is for the stopper, splitter and exploder dominos, when they
 // are falling after beeing lost when going over the edge
 // we check, if we are still falling and only handle the falling case
   void level_c::DTA_F(int x, int y) {
@@ -907,7 +907,7 @@ void level_c::DTA_4(int x, int y) {
   // update state
   level[y][x].dominoState += getDominoDir(x, y);
 
-  if (getDominoType(x, y) == DominoTypeRiser &&
+  if (getDominoType(x, y) == DominoTypeAscender &&
       getDominoState(x, y) == 8 &&
       level[y][x].dominoYOffset == -10)
   {
@@ -936,7 +936,7 @@ void level_c::DTA_4(int x, int y) {
     markDirty(x+getDominoDir(x, y), y-1);
   }
 
-  if (level[y][x].dominoType == DominoTypeRiser)
+  if (level[y][x].dominoType == DominoTypeAscender)
   {
     markDirty(x+getDominoDir(x, y), y-2);
     markDirty(x-getDominoDir(x, y), y-2);
@@ -998,9 +998,9 @@ void level_c::DTA_3(int x, int y) {
     return;
   }
 
-  // if the next domino is not a blocker and not a delay, we
+  // if the next domino is not a stopper and not a delay, we
   // simply push that domino and continue falling
-  if (getDominoType(x-1, y) != DominoTypeBlocker &&
+  if (getDominoType(x-1, y) != DominoTypeStopper &&
       getDominoType(x-1, y) != DominoTypeDelay)
   {
     if (pushDomino(x-1, y, -1))
@@ -1055,7 +1055,7 @@ void level_c::DTA_I(int x, int y) {
     return;
   }
 
-  if (getDominoType(x+1, y) != DominoTypeBlocker &&
+  if (getDominoType(x+1, y) != DominoTypeStopper &&
       getDominoType(x+1, y) != DominoTypeDelay)
   {
     if (pushDomino(x+1, y, 1))
@@ -1137,8 +1137,8 @@ void level_c::DominoCrash(int x, int y, int type, int extra) {
     next = DominoTypeCrash4;
   }
   // if all parts are red, the pile is red
-  else if ((next == DominoTypeBlocker || next == DominoTypeCrash3) &&
-      (type == DominoTypeBlocker || type == DominoTypeCrash3))
+  else if ((next == DominoTypeStopper || next == DominoTypeCrash3) &&
+      (type == DominoTypeStopper || type == DominoTypeCrash3))
   {
     next = DominoTypeCrash3;
   }
@@ -1666,7 +1666,7 @@ void level_c::DTA_A(int x, int y) {
     if (a == 1)
     {
       level[y][x-1].dominoExtra = 0x60;
-      level[y][x-1].dominoType = DominoTypeRiser;
+      level[y][x-1].dominoType = DominoTypeAscender;
       level[y][x-1].dominoState = 14;
       level[y][x-1].dominoDir = -1;
       level[y][x-1].dominoYOffset = level[y][x].dominoYOffset-2;
@@ -1676,7 +1676,7 @@ void level_c::DTA_A(int x, int y) {
       if (y > 0)
       {
         level[y-1][x-1].dominoExtra = 0x60;
-        level[y-1][x-1].dominoType = DominoTypeRiser;
+        level[y-1][x-1].dominoType = DominoTypeAscender;
         level[y-1][x-1].dominoState = 14;
         level[y-1][x-1].dominoDir = -1;
         level[y-1][x-1].dominoYOffset = level[y][x].dominoYOffset+14;
@@ -1706,7 +1706,7 @@ void level_c::DTA_A(int x, int y) {
     level[y][x].dominoExtra = 0;
 
     level[y+1-a][x].dominoExtra = 0x60;
-    level[y+1-a][x].dominoType = DominoTypeRiser;
+    level[y+1-a][x].dominoType = DominoTypeAscender;
     level[y+1-a][x].dominoState = 8;
     level[y+1-a][x].dominoDir = -1;
     level[y+1-a][x].dominoYOffset = 0;
@@ -1760,7 +1760,7 @@ void level_c::DTA_O(int x, int y) {
     if (a == 1)
     {
       level[y][x+1].dominoExtra = 0x60;
-      level[y][x+1].dominoType = DominoTypeRiser;
+      level[y][x+1].dominoType = DominoTypeAscender;
       level[y][x+1].dominoState = 2;
       level[y][x+1].dominoDir = 1;
       level[y][x+1].dominoYOffset = level[y][x].dominoYOffset-2;
@@ -1770,7 +1770,7 @@ void level_c::DTA_O(int x, int y) {
       if (y > 0)
       {
         level[y-1][x+1].dominoExtra = 0x60;
-        level[y-1][x+1].dominoType = DominoTypeRiser;
+        level[y-1][x+1].dominoType = DominoTypeAscender;
         level[y-1][x+1].dominoState = 2;
         level[y-1][x+1].dominoDir = 1;
         level[y-1][x+1].dominoYOffset = level[y][x].dominoYOffset+14;
@@ -1800,7 +1800,7 @@ void level_c::DTA_O(int x, int y) {
     level[y][x].dominoExtra = 0;
 
     level[y+1-a][x].dominoExtra = 0x60;
-    level[y+1-a][x].dominoType = DominoTypeRiser;
+    level[y+1-a][x].dominoType = DominoTypeAscender;
     level[y+1-a][x].dominoState = 8;
     level[y+1-a][x].dominoDir = 1;
     level[y+1-a][x].dominoYOffset = 0;
@@ -1889,7 +1889,7 @@ void level_c::DTA_H(int x, int y) {
         level[y-1][x].dominoYOffset = 4;
         level[y-1][x].dominoDir = level[y][x].dominoDir;
         level[y-1][x].dominoState = 8;
-        level[y-1][x].dominoType = DominoTypeRiser;
+        level[y-1][x].dominoType = DominoTypeAscender;
       }
 
       level[y][x].dominoType = 0;
@@ -2439,7 +2439,7 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
     case  13: DTA_J(x, y); break;
     case  14: DTA_K(x, y); break;
 
-              // DominoTypeBlocker
+              // DominoTypeStopper
     case  24: DTA_F(x, y); break;
 
               // DominoTypeSplitter
@@ -2518,7 +2518,7 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
     case 115: DTA_J(x, y); break;
     case 116: DTA_M(x, y); break;
 
-              // DominoTypeVanisher
+              // DominoTypeVanish
     case 119: DTA_8(x, y); break;
     case 120: DTA_4(x, y); break;
     case 121: DTA_3(x, y); break;
@@ -2552,7 +2552,7 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
     case 149: DTA_J(x, y); break;
     case 150: DTA_N(x, y); break;
 
-              // DominoTypeRiser
+              // DominoTypeAscender
     case 153: DTA_A(x, y); break;
     case 154: DTA_4(x, y); break;
     case 155: DTA_3(x, y); break;
@@ -2627,7 +2627,7 @@ void level_c::performDominos(void) {
 
         callStateFunction(getDominoType(x, y), getDominoState(x, y), x, y);
 
-        if (getDominoType(x, y) == DominoTypeRiser)
+        if (getDominoType(x, y) == DominoTypeAscender)
         {
           if (isDirty(x-1, y)) markDirty(x-1, y-1);
           if (isDirty(x  , y)) markDirty(x  , y-1);
@@ -2649,7 +2649,7 @@ bool level_c::levelCompleted(int *fail) {
         return false;
       }
 
-      if (level[y][x].dominoType != DominoTypeEmpty && level[y][x].dominoType != DominoTypeBlocker)
+      if (level[y][x].dominoType != DominoTypeEmpty && level[y][x].dominoType != DominoTypeStopper)
       {
         if (level[y][x].dominoType == DominoTypeSplitter)
         {
@@ -2671,14 +2671,14 @@ bool level_c::levelCompleted(int *fail) {
             }
             else
             {
-              // in this case we might still succeed, wne we lean against a block
+              // in this case we might still succeed, when we lean against a block
               if (
                   level[y][x-1].fg != FgElementPlatformStep4 &&
                   level[y][x-1].fg != FgElementPlatformStep7 &&
                   level[y][x+1].fg != FgElementPlatformStep4 &&
                   level[y][x+1].fg != FgElementPlatformStep7 &&
-                  level[y][x-1].dominoType != DominoTypeBlocker &&
-                  level[y][x+1].dominoType != DominoTypeBlocker
+                  level[y][x-1].dominoType != DominoTypeStopper &&
+                  level[y][x+1].dominoType != DominoTypeStopper
                  )
               {
               // here we lean against a step

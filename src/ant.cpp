@@ -43,8 +43,8 @@ typedef enum {
   AntAnimEnterRight,
   AntAnimPushLeft,
   AntAnimPushRight,
-  AntAnimPushBlockerLeft,
-  AntAnimPushBlockerRight,
+  AntAnimPushStopperLeft,
+  AntAnimPushStopperRight,
   AntAnimPushRiserLeft,
   AntAnimPushRiserRight,
   AntAnimPushDelayLeft,
@@ -355,8 +355,8 @@ unsigned int ant_c::callStateFunction(unsigned int state) {
     case AntAnimEnterRight:                return SFEnterDominosRight();
     case AntAnimPushLeft:                  return SFPushLeft();
     case AntAnimPushRight:                 return SFPushRight();
-    case AntAnimPushBlockerLeft:           return SFPushSpecialLeft();
-    case AntAnimPushBlockerRight:          return SFPushSpecialRight();
+    case AntAnimPushStopperLeft:           return SFPushSpecialLeft();
+    case AntAnimPushStopperRight:          return SFPushSpecialRight();
     case AntAnimPushRiserLeft:             return SFPushSpecialLeft();
     case AntAnimPushRiserRight:            return SFPushSpecialRight();
     case AntAnimPushDelayLeft:             return SFPushDelayLeft();
@@ -537,9 +537,9 @@ unsigned int ant_c::SFPushLeft(void) {
       if (pushDelay == 0) {
 
         switch(level->getDominoType(blockX-1, blockY)) {
-          case level_c::DominoTypeBlocker:
+          case level_c::DominoTypeStopper:
             pushDelay = 5;
-            pushAnimation = AntAnimPushBlockerLeft;
+            pushAnimation = AntAnimPushStopperLeft;
             break;
 
           case level_c::DominoTypeExploder:
@@ -551,7 +551,7 @@ unsigned int ant_c::SFPushLeft(void) {
             pushAnimation = AntAnimPushDelayLeft;
             break;
 
-          case level_c::DominoTypeRiser:
+          case level_c::DominoTypeAscender:
             pushDelay = 2;
             pushAnimation = AntAnimPushRiserLeft;
             break;
@@ -582,9 +582,9 @@ unsigned int ant_c::SFPushRight(void) {
       if (pushDelay == 0) {
 
         switch(level->getDominoType(blockX+1, blockY)) {
-          case level_c::DominoTypeBlocker:
+          case level_c::DominoTypeStopper:
             pushDelay = 5;
-            pushAnimation = AntAnimPushBlockerRight;
+            pushAnimation = AntAnimPushStopperRight;
             break;
 
           case level_c::DominoTypeExploder:
@@ -596,7 +596,7 @@ unsigned int ant_c::SFPushRight(void) {
             pushAnimation = AntAnimPushDelayRight;
             break;
 
-          case level_c::DominoTypeRiser:
+          case level_c::DominoTypeAscender:
             pushDelay = 2;
             pushAnimation = AntAnimPushRiserRight;
             break;
@@ -1232,7 +1232,7 @@ bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
   {   // we need a proper ground for the domino
     return false;
   }
-  else if (carriedDomino != level_c::DominoTypeVanisher && y > 0 &&
+  else if (carriedDomino != level_c::DominoTypeVanish && y > 0 &&
       level->getFg(x, y-1) >= level_c::FgElementDoor0 &&
       level->getFg(x, y-1) <= level_c::FgElementDoor3)
   {   // No domino, except for vanishers may be placed in front of doors
@@ -1742,7 +1742,7 @@ unsigned int ant_c::SFNextAction(void) {
     else if ((carriedDomino == 0)
         && (level->getDominoType(blockX, blockY) != 0)
         && (level->getDominoState(blockX, blockY) == 8)
-        && (level->getDominoType(blockX, blockY) != level_c::DominoTypeRiser || level->getDominoExtra(blockX, blockY) != 0x60)
+        && (level->getDominoType(blockX, blockY) != level_c::DominoTypeAscender || level->getDominoExtra(blockX, blockY) != 0x60)
         && (level->getFg(blockX, blockY) != level_c::FgElementLadder)
         )
     {
