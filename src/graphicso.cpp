@@ -310,11 +310,11 @@ void graphicsO_c::loadGraphics(void) {
   }
 }
 
-void graphicsO_c::loadTheme(const char *name) {
+void graphicsO_c::loadTheme(const std::string & name) {
 
   char fname[200];
 
-  snprintf(fname, 200, "%s/themes/%s.PAL", dataPath.c_str(), name);
+  snprintf(fname, 200, "%s/themes/%s.PAL", dataPath.c_str(), name.c_str());
   unsigned short palette[32];
   {
     FILE * f = fopen(fname, "rb");
@@ -322,11 +322,11 @@ void graphicsO_c::loadTheme(const char *name) {
     fclose(f);
   }
 
-  snprintf(fname, 200, "%s/themes/%s.BCX", dataPath.c_str(), name);
+  snprintf(fname, 200, "%s/themes/%s.BCX", dataPath.c_str(), name.c_str());
   unsigned int bgSize;
   unsigned char * bg = decompress(fname, &bgSize);
 
-  snprintf(fname, 200, "%s/themes/%s.PLX", dataPath.c_str(), name);
+  snprintf(fname, 200, "%s/themes/%s.PLX", dataPath.c_str(), name.c_str());
   unsigned int fgSize;
   unsigned char * fg = decompress(fname, &fgSize);
 

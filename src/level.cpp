@@ -19,11 +19,11 @@ level_c::~level_c(void) {
   SDL_FreeSurface(background);
 }
 
-void level_c::load(const char * name) {
+void level_c::load(const std::string & name) {
 
   char fname[200];
 
-  snprintf(fname, 200, "./screens/%s.SCR", name);
+  snprintf(fname, 200, "./screens/%s.SCR", name.c_str());
 
   unsigned char * dat = decompress(fname, 0);
 
@@ -41,9 +41,9 @@ void level_c::load(const char * name) {
     level[i/20][i%20].dominoExtra = 0;
   }
 
-  /* copy theme */
-  for (int i = 0; i < 10; i++)
-    theme[i] = dat[260*6+i];
+  /* copy theme, ignore trailing '\0' */
+  theme.assign((char*)&dat[260*6], 10);
+  theme = theme.substr(0, theme.find_first_of('\0'));
 
   /* copy the door positions */
   doorEntryX = dat[1580];

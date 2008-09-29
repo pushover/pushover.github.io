@@ -12,7 +12,7 @@ std::vector<int> recorder;
 bool play;
 unsigned int playpos;
 
-void record(const char * level) {
+void record(const std::string & level) {
 
     int num = 0;
     FILE * f = 0;
@@ -34,7 +34,7 @@ void record(const char * level) {
     snprintf(fname, 200, "recordings/%05i.rec", num);
     f = fopen(fname, "w");
 
-    fprintf(f, "%s\n", level);
+    fprintf(f, "%s\n", level.c_str());
 
     int val = recorder[0];
     int cnt = 1;
@@ -58,8 +58,8 @@ void record(const char * level) {
     fclose(f);
 }
 
-const char * loadrecord(const char * file) {
-    FILE * f = fopen(file, "r");
+const std::string loadrecord(const std::string & filename) {
+    FILE * f = fopen(filename.c_str(), "r");
 
     static char level[200];
     fgets(level, 200, f);
@@ -88,7 +88,7 @@ int main(int argn, char * argv[]) {
       CHECK_FINISH
   } operation = NOTHING;
 
-  const char * levelName;
+  std::string levelName;
 
   if (strcmp(argv[1], "-r") == 0)
   {

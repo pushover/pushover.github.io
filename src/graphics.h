@@ -16,7 +16,7 @@ class graphics_c {
     /* load a new theme, and activate it, maybe that very theme is already
      * loaded and just a pointer is replaced
      */
-    void setTheme(const char *name);
+    void setTheme(const std::string & name);
 
     /* to get the resolution that should be used */
     virtual unsigned int resolutionX(void) = 0;
@@ -47,7 +47,7 @@ class graphics_c {
     virtual signed int getMoveOffsetY(unsigned int animation, unsigned int image) = 0;
     virtual signed int getMoveImage(unsigned int animation, unsigned int image) = 0;
 
-    virtual void loadTheme(const char *name) = 0;
+    virtual void loadTheme(const std::string & name) = 0;
 
     static const unsigned char numDominoTypes;
     static const unsigned char numDominos[18];

@@ -12,7 +12,7 @@ class graphicsO_c : public graphics_c {
 
     void loadGraphics(void);
 
-    void loadTheme(const char *name);
+    void loadTheme(const std::string & name);
 
     virtual unsigned int resolutionX(void) { return 320*scale; }
     virtual unsigned int resolutionY(void) { return 200*scale; }

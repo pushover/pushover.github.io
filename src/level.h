@@ -1,4 +1,5 @@
 #include <SDL.h>
+#include <string>
 
 class graphics_c;
 
@@ -24,7 +25,7 @@ class level_c {
 
     levelEntry level[13][20];
 
-    char theme[10];
+    std::string theme;
 
     // the positions of the 2 doors
     unsigned char doorEntryX, doorEntryY, doorExitX, doorExitY;
@@ -87,9 +88,9 @@ class level_c {
     level_c(void);
     ~level_c(void);
 
-    void load(const char * name);
+    void load(const std::string & name);
 
-    const char * getTheme(void) const { return theme; }
+    const std::string getTheme(void) const { return theme; }
 
     /* Foreground elements */
     enum {

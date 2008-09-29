@@ -28,7 +28,7 @@ graphics_c::graphics_c(void) {
   }
 }
 
-void graphics_c::setTheme(const char *name) {
+void graphics_c::setTheme(const std::string & name) {
 
   for (unsigned int th = 0; th < themeNames.size(); th++) {
     if (themeNames[th] == name) {
