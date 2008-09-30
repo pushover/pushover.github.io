@@ -1,4 +1,4 @@
-#include "graphicso.h"
+#include "graphicsn.h"
 #include "level.h"
 #include "ant.h"
 
@@ -110,7 +110,7 @@ int main(int argn, char * argv[]) {
       play = false;
   }
 
-  graphics_c * gr = new graphicsO_c(".", 3);
+  graphics_c * gr = new graphicsN_c(".");
   SDL_Surface * video = 0;
 
 
