@@ -20,10 +20,8 @@ class graphicsO_c : public graphics_c {
     /* to get the blocksize of one block */
     virtual unsigned int blockX(void) { return 16*scale; }
     virtual unsigned int blockY(void) { return 16*scale; }
-    virtual unsigned int blockObject(void) { return 8*scale; }
     virtual unsigned int halveBlockDisplace(void) { return 8*scale; }
     virtual unsigned int antDisplace(void) { return 6*scale; }
-    virtual unsigned int dominoDisplace(void) { return 4*scale; }
 
     virtual signed int getCarryOffsetX(unsigned int animation, unsigned int image);
     virtual signed int getCarryOffsetY(unsigned int animation, unsigned int image);
