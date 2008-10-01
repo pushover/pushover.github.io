@@ -7,6 +7,8 @@ class level_c {
 
   private:
 
+    static const unsigned int version = 1;
+    static const std::string firstLine;
     static const std::string dominoChars;
     static bool isDominoChar(char ch);
 

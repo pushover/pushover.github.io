@@ -82,6 +82,8 @@ void level_c::load_binary(const std::string & name) {
   Min = Sec = -1;
 }
 
+const std::string level_c::firstLine = "#!/usr/bin/env pushover";
+
 const std::string level_c::dominoChars =
   "_" /* DominoTypeEmpty    */
   "I" /* DominoTypeStandard */
@@ -105,15 +107,19 @@ void level_c::load(const std::string & filename) {
   std::ifstream f(filename.c_str());
   std::vector<std::string> lines;
 
-  for (std::string line; std::getline(f, line); )
+  unsigned int linenr = 0;
+  for (std::string line; std::getline(f, line); linenr++) {
+    if (linenr == 0 && line != firstLine)
+      throw std::exception();
     if (line.size() > 0 && line[0] == '|') {
       if (line.size() >= 2)
         lines.push_back(line.substr(2, std::string::npos));
       else
         lines.push_back("");
     }
+  }
 
-  if (lines.size() != 29)
+  if (lines.size() != 30)
     throw std::exception();
 
   name = lines[0];
@@ -130,9 +136,17 @@ void level_c::load(const std::string & filename) {
     throw std::exception();
   timeLeft = (((timeMinutes * 60) + timeSeconds) * 18) + 17;
 
+  std::istringstream versionStream(lines[3]);
+  unsigned int givenVersion;
+  versionStream >> givenVersion;
+  if (!timeStream.eof() || !timeStream)
+    throw std::exception();
+  if (givenVersion != version)
+    throw std::exception();
+
   std::string levelLines[13];
   for (unsigned int y = 0; y < 13; y++) {
-    levelLines[y] = lines[3+y];
+    levelLines[y] = lines[4+y];
     if (levelLines[y].size() > 20)
       throw std::exception();
     /* padding with spaces to the whole width */
@@ -244,7 +258,7 @@ void level_c::load(const std::string & filename) {
     throw std::exception();
 
   for (unsigned int y = 0; y < 13; y++) {
-    std::istringstream line(lines[3+13+y]);
+    std::istringstream line(lines[4+13+y]);
     for (unsigned int x = 0; x < 20; x++) {
       line >> level[y][x].bg;
       if (!line)
@@ -266,17 +280,20 @@ void level_c::save(const std::string & filename) const {
 
   unsigned int timeSeconds = timeLeft/18;
   f <<
-  "#!/usr/bin/env pushover\n"
+  firstLine << "\n"
   "\n"
-  "Level name\n"
+  "Name\n"
   "| " << name << "\n"
   "\n"
   "Theme\n"
-  "| " << getTheme() << "\n"
+  "| " << theme << "\n"
   "\n"
   "Time\n"
   "| " << (timeSeconds / 60) << ':'
        << ((timeSeconds % 60) / 10) << ((timeSeconds % 60) % 10) << "\n"
+  "\n"
+  "Version\n"
+  "| " << version << "\n"
   "\n"
   "Level\n"
   "+-" << std::string(20, '-') << "\n";
@@ -334,7 +351,7 @@ void level_c::save(const std::string & filename) const {
   f <<
   "+-" << std::string(20, '-') << "\n"
   "\n"
-  "Background Layer 1\n"
+  "Background\n"
   "+" << std::string((3+1)*20, '-') << "\n";
 
   for (unsigned int y = 0; y < 13; y++) {
