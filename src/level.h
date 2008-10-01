@@ -11,9 +11,10 @@ class level_c {
     static const std::string firstLine;
     static const std::string dominoChars;
     static bool isDominoChar(char ch);
+    static const unsigned char maxBg = 8;
 
     typedef struct levelEntry {
-      unsigned short bg;
+      unsigned short bg[maxBg];
       unsigned char fg;
       unsigned char dominoType;
       unsigned char dominoState;
@@ -29,6 +30,7 @@ class level_c {
     } levelEntry;
 
     levelEntry level[13][20];
+    unsigned char numBg;
 
     std::string name;
     std::string theme;
@@ -154,7 +156,6 @@ class level_c {
       DominoTypeQuaver
     };
 
-    unsigned short getBg(unsigned int x, unsigned int y) const { return level[y][x].bg; }
     unsigned char  getFg(unsigned int x, unsigned int y) const { return level[y][x].fg; }
     unsigned char  getDominoType(unsigned int x, unsigned int y) const { return level[y][x].dominoType; }
     unsigned char  getDominoState(unsigned int x, unsigned int y) const { return level[y][x].dominoState; }

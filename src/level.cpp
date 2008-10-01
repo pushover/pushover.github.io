@@ -35,9 +35,11 @@ void level_c::load_binary(const std::string & name) {
   unsigned char * dat = decompress(fname, 0);
 
   /* copy level data */
+  memset(level, 0, sizeof(level));
+  numBg = 1;
   for (int i = 0; i < 13*20; i++) {
 
-    level[i/20][i%20].bg = ((unsigned short)dat[i*6] << 8) + dat[i*6+1];
+    level[i/20][i%20].bg[0] = ((unsigned short)dat[i*6] << 8) + dat[i*6+1];
     level[i/20][i%20].fg = dat[i*6+2];
 
     level[i/20][i%20].dominoType = dat[i*6+3];
@@ -119,7 +121,7 @@ void level_c::load(const std::string & filename) {
     }
   }
 
-  if (lines.size() != 30)
+  if (lines.size() != 4+13+13)
     throw std::exception();
 
   name = lines[0];
@@ -153,6 +155,7 @@ void level_c::load(const std::string & filename) {
     levelLines[y] += std::string(20-levelLines[y].size(), ' ');
   }
 
+  memset(level, 0, sizeof(level));
   bool doorEntryDefined = false;
   bool doorExitDefined = false;
   for (unsigned int y = 0; y < 13; y++) {
@@ -257,10 +260,11 @@ void level_c::load(const std::string & filename) {
   if (!doorExitDefined)
     throw std::exception();
 
+  numBg = 1;
   for (unsigned int y = 0; y < 13; y++) {
     std::istringstream line(lines[4+13+y]);
     for (unsigned int x = 0; x < 20; x++) {
-      line >> level[y][x].bg;
+      line >> level[y][x].bg[0];
       if (!line)
         throw std::exception();
     }
@@ -289,15 +293,17 @@ void level_c::save(const std::string & filename) const {
   "| " << theme << "\n"
   "\n"
   "Time\n"
-  "| " << (timeSeconds / 60) << ':'
-       << ((timeSeconds % 60) / 10) << ((timeSeconds % 60) % 10) << "\n"
+  "| " << (timeSeconds / 60)
+       << ':'
+       << std::setfill('0') << std::setw(2) << (timeSeconds % 60)
+       << "\n"
   "\n"
   "Version\n"
   "| " << version << "\n"
   "\n"
-  "Level\n"
-  "+-" << std::string(20, '-') << "\n";
+  "Level\n";
 
+  f << '+' << std::string(20+1, '-') << '\n';
   for (unsigned int y = 0; y < 13; y++) {
     std::string line = "| ";
     for (unsigned int x = 0; x < 20; x++) {
@@ -347,22 +353,20 @@ void level_c::save(const std::string & filename) const {
     }
     f << line.substr(0, line.find_last_not_of(' ')+1) << '\n';
   }
+  f << '+' << std::string(20+1, '-') << '\n';
 
-  f <<
-  "+-" << std::string(20, '-') << "\n"
-  "\n"
-  "Background\n"
-  "+" << std::string((3+1)*20, '-') << "\n";
-
-  for (unsigned int y = 0; y < 13; y++) {
-    f << '|';
-    for (unsigned int x = 0; x < 20; x++)
-      f << ' ' << std::setw(3) << level[y][x].bg;
+  for (unsigned char b = 0; b < numBg; b++) {
     f << '\n';
+    f << "Background\n";
+    f << '+' << std::string((3+1)*20, '-') << '\n';
+    for (unsigned int y = 0; y < 13; y++) {
+      f << '|';
+      for (unsigned int x = 0; x < 20; x++)
+        f << ' ' << std::setfill(' ') << std::setw(3) << level[y][x].bg[b];
+      f << '\n';
+    }
+    f << '+' << std::string((3+1)*20, '-') << '\n';
   }
-
-  f <<
-  "+" << std::string((3+1)*20, '-') << "\n";
 }
 
 bool level_c::operator==(const level_c & other) const {
@@ -371,6 +375,7 @@ bool level_c::operator==(const level_c & other) const {
     theme == other.theme &&
     timeLeft == other.timeLeft &&
     memcmp(level, other.level, sizeof(level)) == 0 &&
+    numBg == other.numBg &&
     doorEntryX == other.doorEntryX &&
     doorEntryY == other.doorEntryY &&
     doorExitX == other.doorExitX &&
@@ -420,8 +425,9 @@ void level_c::updateBackground(graphics_c * gr) {
         dst.y = y*gr->blockY();
         dst.w = gr->blockX();
         dst.h = gr->blockY();
-        SDL_BlitSurface(gr->getBgTile(getBg(x, y)), 0, background, &dst);
-        SDL_BlitSurface(gr->getFgTile(getFg(x, y)), 0, background, &dst);
+        for (unsigned char b = 0; b < numBg; b++)
+          SDL_BlitSurface(gr->getBgTile(level[y][x].bg[b]), 0, background, &dst);
+        SDL_BlitSurface(gr->getFgTile(level[y][x].fg), 0, background, &dst);
 
         // apply gradient effect
         for (unsigned int i = 0; i < gr->blockY() && y*gr->blockY()+i < (unsigned int)background->h; i++)
