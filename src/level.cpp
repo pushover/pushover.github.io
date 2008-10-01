@@ -63,6 +63,15 @@ void level_c::load_binary(const std::string & name) {
   level[doorEntryY][doorEntryX].fg = FgElementDoor0;
   openDoorEntry = openDoorExit = false;
 
+  /* copy the hint */
+  std::string h1; h1.assign((char*)&dat[1588], 15);
+  std::string h2; h2.assign((char*)&dat[1588+16], 15);
+  std::string h3; h3.assign((char*)&dat[1588+2*16], 15);
+  std::string h4; h4.assign((char*)&dat[1588+3*16], 15);
+  std::string h5; h5.assign((char*)&dat[1588+4*16], 15);
+
+  hint = h1 + "\n" + h2 + "\n" + h3 + "\n" + h4 + "\n" + h5;
+
   delete [] dat;
 
   for (unsigned int i = 0; i < 13; i++)

@@ -8,6 +8,8 @@
 
 #include <stdio.h>
 
+#include <iostream>
+
 std::vector<int> recorder;
 bool play;
 unsigned int playpos;
@@ -183,6 +185,8 @@ int main(int argn, char * argv[]) {
             }
             if (event.key.keysym.sym == SDLK_d)
               debug = !debug;
+            if (event.key.keysym.sym == SDLK_h)
+              std::cout << l.getHint() << std::endl;
             if (event.key.keysym.sym == SDLK_b)
               blocks = !blocks;
             if (event.key.keysym.sym == SDLK_r)
