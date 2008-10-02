@@ -141,9 +141,7 @@ void level_c::load(const std::string & filename) {
   std::istringstream versionStream(lines[3]);
   unsigned int givenVersion;
   versionStream >> givenVersion;
-  if (!timeStream.eof() || !timeStream)
-    throw std::exception();
-  if (givenVersion != version)
+  if (!versionStream.eof() || !versionStream)
     throw std::exception();
 
   std::string levelLines[13];
