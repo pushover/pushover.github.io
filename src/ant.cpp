@@ -300,6 +300,7 @@ void ant_c::performAnimation(void) {
     level->markDirty(blockX-1, blockY-2);
     level->markDirty(blockX-1, blockY);
     level->markDirty(blockX-2, blockY-1);
+    level->markDirty(blockX-2, blockY);
     level->markDirty(blockX+1, blockY-2);
     level->markDirty(blockX+1, blockY);
     level->markDirty(blockX+2, blockY-1);
