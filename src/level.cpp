@@ -650,7 +650,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
             gr->getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
             );
       }
-      else if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoState == 16 && level[y][x].dominoExtra == 0 &&
+      else if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoState == 15 && level[y][x].dominoExtra == 0 &&
           level[y-2][x+1].fg == 0)
       {
         PutSprite(6,
