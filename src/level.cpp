@@ -112,7 +112,7 @@ void level_c::load(const std::string & filename) {
   unsigned int linenr = 0;
   for (std::string line; std::getline(f, line); linenr++) {
     if (linenr == 0 && line != firstLine)
-      throw std::exception();
+      throw level_error("missing #!-line");
     if (line.size() > 0 && line[0] == '|') {
       if (line.size() >= 2)
         lines.push_back(line.substr(2, std::string::npos));
@@ -122,7 +122,7 @@ void level_c::load(const std::string & filename) {
   }
 
   if (lines.size() != 4+13+13)
-    throw std::exception();
+    throw level_error("wrong total number of lines");
 
   name = lines[0];
   theme = lines[1];
@@ -131,24 +131,24 @@ void level_c::load(const std::string & filename) {
   unsigned int timeMinutes;
   timeStream >> timeMinutes;
   if (timeStream.get() != ':')
-    throw std::exception();
+    throw level_error("invalid time format");
   unsigned int timeSeconds;
   timeStream >> timeSeconds;
   if (!timeStream.eof() || !timeStream)
-    throw std::exception();
+    throw level_error("invalid time format");
   timeLeft = (((timeMinutes * 60) + timeSeconds) * 18) + 17;
 
   std::istringstream versionStream(lines[3]);
   unsigned int givenVersion;
   versionStream >> givenVersion;
   if (!versionStream.eof() || !versionStream)
-    throw std::exception();
+    throw level_error("invalid level version");
 
   std::string levelLines[13];
   for (unsigned int y = 0; y < 13; y++) {
     levelLines[y] = lines[4+y];
     if (levelLines[y].size() > 20)
-      throw std::exception();
+      throw level_error("level row is too long");
     /* padding with spaces to the whole width */
     levelLines[y] += std::string(20-levelLines[y].size(), ' ');
   }
@@ -169,7 +169,7 @@ void level_c::load(const std::string & filename) {
 
         case '1':
           if (doorEntryDefined)
-            throw std::exception();
+            throw level_error("duplicate entry door");
           doorEntryDefined = true;
           doorEntryX = x;
           doorEntryY = y;
@@ -178,7 +178,7 @@ void level_c::load(const std::string & filename) {
 
         case '2':
           if (doorExitDefined)
-            throw std::exception();
+            throw level_error("duplicate exit door");
           doorExitDefined = true;
           doorExitX = x;
           doorExitY = y;
@@ -195,7 +195,7 @@ void level_c::load(const std::string & filename) {
 
         case '\\':
           if (y <= 0 || x <= 0)
-            throw std::exception();
+            throw level_error("platform step '\\' has an invalid position");
           level[y-1][x-1].fg = FgElementPlatformStep1;
           level[y-1][x  ].fg = FgElementPlatformStep2;
           level[y  ][x-1].fg = FgElementPlatformStep3;
@@ -204,7 +204,7 @@ void level_c::load(const std::string & filename) {
 
         case '/':
           if (y <= 0 || x+1 >= 20)
-            throw std::exception();
+            throw level_error("platform step '/' has an invalid position");
           level[y-1][x  ].fg = FgElementPlatformStep5;
           level[y-1][x+1].fg = FgElementPlatformStep6;
           level[y  ][x  ].fg = FgElementPlatformStep7;
@@ -222,7 +222,7 @@ void level_c::load(const std::string & filename) {
         default:
           std::string::size_type dt = dominoChars.find_first_of(levelLines[y][x]);
           if (dt == std::string::npos)
-            throw std::exception();
+            throw level_error("invalid domino type");
           level[y][x].dominoType = dt;
 
           bool ladderAbove   = y > 0
@@ -254,9 +254,9 @@ void level_c::load(const std::string & filename) {
   }
 
   if (!doorEntryDefined)
-    throw std::exception();
+    throw level_error("missing entry door");
   if (!doorExitDefined)
-    throw std::exception();
+    throw level_error("missing exit door");
 
   numBg = 1;
   for (unsigned int y = 0; y < 13; y++) {
@@ -264,10 +264,10 @@ void level_c::load(const std::string & filename) {
     for (unsigned int x = 0; x < 20; x++) {
       line >> level[y][x].bg[0];
       if (!line)
-        throw std::exception();
+        throw level_error("not enough background tiles in a row");
     }
     if (!line.eof())
-      throw std::exception();
+      throw level_error("too many background tiles in a row");
   }
 
   openDoorEntry = openDoorExit = false;
@@ -346,7 +346,7 @@ void level_c::save(const std::string & filename) const {
           else if (dt < dominoChars.size())
             line += dominoChars[dt];
           else
-            throw std::exception();
+            throw level_error("level contains a domino type which can't be saved");
       }
     }
     f << line.substr(0, line.find_last_not_of(' ')+1) << '\n';

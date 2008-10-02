@@ -1,7 +1,16 @@
 #include <SDL.h>
+#include <exception>
 #include <string>
 
 class graphics_c;
+
+class level_error : public std::exception {
+  public:
+    const std::string msg;
+    level_error(const std::string &msg) throw(): msg(msg) {};
+    virtual ~level_error() throw() {};
+    virtual const char * what() const throw() { return msg.c_str(); }
+};
 
 class level_c {
 
