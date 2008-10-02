@@ -2,12 +2,13 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.13)
-AC_INIT([pushover],[0.0.1])
+AC_INIT(pushover, 0.0.1)
+AC_CONFIG_AUX_DIR(config_aux)
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR([src/main.cpp])
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_SRCDIR(src/main.cpp)
+AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
 # General information.
@@ -56,5 +57,5 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([atexit malloc realloc memmove memset mkdir setlocale strcasecmp strchr strstr])
 
 # Output.
-AC_CONFIG_FILES([Makefile m4/Makefile])
+AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
