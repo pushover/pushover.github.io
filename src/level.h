@@ -156,11 +156,11 @@ class level_c {
       DominoTypeQuaver
     };
 
-    unsigned char  getFg(unsigned int x, unsigned int y) const { return level[y][x].fg; }
-    unsigned char  getDominoType(unsigned int x, unsigned int y) const { return level[y][x].dominoType; }
-    unsigned char  getDominoState(unsigned int x, unsigned int y) const { return level[y][x].dominoState; }
-    signed char  getDominoDir(unsigned int x, unsigned int y) const { return level[y][x].dominoDir; }
-    unsigned char  getDominoExtra(unsigned int x, unsigned int y) const { return level[y][x].dominoExtra; }
+    unsigned char getFg(unsigned int x, unsigned int y) const { return level[y][x].fg; }
+    unsigned char getDominoType(unsigned int x, unsigned int y) const { return level[y][x].dominoType; }
+    unsigned char getDominoState(unsigned int x, unsigned int y) const { return level[y][x].dominoState; }
+    signed char   getDominoDir(unsigned int x, unsigned int y) const { return level[y][x].dominoDir; }
+    unsigned char getDominoExtra(unsigned int x, unsigned int y) const { return level[y][x].dominoExtra; }
 
     /* update the background where necessary */
     void updateBackground(graphics_c * gr);
