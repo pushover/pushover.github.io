@@ -477,8 +477,9 @@ static void PutSprite(int nr, int x, int y, SDL_Surface * v, SDL_Surface * targe
 
     SDL_BlitSurface(v, 0, target, &dst);
 
-#if 0
-    dst.x = x+2*32+16-4;
+#if 0 // this is for debugging domino display functionality, it draws a little colored rectangle
+      // below the dominos for me to see which if the many ifs in the function below is painting it
+    dst.x = x+2*40+20-4;
     dst.y = y;
     dst.w = 8;
     dst.h = 8;
