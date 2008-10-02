@@ -643,9 +643,11 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
       }
       else if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoState == 1 && level[y][x].dominoExtra == 0 &&
           level[y-2][x-1].fg == 0)
-      {
+      { // this is the case of the ascender domino completely horizontal and with the plank it is below not existing
+        // so we see the above face of the domino. Normally there is a wall above us so we only see
+        // the front face of the domino
         PutSprite(5,
-            SpriteXPos+gr->convertDominoX(XposOffset[level[y][x].dominoState-1]+2),
+            SpriteXPos+gr->convertDominoX(XposOffset[level[y][x].dominoState-1]+6),
             SpriteYPos+gr->convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
             gr->getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
             );
