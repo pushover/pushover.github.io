@@ -3016,7 +3016,7 @@ bool level_c::levelCompleted(int *fail) {
       {
         if (level[y][x].dominoType == DominoTypeSplitter)
         {
-          if (level[y][x].dominoState > 2 && level[y][x].dominoState != 9 && level[y][x].dominoState != 10)
+          if (level[y][x].dominoState > 2 && level[y][x].dominoState <= 8)
           {
             if (fail) *fail = 2;
             return false;
