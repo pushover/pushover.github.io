@@ -119,6 +119,7 @@ int main(int argn, char * argv[]) {
   if (useGraphics)
   {
     SDL_Init(SDL_INIT_VIDEO);
+    atexit(SDL_Quit);
     video = SDL_SetVideoMode(gr->resolutionX(), gr->resolutionY(), 24, 0);
     gr->loadGraphics();
   }
