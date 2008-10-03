@@ -1584,6 +1584,7 @@ void level_c::DTA_E(int x, int y) {
 
     markDirty(x, y+1);
     markDirty(x, y);
+    markDirty(x, y-1);
     return;
   }
 
