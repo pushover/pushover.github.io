@@ -106,6 +106,11 @@ graphics_c::~graphics_c(void) {
     for (unsigned int j = 0; j < carriedDominos[i].size(); j++)
       if (carriedDominos[i][j])
         SDL_FreeSurface(carriedDominos[i][j]);
+
+  for(std::map<wchar_t, SDL_Surface*>::iterator i = bigFont.begin(); i != bigFont.end(); i++)
+    SDL_FreeSurface(i->second);
+
+
 }
 
 void graphics_c::putText(SDL_Surface * target, int x, int y, const wchar_t * text, Uint8 r, Uint8 g, Uint8 b, bool shadow) {
