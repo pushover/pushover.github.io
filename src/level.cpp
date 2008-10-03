@@ -1463,23 +1463,52 @@ void level_c::DominoCrash(int x, int y, int type, int extra) {
   // what do we crash into?
   int next = level[y][x].dominoType;
 
-  // if all participating parts are completely yellow
-  // the result is a yellow pile
-  if ((next == DominoTypeStandard || next == DominoTypeCrash4) &&
-      (type == DominoTypeStandard || type == DominoTypeCrash4))
+  // depending on what crashed we get a new pile
+
+  // standard + standard     -> DominoCarsh3 little yellow pile
+  // standard + DominoCrash3 -> DominoCarsh0 big yellow pile
+  // DominoCrash3 + other    -> DominoCrash1 big mixed pile
+  // blocker + blocker       -> DominoCrash5 little red pile
+  // blocker + DominoCrash5  -> DominoCrash2 big red pile
+  // ...
+  //
+
+
+
+  // for all combinations for participants do whats shown in the table above
+
+  if (next == DominoTypeStandard)
   {
-    next = DominoTypeCrash4;
+         if (type == DominoTypeStandard)                                                         next = DominoTypeCrash3;
+    else if (type == DominoTypeCrash0 || type == DominoTypeCrash3)                               next = DominoTypeCrash0;
+    else if (type < DominoTypeCrash0)                                                            next = DominoTypeCrash4;
+    else                                                                                         next = DominoTypeCrash1;
   }
-  // if all parts are red, the pile is red
-  else if ((next == DominoTypeStopper || next == DominoTypeCrash3) &&
-      (type == DominoTypeStopper || type == DominoTypeCrash3))
+  else if (next == DominoTypeCrash3 || next == DominoTypeCrash0)
   {
-    next = DominoTypeCrash3;
+         if (type == DominoTypeStandard || type == DominoTypeCrash0 || type == DominoTypeCrash3) next = DominoTypeCrash0;
+    else                                                                                         next = DominoTypeCrash1;
   }
-  // otherwise it is mixed color
+  else if (next == DominoTypeStopper)
+  {
+         if (type == DominoTypeStopper)                                                          next = DominoTypeCrash5;
+    else if (type == DominoTypeCrash2 || type == DominoTypeCrash5)                               next = DominoTypeCrash2;
+    else if (type < DominoTypeCrash0)                                                            next = DominoTypeCrash4;
+    else                                                                                         next = DominoTypeCrash1;
+  }
+  else if (next == DominoTypeCrash5 || next == DominoTypeCrash2)
+  {
+         if (type == DominoTypeStopper || type == DominoTypeCrash2 || type == DominoTypeCrash5)  next = DominoTypeCrash2;
+    else                                                                                         next = DominoTypeCrash1;
+  }
+  else if (next < DominoTypeCrash0)
+  {
+         if (type < DominoTypeCrash0)                                                            next = DominoTypeCrash4;
+    else                                                                                         next = DominoTypeCrash1;
+  }
   else
   {
-    next = DominoTypeCrash2;
+    next = DominoTypeCrash1;
   }
 
   // set the resulting domino animation

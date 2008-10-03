@@ -156,12 +156,12 @@ class level_c {
       DominoTypeVanish,
       DominoTypeTrigger,
       DominoTypeAscender,
-      DominoTypeCrash0,
-      DominoTypeCrash1,
-      DominoTypeCrash2,
-      DominoTypeCrash3,
-      DominoTypeCrash4,
-      DominoTypeCrash5,
+      DominoTypeCrash0,         // all yello big pile
+      DominoTypeCrash1,         // mixed big pile
+      DominoTypeCrash2,         // all red big pile
+      DominoTypeCrash3,         // all yellow little pile
+      DominoTypeCrash4,         // mixed little pile
+      DominoTypeCrash5,         // all red little pile
       DominoTypeRiserCont,
       DominoTypeQuaver
     };
