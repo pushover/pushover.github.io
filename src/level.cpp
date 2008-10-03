@@ -643,7 +643,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
         PutSprite(3,
             SpriteXPos,
             SpriteYPos-gr->splitterY(),
-            gr->getDomino(level[y][x].dominoExtra-1, 7), target
+            gr->getDomino(level[y][x].dominoExtra-1, level[y][x].dominoExtra>=DominoTypeCrash0?0:7), target
             );
         level[y][x].dominoExtra = 0;
       }
