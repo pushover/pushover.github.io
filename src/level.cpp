@@ -614,7 +614,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
             );
       }
 
-      if (x > 0 && !isDirty(x-1, y+2) && level[y][x-1].dominoType != DominoTypeEmpty &&
+      if (x > 0 && !isDirty(x-1, y) && level[y][x-1].dominoType != DominoTypeEmpty &&
           (level[y][x-1].dominoState > 8 ||
            level[y][x-1].dominoType == DominoTypeSplitter && level[y][x-1].dominoState != 8 ||
            level[y][x-1].dominoType >= DominoTypeCrash0))
