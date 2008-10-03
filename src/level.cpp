@@ -2973,7 +2973,7 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
     case 255: DTA_B(x, y); break;
     case 256: DTA_B(x, y); break;
     case 257: DTA_B(x, y); break;
-
+    case 258: DTA_B(x, y); break;
     case 259: DTA_B(x, y); break;
 
               // DominoTypeRiserCont
