@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 060
 
@@ -9,8 +12,10 @@ Theme
 Time
 | 1:30
 
-Version
-| 1
+Hint
+| DROP THE FIRST
+| FLOATER AND
+| PUSH THE SECOND
 
 Level
 +---------------------

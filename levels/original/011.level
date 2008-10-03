@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 011
 
@@ -9,8 +12,8 @@ Theme
 Time
 | 1:00
 
-Version
-| 1
+Hint
+| WATCH THE GAP
 
 Level
 +---------------------

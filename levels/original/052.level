@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 052
 
@@ -9,8 +12,12 @@ Theme
 Time
 | 2:00
 
-Version
-| 1
+Hint
+| MAKE THE PUSH
+| MOVE YOUR
+| FLOATER. STOP
+| THE BLOCK
+| GO HOME
 
 Level
 +---------------------

@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 032
 
@@ -9,8 +12,11 @@ Theme
 Time
 | 2:00
 
-Version
-| 1
+Hint
+| YOU NEED TO
+| MOVE DELAYS TO
+| THE TRIGGER
+| SIDE
 
 Level
 +---------------------

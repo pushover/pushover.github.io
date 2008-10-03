@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 101
 
@@ -9,8 +12,7 @@ Theme
 Time
 | 0:18
 
-Version
-| 1
+Hint
 
 Level
 +---------------------

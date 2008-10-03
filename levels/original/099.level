@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 099
 
@@ -9,8 +12,12 @@ Theme
 Time
 | 10:00
 
-Version
-| 1
+Hint
+| TUMBLER, NORMAL
+| BRIDGER,TUMBLER
+| PUT REMAINING
+| TUMBLER IN
+| PLACE AND PUSH.
 
 Level
 +---------------------

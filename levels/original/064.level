@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 064
 
@@ -9,8 +12,12 @@ Theme
 Time
 | 1:00
 
-Version
-| 1
+Hint
+| YOU HAVE TO
+| MOVE A DELAY
+| AND A BRIDGE
+| AFTER THE RUN
+| STARTS!
 
 Level
 +---------------------

@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 030
 
@@ -9,8 +12,10 @@ Theme
 Time
 | 1:45
 
-Version
-| 1
+Hint
+| THREE BLOCKS TO
+| MOVE, THE
+| TUMBLER IS ONE.
 
 Level
 +---------------------

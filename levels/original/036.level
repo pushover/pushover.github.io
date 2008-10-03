@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 036
 
@@ -9,8 +12,9 @@ Theme
 Time
 | 2:00
 
-Version
-| 1
+Hint
+| GET HOME IN
+| TIME
 
 Level
 +---------------------

@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 053
 
@@ -9,8 +12,11 @@ Theme
 Time
 | 2:00
 
-Version
-| 1
+Hint
+| START THE MAIN
+| RUN WITH A DROP
+| AND PUSH THE
+| OTHERS
 
 Level
 +---------------------

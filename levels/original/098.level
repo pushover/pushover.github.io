@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 098
 
@@ -9,8 +12,12 @@ Theme
 Time
 | 10:00
 
-Version
-| 1
+Hint
+| USE A DROP
+| THERE IS A WAY
+| TO MAKE IT WORK
+| WITH A PUSH BUT
+| I CANT FIND IT
 
 Level
 +---------------------

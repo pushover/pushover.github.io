@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 003
 
@@ -9,8 +12,9 @@ Theme
 Time
 | 0:45
 
-Version
-| 1
+Hint
+| YOU NEED TO
+| TUMBLE
 
 Level
 +---------------------

@@ -24,6 +24,14 @@ level_c::~level_c(void) {
   SDL_FreeSurface(background);
 }
 
+static std::string rtrim(const std::string & s, char c) {
+    std::string::size_type pos = s.find_last_not_of(c);
+    if (pos == std::string::npos)
+        return "";
+    else
+        return s.substr(0, pos + 1);
+}
+
 void level_c::load_binary(const std::string & name) {
 
   this->name = name;
@@ -51,8 +59,7 @@ void level_c::load_binary(const std::string & name) {
   }
 
   /* copy theme, ignore trailing '\0' */
-  theme.assign((char*)&dat[260*6], 10);
-  theme = theme.substr(0, theme.find_first_of('\0'));
+  theme = rtrim(std::string((char*)&dat[260*6], 10), '\0');
 
   /* copy the door positions */
   doorEntryX = dat[1580];
@@ -66,13 +73,13 @@ void level_c::load_binary(const std::string & name) {
   openDoorEntry = openDoorExit = false;
 
   /* copy the hint */
-  std::string h1; h1.assign((char*)&dat[1588], 15);
-  std::string h2; h2.assign((char*)&dat[1588+16], 15);
-  std::string h3; h3.assign((char*)&dat[1588+2*16], 15);
-  std::string h4; h4.assign((char*)&dat[1588+3*16], 15);
-  std::string h5; h5.assign((char*)&dat[1588+4*16], 15);
-
-  hint = h1 + "\n" + h2 + "\n" + h3 + "\n" + h4 + "\n" + h5;
+  hint.clear();
+  for (unsigned int i = 0; i < 5; i++)
+    hint.push_back(rtrim(std::string((char*)&dat[1588+i*16], 15), ' '));
+  while (!hint.empty() && hint.back() == "")
+    hint.pop_back();
+  while (!hint.empty() && hint.front() == "")
+    hint.erase(hint.begin());
 
   delete [] dat;
 
@@ -124,10 +131,16 @@ void level_c::load(const std::string & filename) {
   if (lines.size() != 4+13+13)
     throw level_error("wrong total number of lines");
 
-  name = lines[0];
-  theme = lines[1];
+  std::istringstream versionStream(lines[0]);
+  unsigned int givenVersion;
+  versionStream >> givenVersion;
+  if (!versionStream.eof() || !versionStream)
+    throw level_error("invalid level version");
 
-  std::istringstream timeStream(lines[2]);
+  name = lines[1];
+  theme = lines[2];
+
+  std::istringstream timeStream(lines[3]);
   unsigned int timeMinutes;
   timeStream >> timeMinutes;
   if (timeStream.get() != ':')
@@ -137,12 +150,6 @@ void level_c::load(const std::string & filename) {
   if (!timeStream.eof() || !timeStream)
     throw level_error("invalid time format");
   timeLeft = (((timeMinutes * 60) + timeSeconds) * 18) + 17;
-
-  std::istringstream versionStream(lines[3]);
-  unsigned int givenVersion;
-  versionStream >> givenVersion;
-  if (!versionStream.eof() || !versionStream)
-    throw level_error("invalid level version");
 
   std::string levelLines[13];
   for (unsigned int y = 0; y < 13; y++) {
@@ -284,6 +291,9 @@ void level_c::save(const std::string & filename) const {
   f <<
   firstLine << "\n"
   "\n"
+  "Version\n"
+  "| " << version << "\n"
+  "\n"
   "Name\n"
   "| " << name << "\n"
   "\n"
@@ -294,13 +304,18 @@ void level_c::save(const std::string & filename) const {
   "| " << (timeSeconds / 60)
        << ':'
        << std::setfill('0') << std::setw(2) << (timeSeconds % 60)
-       << "\n"
-  "\n"
-  "Version\n"
-  "| " << version << "\n"
-  "\n"
-  "Level\n";
+       << "\n";
 
+  f << '\n';
+  f << "Hint\n";
+  for (std::vector<std::string>::const_iterator i = hint.begin(); i != hint.end(); i++)
+    if (*i == "")
+      f << "|\n";
+    else
+      f << "| " << (*i) << "\n";
+
+  f << '\n';
+  f << "Level\n";
   f << '+' << std::string(20+1, '-') << '\n';
   for (unsigned int y = 0; y < 13; y++) {
     std::string line = "| ";
@@ -371,6 +386,7 @@ bool level_c::operator==(const level_c & other) const {
   return
     name == other.name &&
     theme == other.theme &&
+    hint == other.hint &&
     timeLeft == other.timeLeft &&
     memcmp(level, other.level, sizeof(level)) == 0 &&
     numBg == other.numBg &&

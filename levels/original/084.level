@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 084
 
@@ -9,8 +12,10 @@ Theme
 Time
 | 4:00
 
-Version
-| 1
+Hint
+| SOME DOMINOES
+| HAVE A SPLIT
+| PERSONALITY.
 
 Level
 +---------------------

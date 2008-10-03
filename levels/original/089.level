@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 089
 
@@ -9,8 +12,12 @@ Theme
 Time
 | 10:00
 
-Version
-| 1
+Hint
+| START THE RUN
+| AND TRAP THE
+| TUMBLER SO YOU
+| CAN COMPLETE
+| THE PUZZLE.
 
 Level
 +---------------------

@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 034
 
@@ -9,8 +12,8 @@ Theme
 Time
 | 2:00
 
-Version
-| 1
+Hint
+| STOP THE MOVE
 
 Level
 +---------------------

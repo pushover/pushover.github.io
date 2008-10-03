@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 073
 
@@ -9,8 +12,10 @@ Theme
 Time
 | 3:00
 
-Version
-| 1
+Hint
+| PUSH A FLOATER
+| TO START TWO
+| RUNS.
 
 Level
 +---------------------

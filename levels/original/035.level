@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 035
 
@@ -9,8 +12,11 @@ Theme
 Time
 | 1:30
 
-Version
-| 1
+Hint
+| MOVE THE FLOAT
+| AND THE NORMAL
+| BUT LEAVE THE
+| DELAY ALONE
 
 Level
 +---------------------

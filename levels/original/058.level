@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 058
 
@@ -9,8 +12,12 @@ Theme
 Time
 | 4:00
 
-Version
-| 1
+Hint
+| DROP DOMINOES
+| ON SPLITTERS TO
+| START THE RUNS.
+| MOVE DOMINO IN
+| FRONT OF EXIT.
 
 Level
 +---------------------

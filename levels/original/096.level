@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 096
 
@@ -9,8 +12,12 @@ Theme
 Time
 | 5:10
 
-Version
-| 1
+Hint
+| YOU MUST CREATE
+| A RUN OF
+| TUMBLERS THAT
+| CAN FALL OFF A
+| PLATFORM.
 
 Level
 +---------------------

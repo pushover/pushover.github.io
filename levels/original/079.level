@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 079
 
@@ -9,8 +12,12 @@ Theme
 Time
 | 5:00
 
-Version
-| 1
+Hint
+| BE SURE TO
+| PLACE THE
+| DELAYS RIGHT
+| THE YELLOW IS
+| IMPORTANT
 
 Level
 +---------------------

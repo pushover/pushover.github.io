@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 069
 
@@ -9,8 +12,12 @@ Theme
 Time
 | 4:00
 
-Version
-| 1
+Hint
+| PUSH A FLOATER
+| TO START THE
+| RUN. CAREFUL
+| WITH THE YELLOW
+| ONE.
 
 Level
 +---------------------

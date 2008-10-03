@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 044
 
@@ -9,8 +12,10 @@ Theme
 Time
 | 1:15
 
-Version
-| 1
+Hint
+| MOVE THE
+| FLOATER MAKE
+| THE PUSH
 
 Level
 +---------------------

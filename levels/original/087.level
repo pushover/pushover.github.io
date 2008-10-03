@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 087
 
@@ -9,8 +12,10 @@ Theme
 Time
 | 2:00
 
-Version
-| 1
+Hint
+| DO YOU REALLY
+| NEED THAT
+| BRIDGE ?
 
 Level
 +---------------------

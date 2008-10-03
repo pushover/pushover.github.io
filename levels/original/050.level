@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 050
 
@@ -9,8 +12,9 @@ Theme
 Time
 | 0:45
 
-Version
-| 1
+Hint
+| PUSH AND PICK
+| UP AND RUN!
 
 Level
 +---------------------

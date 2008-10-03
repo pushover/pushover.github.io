@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 029
 
@@ -9,8 +12,11 @@ Theme
 Time
 | 1:15
 
-Version
-| 1
+Hint
+| YOU NEED FOUR
+| IN A LINE
+| BEFORE YOU
+| PUSH
 
 Level
 +---------------------

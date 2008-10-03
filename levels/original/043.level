@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 043
 
@@ -9,8 +12,10 @@ Theme
 Time
 | 1:30
 
-Version
-| 1
+Hint
+| JUST A TUMBLE
+| IN THE WRONG
+| PLACE.
 
 Level
 +---------------------

@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 008
 
@@ -9,8 +12,10 @@ Theme
 Time
 | 1:00
 
-Version
-| 1
+Hint
+| SHOULD THE
+| BLOCKER BE
+| THERE ?
 
 Level
 +---------------------

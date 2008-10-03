@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 020
 
@@ -9,8 +12,10 @@ Theme
 Time
 | 0:45
 
-Version
-| 1
+Hint
+| HIDE THE
+| BLOCKER BEHIND
+| THE LADDER.
 
 Level
 +---------------------

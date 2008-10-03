@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 081
 
@@ -9,8 +12,12 @@ Theme
 Time
 | 1:30
 
-Version
-| 1
+Hint
+| PUSH A DOMINO
+| INTO A SPLITTER
+| AND WAIT FOR A
+| TRAPPED TUMBLER
+| AND MOVE UP
 
 Level
 +---------------------

@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 063
 
@@ -9,8 +12,12 @@ Theme
 Time
 | 2:00
 
-Version
-| 1
+Hint
+| ARRANGE DELAYS
+| DOWN CENTRAL
+| COLUMN AND PUSH
+| LEFT HAND
+| NORMAL DOMINO
 
 Level
 +---------------------

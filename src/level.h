@@ -1,6 +1,7 @@
 #include <SDL.h>
 #include <exception>
 #include <string>
+#include <vector>
 
 class graphics_c;
 
@@ -43,7 +44,7 @@ class level_c {
 
     std::string name;
     std::string theme;
-    std::string hint;
+    std::vector<std::string> hint;
 
     // the positions of the 2 doors
     unsigned char doorEntryX, doorEntryY, doorExitX, doorExitY;
@@ -113,7 +114,7 @@ class level_c {
     bool operator==(const level_c & other) const;
 
     const std::string getTheme(void) const { return theme; }
-    const std::string getHint(void) const { return hint; }
+    const std::vector<std::string> getHint(void) const { return hint; }
 
     /* Foreground elements */
     enum {

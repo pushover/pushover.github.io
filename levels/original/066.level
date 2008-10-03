@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 066
 
@@ -9,8 +12,10 @@ Theme
 Time
 | 1:00
 
-Version
-| 1
+Hint
+| MAKE THE PUSH
+| MOVE THE
+| BLOCKER
 
 Level
 +---------------------

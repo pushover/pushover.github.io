@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 097
 
@@ -9,8 +12,9 @@ Theme
 Time
 | 5:00
 
-Version
-| 1
+Hint
+| YOU'VE GOT SOME
+| RUNNING TO DO
 
 Level
 +---------------------

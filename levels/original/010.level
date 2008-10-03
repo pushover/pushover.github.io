@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 010
 
@@ -9,8 +12,8 @@ Theme
 Time
 | 0:45
 
-Version
-| 1
+Hint
+| TUMBLER UP
 
 Level
 +---------------------

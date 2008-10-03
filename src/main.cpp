@@ -185,8 +185,11 @@ int main(int argn, char * argv[]) {
             }
             if (event.key.keysym.sym == SDLK_d)
               debug = !debug;
-            if (event.key.keysym.sym == SDLK_h)
-              std::cout << l.getHint() << std::endl;
+            if (event.key.keysym.sym == SDLK_h) {
+              const std::vector<std::string> hint = l.getHint();
+              for (std::vector<std::string>::const_iterator i = hint.begin(); i != hint.end(); i++)
+                  std::cout << (*i) << std::endl;
+            }
             if (event.key.keysym.sym == SDLK_b)
               blocks = !blocks;
             if (event.key.keysym.sym == SDLK_r)

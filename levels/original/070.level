@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 070
 
@@ -9,8 +12,9 @@ Theme
 Time
 | 5:00
 
-Version
-| 1
+Hint
+| DELAY ANOTHER
+| WAY
 
 Level
 +---------------------

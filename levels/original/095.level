@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 095
 
@@ -9,8 +12,11 @@ Theme
 Time
 | 10:00
 
-Version
-| 1
+Hint
+| SYMMETRY - AND
+| DONT FORGET TO
+| BRIDGE AFTER
+| THE TRIGGER
 
 Level
 +---------------------

@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 055
 
@@ -9,8 +12,12 @@ Theme
 Time
 | 2:15
 
-Version
-| 1
+Hint
+| PUSH THE TUMBLE
+| RUN AND MOVE
+| THE BRIDGE THEN
+| JUMP.
+| BE QUICK
 
 Level
 +---------------------

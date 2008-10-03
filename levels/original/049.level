@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 049
 
@@ -9,8 +12,11 @@ Theme
 Time
 | 1:00
 
-Version
-| 1
+Hint
+| MAKE THE PUSH
+| GRAB THE BLOCK
+| AND RUN FOR
+| YOUR LIFE
 
 Level
 +---------------------

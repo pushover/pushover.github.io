@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 067
 
@@ -9,8 +12,10 @@ Theme
 Time
 | 2:00
 
-Version
-| 1
+Hint
+| TRAP TUMBLER
+| TO MOVE THE
+| BRIDGER ON TIME
 
 Level
 +---------------------

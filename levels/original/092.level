@@ -1,5 +1,8 @@
 #!/usr/bin/env pushover
 
+Version
+| 1
+
 Name
 | 092
 
@@ -9,8 +12,11 @@ Theme
 Time
 | 2:00
 
-Version
-| 1
+Hint
+| PUSH THE TUMBLE
+| AWAY FROM THE
+| TRIGGER DOMINO
+| AND BE BUSY
 
 Level
 +---------------------
