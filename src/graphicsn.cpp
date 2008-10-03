@@ -3,6 +3,7 @@
 #include "decompress.h"
 
 #include <SDL.h>
+#include <SDL_image.h>
 
 static SDL_Surface * getSprite(unsigned char * dat, unsigned int * offset, unsigned short * palette) {
 
@@ -16,7 +17,7 @@ static SDL_Surface * getSprite(unsigned char * dat, unsigned int * offset, unsig
 
   // maximally a sprite can be 5 units a scale times 16 pixel wide, more is simply not possible
   // later on we could change that by checking the exact units used and calculate the width
-  SDL_Surface * v = SDL_CreateRGBSurface(SDL_SRCALPHA, 80*5/2, 3*height, 32, 0xff000000, 0xff0000, 0xff00, 0xff);
+  SDL_Surface * v = SDL_CreateRGBSurface(0, 80*5/2, 3*height, 32, 0xff000000, 0xff0000, 0xff00, 0xff);
 
   for (unsigned int y = 0; y < height; y++) {
 
@@ -115,41 +116,42 @@ void graphicsN_c::loadGraphics(void) {
 
   /* load domino sprites */
 
-  /* the number of sprited for each domino type is fixed */
-  snprintf(fname, 200, "%s/data/DOMINOE0.SPX", dataPath.c_str());
-  unsigned int d0Size;
-  unsigned char * d0 = decompress(fname, &d0Size);
+  /* the number of sprites for each domino type is fixed */
 
-  snprintf(fname, 200, "%s/data/DOMINOE1.SPX", dataPath.c_str());
-  unsigned int d1Size;
-  unsigned char * d1 = decompress(fname, &d1Size);
+  // all domino sprites are in a png image load the image and then copy
+  // the information to the destination sprites
 
+  SDL_Surface * dominos = IMG_Load((dataPath+"/data/dominos.png").c_str());
+  SDL_SetAlpha(dominos, 0, 0);
 
-  unsigned int offset = 0;
-  for (unsigned int i = 0; i < 11; i++)
+  SDL_Surface * v = SDL_CreateRGBSurface(0, 200, 58, 32, 0xff000000, 0xff0000, 0xff00, 0xff);
+
+  int cnt = 0;
+
+  for (unsigned int i = 0; i < 17; i++)
     for (unsigned int j = 0; j < numDominos[i]; j++) {
 
-      SDL_Surface * v = getSprite(d0 + offset, &offset, palette);
+      SDL_Rect src, dst;
+
+      dst.x = 0;
+      dst.y = 0;
+      dst.w = 200;
+      dst.h = 58;
+
+      src.x = 0;
+      src.y = 60*cnt;
+      src.w = 200;
+      src.h = 58;
+
+      SDL_BlitSurface(dominos, &src, v, &dst);
+
+      cnt++;
 
       setDomino(i, j, SDL_DisplayFormatAlpha(v));
-
-      SDL_FreeSurface(v);
     }
 
-  offset = 0;
-  for (unsigned int i = 11; i < 18; i++)
-    for (unsigned int j = 0; j < numDominos[i]; j++) {
-
-      SDL_Surface * v = getSprite(d1 + offset, &offset, palette);
-
-      setDomino(i, j, SDL_DisplayFormatAlpha(v));
-
-      SDL_FreeSurface(v);
-    }
-
-  delete [] d0;
-  delete [] d1;
-
+  SDL_FreeSurface(v);
+  SDL_FreeSurface(dominos);
 
   /* load ant sprites */
   snprintf(fname, 200, "%s/data/ANT00_16.ANX", dataPath.c_str());
@@ -165,7 +167,7 @@ void graphicsN_c::loadGraphics(void) {
   unsigned char * a3 = decompress(fname, 0);
 
   // load images from first file
-  offset = 0;
+  unsigned int offset = 0;
   for (unsigned int i = 0; i <= 16; i++)
     offset += getAnimation(a0+offset, i, palette);
 
