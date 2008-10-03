@@ -1395,7 +1395,7 @@ unsigned int ant_c::SFNextAction(void) {
         SaveLevelState();
         blockX++;
         animation = returnState = AntAnimPushLeft;
-        if (!PushableDomino(blockX+1, blockY, -1))
+        if (!PushableDomino(blockX, blockY, -1))
         {
           animationImage = 9;
           direction = -1;
@@ -1509,7 +1509,7 @@ unsigned int ant_c::SFNextAction(void) {
         SaveLevelState();
         blockX--;
         animation = returnState = AntAnimPushRight;
-        if (!PushableDomino(blockX-1, blockY, 1))
+        if (!PushableDomino(blockX, blockY, 1))
         {
           animationImage = 9;
           direction = 1;
