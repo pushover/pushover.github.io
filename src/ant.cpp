@@ -1596,11 +1596,11 @@ unsigned int ant_c::SFNextAction(void) {
   else if (keyMask & KEY_UP)
   {
     if ((level->getFg(blockX, blockY-1) == level_c::FgElementDoor3) &&
-        ((level->getDominoType(blockX, blockY) == 0 ||
-            level->getDominoState(blockX, blockY) > 8) &&
-          (level->getDominoType(blockX-1, blockY) == 0) ||
-          level->getDominoState(blockX-1, blockY) <= 8)
-        )
+        (level->getDominoType(blockX, blockY) == 0 ||
+         level->getDominoState(blockX, blockY) > 8) &&
+        (level->getDominoType(blockX-1, blockY) == 0 ||
+         level->getDominoState(blockX-1, blockY) <= 8)
+       )
     {
       if (direction == -1)
       {
