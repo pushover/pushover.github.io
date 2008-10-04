@@ -356,6 +356,7 @@ void level_c::save(const std::string & filename) const {
         case FgElementLadder:
           if (y+1 >= 13
               || level[y+1][x].fg == FgElementPlatformLadderDown
+              || level[y+1][x].fg == FgElementLadder
               || level[y+1][x].fg == FgElementPlatformLadderUp)
             line += 'H';
           else

@@ -22,14 +22,14 @@ Level
 +---------------------
 |                1
 |   =II  Y=Y=Y=Y=__
-|    H    V V V V
-|   IIIYIIV V V V
-|    H    H V V V
-|   III _O_IV V V
-|    H      H V V
-|   IIIII _O_IV V
-|    H        H V
-|   IIIIIII _O_IV
+|    H    H H H H
+|   IIIYIIH H H H
+|    H    H H H H
+|   III _O_IH H H
+|    H      H H H
+|   IIIII _O_IH H
+|    H        H H
+|   IIIIIII _O_IH
 |    H 2 H      H
 |   ___ _!??I _O_I__
 |
