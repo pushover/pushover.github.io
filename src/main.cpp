@@ -90,17 +90,17 @@ int main(int argn, char * argv[]) {
       CHECK_FINISH
   } operation = NOTHING;
 
-  std::string levelName;
+  std::string levelFile;
 
   if (strcmp(argv[1], "-r") == 0)
   {
-      levelName = loadrecord(argv[2]);
+      levelFile = "./levels/original/" + loadrecord(argv[2]) + ".level";
       play = true;
       playpos = 0;
   }
   else if (strcmp(argv[1], "-c") == 0)
   {
-      levelName = loadrecord(argv[2]);
+      levelFile = "./levels/original/" + loadrecord(argv[2]) + ".level";
       play = true;
       playpos = 0;
       operation = CHECK_FINISH;
@@ -108,7 +108,7 @@ int main(int argn, char * argv[]) {
   }
   else
   {
-      levelName =  argv[1];
+      levelFile = argv[1];
       play = false;
   }
 
@@ -125,7 +125,7 @@ int main(int argn, char * argv[]) {
   }
 
   level_c l;
-  l.load_binary(levelName);
+  l.load(levelFile);
 
   if (useGraphics)
     gr->setTheme(l.getTheme());
@@ -194,7 +194,7 @@ int main(int argn, char * argv[]) {
             if (event.key.keysym.sym == SDLK_b)
               blocks = !blocks;
             if (event.key.keysym.sym == SDLK_r)
-              record(argv[1]);
+              record(l.getName());
             if (event.key.keysym.sym == SDLK_p) {
               pause = !pause;
               ticks = SDL_GetTicks() + 1000/tickDiv;
@@ -327,7 +327,7 @@ int main(int argn, char * argv[]) {
       if (l.someTimeLeft())
       {
         if (!play)
-          record(argv[1]);
+          record(l.getName());
 
         printf("gratulation, you solved the level\n");
       }

@@ -103,6 +103,7 @@ class level_c {
     void save(const std::string & filename) const;
     bool operator==(const level_c & other) const;
 
+    const std::string getName(void) const { return name; }
     const std::string getTheme(void) const { return theme; }
     const std::vector<std::string> getHint(void) const { return hint; }
 
