@@ -9,6 +9,7 @@ pushover_SOURCES =                  \
   src/graphics.cpp src/graphics.h \
   src/graphicsn.cpp src/graphicsn.h \
   src/graphicso.cpp src/graphicso.h \
+  src/levelsections.cpp src/levelsections.h \
   src/level.cpp src/level.h \
   src/main.cpp
 
