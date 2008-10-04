@@ -1,24 +1,14 @@
 #include <SDL.h>
-#include <exception>
 #include <string>
-#include <vector>
+#include "levelsections.h"
 
 class graphics_c;
-
-class level_error : public std::exception {
-  public:
-    const std::string msg;
-    level_error(const std::string &msg) throw(): msg(msg) {};
-    virtual ~level_error() throw() {};
-    virtual const char * what() const throw() { return msg.c_str(); }
-};
 
 class level_c {
 
   private:
 
     static const unsigned int version = 1;
-    static const std::string firstLine;
     static const std::string dominoChars;
     static bool isDominoChar(char ch);
     static const unsigned char maxBg = 8;

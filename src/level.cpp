@@ -5,7 +5,6 @@
 
 #include <stdio.h>
 
-#include <vector>
 #include <fstream>
 #include <sstream>
 #include <iomanip>
@@ -91,8 +90,6 @@ void level_c::load_binary(const std::string & name) {
   Min = Sec = -1;
 }
 
-const std::string level_c::firstLine = "#!/usr/bin/env pushover";
-
 const std::string level_c::dominoChars =
   "_" /* DominoTypeEmpty    */
   "I" /* DominoTypeStandard */
@@ -113,34 +110,32 @@ bool level_c::isDominoChar(char ch) {
 
 void level_c::load(const std::string & filename) {
 
-  std::ifstream f(filename.c_str());
-  std::vector<std::string> lines;
+  /* initialize all state variables */
+  openDoorEntry = openDoorExit = false;
+  for (unsigned int i = 0; i < 13; i++)
+    staticDirty[i] = dynamicDirty[i] = 0xFFFFF;
+  triggerFalln = false;
+  memset(level, 0, sizeof(level));
 
-  unsigned int linenr = 0;
-  for (std::string line; std::getline(f, line); linenr++) {
-    if (linenr == 0 && line != firstLine)
-      throw level_error("missing #!-line");
-    if (line.size() > 0 && line[0] == '|') {
-      if (line.size() >= 2)
-        lines.push_back(line.substr(2, std::string::npos));
-      else
-        lines.push_back("");
-    }
-  }
+  /* load */
+  std::ifstream stream(filename.c_str());
+  levelSections_c sections(stream, true);
 
-  if (lines.size() != 4+13+13)
-    throw level_error("wrong total number of lines");
-
-  std::istringstream versionStream(lines[0]);
+  /* Version section */
+  std::istringstream versionStream(sections.getSingleLine("Version"));
   unsigned int givenVersion;
   versionStream >> givenVersion;
   if (!versionStream.eof() || !versionStream)
     throw level_error("invalid level version");
 
-  name = lines[1];
-  theme = lines[2];
+  /* Name section */
+  name = sections.getSingleLine("Name");
 
-  std::istringstream timeStream(lines[3]);
+  /* Theme section */
+  theme = sections.getSingleLine("Theme");
+
+  /* Time section (time format is M:SS) */
+  std::istringstream timeStream(sections.getSingleLine("Time"));
   unsigned int timeMinutes;
   timeStream >> timeMinutes;
   if (timeStream.get() != ':')
@@ -151,16 +146,23 @@ void level_c::load(const std::string & filename) {
     throw level_error("invalid time format");
   timeLeft = (((timeMinutes * 60) + timeSeconds) * 18) + 17;
 
-  std::string levelLines[13];
+  /* Hint section */
+  hint = sections.getSingleSection("Hint");
+
+  /* Level section */
+  const std::vector<std::string> & givenLevelRows =
+    sections.getSingleSection("Level");
+  if (givenLevelRows.size() != 13)
+    throw level_error("wrong number of level rows");
+  std::string levelRows[13];
   for (unsigned int y = 0; y < 13; y++) {
-    levelLines[y] = lines[4+y];
-    if (levelLines[y].size() > 20)
+    std::string::size_type len = levelRows[y].size();
+    if (len > 20)
       throw level_error("level row is too long");
     /* padding with spaces to the whole width */
-    levelLines[y] += std::string(20-levelLines[y].size(), ' ');
+    levelRows[y] = givenLevelRows[y] + std::string(20-len, ' ');
   }
 
-  memset(level, 0, sizeof(level));
   bool doorEntryDefined = false;
   bool doorExitDefined = false;
   for (unsigned int y = 0; y < 13; y++) {
@@ -172,7 +174,7 @@ void level_c::load(const std::string & filename) {
       level[y][x].dominoYOffset = 0;
       level[y][x].dominoExtra = 0;
 
-      switch (levelLines[y][x]) {
+      switch (levelRows[y][x]) {
 
         case '1':
           if (doorEntryDefined)
@@ -194,7 +196,7 @@ void level_c::load(const std::string & filename) {
 
         case ' ':
         case '^':
-          if (x > 0 && levelLines[y][x-1] == '/')
+          if (x > 0 && levelRows[y][x-1] == '/')
             level[y][x].fg = FgElementPlatformStep8;
           else
             level[y][x].fg = FgElementEmpty;
@@ -227,23 +229,23 @@ void level_c::load(const std::string & filename) {
           break;
 
         default:
-          std::string::size_type dt = dominoChars.find_first_of(levelLines[y][x]);
+          std::string::size_type dt = dominoChars.find_first_of(levelRows[y][x]);
           if (dt == std::string::npos)
             throw level_error("invalid domino type");
           level[y][x].dominoType = dt;
 
           bool ladderAbove   = y > 0
-                               && levelLines[y-1][x] == 'H';
+                               && levelRows[y-1][x] == 'H';
           bool ladderBelow   = y+1 < 13
-                               && (levelLines[y+1][x] == 'H'
-                                   || levelLines[y+1][x] == 'V'
-                                   || levelLines[y+1][x] == '^');
+                               && (levelRows[y+1][x] == 'H'
+                                   || levelRows[y+1][x] == 'V'
+                                   || levelRows[y+1][x] == '^');
           bool platformLeft  = x <= 0
-                               || isDominoChar(levelLines[y][x-1])
-                               || levelLines[y][x-1] == '\\';
+                               || isDominoChar(levelRows[y][x-1])
+                               || levelRows[y][x-1] == '\\';
           bool platformRight = x+1 >= 20
-                               || isDominoChar(levelLines[y][x+1])
-                               || levelLines[y][x+1] == '/';
+                               || isDominoChar(levelRows[y][x+1])
+                               || levelRows[y][x+1] == '/';
           if (ladderBelow)
             level[y][x].fg = FgElementPlatformLadderDown;
           else if (ladderAbove)
@@ -265,22 +267,28 @@ void level_c::load(const std::string & filename) {
   if (!doorExitDefined)
     throw level_error("missing exit door");
 
-  numBg = 1;
-  for (unsigned int y = 0; y < 13; y++) {
-    std::istringstream line(lines[4+13+y]);
-    for (unsigned int x = 0; x < 20; x++) {
-      line >> level[y][x].bg[0];
-      if (!line)
-        throw level_error("not enough background tiles in a row");
+  /* Background sections */
+  const std::vector<std::vector<std::string> > & bgSections =
+    sections.getMultiSection("Background");
+  numBg = bgSections.size();
+  if (numBg == 0)
+    throw level_error("missing Background section");
+  if (numBg > maxBg)
+    throw level_error("too many Background sections");
+  for (unsigned char b = 0; b < numBg; b++) {
+    if (bgSections[b].size() != 13)
+      throw level_error("wrong number of background rows");
+    for (unsigned int y = 0; y < 13; y++) {
+      std::istringstream line(bgSections[b][y]);
+      for (unsigned int x = 0; x < 20; x++) {
+        line >> level[y][x].bg[b];
+        if (!line)
+          throw level_error("not enough background tiles in a row");
+      }
+      if (!line.eof())
+        throw level_error("too many background tiles in a row");
     }
-    if (!line.eof())
-      throw level_error("too many background tiles in a row");
   }
-
-  openDoorEntry = openDoorExit = false;
-  for (unsigned int i = 0; i < 13; i++)
-    staticDirty[i] = dynamicDirty[i] = 0xFFFFF;
-  triggerFalln = false;
 }
 
 void level_c::save(const std::string & filename) const {
@@ -289,7 +297,7 @@ void level_c::save(const std::string & filename) const {
 
   unsigned int timeSeconds = timeLeft/18;
   f <<
-  firstLine << "\n"
+  levelSections_c::firstLine << "\n"
   "\n"
   "Version\n"
   "| " << version << "\n"
