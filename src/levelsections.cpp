@@ -14,7 +14,8 @@ levelSections_c::levelSections_c(std::istream & stream, bool singleFile) {
     if (!std::getline(stream, line)) {
       /* end of stream */
       if (!stream.eof())
-        throw level_error("unexpected stream error");
+        throw level_error("unexpected stream error,"
+                          " maybe the file does not exist");
       else
         break;
     }
