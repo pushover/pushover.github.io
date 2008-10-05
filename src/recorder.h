@@ -8,21 +8,23 @@ class recorder_c {
 
   public:
 
-    recorder_c(std::string fname);
-    recorder_c(void);
+    recorder_c(void) : playpos(0), levelName("unknown") {};
 
-    void save(const std::string leve);
+    void load(const std::string & filename);
+    void save() const;
+
+    const std::string & getLevelName(void) const { return levelName; }
+    void setLevelName(const std::string & levelName) { this->levelName = levelName; }
 
     void addEvent(int event) { record.push_back(event); }
     int getEvent(void) { return playpos < record.size() ? record[playpos++] : 0; }
-    const std::string getLevel(void) const { return level; }
-    bool endOfRecord(void) { return playpos >= record.size(); }
+    bool endOfRecord(void) const { return playpos >= record.size(); }
 
   private:
 
     std::vector<int> record;
     unsigned int playpos;
-    std::string level;
+    std::string levelName;
 
 };
 

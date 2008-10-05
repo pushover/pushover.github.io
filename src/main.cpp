@@ -21,26 +21,25 @@ int main(int argn, char * argv[]) {
   } operation = NOTHING;
 
   std::string levelFile;
-  recorder_c * rec = 0;
+  recorder_c rec;
   bool play;
 
   if (strcmp(argv[1], "-r") == 0)
   {
-      rec = new recorder_c(argv[2]);
-      levelFile = "./levels/original/" + rec->getLevel() + ".level";
+      rec.load(argv[2]);
+      levelFile = "./levels/original/" + rec.getLevelName() + ".level";
       play = true;
   }
   else if (strcmp(argv[1], "-c") == 0)
   {
-      rec = new recorder_c(argv[2]);
-      levelFile = "./levels/original/" + rec->getLevel() + ".level";
+      rec.load(argv[2]);
+      levelFile = "./levels/original/" + rec.getLevelName() + ".level";
       play = true;
       operation = CHECK_FINISH;
       useGraphics = false;
   }
   else
   {
-      rec = new recorder_c();
       levelFile = argv[1];
       play = false;
   }
@@ -58,6 +57,7 @@ int main(int argn, char * argv[]) {
 
   level_c l;
   l.load(levelFile);
+  rec.setLevelName(l.getName());
 
   if (useGraphics)
     gr->setTheme(l.getTheme());
@@ -126,7 +126,7 @@ int main(int argn, char * argv[]) {
             if (event.key.keysym.sym == SDLK_b)
               blocks = !blocks;
             if (event.key.keysym.sym == SDLK_r)
-              rec->save(l.getName());
+              rec.save();
             if (event.key.keysym.sym == SDLK_p) {
               pause = !pause;
               ticks = SDL_GetTicks() + 1000/tickDiv;
@@ -152,11 +152,11 @@ int main(int argn, char * argv[]) {
 
     if (play)
     {
-      keyMask = rec->getEvent();
+      keyMask = rec.getEvent();
     }
     else
     {
-      rec->addEvent(keyMask);
+      rec.addEvent(keyMask);
     }
 
     if (l.triggerIsFalln() && !finishCheckDone)
@@ -237,7 +237,7 @@ int main(int argn, char * argv[]) {
 
     if (play)
     {
-      if (rec->endOfRecord())
+      if (rec.endOfRecord())
       {
         if (operation == CHECK_FINISH)
         {
@@ -258,7 +258,7 @@ int main(int argn, char * argv[]) {
       if (l.someTimeLeft())
       {
         if (!play)
-          rec->save(l.getName());
+          rec.save();
 
         printf("gratulation, you solved the level\n");
       }
