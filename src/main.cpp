@@ -1,6 +1,7 @@
 #include "graphicsn.h"
 #include "level.h"
 #include "ant.h"
+#include "recorder.h"
 
 #include <SDL.h>
 
@@ -9,77 +10,6 @@
 #include <stdio.h>
 
 #include <iostream>
-
-std::vector<int> recorder;
-bool play;
-unsigned int playpos;
-
-void record(const std::string & level) {
-
-    int num = 0;
-    FILE * f = 0;
-
-    do {
-        num++;
-
-        if (f) fclose(f);
-
-        char fname[200];
-
-        snprintf(fname, 200, "recordings/%05i.rec", num);
-        f = fopen(fname, "r");
-
-    } while (f);
-
-    char fname[200];
-
-    snprintf(fname, 200, "recordings/%05i.rec", num);
-    f = fopen(fname, "w");
-
-    fprintf(f, "%s\n", level.c_str());
-
-    int val = recorder[0];
-    int cnt = 1;
-    unsigned int pos = 1;
-
-    while (pos < recorder.size()) {
-
-        if (recorder[pos] != val) {
-            fprintf(f, "%i %i\n", cnt, val);
-            val = recorder[pos];
-            cnt = 1;
-        }
-        else
-        {
-            cnt++;
-        }
-        pos++;
-    }
-
-    fprintf(f, "%i %i\n", cnt, val);
-    fclose(f);
-}
-
-const std::string loadrecord(const std::string & filename) {
-    FILE * f = fopen(filename.c_str(), "r");
-
-    static char level[200];
-    fgets(level, 200, f);
-
-    // remove the newline at the end
-    level[strlen(level)-1] = 0;
-
-    while (!feof(f))
-    {
-        int cnt, val;
-        fscanf(f, "%i %i\n", &cnt, &val);
-        for (int i = 0; i < cnt; i++)
-            recorder.push_back(val);
-    }
-
-    printf("record builds on level %s\n", level);
-    return level;
-}
 
 int main(int argn, char * argv[]) {
 
@@ -91,30 +21,32 @@ int main(int argn, char * argv[]) {
   } operation = NOTHING;
 
   std::string levelFile;
+  recorder_c * rec = 0;
+  bool play;
 
   if (strcmp(argv[1], "-r") == 0)
   {
-      levelFile = "./levels/original/" + loadrecord(argv[2]) + ".level";
+      rec = new recorder_c(argv[2]);
+      levelFile = "./levels/original/" + rec->getLevel() + ".level";
       play = true;
-      playpos = 0;
   }
   else if (strcmp(argv[1], "-c") == 0)
   {
-      levelFile = "./levels/original/" + loadrecord(argv[2]) + ".level";
+      rec = new recorder_c(argv[2]);
+      levelFile = "./levels/original/" + rec->getLevel() + ".level";
       play = true;
-      playpos = 0;
       operation = CHECK_FINISH;
       useGraphics = false;
   }
   else
   {
+      rec = new recorder_c();
       levelFile = argv[1];
       play = false;
   }
 
   graphics_c * gr = new graphicsN_c(".");
   SDL_Surface * video = 0;
-
 
   if (useGraphics)
   {
@@ -194,7 +126,7 @@ int main(int argn, char * argv[]) {
             if (event.key.keysym.sym == SDLK_b)
               blocks = !blocks;
             if (event.key.keysym.sym == SDLK_r)
-              record(l.getName());
+              rec->save(l.getName());
             if (event.key.keysym.sym == SDLK_p) {
               pause = !pause;
               ticks = SDL_GetTicks() + 1000/tickDiv;
@@ -220,12 +152,11 @@ int main(int argn, char * argv[]) {
 
     if (play)
     {
-      if (playpos < recorder.size())
-        keyMask = recorder[playpos++];
+      keyMask = rec->getEvent();
     }
     else
     {
-      recorder.push_back(keyMask);
+      rec->addEvent(keyMask);
     }
 
     if (l.triggerIsFalln() && !finishCheckDone)
@@ -306,7 +237,7 @@ int main(int argn, char * argv[]) {
 
     if (play)
     {
-      if (playpos >= recorder.size())
+      if (rec->endOfRecord())
       {
         if (operation == CHECK_FINISH)
         {
@@ -327,7 +258,7 @@ int main(int argn, char * argv[]) {
       if (l.someTimeLeft())
       {
         if (!play)
-          record(l.getName());
+          rec->save(l.getName());
 
         printf("gratulation, you solved the level\n");
       }
