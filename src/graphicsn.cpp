@@ -73,30 +73,32 @@ static SDL_Surface * getSprite(unsigned char * dat, unsigned int * offset, unsig
 graphicsN_c::graphicsN_c(const char * path) : dataPath(path) {
 }
 
-unsigned int graphicsN_c::getAnimation(unsigned char * data, unsigned char anim, unsigned short * palette) {
+unsigned int graphicsN_c::getAnimation(int anim, SDL_Surface * ants, SDL_Surface * v, unsigned int ypos) {
 
-  unsigned int offset = 0;
+  for (unsigned int j = 0; j < getAntImages(anim); j++) {
 
-  // get the number of sprites for this animation
-  unsigned int cnt = (int)data[offset] << 8 | data[offset+1];
-  offset += 2;
+    signed char ofs = (signed char)((*((uint32_t*)(((char*)ants->pixels)+ypos*ants->pitch)) * ants->format->Rmask) >> ants->format->Rshift);
 
-  // after the cnt follow cnt values containing y-offset values used later on
-  // when displaying the sprite
-  unsigned int yOffset = offset;
-  offset = (offset + cnt + 1) &0xFFFE;
+    SDL_Rect src, dst;
 
-  // now get the cnt sprites
-  for (unsigned int j = 0; j < cnt; j++) {
+    dst.x = 1;
+    dst.y = 0;
+    dst.w = 200-1;
+    dst.h = 25*3;
 
-    SDL_Surface * v = getSprite(data + offset, &offset, palette);
+    src.x = 1;
+    src.y = ypos;
+    src.w = 200-1;
+    src.h = 25*3;
 
-    int ofs = ((signed char)data[yOffset+j]);
+    SDL_BlitSurface(ants, &src, v, &dst);
 
-    addAnt(anim, j, 3*ofs, v);
+    addAnt(anim, j, -ofs, SDL_DisplayFormatAlpha(v));
+
+    ypos += 25*3;
   }
 
-  return offset;
+  return ypos;
 }
 
 void graphicsN_c::loadGraphics(void) {
@@ -125,6 +127,7 @@ void graphicsN_c::loadGraphics(void) {
   SDL_SetAlpha(dominos, 0, 0);
 
   SDL_Surface * v = SDL_CreateRGBSurface(0, 200, 58, 32, 0xff000000, 0xff0000, 0xff00, 0xff);
+  SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
   int cnt = 0;
 
@@ -153,28 +156,19 @@ void graphicsN_c::loadGraphics(void) {
   SDL_FreeSurface(v);
   SDL_FreeSurface(dominos);
 
-  /* load ant sprites */
-  snprintf(fname, 200, "%s/data/ANT00_16.ANX", dataPath.c_str());
-  unsigned char * a0 = decompress(fname, 0);
+  // load the ant images
 
-  snprintf(fname, 200, "%s/data/ANT17_30.ANX", dataPath.c_str());
-  unsigned char * a1 = decompress(fname, 0);
+  SDL_Surface * ants = IMG_Load((dataPath+"/data/ant.png").c_str());
+  SDL_SetAlpha(ants, 0, 0);
 
-  snprintf(fname, 200, "%s/data/ANT31_46.ANX", dataPath.c_str());
-  unsigned char * a2 = decompress(fname, 0);
+  v = SDL_CreateRGBSurface(0, 240, 75, 32, 0xff000000, 0xff0000, 0xff00, 0xff);
+  SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
-  snprintf(fname, 200, "%s/data/ANT47_65.ANX", dataPath.c_str());
-  unsigned char * a3 = decompress(fname, 0);
+  unsigned int ypos = 5*3;
 
   // load images from first file
-  unsigned int offset = 0;
-  for (unsigned int i = 0; i <= 16; i++)
-    offset += getAnimation(a0+offset, i, palette);
-
-  // load images from second file
-  offset = 0;
-  for (unsigned int i = 17; i <= 27; i++)
-    offset += getAnimation(a1+offset, i, palette);
+  for (unsigned int i = 0; i <= 27; i++)
+    ypos = getAnimation(i, ants, v, ypos);
 
   // load animation 28 and 29 these animations are the same as the 2 animations before but
   // the inverse order
@@ -183,50 +177,32 @@ void graphicsN_c::loadGraphics(void) {
       addAnt(i, j, getAntOffset(i-2, getAntImages(i-2)-j-1),
                    getAnt      (i-2, getAntImages(i-2)-j-1), false);
 
-  // load animation 30
-  offset += getAnimation(a1+offset, 30, palette);
+  ypos = getAnimation(30, ants, v, ypos);
+  ypos = getAnimation(31, ants, v, ypos);
 
-  // load images from third file
-
-  offset = 0;
-  // load animation 31
-  offset += getAnimation(a2+offset, 31, palette);
-
-  for (unsigned int i = 33; i <= 35; i++)
-    offset += getAnimation(a2+offset, i, palette);
-
-  // TODO: there is some strange copying going on here in the assembler code
-
-  for (unsigned int i = 36; i <= 43; i++)
-    offset += getAnimation(a2+offset, i, palette);
+  for (unsigned int i = 33; i <= 43; i++)
+    ypos = getAnimation(i, ants, v, ypos);
 
   // 44 and 45 are again copied from for animations before
   for (unsigned int i = 44; i <= 45; i++)
     for (unsigned int j = 0; j < getAntImages(i-4); j++)
       addAnt(i, j, getAntOffset(i-4, j), getAnt(i-4, j), false);
 
-  offset += getAnimation(a2+offset, 46, palette);
-
-  // load images from last file
-
-  offset = 0;
-
-  for (unsigned int i = 47; i <= 49; i++)
-    offset += getAnimation(a3+offset, i, palette);
+  for (unsigned int i = 46; i <= 49; i++)
+    ypos = getAnimation(i, ants, v, ypos);
 
   // 50 is copied it is the last images of the animation before
   addAnt(50, 0, getAntOffset(49, getAntImages(49)-1),
                 getAnt      (49, getAntImages(49)-1), false);
 
   for (unsigned int i = 51; i <= 65; i++)
-    offset += getAnimation(a3+offset, i, palette);
+    ypos = getAnimation(i, ants, v, ypos);
 
-  delete [] a0;
-  delete [] a1;
-  delete [] a2;
-  delete [] a3;
+  SDL_FreeSurface(v);
+  SDL_FreeSurface(ants);
 
   // load the images of carried cominoes
+  unsigned int offset = 0;
 
   snprintf(fname, 200, "%s/data/ANT10B29.SPX", dataPath.c_str());
   unsigned char * d3 = decompress(fname, 0);

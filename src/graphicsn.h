@@ -40,6 +40,6 @@ class graphicsN_c : public graphics_c {
 
     std::string dataPath;
 
-    unsigned int getAnimation(unsigned char * data, unsigned char anim, unsigned short * palette);
+    unsigned int getAnimation(int anim, SDL_Surface * ants, SDL_Surface * v, unsigned int ypos);
 
 };
