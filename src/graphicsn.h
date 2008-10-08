@@ -2,6 +2,8 @@
 
 #include <string>
 
+class pngLoader_c;
+
 /* implementation for graphics class using the original graphics */
 class graphicsN_c : public graphics_c {
 
@@ -40,6 +42,6 @@ class graphicsN_c : public graphics_c {
 
     std::string dataPath;
 
-    unsigned int getAnimation(int anim, SDL_Surface * ants, SDL_Surface * v, unsigned int ypos);
+    void getAnimation(int anim, SDL_Surface * v, pngLoader_c * png);
 
 };

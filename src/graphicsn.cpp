@@ -1,9 +1,9 @@
 #include "graphicsn.h"
 
 #include "decompress.h"
+#include "pngloader.h"
 
 #include <SDL.h>
-#include <SDL_image.h>
 
 static SDL_Surface * getSprite(unsigned char * dat, unsigned int * offset, unsigned short * palette) {
 
@@ -73,32 +73,25 @@ static SDL_Surface * getSprite(unsigned char * dat, unsigned int * offset, unsig
 graphicsN_c::graphicsN_c(const char * path) : dataPath(path) {
 }
 
-unsigned int graphicsN_c::getAnimation(int anim, SDL_Surface * ants, SDL_Surface * v, unsigned int ypos) {
+void graphicsN_c::getAnimation(int anim, SDL_Surface * v, pngLoader_c * png) {
 
   for (unsigned int j = 0; j < getAntImages(anim); j++) {
 
-    signed char ofs = (signed char)((*((uint32_t*)(((char*)ants->pixels)+ypos*ants->pitch)) * ants->format->Rmask) >> ants->format->Rshift);
+    png->getPart(v);
 
-    SDL_Rect src, dst;
+    signed char ofs = (signed char)((*((uint32_t*)v->pixels) & v->format->Rmask) >> v->format->Rshift);
 
-    dst.x = 1;
+    SDL_Rect dst;
+
+    dst.x = 0;
     dst.y = 0;
-    dst.w = 200-1;
-    dst.h = 25*3;
+    dst.w = 1;
+    dst.h = 75;
 
-    src.x = 1;
-    src.y = ypos;
-    src.w = 200-1;
-    src.h = 25*3;
+    SDL_FillRect(v, &dst, SDL_MapRGBA(v->format, 0, 0, 0, 0));
 
-    SDL_BlitSurface(ants, &src, v, &dst);
-
-    addAnt(anim, j, -ofs, SDL_DisplayFormatAlpha(v));
-
-    ypos += 25*3;
+    addAnt(anim, j, ofs, SDL_DisplayFormatAlpha(v));
   }
-
-  return ypos;
 }
 
 void graphicsN_c::loadGraphics(void) {
@@ -123,83 +116,64 @@ void graphicsN_c::loadGraphics(void) {
   // all domino sprites are in a png image load the image and then copy
   // the information to the destination sprites
 
-  SDL_Surface * dominos = IMG_Load((dataPath+"/data/dominos.png").c_str());
-  SDL_SetAlpha(dominos, 0, 0);
+  {
+    pngLoader_c png(dataPath+"/data/dominos.png");
 
-  SDL_Surface * v = SDL_CreateRGBSurface(0, 200, 58, 32, 0xff000000, 0xff0000, 0xff00, 0xff);
-  SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+    SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 58, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+    SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
-  int cnt = 0;
+    for (unsigned int i = 0; i < 17; i++)
+      for (unsigned int j = 0; j < numDominos[i]; j++) {
 
-  for (unsigned int i = 0; i < 17; i++)
-    for (unsigned int j = 0; j < numDominos[i]; j++) {
+        png.getPart(v);
+        setDomino(i, j, SDL_DisplayFormatAlpha(v));
+        png.skipLines(2);
 
-      SDL_Rect src, dst;
+      }
 
-      dst.x = 0;
-      dst.y = 0;
-      dst.w = 200;
-      dst.h = 58;
-
-      src.x = 0;
-      src.y = 60*cnt;
-      src.w = 200;
-      src.h = 58;
-
-      SDL_BlitSurface(dominos, &src, v, &dst);
-
-      cnt++;
-
-      setDomino(i, j, SDL_DisplayFormatAlpha(v));
-    }
-
-  SDL_FreeSurface(v);
-  SDL_FreeSurface(dominos);
+    SDL_FreeSurface(v);
+  }
 
   // load the ant images
 
-  SDL_Surface * ants = IMG_Load((dataPath+"/data/ant.png").c_str());
-  SDL_SetAlpha(ants, 0, 0);
+  {
+    pngLoader_c png(dataPath+"/data/ant.png");
+    png.skipLines(15);
 
-  v = SDL_CreateRGBSurface(0, 240, 75, 32, 0xff000000, 0xff0000, 0xff00, 0xff);
-  SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+    SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 75, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+    SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
-  unsigned int ypos = 5*3;
+    // load images from first file
+    for (unsigned int i = 0; i <= 27; i++)
+      getAnimation(i, v, &png);
 
-  // load images from first file
-  for (unsigned int i = 0; i <= 27; i++)
-    ypos = getAnimation(i, ants, v, ypos);
+    // load animation 28 and 29 these animations are the same as the 2 animations before but
+    // the inverse order
+    for (unsigned int i = 28; i <= 29; i++)
+      for (unsigned int j = 0; j < getAntImages(i-2); j++)
+        addAnt(i, j, getAntOffset(i-2, getAntImages(i-2)-j-1),
+            getAnt      (i-2, getAntImages(i-2)-j-1), false);
 
-  // load animation 28 and 29 these animations are the same as the 2 animations before but
-  // the inverse order
-  for (unsigned int i = 28; i <= 29; i++)
-    for (unsigned int j = 0; j < getAntImages(i-2); j++)
-      addAnt(i, j, getAntOffset(i-2, getAntImages(i-2)-j-1),
-                   getAnt      (i-2, getAntImages(i-2)-j-1), false);
+    for (unsigned int i = 30; i <= 43; i++)
+      getAnimation(i, v, &png);
 
-  ypos = getAnimation(30, ants, v, ypos);
-  ypos = getAnimation(31, ants, v, ypos);
+    // 44 and 45 are again copied from for animations before
+    for (unsigned int i = 44; i <= 45; i++)
+      for (unsigned int j = 0; j < getAntImages(i-4); j++)
+        addAnt(i, j, getAntOffset(i-4, j), getAnt(i-4, j), false);
 
-  for (unsigned int i = 33; i <= 43; i++)
-    ypos = getAnimation(i, ants, v, ypos);
+    for (unsigned int i = 46; i <= 49; i++)
+      getAnimation(i, v, &png);
 
-  // 44 and 45 are again copied from for animations before
-  for (unsigned int i = 44; i <= 45; i++)
-    for (unsigned int j = 0; j < getAntImages(i-4); j++)
-      addAnt(i, j, getAntOffset(i-4, j), getAnt(i-4, j), false);
+    // 50 is copied it is the last images of the animation before
+    addAnt(50, 0, getAntOffset(49, getAntImages(49)-1),
+        getAnt      (49, getAntImages(49)-1), false);
 
-  for (unsigned int i = 46; i <= 49; i++)
-    ypos = getAnimation(i, ants, v, ypos);
+    for (unsigned int i = 51; i <= 65; i++)
+      getAnimation(i, v, &png);
 
-  // 50 is copied it is the last images of the animation before
-  addAnt(50, 0, getAntOffset(49, getAntImages(49)-1),
-                getAnt      (49, getAntImages(49)-1), false);
-
-  for (unsigned int i = 51; i <= 65; i++)
-    ypos = getAnimation(i, ants, v, ypos);
-
-  SDL_FreeSurface(v);
-  SDL_FreeSurface(ants);
+    SDL_FreeSurface(v);
+  }
 
   // load the images of carried cominoes
   unsigned int offset = 0;
