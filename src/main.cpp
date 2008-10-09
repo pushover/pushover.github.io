@@ -235,23 +235,8 @@ int main(int argn, char * argv[]) {
     if (!pause && !singleStep)
       l.clearDirty();
 
-    if (play)
-    {
-      if (rec.endOfRecord())
-      {
-        if (operation == CHECK_FINISH)
-        {
-          if (l.triggerIsFalln() && !a.isVisible() && l.someTimeLeft())
-          {
-            printf("check successful\n");
-            ::exit(0);
-          } else {
-            printf("check NOT successful\n");
-            ::exit(1);
-          }
-        }
-      }
-    }
+    if (play && rec.endOfRecord())
+      exit = true;
 
     if (l.triggerIsFalln() && !a.isVisible()) {
 
@@ -279,8 +264,14 @@ int main(int argn, char * argv[]) {
 
   if (operation == CHECK_FINISH)
   {
-    printf("check NOT successful\n");
-    ::exit(1);
+    if (l.triggerIsFalln() && !a.isVisible() && l.someTimeLeft())
+    {
+      printf("check successful\n");
+      ::exit(0);
+    } else {
+      printf("check NOT successful\n");
+      ::exit(1);
+    }
   }
 
   if (useGraphics)
