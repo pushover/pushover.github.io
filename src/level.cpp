@@ -3025,46 +3025,93 @@ bool level_c::levelCompleted(int *fail) {
       if (level[y][x].dominoType != DominoTypeEmpty && level[y][x].dominoType != DominoTypeStopper)
       {
         if (level[y][x].dominoType == DominoTypeSplitter)
-        {
+        { // for splitters is must have started to fall
           if (level[y][x].dominoState > 2 && level[y][x].dominoState <= 8)
           {
             if (fail) *fail = 2;
             return false;
           }
         }
-        else if (level[y][x].dominoType != DominoTypeTrigger)
-        {
-          if (level[y][x].dominoState > 2 && level[y][x].dominoState < 14)
+        else if (level[y][x].dominoType == DominoTypeTrigger)
+        { // triggers must as least have started to fall
+          if (level[y][x].dominoState == 8)
           {
-            if (level[y][x].dominoState > 3 && level[y][x].dominoState < 13)
-            {
-              // here we certainly fail
-              if (fail) *fail = 2;
-              return false;
-            }
-            else
-            {
-              // in this case we might still succeed, when we lean against a block
-              if (
-                  level[y][x-1].fg != FgElementPlatformStep4 &&
-                  level[y][x-1].fg != FgElementPlatformStep7 &&
-                  level[y][x+1].fg != FgElementPlatformStep4 &&
-                  level[y][x+1].fg != FgElementPlatformStep7 &&
-                  level[y][x-1].dominoType != DominoTypeStopper &&
-                  level[y][x+1].dominoType != DominoTypeStopper
-                 )
-              {
-              // here we lean against a step
-              if (fail) *fail = 2;
-              return false;
-              }
-            }
+            if (fail) *fail = 2;
+            return false;
           }
+        }
+        else if (level[y][x].dominoType == DominoTypeTumbler)
+        { // tumbler must lie on something or lean against a wall
+          // not falln far enough
+          if (level[y][x].dominoState > 3 && level[y][x].dominoState < 13) {
+            if (fail) *fail = 2;
+            return false;
+          }
+
+          // check if we lean against a step
+          if (level[y][x].dominoState == 3 &&
+              level[y][x-1].fg != FgElementPlatformStep4 &&
+              level[y][x-1].fg != FgElementPlatformStep7)
+          {
+            if (fail) *fail = 2;
+            return false;
+          }
+
+          if (level[y][x].dominoState == 13 &&
+              level[y][x+1].fg != FgElementPlatformStep4 &&
+              level[y][x+1].fg != FgElementPlatformStep7)
+          {
+            if (fail) *fail = 2;
+            return false;
+          }
+
+          // falln far enough but neighbor empty
+          if (   level[y][x].dominoState <= 2
+              && level[y][x-1].dominoType == DominoTypeEmpty
+              && (level[y][x-2].dominoType == DominoTypeEmpty || level[y][x-2].dominoState < 14))
+          {
+            if (fail) *fail = 2;
+            return false;
+          }
+          if (   level[y][x].dominoState >= 14
+              && level[y][x+1].dominoType == DominoTypeEmpty
+              && (level[y][x+2].dominoType == DominoTypeEmpty || level[y][x+2].dominoState > 2)) {
+            if (fail) *fail = 2;
+            return false;
+          }
+
         }
         else
         {
-          if (level[y][x].dominoState == 8)
+          if (level[y][x].dominoState > 3 && level[y][x].dominoState < 13)
           {
+            // here we certainly fail
+            if (fail) *fail = 2;
+            return false;
+          }
+          // in this case we might still succeed, when we lean against a block
+          if (   level[y][x].dominoState == 3
+              && level[y][x-1].fg != FgElementPlatformStep4
+              && level[y][x-1].fg != FgElementPlatformStep7
+              && (   level[y][x-1].dominoType != DominoTypeStopper
+                  || level[y][x+1].dominoType == DominoTypeEmpty
+                  || (level[y][x+1].dominoDir != -1 && level[y][x+1].dominoType != DominoTypeSplitter))
+             )
+          {
+            // here we lean against a of a blocker and can not go back
+            if (fail) *fail = 2;
+            return false;
+          }
+
+          if (   level[y][x].dominoState == 13
+              && level[y][x+1].fg != FgElementPlatformStep4
+              && level[y][x+1].fg != FgElementPlatformStep7
+              && (   level[y][x+1].dominoType != DominoTypeStopper
+                  || level[y][x-1].dominoType == DominoTypeEmpty
+                  || (level[y][x-1].dominoDir != 1 && level[y][x-1].dominoType != DominoTypeSplitter))
+             )
+          {
+            // here we lean against a step
             if (fail) *fail = 2;
             return false;
           }
