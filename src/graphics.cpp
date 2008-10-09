@@ -43,8 +43,6 @@ void graphics_c::setTheme(const std::string & name) {
   bgTiles.resize(bgTiles.size()+1);
   fgTiles.resize(fgTiles.size()+1);
 
-  printf("curTheme = %i\n", curTheme);
-
   loadTheme(name);
 
 }
