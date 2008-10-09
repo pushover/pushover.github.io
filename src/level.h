@@ -1,3 +1,6 @@
+#ifndef __LEVEL_H__
+#define __LEVEL_H__
+
 #include <SDL.h>
 #include <string>
 #include "levelsections.h"
@@ -210,3 +213,6 @@ class level_c {
     bool someTimeLeft(void) { return timeLeft > 0; }
 
 };
+
+#endif
+

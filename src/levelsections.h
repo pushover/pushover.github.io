@@ -1,3 +1,6 @@
+#ifndef __LEVEL_SECTIONS_H__
+#define __LEVEL_SECTIONS_H__
+
 #include <exception>
 #include <string>
 #include <vector>
@@ -25,3 +28,6 @@ class levelSections_c {
     const std::string &
       getSingleLine(const std::string sectionName) const;
 };
+
+#endif
+

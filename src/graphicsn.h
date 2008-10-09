@@ -1,3 +1,6 @@
+#ifndef __GRAPHICS_N_H__
+#define __GRAPHICS_N_H__
+
 #include "graphics.h"
 
 #include <string>
@@ -45,3 +48,6 @@ class graphicsN_c : public graphics_c {
     void getAnimation(int anim, SDL_Surface * v, pngLoader_c * png);
 
 };
+
+#endif
+

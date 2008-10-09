@@ -1,3 +1,6 @@
+#ifndef __GRAPHICS_O_H__
+#define __GRAPHICS_O_H__
+
 #include "graphics.h"
 
 #include <string>
@@ -44,3 +47,6 @@ class graphicsO_c : public graphics_c {
     unsigned int getAnimation(unsigned char * data, unsigned char anim, unsigned short * palette);
 
 };
+
+#endif
+

@@ -1,3 +1,6 @@
+#ifndef __ANT_H__
+#define __ANT_H__
+
 #include <SDL.h>
 
 // this class contains all necessary code for the ant animation
@@ -124,3 +127,6 @@ class ant_c {
     bool CanPlaceDomino(int x, int y, int ofs);
     bool PushableDomino(int x, int y, int ofs);
 };
+
+#endif
+

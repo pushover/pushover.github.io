@@ -1,3 +1,6 @@
+#ifndef __GRAPHICS_H__
+#define __GRAPHICS_H__
+
 #include <SDL.h>
 #include <string>
 #include <vector>
@@ -106,3 +109,6 @@ class graphics_c {
     std::map<wchar_t, SDL_Surface *> bigFont;
 
 };
+
+#endif
+
