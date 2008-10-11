@@ -73,9 +73,12 @@ static SDL_Surface * getSprite(unsigned char * dat, unsigned int * offset, unsig
 graphicsN_c::graphicsN_c(const char * path) : dataPath(path) {
 }
 
-void graphicsN_c::getAnimation(int anim, SDL_Surface * v, pngLoader_c * png) {
+void graphicsN_c::getAnimation(int anim, pngLoader_c * png) {
 
   for (unsigned int j = 0; j < getAntImages(anim); j++) {
+
+    SDL_Surface * v = SDL_CreateRGBSurface(0, png->getWidth(), 75, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+    SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
     png->getPart(v);
 
@@ -90,7 +93,7 @@ void graphicsN_c::getAnimation(int anim, SDL_Surface * v, pngLoader_c * png) {
 
     SDL_FillRect(v, &dst, SDL_MapRGBA(v->format, 0, 0, 0, 0));
 
-    addAnt(anim, j, ofs, SDL_DisplayFormatAlpha(v));
+    addAnt(anim, j, ofs, v);
   }
 }
 
@@ -119,19 +122,17 @@ void graphicsN_c::loadGraphics(void) {
   {
     pngLoader_c png(dataPath+"/data/dominos.png");
 
-    SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 58, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-    SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
     for (unsigned int i = 0; i < 17; i++)
       for (unsigned int j = 0; j < numDominos[i]; j++) {
 
+        SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 58, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+        SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
         png.getPart(v);
-        setDomino(i, j, SDL_DisplayFormatAlpha(v));
+        setDomino(i, j, v);
         png.skipLines(2);
 
       }
-
-    SDL_FreeSurface(v);
   }
 
   // load the ant images
@@ -140,12 +141,9 @@ void graphicsN_c::loadGraphics(void) {
     pngLoader_c png(dataPath+"/data/ant.png");
     png.skipLines(15);
 
-    SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 75, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-    SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
     // load images from first file
     for (unsigned int i = 0; i <= 27; i++)
-      getAnimation(i, v, &png);
+      getAnimation(i, &png);
 
     // load animation 28 and 29 these animations are the same as the 2 animations before but
     // the inverse order
@@ -155,7 +153,7 @@ void graphicsN_c::loadGraphics(void) {
             getAnt      (i-2, getAntImages(i-2)-j-1), false);
 
     for (unsigned int i = 30; i <= 43; i++)
-      getAnimation(i, v, &png);
+      getAnimation(i, &png);
 
     // 44 and 45 are again copied from for animations before
     for (unsigned int i = 44; i <= 45; i++)
@@ -163,16 +161,14 @@ void graphicsN_c::loadGraphics(void) {
         addAnt(i, j, getAntOffset(i-4, j), getAnt(i-4, j), false);
 
     for (unsigned int i = 46; i <= 49; i++)
-      getAnimation(i, v, &png);
+      getAnimation(i, &png);
 
     // 50 is copied it is the last images of the animation before
     addAnt(50, 0, getAntOffset(49, getAntImages(49)-1),
         getAnt      (49, getAntImages(49)-1), false);
 
     for (unsigned int i = 51; i <= 65; i++)
-      getAnimation(i, v, &png);
-
-    SDL_FreeSurface(v);
+      getAnimation(i, &png);
   }
 
   // load the images of carried cominoes

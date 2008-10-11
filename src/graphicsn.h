@@ -45,7 +45,7 @@ class graphicsN_c : public graphics_c {
 
     std::string dataPath;
 
-    void getAnimation(int anim, SDL_Surface * v, pngLoader_c * png);
+    void getAnimation(int anim, pngLoader_c * png);
 
 };
 
