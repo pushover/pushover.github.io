@@ -48,37 +48,39 @@ int main(int argn, char * argv[]) {
   SDL_Surface * video = 0;
 
   if (useGraphics)
+    SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO);
+  else
+    SDL_Init(SDL_INIT_TIMER);
+  printf("%i: Init\n", SDL_GetTicks());
+  atexit(SDL_Quit);
+
+  if (useGraphics)
   {
-    SDL_Init(SDL_INIT_VIDEO);
-
-    printf("%i: Init\n", SDL_GetTicks());
-
-    atexit(SDL_Quit);
     video = SDL_SetVideoMode(gr->resolutionX(), gr->resolutionY(), 24, 0);
-    printf("%i: Set Video Mode, Load Graphics\n", SDL_GetTicks());
+    printf("%i: Video Mode set\n", SDL_GetTicks());
     gr->loadGraphics();
-    printf("%i: Done Loading\n", SDL_GetTicks());
+    printf("%i: Graphics loaded\n", SDL_GetTicks());
   }
 
   level_c l;
   l.load(levelFile);
   rec.setLevelName(l.getName());
-
-  printf("%i: Level Loaded\n", SDL_GetTicks());
+  printf("%i: Level loaded\n", SDL_GetTicks());
 
   if (useGraphics)
+  {
     gr->setTheme(l.getTheme());
-
-  printf("%i: Theme Loaded\n", SDL_GetTicks());
+    printf("%i: Theme Loaded\n", SDL_GetTicks());
+  }
 
   ant_c a;
-
   a.init(&l, gr);
 
   if (useGraphics)
+  {
     l.updateBackground(gr);
-
-  printf("%i: Background drawn\n", SDL_GetTicks());
+    printf("%i: Background drawn\n", SDL_GetTicks());
+  }
 
   Uint32 ticks = 0;
 
