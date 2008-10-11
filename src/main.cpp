@@ -50,17 +50,26 @@ int main(int argn, char * argv[]) {
   if (useGraphics)
   {
     SDL_Init(SDL_INIT_VIDEO);
+
+    printf("%i: Init\n", SDL_GetTicks());
+
     atexit(SDL_Quit);
     video = SDL_SetVideoMode(gr->resolutionX(), gr->resolutionY(), 24, 0);
+    printf("%i: Set Video Mode, Load Graphics\n", SDL_GetTicks());
     gr->loadGraphics();
+    printf("%i: Done Loading\n", SDL_GetTicks());
   }
 
   level_c l;
   l.load(levelFile);
   rec.setLevelName(l.getName());
 
+  printf("%i: Level Loaded\n", SDL_GetTicks());
+
   if (useGraphics)
     gr->setTheme(l.getTheme());
+
+  printf("%i: Theme Loaded\n", SDL_GetTicks());
 
   ant_c a;
 
@@ -68,6 +77,8 @@ int main(int argn, char * argv[]) {
 
   if (useGraphics)
     l.updateBackground(gr);
+
+  printf("%i: Background drawn\n", SDL_GetTicks());
 
   Uint32 ticks = 0;
 
