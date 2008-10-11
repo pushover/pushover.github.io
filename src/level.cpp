@@ -3092,7 +3092,6 @@ bool level_c::levelCompleted(int *fail) {
           // in this case we might still succeed, when we lean against a block
           if (   level[y][x].dominoState == 3
               && level[y][x-1].fg != FgElementPlatformStep4
-              && level[y][x-1].fg != FgElementPlatformStep7
               && (   level[y][x-1].dominoType != DominoTypeStopper
                   || level[y][x+1].dominoType == DominoTypeEmpty
                   || (level[y][x+1].dominoDir != -1 && level[y][x+1].dominoType != DominoTypeSplitter))
@@ -3104,8 +3103,7 @@ bool level_c::levelCompleted(int *fail) {
           }
 
           if (   level[y][x].dominoState == 13
-              && level[y][x+1].fg != FgElementPlatformStep4
-              && level[y][x+1].fg != FgElementPlatformStep7
+              && level[y][x+1].fg != FgElementPlatformStep6
               && (   level[y][x+1].dominoType != DominoTypeStopper
                   || level[y][x-1].dominoType == DominoTypeEmpty
                   || (level[y][x-1].dominoDir != 1 && level[y][x-1].dominoType != DominoTypeSplitter))
