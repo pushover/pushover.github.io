@@ -5,71 +5,6 @@
 
 #include <SDL.h>
 
-static SDL_Surface * getSprite(unsigned char * dat, unsigned int * offset, unsigned short * palette) {
-
-  // this variable contains 2 values: the lower 3 bit contain the number of units the sprites
-  // is wide, one unit is 16 pixels wide
-  // the upper 5 bits contain the occupied units. A set bit results in some pixels not zero
-  // so the number in the lower 3 bits contains the number of bits that are set in the upper
-  // 5 bits. This is probably done to be able to shift the complete sprite to the right
-  unsigned char width = *dat; dat++;
-  unsigned char height = *dat; dat++;
-
-  // maximally a sprite can be 5 units a scale times 16 pixel wide, more is simply not possible
-  // later on we could change that by checking the exact units used and calculate the width
-  SDL_Surface * v = SDL_CreateRGBSurface(0, 80*5/2, 3*height, 32, 0xff000000, 0xff0000, 0xff00, 0xff);
-
-  for (unsigned int y = 0; y < height; y++) {
-
-    unsigned int bit = 0;
-
-    for (int i = 0; i < 5; i++) {
-
-      if ((width & (0x80 >> i)) != 0) {
-
-        for (int j = 0; j < 16; j++) {
-
-          unsigned char s = 0;
-
-          for (int k = 0; k < 5; k++) {
-
-            unsigned int pos = k*height*2*(width & 7) + y*2*(width & 7) + j/8 + bit*2;
-
-            s >>= 1;
-            if (dat[pos] & 0x80) s |= 0x80;
-            dat[pos] <<= 1;
-          }
-
-          s >>= 3;
-
-          unsigned char r = ((palette[s] >>  0) & 0xF);
-          unsigned char g = ((palette[s] >> 12) & 0xF);
-          unsigned char b = ((palette[s] >>  8) & 0xF);
-
-          r = (r << 2) | r;
-          g = (g << 2) | g;
-          b = (b << 2) | b;
-
-          SDL_Rect rt;
-
-          rt.x = 5*(16*i+j)/2;
-          rt.y = 3*y;
-          rt.w = 3;
-          rt.h = 3;
-
-          SDL_FillRect(v, &rt, SDL_MapRGBA(v->format, 4*r, 4*g, 4*b, s==0?0:255));
-        }
-
-        bit++;
-      }
-    }
-  }
-
-  *offset += 2*5*height*(width & 7) + 2;
-
-  return v;
-}
-
 graphicsN_c::graphicsN_c(const char * path) : dataPath(path) {
 }
 
@@ -98,19 +33,6 @@ void graphicsN_c::getAnimation(int anim, pngLoader_c * png) {
 }
 
 void graphicsN_c::loadGraphics(void) {
-
-  char fname[200];
-
-  // load a palette file, it doesn't matter which because all
-  // sprites loded here use only colors that are identical on all
-  // palettes
-  snprintf(fname, 200, "%s/themes/SPACE.PAL", dataPath.c_str());
-  unsigned short palette[32];
-  {
-    FILE * f = fopen(fname, "rb");
-    fread(palette, 1, 64, f);
-    fclose(f);
-  }
 
   /* load domino sprites */
 
@@ -171,45 +93,45 @@ void graphicsN_c::loadGraphics(void) {
       getAnimation(i, &png);
   }
 
-  // load the images of carried cominoes
-  unsigned int offset = 0;
+  {
+    pngLoader_c png(dataPath+"/data/carried.png");
 
-  snprintf(fname, 200, "%s/data/ANT10B29.SPX", dataPath.c_str());
-  unsigned char * d3 = decompress(fname, 0);
-
-  offset = 0;
-
-  for (unsigned int i = 0; i < 7; i++) {
+    for (unsigned int i = 0; i < 7; i++) {
       for (unsigned int j = 0; j < 10; j++) {
-          SDL_Surface * v = getSprite(d3 + offset, &offset, palette);
-          setCarriedDomino(i, j, SDL_DisplayFormatAlpha(v));
-          SDL_FreeSurface(v);
-      }
-  }
+        SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 55, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+        SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
-  // copy some surfaces surfaces
-  for (unsigned int i = 7; i < 10; i++) {
+        png.getPart(v);
+
+        setCarriedDomino(i, j, v);
+      }
+    }
+
+    // copy some surfaces surfaces
+    for (unsigned int i = 7; i < 10; i++) {
       for (unsigned int j = 0; j < 10; j++) {
         setCarriedDomino(i, j, SDL_DisplayFormatAlpha(getCarriedDomino(i-1, j)));
       }
-  }
+    }
 
-  for (unsigned int i = 10; i < 12; i++) {
+    for (unsigned int i = 10; i < 12; i++) {
       for (unsigned int j = 0; j < 10; j++) {
         setCarriedDomino(i, j, SDL_DisplayFormatAlpha(getCarriedDomino(i & 1, j)));
       }
-  }
+    }
 
-  // load the final surfaces
-  for (unsigned int i = 12; i < 16; i++) {
+    // load the final surfaces
+    for (unsigned int i = 12; i < 16; i++) {
       for (unsigned int j = 0; j < 10; j++) {
-          SDL_Surface * v = getSprite(d3 + offset, &offset, palette);
-          setCarriedDomino(i, j, SDL_DisplayFormatAlpha(v));
-          SDL_FreeSurface(v);
-      }
-  }
+        SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 55, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+        SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
-  delete [] d3;
+        png.getPart(v);
+
+        setCarriedDomino(i, j, v);
+      }
+    }
+  }
 
   // generate the big font
 
