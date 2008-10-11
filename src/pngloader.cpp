@@ -1,25 +1,32 @@
 #include "pngloader.h"
 
+#include <iostream>
+
 
 pngLoader_c::pngLoader_c(std::string fname) {
 
   f = fopen(fname.c_str(), "rb");
 
-  if (!f)
+  if (!f) {
+    std::cout << "File " << fname << " not found\n";
     return;
+  }
 
   png_uint_32 width, height;
   int bit_depth, color_type, interlace_type;
 
   // TODO enter error handler in here
   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-  if (!png_ptr)
+  if (!png_ptr) {
+    std::cout << "Can not create PNG reading structure, out of memory\n";
     return;
+  }
 
   info_ptr = png_create_info_struct(png_ptr);
 
   if (info_ptr == 0)
   {
+    std::cout << "Can not create PNG info structure, out of memory\n";
     png_destroy_read_struct(&png_ptr, (png_infopp)0, (png_infopp)0);
     png_ptr = 0;
     return;
@@ -27,6 +34,7 @@ pngLoader_c::pngLoader_c(std::string fname) {
 
   if (setjmp(png_jmpbuf(png_ptr)))
   {
+    std::cout << "Can not create PNG error handling\n";
     png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)0);
     png_ptr = 0;
     return;
@@ -41,6 +49,11 @@ pngLoader_c::pngLoader_c(std::string fname) {
       &color_type, &interlace_type, NULL, NULL);
 
   if (color_type != PNG_COLOR_TYPE_RGB_ALPHA || interlace_type != PNG_INTERLACE_NONE || bit_depth != 8) {
+
+    if (color_type != PNG_COLOR_TYPE_RGB_ALPHA) printf("color type not ok\n");
+    if (interlace_type != PNG_INTERLACE_NONE) printf("interlace mode not right\n");
+    if (bit_depth != 8) printf("bitdepth is %i but must be 8\n", bit_depth);
+
     png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)0);
     png_ptr = 0;
     return;
@@ -64,8 +77,10 @@ void pngLoader_c::getPart(SDL_Surface * v) {
 
   if (!png_ptr) return;
 
-  if (setjmp(png_jmpbuf(png_ptr)))
+  if (setjmp(png_jmpbuf(png_ptr))) {
+    std::cout << "Can not create PNG error handling\n";
     return;
+  }
 
   for (int i = 0; i < v->h; i++)
     png_read_row(png_ptr, ((png_byte*)v->pixels) + i*v->pitch, 0);

@@ -7,12 +7,8 @@
  */
 
 #include <SDL.h>
-
 #include <png.h>
-
 #include <string>
-
-#include <stdio.h>
 
 class pngLoader_c {
 
