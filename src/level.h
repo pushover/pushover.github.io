@@ -3,9 +3,11 @@
 
 #include <SDL.h>
 #include <string>
-#include "levelsections.h"
+#include <vector>
+#include <iostream>
 
 class graphics_c;
+class textsections_c;
 
 class level_c {
 
@@ -102,8 +104,8 @@ class level_c {
 
     void load_binary(const std::string & name);
 
-    void load(const std::string & filename);
-    void save(const std::string & filename) const;
+    void load(const textsections_c & sections);
+    void save(std::ostream & stream) const;
     bool operator==(const level_c & other) const;
 
     const std::string getName(void) const { return name; }

@@ -1,4 +1,5 @@
 #include "graphicsn.h"
+#include "textsections.h"
 #include "level.h"
 #include "ant.h"
 #include "recorder.h"
@@ -10,7 +11,7 @@
 
 #include <stdio.h>
 
-#include <iostream>
+#include <fstream>
 
 int main(int argn, char * argv[]) {
 
@@ -66,7 +67,11 @@ int main(int argn, char * argv[]) {
   }
 
   level_c l;
-  l.load(levelFile);
+  {
+    std::ifstream file(levelFile.c_str());
+    textsections_c sections(file, true);
+    l.load(sections);
+  }
   rec.setLevelName(l.getName());
   printf("%i: Level loaded\n", SDL_GetTicks());
 
