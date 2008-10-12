@@ -78,7 +78,7 @@ int main(int argn, char * argv[]) {
   if (useGraphics)
   {
     gr->setTheme(l.getTheme());
-    printf("%i: Theme Loaded\n", SDL_GetTicks());
+    printf("%i: Theme loaded\n", SDL_GetTicks());
   }
 
   ant_c a;
