@@ -2,6 +2,7 @@
 
 #include "decompress.h"
 #include "graphics.h"
+#include "soundsys.h"
 
 #include <stdio.h>
 
@@ -850,6 +851,10 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
 void level_c::performDoors(void) {
 
   if (openDoorEntry) {
+
+    if (getFg(doorEntryX, doorEntryY) == FgElementDoor0)
+      soundSystem_c::instance()->startSound(soundSystem_c::SE_DOOR_OPEN);
+
     if (getFg(doorEntryX, doorEntryY) < FgElementDoor3) {
       level[doorEntryY][doorEntryX].fg++;
       staticDirty[doorEntryY] |= 1 << doorEntryX;
@@ -857,6 +862,10 @@ void level_c::performDoors(void) {
     }
 
   } else {
+
+    if (getFg(doorEntryX, doorEntryY) == FgElementDoor3)
+      soundSystem_c::instance()->startSound(soundSystem_c::SE_DOOR_CLOSE);
+
     if (getFg(doorEntryX, doorEntryY) > FgElementDoor0) {
       level[doorEntryY][doorEntryX].fg--;
       staticDirty[doorEntryY] |= 1 << doorEntryX;
@@ -865,12 +874,20 @@ void level_c::performDoors(void) {
   }
 
   if (openDoorExit) {
+
+    if (getFg(doorExitX, doorExitY) == FgElementDoor0)
+      soundSystem_c::instance()->startSound(soundSystem_c::SE_DOOR_OPEN);
+
     if (getFg(doorExitX, doorExitY) < FgElementDoor3) {
       level[doorExitY][doorExitX].fg++;
       staticDirty[doorExitY] |= 1 << doorExitX;
       dynamicDirty[doorExitY] |= 1 << doorExitX;
     }
   } else {
+
+    if (getFg(doorExitX, doorExitY) == FgElementDoor3)
+      soundSystem_c::instance()->startSound(soundSystem_c::SE_DOOR_CLOSE);
+
     if (getFg(doorExitX, doorExitY) > FgElementDoor0) {
       level[doorExitY][doorExitX].fg--;
       staticDirty[doorExitY] |= 1 << doorExitX;
@@ -945,6 +962,8 @@ void level_c::fallingDomino(int x, int y) {
     level[y][x].dominoExtra = 0x60;
   else
     level[y][x].dominoExtra = 0x70;
+
+  soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
 }
 
 bool level_c::pushDomino(int x, int y, int dir) {
@@ -1008,7 +1027,7 @@ bool level_c::pushDomino(int x, int y, int dir) {
     case DominoTypeVanish:
     case DominoTypeTrigger:
       if (getDominoState(x, y) == 8) {
-        // play sound
+        soundSystem_c::instance()->startSound(level[y][x].dominoType-1);
         level[y][x].dominoDir = dir;
         level[y][x].dominoState += dir;
       }
@@ -1018,7 +1037,7 @@ bool level_c::pushDomino(int x, int y, int dir) {
       // even though the pieces fall in both directions
     case DominoTypeSplitter:
       if (getDominoState(x, y) == 8) {
-        // play dound
+        soundSystem_c::instance()->startSound(soundSystem_c::SE_SPLITTER);
         level[y][x].dominoDir = -1;
         level[y][x].dominoState --;
       }
@@ -1030,7 +1049,7 @@ bool level_c::pushDomino(int x, int y, int dir) {
       // return false
     case DominoTypeExploder:
       if (getDominoState(x, y) == 8) {
-        // play dound
+        soundSystem_c::instance()->startSound(soundSystem_c::SE_EXPLODER);
         level[y][x].dominoDir = -1;
         level[y][x].dominoState --;
         retVal = false;
@@ -1047,7 +1066,7 @@ bool level_c::pushDomino(int x, int y, int dir) {
     case DominoTypeDelay:
       if (getDominoState(x, y) == 8) {
         if (getDominoExtra(x, y) == 0) {
-          // play sound
+          soundSystem_c::instance()->startSound(soundSystem_c::SE_DELAY);
           level[y][x].dominoDir = dir;
           level[y][x].dominoExtra = 20;
 
@@ -1066,7 +1085,7 @@ bool level_c::pushDomino(int x, int y, int dir) {
       {
         if (getDominoState(x, y) == 8 && level[y][x].dominoYOffset > -6) {
           if (getDominoExtra(x, y) != 0x60) {
-            // play sound
+            soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
           }
           level[y][x].dominoDir = dir;
           level[y][x].dominoExtra = 0x60;
@@ -1381,6 +1400,7 @@ void level_c::DTA_3(int x, int y) {
   // now the only case left is to reverse direction but still push the domino to our left
   level[y][x].dominoDir = 1;
   pushDomino(x-1, y, -1);
+  soundSystem_c::instance()->startSound(soundSystem_c::SE_STOPPER);
   DTA_4(x, y);
 }
 
@@ -1430,6 +1450,7 @@ void level_c::DTA_I(int x, int y) {
 
   level[y][x].dominoDir = -1;
   pushDomino(x+1, y, 1);
+  soundSystem_c::instance()->startSound(soundSystem_c::SE_STOPPER);
   DTA_4(x, y);
 }
 
@@ -1538,9 +1559,7 @@ void level_c::DominoCrash(int x, int y, int type, int extra) {
   markDirty(x, y);
   markDirty(x+1, y);
 
-  // 		mov	ax, 4
-  // 		push	ax
-  // 		call	SomethingWithSound
+  soundSystem_c::instance()->startSound(soundSystem_c::SE_EXPLODER);
 }
 
 // vertial stone
@@ -2349,10 +2368,8 @@ void level_c::DTA_K(int x, int y) {
       level[y][x+1].dominoYOffset = 2;
       level[y][x+1].dominoExtra = 0x70;
 
-      // 		mov	ax, 0Ah
-      // 		push	ax
-      // 		call	SomethingWithSound
-      //
+      soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
+
       level[y][x].dominoType = 0;
       level[y][x].dominoState = 0;
       level[y][x].dominoDir = 0;
@@ -2470,10 +2487,8 @@ void level_c::DTA_1(int x, int y) {
       level[y][x-1].dominoYOffset = 2;
       level[y][x-1].dominoExtra = 0x70;
 
-      // 		mov	ax, 0Ah
-      // 		push	ax
-      // 		call	SomethingWithSound
-      //
+      soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
+
       level[y][x].dominoType = 0;
       level[y][x].dominoState = 0;
       level[y][x].dominoDir = 0;
@@ -2575,9 +2590,7 @@ void level_c::DTA_6(int x, int y) {
       level[y][x-1].dominoYOffset = 2;
       level[y][x-1].dominoExtra = 0x70;
 
-      // 		mov	ax, 0Ah
-      // 		push	ax
-      // 		call	SomethingWithSound
+      soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
     }
 
     level[y][x].dominoType = 0;
@@ -2698,9 +2711,7 @@ void level_c::DTA_L(int x, int y) {
       level[y][x+1].dominoYOffset = 2;
       level[y][x+1].dominoExtra = 0x70;
 
-      // 		mov	ax, 0Ah
-      // 		push	ax
-      // 		call	SomethingWithSound
+      soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
     }
 
     level[y][x].dominoType = 0;

@@ -2,6 +2,7 @@
 #include "level.h"
 #include "ant.h"
 #include "recorder.h"
+#include "soundsys.h"
 
 #include <SDL.h>
 
@@ -60,6 +61,8 @@ int main(int argn, char * argv[]) {
     printf("%i: Video Mode set\n", SDL_GetTicks());
     gr->loadGraphics();
     printf("%i: Graphics loaded\n", SDL_GetTicks());
+
+    soundSystem_c::instance()->openSound(".");
   }
 
   level_c l;

@@ -13,5 +13,6 @@ pushover_SOURCES =                  \
   src/level.cpp src/level.h \
   src/main.cpp \
   src/pngloader.cpp src/pngloader.h \
-  src/recorder.cpp src/recorder.h
+  src/recorder.cpp src/recorder.h \
+  src/soundsys.cpp src/soundsys.h
 

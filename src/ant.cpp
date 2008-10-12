@@ -1,6 +1,7 @@
 #include "ant.h"
 #include "graphics.h"
 #include "level.h"
+#include "soundsys.h"
 
 typedef enum {
   AntAnimWalkLeft,
@@ -441,6 +442,10 @@ unsigned int ant_c::SFNoNo(void) {
 }
 
 unsigned int ant_c::SFShrugging(void) {
+
+  if (animationImage == 1)
+    soundSystem_c::instance()->startSound(soundSystem_c::SE_SHRUGGING);
+
   if (animateAnt(3))
     return AntAnimNothing;
 
@@ -448,6 +453,10 @@ unsigned int ant_c::SFShrugging(void) {
 }
 
 unsigned int ant_c::SFVictory(void) {
+
+  if (animationImage == 1)
+    soundSystem_c::instance()->startSound(soundSystem_c::SE_VICTORY);
+
   if (animateAnt(3))
     return AntAnimNothing;
 
@@ -486,6 +495,9 @@ unsigned int ant_c::SFGhost1(void) {
 }
 
 unsigned int ant_c::SFGhost2(void) {
+
+  if (animationImage == 3)
+    soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_LANDING);
 
   if (animateAnt(2))
     animationImage = 12;
@@ -756,6 +768,9 @@ unsigned int ant_c::SFPushInRight(void) {
 
 unsigned int ant_c::SFPullOutLeft(void) {
 
+  if (animationImage == 3)
+    soundSystem_c::instance()->startSound(soundSystem_c::SE_PICK_UP_DOMINO);
+
   if (!animateAnt(0))
     return animation;
 
@@ -764,6 +779,9 @@ unsigned int ant_c::SFPullOutLeft(void) {
 }
 
 unsigned int ant_c::SFPullOutRight(void) {
+
+  if (animationImage == 3)
+    soundSystem_c::instance()->startSound(soundSystem_c::SE_PICK_UP_DOMINO);
 
   if (!animateAnt(0))
     return animation;
@@ -1012,7 +1030,8 @@ unsigned int ant_c::SFStartFallingRight(void) {
 unsigned int ant_c::SFFalling(void) {
 
   if (animationImage == 1 && fallingHight == 2) {
-    // play sound
+
+    soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_FALLING);
   }
 
   if (animateAnt(0)) {
@@ -1032,6 +1051,10 @@ unsigned int ant_c::SFFalling(void) {
 }
 
 unsigned int ant_c::SFLanding(void) {
+
+  if (animationImage == 3)
+    soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_LANDING);
+
   if (animateAnt(0)) {
     animation = AntAnimStop;
     return AntAnimNothing;
@@ -1175,7 +1198,7 @@ unsigned int ant_c::checkForNoKeyActions(void) {
   // tapping and yawning when nothing else is going on
   if (((inactiveTimer & 0x20) == 0x20) && ((inactiveTimer & 0x1F) == 5))
   {
-    // same as below but with soundeffect
+    soundSystem_c::instance()->startSound(soundSystem_c::SE_NU_WHAT);
     animation = AntAnimTapping;
     return AntAnimTapping;
   }
