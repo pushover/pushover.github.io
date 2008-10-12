@@ -25,7 +25,7 @@ class level_c {
       char dominoYOffset;
       char dominoExtra;  // this field contains a lot of information:
         // 0-20 for delay domino is the number of ticks left until it falls
-        // 0-9  for splitter is the domino that splits the plitter (for display)
+        // 0-9  for splitter is the domino that splits the splitter (for display)
         // 0x40 for all dominos means it is falling of the edge and still turning, so
         //      please fall slower
         // 0x60 riser rising
