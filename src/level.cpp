@@ -1,6 +1,7 @@
 #include "level.h"
 
 #include "decompress.h"
+#include "textsections.h"
 #include "graphics.h"
 #include "soundsys.h"
 

@@ -1,6 +1,7 @@
 #include "graphicsn.h"
 #include "textsections.h"
 #include "level.h"
+#include "levelset.h"
 #include "ant.h"
 #include "recorder.h"
 #include "soundsys.h"
@@ -22,6 +23,7 @@ int main(int argn, char * argv[]) {
       CHECK_FINISH
   } operation = NOTHING;
 
+  std::string levelName;
   std::string levelFile;
   recorder_c rec;
   bool play;
@@ -29,16 +31,21 @@ int main(int argn, char * argv[]) {
   if (strcmp(argv[1], "-r") == 0)
   {
       rec.load(argv[2]);
-      levelFile = "./levels/original/" + rec.getLevelName() + ".level";
+      levelName = rec.getLevelName();
       play = true;
   }
   else if (strcmp(argv[1], "-c") == 0)
   {
       rec.load(argv[2]);
-      levelFile = "./levels/original/" + rec.getLevelName() + ".level";
+      levelName = rec.getLevelName();
       play = true;
       operation = CHECK_FINISH;
       useGraphics = false;
+  }
+  else if (strcmp(argv[1], "Original") == 0)
+  {
+      levelName = argv[2];
+      play = false;
   }
   else
   {
@@ -67,6 +74,12 @@ int main(int argn, char * argv[]) {
   }
 
   level_c l;
+  if (levelFile == "")
+  {
+    levelset_c levelset("./levels/original");
+    levelset.loadLevel(l, levelName);
+  }
+  else
   {
     std::ifstream file(levelFile.c_str());
     textsections_c sections(file, true);

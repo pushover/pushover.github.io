@@ -11,6 +11,7 @@ pushover_SOURCES =                  \
   src/graphicso.cpp src/graphicso.h \
   src/textsections.cpp src/textsections.h \
   src/level.cpp src/level.h \
+  src/levelset.cpp src/levelset.h \
   src/main.cpp \
   src/pngloader.cpp src/pngloader.h \
   src/recorder.cpp src/recorder.h \
