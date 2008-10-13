@@ -2,6 +2,7 @@
 
 #include "decompress.h"
 #include "graphics.h"
+#include "soundsys.h"
 
 #include <stdio.h>
 
