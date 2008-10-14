@@ -55,6 +55,20 @@ void graphics_c::addFgTile(SDL_Surface * v) {
   fgTiles[curTheme].push_back(v);
 }
 
+void graphics_c::addBgTile(unsigned int idx, SDL_Surface * v) {
+  if (idx >= bgTiles[curTheme].size())
+    bgTiles[curTheme].resize(idx+1);
+
+  bgTiles[curTheme][idx] = v;
+}
+
+void graphics_c::addFgTile(unsigned int idx, SDL_Surface * v) {
+  if (idx >= fgTiles[curTheme].size())
+    fgTiles[curTheme].resize(idx+1);
+
+  fgTiles[curTheme][idx] = v;
+}
+
 void graphics_c::setDomino(unsigned int type, unsigned int num, SDL_Surface * v) {
   dominos[type][num] = v;
 }

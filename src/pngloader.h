@@ -23,7 +23,10 @@ class pngLoader_c {
     pngLoader_c(std::string fname);
     ~pngLoader_c(void);
 
+    bool loaderOk(void) { return png_ptr != 0; }
+
     unsigned int getWidth(void);
+    unsigned int getHeight(void);
 
     /* fills this surface with a part of the png
      * the width of the surface MUST be the width of the

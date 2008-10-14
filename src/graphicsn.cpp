@@ -2,8 +2,11 @@
 
 #include "decompress.h"
 #include "pngloader.h"
+#include "luaclass.h"
 
 #include <SDL.h>
+#include <string.h>
+#include <iostream>
 
 graphicsN_c::graphicsN_c(const char * path) : dataPath(path) {
 }
@@ -182,110 +185,83 @@ void graphicsN_c::loadGraphics(void) {
 
 void graphicsN_c::loadTheme(const std::string & name) {
 
-  char fname[200];
+  luaClass_c l;
+  l.doFile(dataPath+"/themes/tools.lua");
+  l.doFile(dataPath+"/themes/"+name+".lua");
 
-  snprintf(fname, 200, "%s/themes/%s.PAL", dataPath.c_str(), name.c_str());
-  unsigned short palette[32];
+  pngLoader_c png(dataPath+"/themes/"+name+".png");
+
+  SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+  SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+  unsigned int xBlocks = png.getWidth()/40;
+  unsigned int yBlocks = png.getHeight()/48;
+
+  std::cout << "loading theme: " << name << " image size: " << xBlocks << ":" << yBlocks << std::endl;
+
+  unsigned int foreSize = l.getArraySize("foreground")/2;
+  unsigned int backSize = l.getArraySize("background")/2;
+
+  for (unsigned int i = 0; i < foreSize; i++)
+    if (  (unsigned int)l.getNumberArray("foreground", 2*i+2) >= yBlocks
+        ||(unsigned int)l.getNumberArray("foreground", 2*i+1) >= xBlocks)
+      std::cout << "Warning: Foreground Tile " << i << " is outside of image\n";
+
+  for (unsigned int i = 0; i < backSize; i++)
+    if (  (unsigned int)l.getNumberArray("background", 2*i+2) >= yBlocks
+        ||(unsigned int)l.getNumberArray("background", 2*i+1) >= xBlocks)
+      std::cout << "Warning: Background Tile " << i << " is outside of image\n";
+
+  unsigned int yPos = 0;
+
+  while (yPos < yBlocks)
   {
-    FILE * f = fopen(fname, "rb");
-    fread(palette, 1, 64, f);
-    fclose(f);
-  }
+    png.getPart(v);
 
-  snprintf(fname, 200, "%s/themes/%s.BCX", dataPath.c_str(), name.c_str());
-  unsigned int bgSize;
-  unsigned char * bg = decompress(fname, &bgSize);
+    // get possible foreground tiles in the current line
+    for (unsigned int i = 0; i < foreSize; i++) {
+      if ((unsigned int)l.getNumberArray("foreground", 2*i+2) == yPos) {
 
-  snprintf(fname, 200, "%s/themes/%s.PLX", dataPath.c_str(), name.c_str());
-  unsigned int fgSize;
-  unsigned char * fg = decompress(fname, &fgSize);
+        unsigned int x = (unsigned int)l.getNumberArray("foreground", 2*i+1);
 
-  unsigned int bgTiles = bgSize / 160;
-  unsigned int fgTiles = fgSize / 160;
+        if (x < xBlocks)
+        {
+          SDL_Surface * w = SDL_CreateRGBSurface(0, 40, 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+          SDL_SetAlpha(w, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
-  SDL_Surface * v = SDL_CreateRGBSurface(0, 16*5/2, 16*3, 32, 0xff000000, 0xff0000, 0xff00, 0);
-
-  for (unsigned int tile = 0; tile < bgTiles; tile++) {
-
-    for (unsigned int y = 0; y < 16; y++)
-      for (unsigned int x = 0; x < 16; x++) {
-
-        unsigned int idx = 0;
-
-        for (unsigned int i = 0; i < 5; i++) {
-
-          idx >>= 1;
-          idx |= ((bg[tile*160 + 2*y + x/8 + 32*i] << (x%8)) & 0x80);
+          for (unsigned int y = 0; y < 48; y++)
+            memcpy((char*)w->pixels+y*w->pitch,
+                   (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
+                   w->pitch);
+          addFgTile(i+1, w);
         }
-
-        idx >>= 3;
-
-        unsigned char r = ((palette[idx] >>  0) & 0xF);
-        unsigned char g = ((palette[idx] >> 12) & 0xF);
-        unsigned char b = ((palette[idx] >>  8) & 0xF);
-
-        r = (r << 2) | r;
-        g = (g << 2) | g;
-        b = (b << 2) | b;
-
-        SDL_Rect rt;
-
-        rt.x = 5*x/2;
-        rt.y = 3*y;
-        rt.w = 3;
-        rt.h = 3;
-
-        SDL_FillRect(v, &rt, SDL_MapRGB(v->format, 4*r, 4*g, 4*b));
       }
+    }
 
-    addBgTile(SDL_DisplayFormat(v));
+    // get possible background tiles in the current line
+    for (unsigned int i = 0; i < backSize; i++) {
+      if (l.getNumberArray("background", 2*i+2) == yPos) {
+
+        unsigned int x = (unsigned int)l.getNumberArray("background", 2*i+1);
+
+        if (x < xBlocks)
+        {
+          SDL_Surface * w = SDL_CreateRGBSurface(0, 40, 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+          SDL_SetAlpha(w, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+          for (unsigned int y = 0; y < 48; y++)
+            memcpy((char*)w->pixels+y*w->pitch,
+                   (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
+                   w->pitch);
+          addBgTile(i, w);
+        }
+      }
+    }
+
+    yPos++;
   }
 
   SDL_FreeSurface(v);
-
-  v = SDL_CreateRGBSurface(SDL_SRCALPHA, 16*5/2, 16*3, 32, 0xff000000, 0xff0000, 0xff00, 0xff);
-
-  for (unsigned int tile = 0; tile < fgTiles; tile++) {
-
-    for (unsigned int y = 0; y < 16; y++)
-      for (unsigned int x = 0; x < 16; x++) {
-
-        unsigned int idx = 0;
-
-        for (unsigned int i = 0; i < 5; i++) {
-
-          idx >>= 1;
-          idx |= ((fg[tile*160 + 2*y + x/8 + 32*i] << (x%8)) & 0x80);
-        }
-
-        idx >>= 3;
-
-        unsigned char r = ((palette[idx] >>  0) & 0xF);
-        unsigned char g = ((palette[idx] >> 12) & 0xF);
-        unsigned char b = ((palette[idx] >>  8) & 0xF);
-
-        r = (r << 2) | r;
-        g = (g << 2) | g;
-        b = (b << 2) | b;
-
-        SDL_Rect rt;
-
-        rt.x = 5*x/2;
-        rt.y = 3*y;
-        rt.w = 3;
-        rt.h = 3;
-
-        SDL_FillRect(v, &rt, SDL_MapRGBA(v->format, 4*r, 4*g, 4*b, idx==0?0:255));
-      }
-
-    addFgTile(SDL_DisplayFormatAlpha(v));
-  }
-
-  SDL_FreeSurface(v);
-
-  delete [] bg;
-  delete [] fg;
-
 }
 
 

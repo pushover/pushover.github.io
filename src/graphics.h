@@ -73,6 +73,8 @@ class graphics_c {
     /* some functions for the loaders to store the loaded images */
     void addBgTile(SDL_Surface * v);
     void addFgTile(SDL_Surface * v);
+    void addBgTile(unsigned int idx, SDL_Surface * v);
+    void addFgTile(unsigned int idx, SDL_Surface * v);
 
     // sets a specific domino for a specific domino type and animation state
     void setDomino(unsigned int type, unsigned int num, SDL_Surface * v);

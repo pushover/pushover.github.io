@@ -34,7 +34,7 @@ pngLoader_c::pngLoader_c(std::string fname) {
 
   if (setjmp(png_jmpbuf(png_ptr)))
   {
-    std::cout << "Can not create PNG error handling\n";
+    std::cout << "Error in PNG init\n";
     png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)0);
     png_ptr = 0;
     return;
@@ -73,12 +73,15 @@ unsigned int pngLoader_c::getWidth(void) {
   return png_get_image_width(png_ptr, info_ptr);
 }
 
+unsigned int pngLoader_c::getHeight(void) {
+  return png_get_image_height(png_ptr, info_ptr);
+}
+
 void pngLoader_c::getPart(SDL_Surface * v) {
 
   if (!png_ptr) return;
 
   if (setjmp(png_jmpbuf(png_ptr))) {
-    std::cout << "Can not create PNG error handling\n";
     return;
   }
 
