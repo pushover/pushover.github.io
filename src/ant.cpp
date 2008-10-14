@@ -682,6 +682,8 @@ unsigned int ant_c::SFLooseRight(void) {
     carriedDomino = 0;
   } else if (animationImage == 6) {
     blockX++;
+  } else if (animationImage == 10) {
+    soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_FALLING);
   }
 
   return animation;
@@ -702,6 +704,8 @@ unsigned int ant_c::SFLooseLeft(void) {
     level->putDownDomino(blockX, blockY, carriedDomino, false);
     level->fallingDomino(blockX, blockY);
     carriedDomino = 0;
+  } else if (animationImage == 14) {
+    soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_FALLING);
   }
 
   return animation;
@@ -1003,6 +1007,11 @@ unsigned int ant_c::SFFlailing(void) {
 
 unsigned int ant_c::SFStartFallingLeft(void) {
 
+  if (animationImage == 2)
+  {
+    soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_FALLING);
+  }
+
   if (animateAnt(0)) {
     blockX--;
     animation = AntAnimFalling;
@@ -1016,8 +1025,14 @@ unsigned int ant_c::SFStartFallingLeft(void) {
 
 unsigned int ant_c::SFStartFallingRight(void) {
 
+  if (animationImage == 2)
+  {
+    soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_FALLING);
+  }
+
   if (animateAnt(0)) {
     blockX++;
+
     animation = AntAnimFalling;
     blockY = blockY+1 < 12 ? blockY+1 : 12;
     fallingHight++;
@@ -1028,11 +1043,6 @@ unsigned int ant_c::SFStartFallingRight(void) {
 }
 
 unsigned int ant_c::SFFalling(void) {
-
-  if (animationImage == 1 && fallingHight == 2) {
-
-    soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_FALLING);
-  }
 
   if (animateAnt(0)) {
 
@@ -1052,7 +1062,7 @@ unsigned int ant_c::SFFalling(void) {
 
 unsigned int ant_c::SFLanding(void) {
 
-  if (animationImage == 3)
+  if (animationImage == 2)
     soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_LANDING);
 
   if (animateAnt(0)) {
@@ -1322,6 +1332,8 @@ unsigned int ant_c::SFNextAction(void) {
       return returnState;
     }
     animation = returnState = AntAnimFalling;
+    if (fallingHight == 1)
+      soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_FALLING);
     return returnState;
   }
 
