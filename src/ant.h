@@ -113,6 +113,7 @@ class ant_c {
     unsigned int SFPushDelayRight(void);
     unsigned int SFGhost1(void);
     unsigned int SFGhost2(void);
+    unsigned int SFLandDying(void);
     unsigned int SFEnterDoor(void);
     unsigned int SFXXX9(void);   // TODO whats this state????
     unsigned int SFNoNo(void);

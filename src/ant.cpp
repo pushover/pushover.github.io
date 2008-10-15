@@ -387,7 +387,7 @@ unsigned int ant_c::callStateFunction(unsigned int state) {
     case AntAnimNoNo:                      return SFNoNo();
     case AntAnimXXXA:                      return SFNextAction();
     case AntAnimDominoDying:               return SFStruck();
-    case AntAnimLandDying:                 return SFGhost2();
+    case AntAnimLandDying:                 return SFLandDying();
     case AntAnimNothing:                   return SFNextAction();
     default:                               return AntAnimNothing;
   }
@@ -489,12 +489,23 @@ unsigned int ant_c::SFEnterDoor(void) {
 
 unsigned int ant_c::SFGhost1(void) {
   if (animateAnt(0))
-    animation = AntAnimLandDying;
+    animation = AntAnimGhost2;
 
   return animation;
 }
 
 unsigned int ant_c::SFGhost2(void) {
+
+  if (animateAnt(2)) {
+    animationImage = gr->getAntImages(animation) - 1;
+    screenBlock = subBlock + gr->getAntOffset(animation, animationImage);
+    animationTimer = 2;
+  }
+
+  return animation;
+}
+
+unsigned int ant_c::SFLandDying(void) {
 
   if (animationImage == 3)
     soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_LANDING);
@@ -1053,7 +1064,13 @@ unsigned int ant_c::SFFalling(void) {
     }
 
     animation = AntAnimFalling;
-    blockY = blockY+1 < 12 ? blockY+1 : 12;
+    if (blockY+1 < 13) {
+      blockY++;
+    } else {
+      animation = AntAnimGhost1;
+      return animation;
+    }
+
     return AntAnimNothing;
   }
 
