@@ -46,7 +46,7 @@ AC_CHECK_LIB(z, uncompress, ,
 AC_CHECK_LIB(png, png_malloc, ,
 	AC_MSG_ERROR([Can't find libpng.]))
 
-AC_CHECK_LIB(lua, luaL_newstate, ,
+AC_SEARCH_LIBS(luaL_newstate, [lua5.1 lua], ,
 	AC_MSG_ERROR([Can't find liblua.]))
 
 # Checks for header files.
