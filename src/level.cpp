@@ -1468,8 +1468,6 @@ bool level_c::isTherePlatform(int x, int y) {
     case FgElementPlatformStep6:      return true;
     case FgElementPlatformStep7:      return false;
     case FgElementPlatformStep8:      return false;
-    case FgElementPlatformWrongDoor:  return false;
-    case FgElementPlatformStack:      return true;
     case FgElementLadderMiddle:       return false;
     case FgElementPlatformStrip:      return true;
     case FgElementLadder2:            return false;

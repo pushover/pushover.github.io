@@ -129,8 +129,6 @@ class level_c {
       FgElementPlatformStep6,
       FgElementPlatformStep7,
       FgElementPlatformStep8,
-      FgElementPlatformWrongDoor,  // 15  unused
-      FgElementPlatformStack,      //     unused
       FgElementLadderMiddle,       //     used for ladder redraw but not in level
       FgElementPlatformStrip,
       FgElementLadder2,            //     used for ladder redraw but not in level

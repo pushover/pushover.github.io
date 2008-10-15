@@ -16,8 +16,6 @@ foreground = {
   0, 11,  -- FgElementPlatformStep6     
   0, 12,  -- FgElementPlatformStep7     
   0, 13,  -- FgElementPlatformStep8
-  0, 14,  -- FgElementPlatformWrongDoor
-  0, 15,  -- FgElementPlatformStack
   0, 16,  -- FgElementLadderMiddle      
   0, 17,  -- FgElementPlatformStrip
   0, 18,  -- FgElementLadder2
