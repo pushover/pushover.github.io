@@ -38,5 +38,17 @@ dist_pkgdata_DATA = \
   data/0F_Schrugging.wav \
   data/10_DoorClose.wav \
   data/11_DoorOpen.wav \
-  data/13_Victory.wav
+  data/13_Victory.wav \
+  \
+  themes/tools.lua \
+  themes/toxcity.lua  themes/toxcity.png \
+  themes/aztec.lua    themes/aztec.png \
+  themes/space.lua    themes/space.png \
+  themes/electro.lua  themes/electro.png \
+  themes/greek.lua    themes/greek.png \
+  themes/castle.lua   themes/castle.png \
+  themes/mechanic.lua themes/mechanic.png \
+  themes/dungeon.lua  themes/dungeon.png \
+  themes/japanese.lua themes/japanese.png \
+  themes/cavern.lua   themes/cavern.png
 
