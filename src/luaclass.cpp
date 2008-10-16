@@ -1,7 +1,7 @@
 #include "luaclass.h"
 
 extern "C" {
-#include "lauxlib.h"
+#include <lauxlib.h>
 }
 
 #include <string.h>
