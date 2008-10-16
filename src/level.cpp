@@ -2143,21 +2143,35 @@ void level_c::DTA_O(int x, int y) {
   {
     if (a == 1)
     {
-      level[y][x+1].dominoExtra = 0x60;
-      level[y][x+1].dominoType = DominoTypeAscender;
-      level[y][x+1].dominoState = 2;
-      level[y][x+1].dominoDir = 1;
-      level[y][x+1].dominoYOffset = level[y][x].dominoYOffset-2;
+      if (level[y][x+1].dominoType == DominoTypeEmpty)
+      {
+        level[y][x+1].dominoExtra = 0x60;
+        level[y][x+1].dominoType = DominoTypeAscender;
+        level[y][x+1].dominoState = 2;
+        level[y][x+1].dominoDir = 1;
+        level[y][x+1].dominoYOffset = level[y][x].dominoYOffset-2;
+      }
+      else
+      {
+        DominoCrash(x+1, y, level[y][x].dominoType, level[y][x].dominoExtra);
+      }
     }
     else
     {
       if (y > 0)
       {
-        level[y-1][x+1].dominoExtra = 0x60;
-        level[y-1][x+1].dominoType = DominoTypeAscender;
-        level[y-1][x+1].dominoState = 2;
-        level[y-1][x+1].dominoDir = 1;
-        level[y-1][x+1].dominoYOffset = level[y][x].dominoYOffset+14;
+        if (level[y-1][x+1].dominoType == DominoTypeEmpty)
+        {
+          level[y-1][x+1].dominoExtra = 0x60;
+          level[y-1][x+1].dominoType = DominoTypeAscender;
+          level[y-1][x+1].dominoState = 2;
+          level[y-1][x+1].dominoDir = 1;
+          level[y-1][x+1].dominoYOffset = level[y][x].dominoYOffset+14;
+        }
+        else
+        {
+          DominoCrash(x+1, y-1, level[y][x].dominoType, level[y][x].dominoExtra);
+        }
       }
     }
 
@@ -2183,11 +2197,18 @@ void level_c::DTA_O(int x, int y) {
     level[y][x].dominoYOffset = 0;
     level[y][x].dominoExtra = 0;
 
-    level[y+1-a][x].dominoExtra = 0x60;
-    level[y+1-a][x].dominoType = DominoTypeAscender;
-    level[y+1-a][x].dominoState = 8;
-    level[y+1-a][x].dominoDir = 1;
-    level[y+1-a][x].dominoYOffset = 0;
+    if (level[y+1-a][x].dominoType == DominoTypeEmpty)
+    {
+      level[y+1-a][x].dominoExtra = 0x60;
+      level[y+1-a][x].dominoType = DominoTypeAscender;
+      level[y+1-a][x].dominoState = 8;
+      level[y+1-a][x].dominoDir = 1;
+      level[y+1-a][x].dominoYOffset = 0;
+    }
+    else
+    {
+      DominoCrash(x, y+1-a, level[y][x].dominoType, level[y][x].dominoExtra);
+    }
 
     markDirty(x, y-a);
     markDirty(x+1, y-a);
@@ -2269,11 +2290,18 @@ void level_c::DTA_H(int x, int y) {
 
       if (y > 0)
       {
-        level[y-1][x].dominoExtra = 0x60;
-        level[y-1][x].dominoYOffset = 4;
-        level[y-1][x].dominoDir = level[y][x].dominoDir;
-        level[y-1][x].dominoState = 8;
-        level[y-1][x].dominoType = DominoTypeAscender;
+        if (level[y-1][x].dominoType == DominoTypeEmpty)
+        {
+          level[y-1][x].dominoExtra = 0x60;
+          level[y-1][x].dominoYOffset = 4;
+          level[y-1][x].dominoDir = level[y][x].dominoDir;
+          level[y-1][x].dominoState = 8;
+          level[y-1][x].dominoType = DominoTypeAscender;
+        }
+        else
+        {
+          DominoCrash(x, y-1, level[y][x].dominoType, level[y][x].dominoExtra);
+        }
       }
 
       level[y][x].dominoType = 0;
