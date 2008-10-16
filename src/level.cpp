@@ -1806,47 +1806,47 @@ void level_c::DTA_7(int x, int y) {
 
   int doit = 0;
 
-  if (fg1 == 3)
+  if (fg1 == FgElementPlatformEnd)
   {
-    fg1 = 2;
-    if (fg == 1)
+    fg1 = FgElementPlatformMiddle;
+    if (fg == FgElementPlatformStart)
     {
-      fg = 2;
+      fg = FgElementPlatformMiddle;
     }
     else
     {
-      fg = 3;
+      fg = FgElementPlatformEnd;
     }
     doit = 1;
   }
-  else if (fg1 != 0 || fg2 != 3)
+  else if (fg1 != FgElementEmpty || fg2 != FgElementPlatformEnd)
   {
-    if (fg1 == 18)
+    if (fg1 == FgElementPlatformStrip)
     {
-      fg1 = 1;
-      if (fg == 1)
+      fg1 = FgElementPlatformStart;
+      if (fg == FgElementPlatformStart)
       {
-        fg = 2;
+        fg = FgElementPlatformMiddle;
       }
       else
       {
-        fg = 3;
+        fg = FgElementPlatformEnd;
       }
       doit = 1;
     }
     else
     {
-      if (fg1 == 0 && fg2 == 18)
+      if (fg1 == FgElementEmpty && fg2 == FgElementPlatformStrip)
       {
-        fg2 = 1;
-        fg1 = 2;
-        if (fg == 1)
+        fg2 = FgElementPlatformStart;
+        fg1 = FgElementPlatformMiddle;
+        if (fg == FgElementPlatformStart)
         {
-          fg = 2;
+          fg = FgElementPlatformMiddle;
         }
         else
         {
-          fg = 3;
+          fg = FgElementPlatformEnd;
         }
         doit = 1;
       }
@@ -1854,15 +1854,15 @@ void level_c::DTA_7(int x, int y) {
   }
   else
   {
-    fg2 = 2;
-    fg1 = 2;
-    if (fg == 1)
+    fg2 = FgElementPlatformMiddle;
+    fg1 = FgElementPlatformMiddle;
+    if (fg == FgElementPlatformStart)
     {
-      fg = 2;
+      fg = FgElementPlatformMiddle;
     }
     else
     {
-      fg = 3;
+      fg = FgElementPlatformEnd;
     }
     doit = 1;
   }
@@ -1934,47 +1934,47 @@ void level_c::DTA_M(int x, int y) {
 
   int doit = 0;
 
-  if (fg1 == 1)
+  if (fg1 == FgElementPlatformStart)
   {
-    if (fg == 3)
+    if (fg == FgElementPlatformEnd)
     {
-      fg = 2;
+      fg = FgElementPlatformMiddle;
     }
     else
     {
-      fg = 1;
+      fg = FgElementPlatformStart;
     }
-    fg1 = 2;
+    fg1 = FgElementPlatformMiddle;
     doit = 1;
   }
-  else if (fg1 != 0 || fg2 != 1)
+  else if (fg1 != FgElementEmpty || fg2 != FgElementPlatformStart)
   {
-    if (fg1 == 18)
+    if (fg1 == FgElementPlatformStrip)
     {
-      fg1 = 1;
-      if (fg == 3)
+      fg1 = FgElementPlatformStart;
+      if (fg == FgElementPlatformEnd)
       {
-        fg = 2;
+        fg = FgElementPlatformMiddle;
       }
       else
       {
-        fg = 1;
+        fg = FgElementPlatformStart;
       }
       doit = 1;
     }
     else
     {
-      if (fg1 == 0 && fg2 == 18)
+      if (fg1 == FgElementEmpty && fg2 == FgElementPlatformStrip)
       {
-        fg2 = 3;
-        fg1 = 2;
-        if (fg == 3)
+        fg2 = FgElementPlatformEnd;
+        fg1 = FgElementPlatformMiddle;
+        if (fg == FgElementPlatformEnd)
         {
-          fg = 2;
+          fg = FgElementPlatformMiddle;
         }
         else
         {
-          fg = 1;
+          fg = FgElementPlatformStart;
         }
         doit = 1;
       }
@@ -1982,15 +1982,15 @@ void level_c::DTA_M(int x, int y) {
   }
   else
   {
-    fg2 = 2;
-    fg1 = 2;
-    if (fg == 3)
+    fg2 = FgElementPlatformMiddle;
+    fg1 = FgElementPlatformMiddle;
+    if (fg == FgElementPlatformEnd)
     {
-      fg = 2;
+      fg = FgElementPlatformMiddle;
     }
     else
     {
-      fg = 1;
+      fg = FgElementPlatformStart;
     }
     doit = 1;
   }
