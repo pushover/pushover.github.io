@@ -1,8 +1,7 @@
-AM_CXXFLAGS = -Wall -DTOP_DATADIR=\"$(pkgdatadir)\"
-
 bin_PROGRAMS = pushover
 
-pushover_LDFLAGS = $(LIBINTL)
+pushover_LDFLAGS = $(LIBINTL) $(LUA_LIBS)
+pushover_CXXFLAGS = -Wall -DTOP_DATADIR=\"$(pkgdatadir)\" $(LUA_CFLAGS)
 pushover_SOURCES =                  \
   src/ant.cpp src/ant.h \
   src/decompress.cpp src/decompress.h \

@@ -46,8 +46,9 @@ AC_CHECK_LIB(z, uncompress, ,
 AC_CHECK_LIB(png, png_malloc, ,
 	AC_MSG_ERROR([Can't find libpng.]))
 
-AC_SEARCH_LIBS(luaL_newstate, [lua5.1 lua], ,
-	AC_MSG_ERROR([Can't find liblua.]))
+PKG_CHECK_EXISTS([lua5.1],
+	[PKG_CHECK_MODULES([LUA], [lua5.1 >= 5.1])],
+	[PKG_CHECK_MODULES([LUA], [lua >= 5.1])])
 
 # Checks for header files.
 AC_HEADER_DIRENT
