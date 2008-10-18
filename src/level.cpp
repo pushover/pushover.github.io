@@ -119,11 +119,13 @@ void level_c::load(const textsections_c & sections) {
   memset(level, 0, sizeof(level));
 
   /* Version section */
-  std::istringstream versionStream(sections.getSingleLine("Version"));
-  unsigned int givenVersion;
-  versionStream >> givenVersion;
-  if (!versionStream.eof() || !versionStream)
-    throw format_error("invalid level version");
+  {
+    std::istringstream versionStream(sections.getSingleLine("Version"));
+    unsigned int givenVersion;
+    versionStream >> givenVersion;
+    if (!versionStream.eof() || !versionStream)
+      throw format_error("invalid level version");
+  }
 
   /* Name section */
   name = sections.getSingleLine("Name");
@@ -132,16 +134,18 @@ void level_c::load(const textsections_c & sections) {
   theme = sections.getSingleLine("Theme");
 
   /* Time section (time format is M:SS) */
-  std::istringstream timeStream(sections.getSingleLine("Time"));
-  unsigned int timeMinutes;
-  timeStream >> timeMinutes;
-  if (timeStream.get() != ':')
-    throw format_error("invalid time format");
-  unsigned int timeSeconds;
-  timeStream >> timeSeconds;
-  if (!timeStream.eof() || !timeStream)
-    throw format_error("invalid time format");
-  timeLeft = (((timeMinutes * 60) + timeSeconds) * 18) + 17;
+  {
+    std::istringstream timeStream(sections.getSingleLine("Time"));
+    unsigned int timeMinutes;
+    timeStream >> timeMinutes;
+    if (timeStream.get() != ':')
+      throw format_error("invalid time format");
+    unsigned int timeSeconds;
+    timeStream >> timeSeconds;
+    if (!timeStream.eof() || !timeStream)
+      throw format_error("invalid time format");
+    timeLeft = (((timeMinutes * 60) + timeSeconds) * 18) + 17;
+  }
 
   /* Hint section */
   hint = sections.getSingleSection("Hint");

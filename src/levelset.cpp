@@ -46,11 +46,13 @@ levelset_c::levelset_c(const std::string & path) {
       try {
 
         /* Version section */
-        std::istringstream versionStream(sections.getSingleLine("Version"));
-        unsigned int givenVersion;
-        versionStream >> givenVersion;
-        if (!versionStream.eof() || !versionStream)
-          throw format_error("invalid levelset index version");
+        {
+          std::istringstream versionStream(sections.getSingleLine("Version"));
+          unsigned int givenVersion;
+          versionStream >> givenVersion;
+          if (!versionStream.eof() || !versionStream)
+            throw format_error("invalid levelset index version");
+        }
 
         /* Name section */
         name = sections.getSingleLine("Name");
