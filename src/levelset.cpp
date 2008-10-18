@@ -6,6 +6,7 @@
 #include <sstream>
 #include <algorithm>
 #include <dirent.h>
+#include <zlib.h>
 
 static std::vector<std::string> directoryEntries(const std::string & path) {
 
@@ -19,6 +20,21 @@ static std::vector<std::string> directoryEntries(const std::string & path) {
   if (::closedir(dir) != 0)
     throw format_error("unable to close directory: " + path);
   return entries;
+}
+
+static std::string readCompressedFile(const std::string & path) {
+
+  gzFile file = ::gzopen(path.c_str(), "rb");
+  if (file == NULL)
+    throw format_error("unable to open file: " + path);
+  std::string result;
+  char buf[1024];
+  int len;
+  while ((len = ::gzread(file, buf, sizeof(buf))) > 0)
+    result.append(buf, len);
+  if (len != 0 || !::gzeof(file) || ::gzclose(file) != Z_OK)
+    throw format_error("error when decompressing file: " + path);
+  return result;
 }
 
 levelset_c::levelset_c(const std::string & path) {
