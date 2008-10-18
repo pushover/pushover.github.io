@@ -92,7 +92,7 @@ levelset_c::levelset_c(const std::string & path) {
 
 void levelset_c::loadLevel(level_c & level, const std::string & levelName) const {
 
-  std::map<std::string, textsections_c>::const_iterator i = levels.find(levelName);
+  const std::map<std::string, textsections_c>::const_iterator i = levels.find(levelName);
   if (i == levels.end())
     throw format_error("unknown level name: " + levelName);
   level.load(i->second);
