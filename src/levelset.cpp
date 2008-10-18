@@ -7,7 +7,8 @@
 #include <algorithm>
 #include <dirent.h>
 
-std::vector<std::string> directoryEntries(const std::string & path) {
+static std::vector<std::string> directoryEntries(const std::string & path) {
+
   DIR * dir = ::opendir(path.c_str());
   if (dir == NULL)
     throw format_error("unable to open directory: " + path);
