@@ -107,3 +107,35 @@ void levelset_c::loadLevel(level_c & level, const std::string & levelName) const
     throw format_error("unknown level name: " + levelName);
   level.load(i->second);
 }
+
+void levelsetList_c::load(const std::string & path) {
+
+  /* load new levelsets */
+  const std::vector<std::string> entries = directoryEntries(path);
+  for (std::vector<std::string>::const_iterator i = entries.begin(); i != entries.end(); i++) {
+
+    const std::string & entryname = *i;
+    if (entryname.size() <= 0 || entryname[0] == '.')
+      continue;
+
+    levelset_c levelset(path + '/' + entryname);
+    const std::string & levelsetName = levelset.getName();
+    if (!levelsets.insert(make_pair(levelsetName, levelset)).second)
+      throw format_error("duplicate levelset name: " + levelsetName);
+    sortHelper.push_back(make_pair(levelset.getPriority(), levelsetName));
+  }
+
+  /* re-sort all levelsets by priority and name */
+  std::sort(sortHelper.begin(), sortHelper.end());
+  levelsetNames.clear();
+  for (std::vector<std::pair<unsigned int, std::string> >::const_iterator i = sortHelper.begin(); i != sortHelper.end(); i++)
+    levelsetNames.push_back(i->second);
+}
+
+const levelset_c & levelsetList_c::getLevelset(const std::string & levelsetName) const {
+
+  const std::map<std::string, levelset_c>::const_iterator i = levelsets.find(levelsetName);
+  if (i == levelsets.end())
+    throw format_error("unknown levelset name: " + levelsetName);
+  return i->second;
+}

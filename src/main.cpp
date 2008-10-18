@@ -14,7 +14,7 @@
 
 #include <fstream>
 
-int main(int argn, char * argv[]) {
+int main(int argc, char * argv[]) {
 
   bool useGraphics = true;
 
@@ -24,6 +24,7 @@ int main(int argn, char * argv[]) {
   } operation = NOTHING;
 
   std::string levelName;
+  std::string levelsetName;
   std::string levelFile;
   recorder_c rec;
   bool play;
@@ -42,8 +43,9 @@ int main(int argn, char * argv[]) {
       operation = CHECK_FINISH;
       useGraphics = false;
   }
-  else if (strcmp(argv[1], "Original") == 0)
+  else if (argc == 3)
   {
+      levelsetName = argv[1];
       levelName = argv[2];
       play = false;
   }
@@ -76,8 +78,9 @@ int main(int argn, char * argv[]) {
   level_c l;
   if (levelFile == "")
   {
-    levelset_c levelset("./levels/original");
-    levelset.loadLevel(l, levelName);
+    levelsetList_c levelsetList;
+    levelsetList.load("./levels");
+    levelsetList.getLevelset(levelsetName).loadLevel(l, levelName);
   }
   else
   {

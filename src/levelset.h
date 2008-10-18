@@ -27,4 +27,20 @@ class levelset_c {
     void loadLevel(level_c & level, const std::string & levelName) const;
 };
 
+class levelsetList_c {
+
+  private:
+
+    std::map<std::string, levelset_c> levelsets;
+    std::vector<std::string> levelsetNames;
+    std::vector<std::pair<unsigned int, std::string> > sortHelper;
+
+  public:
+
+    levelsetList_c() {};
+    void load(const std::string & path);
+    const std::vector<std::string> & getLevelsetNames(void) const { return levelsetNames; }
+    const levelset_c & getLevelset(const std::string & levelsetName) const;
+};
+
 #endif
