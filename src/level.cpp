@@ -203,6 +203,11 @@ void level_c::load(const textsections_c & sections) {
             level[y][x].fg = FgElementEmpty;
           break;
 
+        case '$':
+          level[y][x].fg = FgElementEmpty;
+          level[y][x].dominoType = DominoTypeStandard;
+          break;
+
         case '\\':
           if (y <= 0 || x <= 0)
             throw format_error("platform step '\\' has an invalid position");
@@ -343,6 +348,8 @@ void level_c::save(std::ostream & stream) const {
         case FgElementDoor3:
           if (y > 0 && level[y-1][x].fg == FgElementPlatformLadderDown)
             line += '^';
+          else if (level[y][x].dominoType != DominoTypeEmpty)
+            line += '$';
           else
             line += ' ';
           break;
