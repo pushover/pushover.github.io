@@ -7,37 +7,27 @@
 #include <algorithm>
 #include <dirent.h>
 
-class directory_c {
-
-  private:
-
-    DIR * dir;
-
-  public:
-
-    directory_c(const std::string & path): dir(::opendir(path.c_str())) {
-      if (dir == NULL)
-        throw format_error("unable to open directory: " + path);
-    }
-
-    ~directory_c() {
-      if (::closedir(dir) != 0)
-        throw format_error("unable to close directory");
-    }
-
-    struct dirent * readdir(void) {
-      return ::readdir(dir);
-    }
-};
+std::vector<std::string> directoryEntries(const std::string & path) {
+  DIR * dir = ::opendir(path.c_str());
+  if (dir == NULL)
+    throw format_error("unable to open directory: " + path);
+  std::vector<std::string> entries;
+  for (struct dirent * i = ::readdir(dir); i != NULL; i = ::readdir(dir)) {
+    entries.push_back(i->d_name);
+  }
+  if (::closedir(dir) != 0)
+    throw format_error("unable to close directory: " + path);
+  return entries;
+}
 
 levelset_c::levelset_c(const std::string & path) {
 
-  directory_c dir(path);
+  const std::vector<std::string> entries = directoryEntries(path);
   level_c test_level;
   bool index_loaded = false;
-  for (struct dirent * i = dir.readdir(); i != NULL; i = dir.readdir()) {
+  for (std::vector<std::string>::const_iterator i = entries.begin(); i != entries.end(); i++) {
 
-    const std::string filename(i->d_name);
+    const std::string & filename = *i;
     if (filename.size() <= 0 || filename[0] == '.')
       continue;
 
@@ -81,6 +71,8 @@ levelset_c::levelset_c(const std::string & path) {
     if (!levels.insert(make_pair(levelName, sections)).second)
       throw format_error("duplicate level name: " + levelName);
   }
+
+  /* Check for consistency and completeness */
   if (!index_loaded)
     throw format_error("missing levelset index");
   std::map<std::string, bool> levelNamesMap;
