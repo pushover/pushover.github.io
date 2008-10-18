@@ -17,9 +17,8 @@ static std::vector<std::string> directoryEntries(const std::string & path) {
   if (dir == NULL)
     throw format_error("unable to open directory: " + path);
   std::vector<std::string> entries;
-  for (struct dirent * i = ::readdir(dir); i != NULL; i = ::readdir(dir)) {
+  for (struct dirent * i = ::readdir(dir); i != NULL; i = ::readdir(dir))
     entries.push_back(i->d_name);
-  }
   if (::closedir(dir) != 0)
     throw format_error("unable to close directory: " + path);
   return entries;
@@ -50,17 +49,30 @@ static bool isDirectory(const std::string & path) {
 
 levelset_c::levelset_c(const std::string & path) {
 
-  const std::vector<std::string> entries = directoryEntries(path);
+  /* load all files */
+  std::vector<textsections_c> fileSections;
+  if (isDirectory(path)) {
+    const std::vector<std::string> entries = directoryEntries(path);
+    for (std::vector<std::string>::const_iterator i = entries.begin(); i != entries.end(); i++) {
+      const std::string & filename = *i;
+      if (filename.size() <= 0 || filename[0] == '.')
+        continue;
+      std::ifstream file((path + '/' + filename).c_str());
+      fileSections.push_back(textsections_c(file, true));
+    }
+  } else {
+    std::istringstream stream(readCompressedFile(path));
+    while (stream)
+      fileSections.push_back(textsections_c(stream, false));
+    if (!stream.eof())
+      throw format_error("unexpected string stream error while loading file: " + path);
+  }
+
+  /* parse all loaded files */
   level_c test_level;
   bool index_loaded = false;
-  for (std::vector<std::string>::const_iterator i = entries.begin(); i != entries.end(); i++) {
-
-    const std::string & filename = *i;
-    if (filename.size() <= 0 || filename[0] == '.')
-      continue;
-
-    std::ifstream file((path + '/' + filename).c_str());
-    const textsections_c sections(file, true);
+  for (std::vector<textsections_c>::const_iterator i = fileSections.begin(); i != fileSections.end(); i++) {
+    const textsections_c & sections = *i;
     try {
 
       /* Load level */
@@ -99,7 +111,7 @@ levelset_c::levelset_c(const std::string & path) {
         index_loaded = true;
 
       } catch (format_error & index_e) {
-        throw format_error("file " + filename + " is"
+        throw format_error("file is"
                            " neither a level (" + level_e.msg + ")"
                            " nor a levelset index (" + index_e.msg + ")");
       }
