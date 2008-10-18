@@ -111,7 +111,7 @@ void levelset_c::loadLevel(level_c & level, const std::string & levelName) const
 
 void levelsetList_c::load(const std::string & path) {
 
-  /* load new levelsets */
+  /* Load new levelsets */
   const std::vector<std::string> entries = directoryEntries(path);
   for (std::vector<std::string>::const_iterator i = entries.begin(); i != entries.end(); i++) {
 
@@ -126,7 +126,7 @@ void levelsetList_c::load(const std::string & path) {
     sortHelper.push_back(make_pair(levelset.getPriority(), levelsetName));
   }
 
-  /* re-sort all levelsets by priority and name */
+  /* Re-sort all levelsets by priority and name */
   std::sort(sortHelper.begin(), sortHelper.end());
   levelsetNames.clear();
   for (std::vector<std::pair<unsigned int, std::string> >::const_iterator i = sortHelper.begin(); i != sortHelper.end(); i++)
