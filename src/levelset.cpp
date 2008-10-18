@@ -57,6 +57,14 @@ levelset_c::levelset_c(const std::string & path) {
         /* Name section */
         name = sections.getSingleLine("Name");
 
+        /* Priority section */
+        {
+          std::istringstream priorityStream(sections.getSingleLine("Priority"));
+          priorityStream >> priority;
+          if (!priorityStream.eof() || !priorityStream)
+            throw format_error("invalid levelset priority number");
+        }
+
         /* Levels section */
         levelNames = sections.getSingleSection("Levels");
 
