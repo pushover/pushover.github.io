@@ -5,6 +5,9 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include <dirent.h>
 #include <zlib.h>
 
@@ -35,6 +38,14 @@ static std::string readCompressedFile(const std::string & path) {
   if (len != 0 || !::gzeof(file) || ::gzclose(file) != Z_OK)
     throw format_error("error when decompressing file: " + path);
   return result;
+}
+
+static bool isDirectory(const std::string & path) {
+
+  struct stat st;
+  if (stat(path.c_str(), &st) != 0)
+    throw format_error("unable to determine type of file or directory: " + path);
+  return S_ISDIR(st.st_mode);
 }
 
 levelset_c::levelset_c(const std::string & path) {
