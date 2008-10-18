@@ -7,6 +7,8 @@
 void recorder_c::load(const std::string & filename) {
   std::ifstream stream(filename.c_str());
 
+  if (!getline(stream, levelsetName))
+    throw std::exception();
   if (!getline(stream, levelName))
     throw std::exception();
 
@@ -37,6 +39,7 @@ void recorder_c::save(void) const {
 
   /* save to that filename */
   std::ofstream stream(filename.c_str());
+  stream << levelsetName << '\n';
   stream << levelName << '\n';
 
   int val = record[0];
@@ -58,5 +61,3 @@ void recorder_c::save(void) const {
   }
   stream << cnt << ' ' << val << '\n';
 }
-
-

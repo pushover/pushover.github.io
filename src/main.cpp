@@ -32,12 +32,14 @@ int main(int argc, char * argv[]) {
   if (strcmp(argv[1], "-r") == 0)
   {
       rec.load(argv[2]);
+      levelsetName = rec.getLevelsetName();
       levelName = rec.getLevelName();
       play = true;
   }
   else if (strcmp(argv[1], "-c") == 0)
   {
       rec.load(argv[2]);
+      levelsetName = rec.getLevelsetName();
       levelName = rec.getLevelName();
       play = true;
       operation = CHECK_FINISH;
@@ -88,7 +90,7 @@ int main(int argc, char * argv[]) {
     textsections_c sections(file, true);
     l.load(sections);
   }
-  rec.setLevelName(l.getName());
+  rec.setLevel(levelsetName, l.getName());
   printf("%i: Level loaded\n", SDL_GetTicks());
 
   if (useGraphics)
