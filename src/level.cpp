@@ -207,6 +207,7 @@ void level_c::load(const textsections_c & sections) {
         case '$':
           level[y][x].fg = FgElementEmpty;
           level[y][x].dominoType = DominoTypeStandard;
+          level[y][x].dominoExtra = 0x70;
           break;
 
         case '\\':
