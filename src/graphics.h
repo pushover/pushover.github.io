@@ -40,6 +40,8 @@ class graphics_c {
     unsigned int getAntImages(unsigned int animation) { return ant[animation].size(); }
     SDL_Surface * getCarriedDomino(unsigned int domino, unsigned int image) { return carriedDominos[domino][image]; }
 
+    SDL_Surface * getBoxBlock(unsigned int num) { return boxBlocks[num]; }
+
     // these are offsets that are used together with carried domino to displace
     // that domino
     virtual signed int getCarryOffsetX(unsigned int animation, unsigned int image) const = 0;
@@ -83,6 +85,11 @@ class graphics_c {
     // on deletion of object
     void addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free = true);
 
+    // add a box block, there need to be 9 of those blocks, 4 corners, 4 edges and one center
+    // block for the filling, add the blocks as if you had painted a 3x3 box, upper left corner
+    // upper edge, upper right corner, left edge, ...., lower right corner
+    void addBoxBlock(SDL_Surface * v);
+
   private:
 
     std::vector<std::string> themeNames;
@@ -92,6 +99,8 @@ class graphics_c {
 
     std::vector<std::vector<SDL_Surface *> > dominos;
     std::vector<std::vector<SDL_Surface *> > carriedDominos;
+
+    std::vector<SDL_Surface *> boxBlocks;
 
     typedef struct {
       SDL_Surface * v;

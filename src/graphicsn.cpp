@@ -134,6 +134,33 @@ void graphicsN_c::loadGraphics(void) {
       }
     }
   }
+
+  {
+    pngLoader_c png(dataPath+"/data/box.png");
+
+    if (png.getWidth() != 40*3 || png.getHeight() != 48*3)
+    {
+      std::cout << " oops box image hasn't the right dimensions\n";
+      return;
+    }
+
+    SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+    SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+    for (int i = 0; i < 3; i++) {
+      for (int x = 0; x < 3; x++) {
+        SDL_Surface * w = SDL_CreateRGBSurface(0, 40, 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+        SDL_SetAlpha(w, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+        for (unsigned int y = 0; y < 48; y++)
+          memcpy((char*)w->pixels+y*w->pitch,
+              (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
+              w->pitch);
+
+        addBoxBlock(w);
+      }
+    }
+  }
 }
 
 void graphicsN_c::loadTheme(const std::string & name) {

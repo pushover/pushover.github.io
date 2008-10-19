@@ -118,6 +118,12 @@ graphics_c::~graphics_c(void) {
     for (unsigned int j = 0; j < carriedDominos[i].size(); j++)
       if (carriedDominos[i][j])
         SDL_FreeSurface(carriedDominos[i][j]);
+
+  for (unsigned int j = 0; j < boxBlocks.size(); j++)
+    SDL_FreeSurface(boxBlocks[j]);
 }
 
+void graphics_c::addBoxBlock(SDL_Surface * v) {
+  boxBlocks.push_back(v);
+}
 

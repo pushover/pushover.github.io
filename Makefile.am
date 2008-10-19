@@ -22,6 +22,7 @@ nobase_dist_pkgdata_DATA = \
   data/ant.png \
   data/dominos.png \
   data/carried.png \
+  data/box.png \
   data/01_StandardFalling.wav \
   data/02_StopperHit.wav \
   data/03_Splitter.wav \
