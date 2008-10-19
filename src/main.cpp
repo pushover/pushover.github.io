@@ -89,6 +89,13 @@ int main(int argc, char * argv[]) {
   {
     levelsetList_c levelsetList;
     levelsetList.load(datadir + "/levels");
+    char *home = getenv("HOME");
+    if (home != NULL) {
+      const std::string userleveldir(std::string(home) + "/.pushover/levels");
+      struct stat st;
+      if (stat(userleveldir.c_str(), &st) == 0)
+        levelsetList.load(userleveldir);
+    }
     levelsetList.getLevelset(levelsetName).loadLevel(l, levelName);
   }
   else
