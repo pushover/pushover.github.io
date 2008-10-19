@@ -56,9 +56,6 @@ class graphics_c {
 
     static const unsigned char numAntAnimations;
 
-    void putText(SDL_Surface * v, int x, int y, const wchar_t * text, Uint8 r, Uint8 g, Uint8 b, bool shadow);
-    unsigned int textLen(const wchar_t * text, bool shadow);
-
     // the position of the time in the level
     virtual int timeXPos(void) = 0;
     virtual int timeYPos(void) = 0;
@@ -86,8 +83,6 @@ class graphics_c {
     // on deletion of object
     void addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free = true);
 
-    void addBigGlyph(wchar_t c, SDL_Surface *);
-
   private:
 
     std::vector<std::string> themeNames;
@@ -107,9 +102,6 @@ class graphics_c {
     std::vector<std::vector<antSprite> > ant;
 
     unsigned int curTheme;
-
-    std::map<wchar_t, SDL_Surface *> bigFont;
-
 };
 
 #endif

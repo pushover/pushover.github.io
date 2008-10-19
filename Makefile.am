@@ -15,6 +15,7 @@ pushover_SOURCES =                  \
   src/pngloader.cpp src/pngloader.h \
   src/recorder.cpp src/recorder.h \
   src/soundsys.cpp src/soundsys.h \
+  src/text.cpp src/text.h \
   src/textsections.cpp src/textsections.h
 
 dist_pkgdata_DATA = \

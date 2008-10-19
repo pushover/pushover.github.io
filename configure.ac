@@ -40,6 +40,9 @@ AC_CHECK_LIB(SDL_image, IMG_LoadPNG_RW, ,
 AC_CHECK_LIB(SDL_mixer, main, ,
 	AC_MSG_WARN([Can't find SDL_mixer.]))
 
+AC_CHECK_LIB(SDL_ttf, main, ,
+	AC_MSG_WARN([Can't find SDL_ttf.]))
+
 AC_CHECK_LIB(z, uncompress, ,
 	AC_MSG_ERROR([Can't find libz.]))
 

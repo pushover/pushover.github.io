@@ -5,6 +5,7 @@
 #include "ant.h"
 #include "recorder.h"
 #include "soundsys.h"
+#include "text.h"
 
 #include <SDL.h>
 
@@ -75,6 +76,8 @@ int main(int argc, char * argv[]) {
     printf("%i: Graphics loaded\n", SDL_GetTicks());
 
     soundSystem_c::instance()->openSound(".");
+
+    initText();
   }
 
   level_c l;
@@ -313,8 +316,10 @@ int main(int argc, char * argv[]) {
     }
   }
 
-  if (useGraphics)
+  if (useGraphics) {
     delete gr;
+    deinitText();
+  }
 
   return 0;
 }

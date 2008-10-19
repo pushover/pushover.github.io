@@ -4,6 +4,7 @@
 #include "textsections.h"
 #include "graphics.h"
 #include "soundsys.h"
+#include "text.h"
 
 #include <stdio.h>
 
@@ -836,20 +837,36 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
   }
 
   { // output the time
-    wchar_t time[6];
+    char time[6];
 
     // care for the : between the minutes and seconds and
     // make a string out of the time
-    if (timeLeft % 18 < 9)
-      swprintf(time, 6, L"%02i:%02i", Min, Sec);
-    else
-      swprintf(time, 6, L"%02i %02i", Min, Sec);
+    // in the new font ':' and ' ' have different width, so keep it
+    // just a colon for now, we will make it blink later on again
+    // TODO
+//    if (timeLeft % 18 < 9)
+      snprintf(time, 6, "%02i:%02i", Min, Sec);
+//    else
+//      snprintf(time, 6, "%02i %02i", Min, Sec);
 
-    // if time is negative print red, else yellow
+    fontParams_s pars;
     if (timeLeft >= 0)
-      gr->putText(target, gr->timeXPos(), gr->timeYPos(), time, 255, 255, 0, true);
+    {
+      pars.color.r = pars.color.g = 255; pars.color.b = 0;
+    }
     else
-      gr->putText(target, gr->timeXPos(), gr->timeYPos(), time, 255, 0, 0, true);
+    {
+      pars.color.r = 255; pars.color.g = pars.color.b = 0;
+    }
+    pars.font = FNT_BIG;
+    pars.alignment = ALN_TEXT;
+    pars.box.x = gr->timeXPos();
+    pars.box.y = gr->timeYPos();
+    pars.box.w = 50;
+    pars.box.h = 50;
+    pars.shadow = true;
+
+    renderText(target, &pars, time);
   }
 }
 
