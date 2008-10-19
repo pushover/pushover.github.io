@@ -81,7 +81,8 @@ int main(int argc, char * argv[]) {
     gr.loadGraphics();
     printf("%i: Graphics loaded\n", SDL_GetTicks());
 
-    soundSystem_c::instance()->openSound(".");
+    initText();
+    soundSystem_c::instance()->openSound(datadir);
   }
 
   level_c l;
@@ -326,8 +327,9 @@ int main(int argc, char * argv[]) {
     }
   }
 
-  if (useGraphics)
-    delete gr;
+  if (useGraphics) {
+    deinitText();
+  }
 
   return 0;
 }

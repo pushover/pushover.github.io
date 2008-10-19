@@ -852,9 +852,22 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
 
     fontParams_s pars;
     if (timeLeft >= 0)
-      gr->putText(target, gr->timeXPos(), gr->timeYPos(), time, 255, 255, 0, true);
+    {
+      pars.color.r = pars.color.g = 255; pars.color.b = 0;
+    }
     else
-      gr->putText(target, gr->timeXPos(), gr->timeYPos(), time, 255, 0, 0, true);
+    {
+      pars.color.r = 255; pars.color.g = pars.color.b = 0;
+    }
+    pars.font = FNT_BIG;
+    pars.alignment = ALN_TEXT;
+    pars.box.x = gr.timeXPos();
+    pars.box.y = gr.timeYPos();
+    pars.box.w = 50;
+    pars.box.h = 50;
+    pars.shadow = true;
+
+    renderText(target, &pars, time);
   }
 }
 
