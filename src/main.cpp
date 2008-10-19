@@ -10,10 +10,13 @@
 #include <SDL.h>
 
 #include <vector>
+#include <fstream>
 
 #include <stdio.h>
-
-#include <fstream>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 int main(int argc, char * argv[]) {
 
@@ -58,7 +61,10 @@ int main(int argc, char * argv[]) {
       play = false;
   }
 
-  graphicsN_c gr(".");
+  struct stat st;
+  const std::string datadir((stat(PKGDATADIR, &st) == 0) ? PKGDATADIR : ".");
+
+  graphicsN_c gr(datadir);
   SDL_Surface * video = 0;
 
   if (useGraphics)
@@ -76,15 +82,13 @@ int main(int argc, char * argv[]) {
     printf("%i: Graphics loaded\n", SDL_GetTicks());
 
     soundSystem_c::instance()->openSound(".");
-
-    initText();
   }
 
   level_c l;
   if (levelFile == "")
   {
     levelsetList_c levelsetList;
-    levelsetList.load("./levels");
+    levelsetList.load(datadir + "/levels");
     levelsetList.getLevelset(levelsetName).loadLevel(l, levelName);
   }
   else
