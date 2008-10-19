@@ -1,6 +1,5 @@
 #include "graphicsn.h"
 
-#include "decompress.h"
 #include "pngloader.h"
 #include "luaclass.h"
 

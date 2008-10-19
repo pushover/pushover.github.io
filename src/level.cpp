@@ -1,6 +1,5 @@
 #include "level.h"
 
-#include "decompress.h"
 #include "textsections.h"
 #include "graphics.h"
 #include "soundsys.h"
@@ -31,65 +30,6 @@ static std::string rtrim(const std::string & s, char c) {
         return "";
     else
         return s.substr(0, pos + 1);
-}
-
-void level_c::load_binary(const std::string & name) {
-
-  this->name = name;
-
-  char fname[200];
-
-  snprintf(fname, 200, "./screens/%s.SCR", name.c_str());
-
-  unsigned char * dat = decompress(fname, 0);
-
-  /* copy level data */
-  memset(level, 0, sizeof(level));
-  numBg = 1;
-  for (int i = 0; i < 13*20; i++) {
-
-    level[i/20][i%20].bg[0] = ((unsigned short)dat[i*6] << 8) + dat[i*6+1];
-    level[i/20][i%20].fg = dat[i*6+2];
-
-    level[i/20][i%20].dominoType = dat[i*6+3];
-
-    level[i/20][i%20].dominoState = 8;
-    level[i/20][i%20].dominoDir = 0;
-    level[i/20][i%20].dominoYOffset = 0;
-    level[i/20][i%20].dominoExtra = 0;
-  }
-
-  /* copy theme, ignore trailing '\0' */
-  theme = rtrim(std::string((char*)&dat[260*6], 10), '\0');
-
-  /* copy the door positions */
-  doorEntryX = dat[1580];
-  doorEntryY = dat[1581];
-  doorExitX  = dat[1582];
-  doorExitY  = dat[1583];
-
-  timeLeft = ((int)dat[0x774] * 60 + (int)dat[0x775]) * 18 + 17;
-
-  level[doorEntryY][doorEntryX].fg = FgElementDoor0;
-  openDoorEntry = openDoorExit = false;
-
-  /* copy the hint */
-  hint.clear();
-  for (unsigned int i = 0; i < 5; i++)
-    hint.push_back(rtrim(std::string((char*)&dat[1588+i*16], 15), ' '));
-  while (!hint.empty() && hint.back() == "")
-    hint.pop_back();
-  while (!hint.empty() && hint.front() == "")
-    hint.erase(hint.begin());
-
-  delete [] dat;
-
-  for (unsigned int i = 0; i < 13; i++)
-    staticDirty[i] = dynamicDirty[i] = 0xFFFFF;
-
-  triggerFalln = false;
-
-  Min = Sec = -1;
 }
 
 const std::string level_c::dominoChars =

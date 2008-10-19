@@ -102,8 +102,6 @@ class level_c {
     level_c(void);
     ~level_c(void);
 
-    void load_binary(const std::string & name);
-
     void load(const textsections_c & sections);
     void save(std::ostream & stream) const;
     bool operator==(const level_c & other) const;
