@@ -42,6 +42,8 @@ class level_c {
     std::string theme;
     std::vector<std::string> hint;
 
+    std::string checksum;
+
     // the positions of the 2 doors
     unsigned char doorEntryX, doorEntryY, doorExitX, doorExitY;
 
@@ -113,6 +115,8 @@ class level_c {
     const std::string getName(void) const { return name; }
     const std::string getTheme(void) const { return theme; }
     const std::vector<std::string> getHint(void) const { return hint; }
+
+    const std::string getChecksum(void) const { return checksum; }
 
     /* Foreground elements */
     enum {

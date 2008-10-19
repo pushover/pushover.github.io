@@ -1,6 +1,7 @@
 #include "level.h"
 
 #include "textsections.h"
+#include "sha1.h"
 #include "graphics.h"
 #include "soundsys.h"
 #include "text.h"
@@ -238,6 +239,20 @@ void level_c::load(const textsections_c & sections) {
       if (!line.eof())
         throw format_error("too many background tiles in a row");
     }
+  }
+
+  /* Calculate checksum */
+  {
+    SHA1 sha1;
+    for (unsigned int y = 0; y < 13; y++) {
+      sha1.update(levelRows[y]);
+    }
+    {
+      std::ostringstream timeLeftStream;
+      timeLeftStream << timeLeft;
+      sha1.update(timeLeftStream.str());
+    }
+    checksum = sha1.final();
   }
 }
 
