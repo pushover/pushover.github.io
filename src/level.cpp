@@ -26,14 +26,6 @@ level_c::~level_c(void) {
   SDL_FreeSurface(background);
 }
 
-static std::string rtrim(const std::string & s, char c) {
-    std::string::size_type pos = s.find_last_not_of(c);
-    if (pos == std::string::npos)
-        return "";
-    else
-        return s.substr(0, pos + 1);
-}
-
 const std::string level_c::dominoChars =
   "_" /* DominoTypeEmpty    */
   "I" /* DominoTypeStandard */
