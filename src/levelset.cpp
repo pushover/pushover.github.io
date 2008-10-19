@@ -39,19 +39,14 @@ static std::string readCompressedFile(const std::string & path) {
   return result;
 }
 
-static bool isDirectory(const std::string & path) {
-
-  struct stat st;
-  if (stat(path.c_str(), &st) != 0)
-    throw format_error("unable to determine type of file or directory: " + path);
-  return S_ISDIR(st.st_mode);
-}
-
 levelset_c::levelset_c(const std::string & path) {
 
   /* load all files */
+  struct stat st;
+  if (stat(path.c_str(), &st) != 0)
+    throw format_error("file or directory does not exist: " + path);
   std::vector<textsections_c> fileSections;
-  if (isDirectory(path)) {
+  if (S_ISDIR(st.st_mode)) {
     const std::vector<std::string> entries = directoryEntries(path);
     for (std::vector<std::string>::const_iterator i = entries.begin(); i != entries.end(); i++) {
       const std::string & filename = *i;
@@ -150,7 +145,7 @@ void levelset_c::loadLevel(level_c & level, const std::string & levelName) const
 
 void levelsetList_c::load(const std::string & path) {
 
-  /* Load new levelsets */
+  /* Load and add levelsets */
   const std::vector<std::string> entries = directoryEntries(path);
   for (std::vector<std::string>::const_iterator i = entries.begin(); i != entries.end(); i++) {
 
