@@ -2,7 +2,7 @@ bin_PROGRAMS = pushover
 
 pushover_LDFLAGS = $(LIBINTL) $(LUA_LIBS)
 pushover_CXXFLAGS = -Wall -DTOP_DATADIR=\"$(pkgdatadir)\" $(LUA_CFLAGS)
-pushover_SOURCES =                  \
+pushover_SOURCES = \
   src/ant.cpp src/ant.h \
   src/decompress.cpp src/decompress.h \
   src/graphics.cpp src/graphics.h \
@@ -18,7 +18,7 @@ pushover_SOURCES =                  \
   src/text.cpp src/text.h \
   src/textsections.cpp src/textsections.h
 
-dist_pkgdata_DATA = \
+nobase_dist_pkgdata_DATA = \
   data/ant.png \
   data/dominos.png \
   data/carried.png \
