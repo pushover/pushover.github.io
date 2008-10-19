@@ -8,7 +8,7 @@
 #include <string.h>
 #include <iostream>
 
-graphicsN_c::graphicsN_c(const char * path) : dataPath(path) {
+graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
 }
 
 void graphicsN_c::getAnimation(int anim, pngLoader_c * png) {

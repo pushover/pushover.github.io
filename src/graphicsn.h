@@ -12,7 +12,7 @@ class graphicsN_c : public graphics_c {
 
   public:
 
-    graphicsN_c(const char * path);
+    graphicsN_c(const std::string & path);
     ~graphicsN_c(void) {}
 
     void loadGraphics(void);
