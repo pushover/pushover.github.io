@@ -100,7 +100,7 @@ void level_c::load(const textsections_c & sections) {
     throw format_error("wrong number of level rows");
   std::string levelRows[13];
   for (unsigned int y = 0; y < 13; y++) {
-    std::string::size_type len = levelRows[y].size();
+    std::string::size_type len = givenLevelRows[y].size();
     if (len > 20)
       throw format_error("level row is too long");
     /* padding with spaces to the whole width */
