@@ -58,7 +58,7 @@ int main(int argc, char * argv[]) {
       play = false;
   }
 
-  graphics_c * gr = new graphicsN_c(".");
+  graphicsN_c gr(".");
   SDL_Surface * video = 0;
 
   if (useGraphics)
@@ -70,9 +70,9 @@ int main(int argc, char * argv[]) {
 
   if (useGraphics)
   {
-    video = SDL_SetVideoMode(gr->resolutionX(), gr->resolutionY(), 24, 0);
+    video = SDL_SetVideoMode(gr.resolutionX(), gr.resolutionY(), 24, 0);
     printf("%i: Video Mode set\n", SDL_GetTicks());
-    gr->loadGraphics();
+    gr.loadGraphics();
     printf("%i: Graphics loaded\n", SDL_GetTicks());
 
     soundSystem_c::instance()->openSound(".");
@@ -98,12 +98,11 @@ int main(int argc, char * argv[]) {
 
   if (useGraphics)
   {
-    gr->setTheme(l.getTheme());
+    gr.setTheme(l.getTheme());
     printf("%i: Theme loaded\n", SDL_GetTicks());
   }
 
-  ant_c a;
-  a.init(&l, gr);
+  ant_c a(l, gr);
 
   if (useGraphics)
   {
@@ -256,15 +255,15 @@ int main(int argc, char * argv[]) {
             }
             else if (rowStart != -1)
             {
-              rects[numrects].y = gr->blockY()*y;
-              rects[numrects].x = gr->blockX()*rowStart;
+              rects[numrects].y = gr.blockY()*y;
+              rects[numrects].x = gr.blockX()*rowStart;
 
               if (y == 12)
-                rects[numrects].h = gr->blockY()/2;
+                rects[numrects].h = gr.blockY()/2;
               else
-                rects[numrects].h = gr->blockY();
+                rects[numrects].h = gr.blockY();
 
-              rects[numrects].w = gr->blockX()*(x-rowStart);
+              rects[numrects].w = gr.blockX()*(x-rowStart);
               numrects++;
               rowStart = -1;
             }
@@ -316,10 +315,8 @@ int main(int argc, char * argv[]) {
     }
   }
 
-  if (useGraphics) {
+  if (useGraphics)
     delete gr;
-    deinitText();
-  }
 
   return 0;
 }

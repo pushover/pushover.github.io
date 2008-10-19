@@ -29,8 +29,8 @@ class ant_c {
     int blockX, blockY;
     int subBlock, screenBlock;
 
-    level_c * level;
-    graphics_c * gr;
+    level_c & level;
+    graphics_c & gr;
 
     unsigned int keyMask;
     unsigned int inactiveTimer;
@@ -46,12 +46,10 @@ class ant_c {
 
   public:
 
-    ant_c(void) {}
-
     // init the ant state for level entering
     // the level is saved and used later on for dirty block
     // marking, and level modification
-    void init(level_c * l, graphics_c * gr);
+    ant_c(level_c & level, graphics_c & gr);
 
     // do one animation step for the ant
     void performAnimation(void);

@@ -167,10 +167,10 @@ class level_c {
     unsigned char getDominoExtra(unsigned int x, unsigned int y) const { return level[y][x].dominoExtra; }
 
     /* update the background where necessary */
-    void updateBackground(graphics_c * gr);
+    void updateBackground(graphics_c & gr);
 
     /* draw the changed stuff into the target surface */
-    void drawDominos(SDL_Surface * target, graphics_c * gr, bool debug);
+    void drawDominos(SDL_Surface * target, graphics_c & gr, bool debug);
 
     /* opens and closes doors */
     void performDoors(void);

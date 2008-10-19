@@ -438,7 +438,7 @@ void level_c::print(void) {
 
 }
 
-void level_c::updateBackground(graphics_c * gr) {
+void level_c::updateBackground(graphics_c & gr) {
   for (unsigned int y = 0; y < 13; y++) {
 
     // check, if the current row contains any dirty blocks and only iterate through it
@@ -451,26 +451,26 @@ void level_c::updateBackground(graphics_c * gr) {
       if ((staticDirty[y] >> x) & 1) {
 
         SDL_Rect dst;
-        dst.x = x*gr->blockX();
-        dst.y = y*gr->blockY();
-        dst.w = gr->blockX();
-        dst.h = gr->blockY();
+        dst.x = x*gr.blockX();
+        dst.y = y*gr.blockY();
+        dst.w = gr.blockX();
+        dst.h = gr.blockY();
         for (unsigned char b = 0; b < numBg; b++)
-          SDL_BlitSurface(gr->getBgTile(level[y][x].bg[b]), 0, background, &dst);
-        SDL_BlitSurface(gr->getFgTile(level[y][x].fg), 0, background, &dst);
+          SDL_BlitSurface(gr.getBgTile(level[y][x].bg[b]), 0, background, &dst);
+        SDL_BlitSurface(gr.getFgTile(level[y][x].fg), 0, background, &dst);
 
         // apply gradient effect
-        for (unsigned int i = 0; i < gr->blockY() && y*gr->blockY()+i < (unsigned int)background->h; i++)
-          for (unsigned int j = 0; j < gr->blockX(); j++) {
+        for (unsigned int i = 0; i < gr.blockY() && y*gr.blockY()+i < (unsigned int)background->h; i++)
+          for (unsigned int j = 0; j < gr.blockX(); j++) {
 
-            uint32_t col = *((uint32_t*)(((uint8_t*)background->pixels) + (y*gr->blockY()+i) * background->pitch +
-                  background->format->BytesPerPixel*(x*gr->blockX()+j)));
+            uint32_t col = *((uint32_t*)(((uint8_t*)background->pixels) + (y*gr.blockY()+i) * background->pitch +
+                  background->format->BytesPerPixel*(x*gr.blockX()+j)));
 
             Uint8 r, g, b;
 
             SDL_GetRGB(col, background->format, &r, &g, &b);
 
-            double val = (2.0-((1.0*x*gr->blockX()+j)/background->w + (1.0*y*gr->blockY()+i)/background->h));
+            double val = (2.0-((1.0*x*gr.blockX()+j)/background->w + (1.0*y*gr.blockY()+i)/background->h));
             val += (1.0*rand()/RAND_MAX)/20 - 1.0/40;
             if (val < 0) val = 0;
             if (val > 2) val = 2;
@@ -481,8 +481,8 @@ void level_c::updateBackground(graphics_c * gr) {
 
             col = SDL_MapRGB(background->format, r, g, b);
 
-            *((uint32_t*)(((uint8_t*)background->pixels) + (y*gr->blockY()+i) * background->pitch +
-                  background->format->BytesPerPixel*(x*gr->blockX()+j))) = col;
+            *((uint32_t*)(((uint8_t*)background->pixels) + (y*gr.blockY()+i) * background->pitch +
+                  background->format->BytesPerPixel*(x*gr.blockX()+j))) = col;
           }
       }
     }
@@ -542,7 +542,7 @@ static void PutSprite(int nr, int x, int y, SDL_Surface * v, SDL_Surface * targe
   }
 }
 
-void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
+void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
 
   // the dirty marks for the clock
   {
@@ -585,14 +585,14 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
         // copy background from background surface
         {
           SDL_Rect src, dst;
-          dst.x = x*gr->blockX();
-          dst.y = y*gr->blockY();
-          dst.w = gr->blockX();
-          dst.h = gr->blockY();
-          src.x = x*gr->blockX();
-          src.y = y*gr->blockY();
-          src.w = gr->blockX();
-          src.h = gr->blockY();
+          dst.x = x*gr.blockX();
+          dst.y = y*gr.blockY();
+          dst.w = gr.blockX();
+          dst.h = gr.blockY();
+          src.x = x*gr.blockX();
+          src.y = y*gr.blockY();
+          src.w = gr.blockX();
+          src.h = gr.blockY();
           SDL_BlitSurface(background, &src, target, &dst);
         }
       }
@@ -607,13 +607,13 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
   // block. But painting the neighbors is only necessary, when they are not drawn on
   // their own anyway, so always check for !dirty of the "homeblock" of each domino
 
-  int SpriteYPos = gr->getDominoYStart();
+  int SpriteYPos = gr.getDominoYStart();
 
-  for (int y = 0; y < 13; y++, SpriteYPos += gr->blockY()) {
+  for (int y = 0; y < 13; y++, SpriteYPos += gr.blockY()) {
 
-    int SpriteXPos = -2*gr->blockX();
+    int SpriteXPos = -2*gr.blockX();
 
-    for (int x = 0; x < 20; x++, SpriteXPos += gr->blockX()) {
+    for (int x = 0; x < 20; x++, SpriteXPos += gr.blockX()) {
 
       if (!isDirty(x, y) && !debug) continue;
 
@@ -624,9 +624,9 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
            level[y+1][x-1].dominoState >= DominoTypeCrash0))
       {
         PutSprite(0,
-            SpriteXPos-gr->blockX(),
-            SpriteYPos+gr->convertDominoY(level[y+1][x-1].dominoYOffset)+gr->blockY(),
-            gr->getDomino(level[y+1][x-1].dominoType-1, level[y+1][x-1].dominoState-1), target
+            SpriteXPos-gr.blockX(),
+            SpriteYPos+gr.convertDominoY(level[y+1][x-1].dominoYOffset)+gr.blockY(),
+            gr.getDomino(level[y+1][x-1].dominoType-1, level[y+1][x-1].dominoState-1), target
             );
       }
 
@@ -636,9 +636,9 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
            level[y][x-1].dominoType >= DominoTypeCrash0))
       {
         PutSprite(1,
-            SpriteXPos-gr->blockX(),
-            SpriteYPos+gr->convertDominoY(level[y][x-1].dominoYOffset),
-            gr->getDomino(level[y][x-1].dominoType-1, level[y][x-1].dominoState-1), target
+            SpriteXPos-gr.blockX(),
+            SpriteYPos+gr.convertDominoY(level[y][x-1].dominoYOffset),
+            gr.getDomino(level[y][x-1].dominoType-1, level[y][x-1].dominoState-1), target
             );
       }
 
@@ -646,8 +646,8 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
       {
         PutSprite(2,
             SpriteXPos,
-            SpriteYPos+gr->convertDominoY(level[y+1][x].dominoYOffset)+gr->blockY(),
-            gr->getDomino(level[y+1][x].dominoType-1, level[y+1][x].dominoState-1), target
+            SpriteYPos+gr.convertDominoY(level[y+1][x].dominoYOffset)+gr.blockY(),
+            gr.getDomino(level[y+1][x].dominoType-1, level[y+1][x].dominoState-1), target
             );
       }
 
@@ -658,8 +658,8 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
       {
         PutSprite(3,
             SpriteXPos,
-            SpriteYPos-gr->splitterY(),
-            gr->getDomino(level[y][x].dominoExtra-1, level[y][x].dominoExtra>=DominoTypeCrash0?0:7), target
+            SpriteYPos-gr.splitterY(),
+            gr.getDomino(level[y][x].dominoExtra-1, level[y][x].dominoExtra>=DominoTypeCrash0?0:7), target
             );
         level[y][x].dominoExtra = 0;
       }
@@ -669,9 +669,9 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
           level[y][x].dominoState < 16 && level[y][x].dominoState != 8)
       {
         PutSprite(4,
-            SpriteXPos+gr->convertDominoX(XposOffset[level[y][x].dominoState-1]),
-            SpriteYPos+gr->convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
-            gr->getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
+            SpriteXPos+gr.convertDominoX(XposOffset[level[y][x].dominoState-1]),
+            SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
+            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
             );
       }
       else if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoState == 1 && level[y][x].dominoExtra == 0 &&
@@ -680,26 +680,26 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
         // so we see the above face of the domino. Normally there is a wall above us so we only see
         // the front face of the domino
         PutSprite(5,
-            SpriteXPos+gr->convertDominoX(XposOffset[level[y][x].dominoState-1]+6),
-            SpriteYPos+gr->convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
-            gr->getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
+            SpriteXPos+gr.convertDominoX(XposOffset[level[y][x].dominoState-1]+6),
+            SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
+            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
             );
       }
       else if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoState == 15 && level[y][x].dominoExtra == 0 &&
           level[y-2][x+1].fg == 0)
       {
         PutSprite(6,
-            SpriteXPos+gr->convertDominoX(XposOffset[level[y][x].dominoState-1]-2),
-            SpriteYPos+gr->convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
-            gr->getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
+            SpriteXPos+gr.convertDominoX(XposOffset[level[y][x].dominoState-1]-2),
+            SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
+            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
             );
       }
       else if (level[y][x].dominoType != DominoTypeEmpty)
       {
         PutSprite(7,
             SpriteXPos,
-            SpriteYPos+gr->convertDominoY(level[y][x].dominoYOffset),
-            gr->getDomino(level[y][x].dominoType-1, level[y][x].dominoState-1), target
+            SpriteYPos+gr.convertDominoY(level[y][x].dominoYOffset),
+            gr.getDomino(level[y][x].dominoType-1, level[y][x].dominoState-1), target
             );
       }
 
@@ -710,9 +710,9 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
            level[y+1][x+1].dominoType >= DominoTypeCrash0))
       {
         PutSprite(8,
-            SpriteXPos+gr->blockX(),
-            SpriteYPos+gr->convertDominoY(level[y+1][x+1].dominoYOffset)+gr->blockY(),
-            gr->getDomino(level[y+1][x+1].dominoType-1, level[y+1][x+1].dominoState-1), target
+            SpriteXPos+gr.blockX(),
+            SpriteYPos+gr.convertDominoY(level[y+1][x+1].dominoYOffset)+gr.blockY(),
+            gr.getDomino(level[y+1][x+1].dominoType-1, level[y+1][x+1].dominoState-1), target
             );
       }
 
@@ -722,9 +722,9 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
            level[y][x+1].dominoType >= DominoTypeCrash0))
       {
         PutSprite(9,
-            SpriteXPos+gr->blockX(),
-            SpriteYPos+gr->convertDominoY(level[y][x+1].dominoYOffset),
-            gr->getDomino(level[y][x+1].dominoType-1, level[y][x+1].dominoState-1), target
+            SpriteXPos+gr.blockX(),
+            SpriteYPos+gr.convertDominoY(level[y][x+1].dominoYOffset),
+            gr.getDomino(level[y][x+1].dominoType-1, level[y][x+1].dominoState-1), target
             );
       }
 
@@ -734,26 +734,26 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
       {
         PutSprite(10,
             SpriteXPos,
-            SpriteYPos+gr->convertDominoY(level[y+2][x].dominoYOffset)+2*gr->blockY(),
-            gr->getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1), target
+            SpriteYPos+gr.convertDominoY(level[y+2][x].dominoYOffset)+2*gr.blockY(),
+            gr.getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1), target
             );
       }
 
       if (x > 0 && !isDirty(x-1, y+2) && level[y+2][x-1].dominoType == DominoTypeAscender)
       {
         PutSprite(11,
-            SpriteXPos-gr->blockX(),
-            SpriteYPos+gr->convertDominoY(level[y+2][x-1].dominoYOffset)+2*gr->blockY(),
-            gr->getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1), target
+            SpriteXPos-gr.blockX(),
+            SpriteYPos+gr.convertDominoY(level[y+2][x-1].dominoYOffset)+2*gr.blockY(),
+            gr.getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1), target
             );
       }
 
       if (x < 19 && !isDirty(x+1, y+2) && level[y+2][x+1].dominoType == DominoTypeAscender)
       {
         PutSprite(12,
-            SpriteXPos+gr->blockX(),
-            SpriteYPos+gr->convertDominoY(level[y+2][x+1].dominoYOffset)+2*gr->blockY(),
-            gr->getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1), target
+            SpriteXPos+gr.blockX(),
+            SpriteYPos+gr.convertDominoY(level[y+2][x+1].dominoYOffset)+2*gr.blockY(),
+            gr.getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1), target
             );
       }
 
@@ -763,17 +763,17 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
       {
         PutSprite(13,
             SpriteXPos,
-            SpriteYPos+gr->convertDominoY(level[y+2][x].dominoYOffset)+2*gr->blockY(),
-            gr->getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1), target
+            SpriteYPos+gr.convertDominoY(level[y+2][x].dominoYOffset)+2*gr.blockY(),
+            gr.getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1), target
             );
       }
 
       if (x > 0 && !isDirty(x-1, y+2) && level[y+2][x-1].dominoType != DominoTypeEmpty)
       {
         PutSprite(14,
-            SpriteXPos-gr->blockX(),
-            SpriteYPos+gr->convertDominoY(level[y+2][x-1].dominoYOffset)+2*gr->blockY(),
-            gr->getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1), target
+            SpriteXPos-gr.blockX(),
+            SpriteYPos+gr.convertDominoY(level[y+2][x-1].dominoYOffset)+2*gr.blockY(),
+            gr.getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1), target
             );
       }
 
@@ -784,9 +784,9 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
       if (level[y+2][x+1].dominoType == DominoTypeEmpty) continue;
 
       PutSprite(15,
-          SpriteXPos+gr->blockX(),
-          SpriteYPos+gr->convertDominoY(level[y+2][x+1].dominoYOffset)+2*gr->blockY(),
-          gr->getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1), target
+          SpriteXPos+gr.blockX(),
+          SpriteYPos+gr.convertDominoY(level[y+2][x+1].dominoYOffset)+2*gr.blockY(),
+          gr.getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1), target
           );
     }
   }
@@ -797,20 +797,20 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
       if ((dynamicDirty[y] >> x) & 1 || debug) {
         if (getFg(x, y) == FgElementPlatformLadderDown || getFg(x, y) == FgElementLadder) {
           SDL_Rect dst;
-          dst.x = x*gr->blockX();
-          dst.y = y*gr->blockY();
-          dst.w = gr->blockX();
-          dst.h = gr->blockY();
-          SDL_BlitSurface(gr->getFgTile(FgElementLadder2), 0, target, &dst);
+          dst.x = x*gr.blockX();
+          dst.y = y*gr.blockY();
+          dst.w = gr.blockX();
+          dst.h = gr.blockY();
+          SDL_BlitSurface(gr.getFgTile(FgElementLadder2), 0, target, &dst);
         }
         else if (getFg(x, y) == FgElementPlatformLadderUp)
         {
           SDL_Rect dst;
-          dst.x = x*gr->blockX();
-          dst.y = y*gr->blockY();
-          dst.w = gr->blockX();
-          dst.h = gr->blockY();
-          SDL_BlitSurface(gr->getFgTile(FgElementLadderMiddle), 0, target, &dst);
+          dst.x = x*gr.blockX();
+          dst.y = y*gr.blockY();
+          dst.w = gr.blockX();
+          dst.h = gr.blockY();
+          SDL_BlitSurface(gr.getFgTile(FgElementLadderMiddle), 0, target, &dst);
         }
       }
     }
@@ -822,13 +822,13 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
 
         if ((dynamicDirty[y] >> x) & 1)
         {
-          for (unsigned int h = 0; h < gr->blockY(); h+=2)
+          for (unsigned int h = 0; h < gr.blockY(); h+=2)
           {
             SDL_Rect dst;
-            dst.w = gr->blockX();
+            dst.w = gr.blockX();
             dst.h = 1;
-            dst.x = x*gr->blockX();
-            dst.y = y*gr->blockY()+h;
+            dst.x = x*gr.blockX();
+            dst.y = y*gr.blockY()+h;
             Uint32 color = SDL_MapRGB(target->format, 0, 0, 0);
             SDL_FillRect(target, &dst, color);
           }
@@ -851,22 +851,9 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c * gr, bool debug) {
 
     fontParams_s pars;
     if (timeLeft >= 0)
-    {
-      pars.color.r = pars.color.g = 255; pars.color.b = 0;
-    }
+      gr->putText(target, gr->timeXPos(), gr->timeYPos(), time, 255, 255, 0, true);
     else
-    {
-      pars.color.r = 255; pars.color.g = pars.color.b = 0;
-    }
-    pars.font = FNT_BIG;
-    pars.alignment = ALN_TEXT;
-    pars.box.x = gr->timeXPos();
-    pars.box.y = gr->timeYPos();
-    pars.box.w = 50;
-    pars.box.h = 50;
-    pars.shadow = true;
-
-    renderText(target, &pars, time);
+      gr->putText(target, gr->timeXPos(), gr->timeYPos(), time, 255, 0, 0, true);
   }
 }
 
