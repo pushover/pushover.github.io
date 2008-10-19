@@ -4,13 +4,14 @@
 #include "graphics.h"
 #include "soundsys.h"
 #include "text.h"
+#include "screen.h"
 
 #include <stdio.h>
 
 #include <sstream>
 #include <iomanip>
 
-level_c::level_c(void) {
+level_c::level_c(surface_c & t) : target(t) {
   SDL_Surface * vid = SDL_GetVideoSurface();
 
   if (vid)
@@ -55,7 +56,8 @@ void level_c::load(const textsections_c & sections) {
   /* initialize all state variables */
   openDoorEntry = openDoorExit = false;
   for (unsigned int i = 0; i < 13; i++)
-    staticDirty[i] = dynamicDirty[i] = 0xFFFFF;
+    staticDirty[i] = 0xFFFFF;
+  target.markAllDirty();
   triggerFalln = false;
   memset(level, 0, sizeof(level));
 
@@ -433,10 +435,6 @@ void level_c::updateBackground(graphics_c & gr) {
   }
 }
 
-void level_c::clearDirty(void) {
-  for (unsigned int y = 0; y < 13; y++)
-    dynamicDirty[y] = 0;
-}
 
 static void PutSprite(int nr, int x, int y, SDL_Surface * v, SDL_Surface * target)
 {
@@ -483,7 +481,7 @@ static void PutSprite(int nr, int x, int y, SDL_Surface * v, SDL_Surface * targe
   }
 }
 
-void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
+void level_c::drawDominos(graphics_c & gr, bool debug) {
 
   // the dirty marks for the clock
   {
@@ -499,20 +497,20 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
 
     if (newSec != Sec || timeLeft == -1)
     {
-      markDirty(3, 11);
-      markDirty(3, 12);
+      target.markDirty(3, 11);
+      target.markDirty(3, 12);
     }
 
     if (newSec != Sec || newMin != Min || timeLeft % 18 == 17 || timeLeft % 18 == 8 || timeLeft == -1)
     {
-      markDirty(2, 11);
-      markDirty(2, 12);
+      target.markDirty(2, 11);
+      target.markDirty(2, 12);
     }
 
     if (newMin != Min || timeLeft == -1)
     {
-      markDirty(1, 11);
-      markDirty(1, 12);
+      target.markDirty(1, 11);
+      target.markDirty(1, 12);
     }
 
     Min = newMin;
@@ -521,7 +519,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
 
   for (unsigned int y = 0; y < 13; y++)
     for (unsigned int x = 0; x < 20; x++) {
-      if ((dynamicDirty[y] >> x) & 1 || debug) {
+      if (target.isDirty(x, y) || debug) {
 
         // copy background from background surface
         {
@@ -534,7 +532,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
           src.y = y*gr.blockY();
           src.w = gr.blockX();
           src.h = gr.blockY();
-          SDL_BlitSurface(background, &src, target, &dst);
+          SDL_BlitSurface(background, &src, target.getVideo(), &dst);
         }
       }
     }
@@ -556,10 +554,10 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
 
     for (int x = 0; x < 20; x++, SpriteXPos += gr.blockX()) {
 
-      if (!isDirty(x, y) && !debug) continue;
+      if (!target.isDirty(x, y) && !debug) continue;
 
       // paint the left neighbor domino, if it leans in our direction and is not painted on its own
-      if (y < 12 && x > 0 && !isDirty(x-1, y+1) && level[y+1][x-1].dominoType != DominoTypeEmpty &&
+      if (y < 12 && x > 0 && !target.isDirty(x-1, y+1) && level[y+1][x-1].dominoType != DominoTypeEmpty &&
           (level[y+1][x-1].dominoState > 8 ||
            level[y+1][x-1].dominoType == DominoTypeSplitter && level[y+1][x-1].dominoState != 8 ||
            level[y+1][x-1].dominoState >= DominoTypeCrash0))
@@ -567,11 +565,11 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
         PutSprite(0,
             SpriteXPos-gr.blockX(),
             SpriteYPos+gr.convertDominoY(level[y+1][x-1].dominoYOffset)+gr.blockY(),
-            gr.getDomino(level[y+1][x-1].dominoType-1, level[y+1][x-1].dominoState-1), target
+            gr.getDomino(level[y+1][x-1].dominoType-1, level[y+1][x-1].dominoState-1), target.getVideo()
             );
       }
 
-      if (x > 0 && !isDirty(x-1, y) && level[y][x-1].dominoType != DominoTypeEmpty &&
+      if (x > 0 && !target.isDirty(x-1, y) && level[y][x-1].dominoType != DominoTypeEmpty &&
           (level[y][x-1].dominoState > 8 ||
            level[y][x-1].dominoType == DominoTypeSplitter && level[y][x-1].dominoState != 8 ||
            level[y][x-1].dominoType >= DominoTypeCrash0))
@@ -579,16 +577,16 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
         PutSprite(1,
             SpriteXPos-gr.blockX(),
             SpriteYPos+gr.convertDominoY(level[y][x-1].dominoYOffset),
-            gr.getDomino(level[y][x-1].dominoType-1, level[y][x-1].dominoState-1), target
+            gr.getDomino(level[y][x-1].dominoType-1, level[y][x-1].dominoState-1), target.getVideo()
             );
       }
 
-      if (y < 12 && !isDirty(x, y+1) && level[y+1][x].dominoType != DominoTypeEmpty)
+      if (y < 12 && !target.isDirty(x, y+1) && level[y+1][x].dominoType != DominoTypeEmpty)
       {
         PutSprite(2,
             SpriteXPos,
             SpriteYPos+gr.convertDominoY(level[y+1][x].dominoYOffset)+gr.blockY(),
-            gr.getDomino(level[y+1][x].dominoType-1, level[y+1][x].dominoState-1), target
+            gr.getDomino(level[y+1][x].dominoType-1, level[y+1][x].dominoState-1), target.getVideo()
             );
       }
 
@@ -600,7 +598,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
         PutSprite(3,
             SpriteXPos,
             SpriteYPos-gr.splitterY(),
-            gr.getDomino(level[y][x].dominoExtra-1, level[y][x].dominoExtra>=DominoTypeCrash0?0:7), target
+            gr.getDomino(level[y][x].dominoExtra-1, level[y][x].dominoExtra>=DominoTypeCrash0?0:7), target.getVideo()
             );
         level[y][x].dominoExtra = 0;
       }
@@ -612,7 +610,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
         PutSprite(4,
             SpriteXPos+gr.convertDominoX(XposOffset[level[y][x].dominoState-1]),
             SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
-            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
+            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target.getVideo()
             );
       }
       else if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoState == 1 && level[y][x].dominoExtra == 0 &&
@@ -623,7 +621,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
         PutSprite(5,
             SpriteXPos+gr.convertDominoX(XposOffset[level[y][x].dominoState-1]+6),
             SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
-            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
+            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target.getVideo()
             );
       }
       else if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoState == 15 && level[y][x].dominoExtra == 0 &&
@@ -632,7 +630,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
         PutSprite(6,
             SpriteXPos+gr.convertDominoX(XposOffset[level[y][x].dominoState-1]-2),
             SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
-            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target
+            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target.getVideo()
             );
       }
       else if (level[y][x].dominoType != DominoTypeEmpty)
@@ -640,12 +638,12 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
         PutSprite(7,
             SpriteXPos,
             SpriteYPos+gr.convertDominoY(level[y][x].dominoYOffset),
-            gr.getDomino(level[y][x].dominoType-1, level[y][x].dominoState-1), target
+            gr.getDomino(level[y][x].dominoType-1, level[y][x].dominoState-1), target.getVideo()
             );
       }
 
       // paint the right neighor if it is leaning in our direction
-      if (x < 19 && y < 12 && !isDirty(x+1, y+1) && level[y+1][x+1].dominoType != DominoTypeEmpty &&
+      if (x < 19 && y < 12 && !target.isDirty(x+1, y+1) && level[y+1][x+1].dominoType != DominoTypeEmpty &&
           (level[y+1][x+1].dominoState < 8 ||
            level[y+1][x+1].dominoType == DominoTypeSplitter && level[y+1][x+1].dominoState != 8 ||
            level[y+1][x+1].dominoType >= DominoTypeCrash0))
@@ -653,11 +651,11 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
         PutSprite(8,
             SpriteXPos+gr.blockX(),
             SpriteYPos+gr.convertDominoY(level[y+1][x+1].dominoYOffset)+gr.blockY(),
-            gr.getDomino(level[y+1][x+1].dominoType-1, level[y+1][x+1].dominoState-1), target
+            gr.getDomino(level[y+1][x+1].dominoType-1, level[y+1][x+1].dominoState-1), target.getVideo()
             );
       }
 
-      if (x < 19 && !isDirty(x+1, y) && level[y][x+1].dominoType != DominoTypeEmpty &&
+      if (x < 19 && !target.isDirty(x+1, y) && level[y][x+1].dominoType != DominoTypeEmpty &&
           (level[y][x+1].dominoState < 8 ||
            level[y][x+1].dominoType == DominoTypeSplitter && level[y][x+1].dominoState != 8 ||
            level[y][x+1].dominoType >= DominoTypeCrash0))
@@ -665,69 +663,69 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
         PutSprite(9,
             SpriteXPos+gr.blockX(),
             SpriteYPos+gr.convertDominoY(level[y][x+1].dominoYOffset),
-            gr.getDomino(level[y][x+1].dominoType-1, level[y][x+1].dominoState-1), target
+            gr.getDomino(level[y][x+1].dominoType-1, level[y][x+1].dominoState-1), target.getVideo()
             );
       }
 
       if (y >= 11) continue;
 
-      if (!isDirty(x, y+2) && level[y+2][x].dominoType == DominoTypeAscender)
+      if (!target.isDirty(x, y+2) && level[y+2][x].dominoType == DominoTypeAscender)
       {
         PutSprite(10,
             SpriteXPos,
             SpriteYPos+gr.convertDominoY(level[y+2][x].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1), target
+            gr.getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1), target.getVideo()
             );
       }
 
-      if (x > 0 && !isDirty(x-1, y+2) && level[y+2][x-1].dominoType == DominoTypeAscender)
+      if (x > 0 && !target.isDirty(x-1, y+2) && level[y+2][x-1].dominoType == DominoTypeAscender)
       {
         PutSprite(11,
             SpriteXPos-gr.blockX(),
             SpriteYPos+gr.convertDominoY(level[y+2][x-1].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1), target
+            gr.getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1), target.getVideo()
             );
       }
 
-      if (x < 19 && !isDirty(x+1, y+2) && level[y+2][x+1].dominoType == DominoTypeAscender)
+      if (x < 19 && !target.isDirty(x+1, y+2) && level[y+2][x+1].dominoType == DominoTypeAscender)
       {
         PutSprite(12,
             SpriteXPos+gr.blockX(),
             SpriteYPos+gr.convertDominoY(level[y+2][x+1].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1), target
+            gr.getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1), target.getVideo()
             );
       }
 
       if (level[y][x].dominoType != DominoTypeAscender) continue;
 
-      if (!isDirty(x, y+2) && level[y+2][x].dominoType != DominoTypeEmpty)
+      if (!target.isDirty(x, y+2) && level[y+2][x].dominoType != DominoTypeEmpty)
       {
         PutSprite(13,
             SpriteXPos,
             SpriteYPos+gr.convertDominoY(level[y+2][x].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1), target
+            gr.getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1), target.getVideo()
             );
       }
 
-      if (x > 0 && !isDirty(x-1, y+2) && level[y+2][x-1].dominoType != DominoTypeEmpty)
+      if (x > 0 && !target.isDirty(x-1, y+2) && level[y+2][x-1].dominoType != DominoTypeEmpty)
       {
         PutSprite(14,
             SpriteXPos-gr.blockX(),
             SpriteYPos+gr.convertDominoY(level[y+2][x-1].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1), target
+            gr.getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1), target.getVideo()
             );
       }
 
       if (x >= 19) continue;
 
-      if (!isDirty(x+1, y+2)) continue;
+      if (!target.isDirty(x+1, y+2)) continue;
 
       if (level[y+2][x+1].dominoType == DominoTypeEmpty) continue;
 
       PutSprite(15,
           SpriteXPos+gr.blockX(),
           SpriteYPos+gr.convertDominoY(level[y+2][x+1].dominoYOffset)+2*gr.blockY(),
-          gr.getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1), target
+          gr.getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1), target.getVideo()
           );
     }
   }
@@ -735,14 +733,14 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
   // repaint the ladders in front of dominos
   for (unsigned int y = 0; y < 13; y++)
     for (unsigned int x = 0; x < 20; x++) {
-      if ((dynamicDirty[y] >> x) & 1 || debug) {
+      if (target.isDirty(x, y) || debug) {
         if (getFg(x, y) == FgElementPlatformLadderDown || getFg(x, y) == FgElementLadder) {
           SDL_Rect dst;
           dst.x = x*gr.blockX();
           dst.y = y*gr.blockY();
           dst.w = gr.blockX();
           dst.h = gr.blockY();
-          SDL_BlitSurface(gr.getFgTile(FgElementLadder2), 0, target, &dst);
+          SDL_BlitSurface(gr.getFgTile(FgElementLadder2), 0, target.getVideo(), &dst);
         }
         else if (getFg(x, y) == FgElementPlatformLadderUp)
         {
@@ -751,7 +749,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
           dst.y = y*gr.blockY();
           dst.w = gr.blockX();
           dst.h = gr.blockY();
-          SDL_BlitSurface(gr.getFgTile(FgElementLadderMiddle), 0, target, &dst);
+          SDL_BlitSurface(gr.getFgTile(FgElementLadderMiddle), 0, target.getVideo(), &dst);
         }
       }
     }
@@ -761,7 +759,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
     for (unsigned int y = 0; y < 13; y++)
       for (unsigned int x = 0; x < 20; x++) {
 
-        if ((dynamicDirty[y] >> x) & 1)
+        if (target.isDirty(x, y))
         {
           for (unsigned int h = 0; h < gr.blockY(); h+=2)
           {
@@ -770,8 +768,8 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
             dst.h = 1;
             dst.x = x*gr.blockX();
             dst.y = y*gr.blockY()+h;
-            Uint32 color = SDL_MapRGB(target->format, 0, 0, 0);
-            SDL_FillRect(target, &dst, color);
+            Uint32 color = SDL_MapRGB(target.getVideo()->format, 0, 0, 0);
+            SDL_FillRect(target.getVideo(), &dst, color);
           }
         }
       }
@@ -807,7 +805,7 @@ void level_c::drawDominos(SDL_Surface * target, graphics_c & gr, bool debug) {
     pars.box.h = 50;
     pars.shadow = true;
 
-    renderText(target, &pars, time);
+    renderText(target.getVideo(), &pars, time);
   }
 }
 
@@ -821,7 +819,7 @@ void level_c::performDoors(void) {
     if (getFg(doorEntryX, doorEntryY) < FgElementDoor3) {
       level[doorEntryY][doorEntryX].fg++;
       staticDirty[doorEntryY] |= 1 << doorEntryX;
-      dynamicDirty[doorEntryY] |= 1 << doorEntryX;
+      target.markDirty(doorEntryX, doorEntryY);
     }
 
   } else {
@@ -832,7 +830,7 @@ void level_c::performDoors(void) {
     if (getFg(doorEntryX, doorEntryY) > FgElementDoor0) {
       level[doorEntryY][doorEntryX].fg--;
       staticDirty[doorEntryY] |= 1 << doorEntryX;
-      dynamicDirty[doorEntryY] |= 1 << doorEntryX;
+      target.markDirty(doorEntryX, doorEntryY);
     }
   }
 
@@ -844,7 +842,7 @@ void level_c::performDoors(void) {
     if (getFg(doorExitX, doorExitY) < FgElementDoor3) {
       level[doorExitY][doorExitX].fg++;
       staticDirty[doorExitY] |= 1 << doorExitX;
-      dynamicDirty[doorExitY] |= 1 << doorExitX;
+      target.markDirty(doorExitX, doorExitY);
     }
   } else {
 
@@ -854,7 +852,7 @@ void level_c::performDoors(void) {
     if (getFg(doorExitX, doorExitY) > FgElementDoor0) {
       level[doorExitY][doorExitX].fg--;
       staticDirty[doorExitY] |= 1 << doorExitX;
-      dynamicDirty[doorExitY] |= 1 << doorExitX;
+      target.markDirty(doorExitX, doorExitY);
     }
   }
 }
@@ -1110,30 +1108,30 @@ void level_c::DTA_N(int x, int y) {
 void level_c::DTA_B(int x, int y) {
   DTA_E(x, y);
 
-  markDirty(x+1, y);
-  markDirty(x+1, y-1);
+  target.markDirty(x+1, y);
+  target.markDirty(x+1, y-1);
 }
 
 // splitter opening simply call the normal domino falling
 // function and mark some more blocks because we split left and
 // right and the normal function will only mark one side
 void level_c::DTA_D(int x, int y) {
-  markDirty(x+1, y-1);
-  markDirty(x+1, y);
+  target.markDirty(x+1, y-1);
+  target.markDirty(x+1, y);
 
   DTA_4(x, y);
 
   if (getDominoState(x, y) == 5)
-    markDirty(x, y-2);
+    target.markDirty(x, y-2);
 }
 
 // the final vansher state, remove the vanisher
 // from the level and mark things dirty
 void level_c::DTA_8(int x, int y) {
-  markDirty(x, y);
-  markDirty(x+getDominoDir(x, y), y);
-  markDirty(x, y-1);
-  markDirty(x+getDominoDir(x, y), y-1);
+  target.markDirty(x, y);
+  target.markDirty(x+getDominoDir(x, y), y);
+  target.markDirty(x, y-1);
+  target.markDirty(x+getDominoDir(x, y), y-1);
 
   level[y][x].dominoType = DominoTypeEmpty;
   level[y][x].dominoDir = 0;
@@ -1239,33 +1237,33 @@ void level_c::DTA_4(int x, int y) {
     level[y][x].dominoState = 16;
   }
 
-  markDirty(x, y);
-  markDirty(x, y-1);
+  target.markDirty(x, y);
+  target.markDirty(x, y-1);
 
   // add some dirty blocks depending on the direction we have falln
   if (getDominoState(x, y) > 8)
   {
-    markDirty(x+1, y);
-    markDirty(x+1, y-1);
+    target.markDirty(x+1, y);
+    target.markDirty(x+1, y-1);
   }
 
   if (getDominoState(x, y) < 8)
   {
-    markDirty(x-1, y);
-    markDirty(x-1, y-1);
+    target.markDirty(x-1, y);
+    target.markDirty(x-1, y-1);
   }
 
   if (level[y][x].dominoYOffset == 8)
   {
-    markDirty(x+getDominoDir(x, y), y);
-    markDirty(x+getDominoDir(x, y), y-1);
+    target.markDirty(x+getDominoDir(x, y), y);
+    target.markDirty(x+getDominoDir(x, y), y-1);
   }
 
   if (level[y][x].dominoType == DominoTypeAscender)
   {
-    markDirty(x+getDominoDir(x, y), y-2);
-    markDirty(x-getDominoDir(x, y), y-2);
-    markDirty(x, y-2);
+    target.markDirty(x+getDominoDir(x, y), y-2);
+    target.markDirty(x-getDominoDir(x, y), y-2);
+    target.markDirty(x, y-2);
   }
 }
 
@@ -1298,9 +1296,9 @@ void level_c::DTA_5(int x, int y) {
     level[y][x-1].fg = FgElementPlatformStrip;
   }
 
-  markDirty(x, y);
-  markDirty(x-1, y);
-  markDirty(x+1, y);
+  target.markDirty(x, y);
+  target.markDirty(x-1, y);
+  target.markDirty(x+1, y);
 
   staticDirty[y] |= 1 << x;
   staticDirty[y] |= 1 << (x+1);
@@ -1516,9 +1514,9 @@ void level_c::DominoCrash(int x, int y, int type, int extra) {
     level[y][x].dominoExtra = 0;
   }
 
-  markDirty(x-1, y);
-  markDirty(x, y);
-  markDirty(x+1, y);
+  target.markDirty(x-1, y);
+  target.markDirty(x, y);
+  target.markDirty(x+1, y);
 
   soundSystem_c::instance()->startSound(soundSystem_c::SE_EXPLODER);
 }
@@ -1548,8 +1546,8 @@ void level_c::DTA_E(int x, int y) {
     // if we have not yet reached the next level of the level data
     if (level[y][x].dominoYOffset != 12) {
       level[y][x].dominoYOffset += 4;
-      markDirty(x, y-1);
-      markDirty(x, y);
+      target.markDirty(x, y-1);
+      target.markDirty(x, y);
       return;
     }
 
@@ -1571,9 +1569,9 @@ void level_c::DTA_E(int x, int y) {
     level[y][x].dominoYOffset = 0;
     level[y][x].dominoExtra = 0;
 
-    markDirty(x, y+1);
-    markDirty(x, y);
-    markDirty(x, y-1);
+    target.markDirty(x, y+1);
+    target.markDirty(x, y);
+    target.markDirty(x, y-1);
     return;
   }
 
@@ -1596,8 +1594,8 @@ void level_c::DTA_E(int x, int y) {
       level[y][x].dominoYOffset = 8;
     }
 
-    markDirty(x, y);
-    markDirty(x, y+1);
+    target.markDirty(x, y);
+    target.markDirty(x, y+1);
     return;
   }
 
@@ -1608,8 +1606,8 @@ void level_c::DTA_E(int x, int y) {
   if (y >= 12 || level[y+1][x].dominoType == DominoTypeEmpty)
   {
     level[y][x].dominoYOffset += 4;
-    markDirty(x, y);
-    markDirty(x, y+1);
+    target.markDirty(x, y);
+    target.markDirty(x, y+1);
     return;
   }
 
@@ -1624,8 +1622,8 @@ void level_c::DTA_E(int x, int y) {
     level[y][x].dominoYOffset = 0;
     level[y][x].dominoExtra = 0;
 
-    markDirty(x, y);
-    markDirty(x, y+1);
+    target.markDirty(x, y);
+    target.markDirty(x, y+1);
 
     return;
   }
@@ -1641,8 +1639,8 @@ void level_c::DTA_E(int x, int y) {
   level[y][x].dominoYOffset = 0;
   level[y][x].dominoExtra = 0;
 
-  markDirty(x, y);
-  markDirty(x, y+1);
+  target.markDirty(x, y);
+  target.markDirty(x, y+1);
 }
 
 // splitter parts falling further
@@ -1723,12 +1721,12 @@ void level_c::DTA_C(int x, int y) {
       if (level[y][x].dominoState != i)
       {
         level[y][x].dominoState = i;
-        markDirty(x, y);
-        markDirty(x+1, y);
-        markDirty(x-1, y);
-        markDirty(x, y-1);
-        markDirty(x-1, y-1);
-        markDirty(x+1, y-1);
+        target.markDirty(x, y);
+        target.markDirty(x+1, y);
+        target.markDirty(x-1, y);
+        target.markDirty(x, y-1);
+        target.markDirty(x-1, y-1);
+        target.markDirty(x+1, y-1);
       }
       return;
     }
@@ -1847,7 +1845,7 @@ void level_c::DTA_7(int x, int y) {
   if (x >= 2)
   {
     level[y][x-2].fg = fg2;
-    markDirty(x-2, y);
+    target.markDirty(x-2, y);
   }
 
   if (x >= 1)
@@ -1858,10 +1856,10 @@ void level_c::DTA_7(int x, int y) {
   level[y][x].fg = fg;
   level[y][x].dominoType = 0;
   level[y][x].dominoDir = 0;
-  markDirty(x, y);
-  markDirty(x-1, y);
-  markDirty(x, y-1);
-  markDirty(x-1, y-1);
+  target.markDirty(x, y);
+  target.markDirty(x-1, y);
+  target.markDirty(x, y-1);
+  target.markDirty(x-1, y-1);
 
   staticDirty[y] |= 1 << x;
   staticDirty[y] |= 1 << (x-1);
@@ -1973,7 +1971,7 @@ void level_c::DTA_M(int x, int y) {
   if (x < 18)
   {
     level[y][x+2].fg = fg2;
-    markDirty(x+2, y);
+    target.markDirty(x+2, y);
   }
 
   if (x < 19)
@@ -1984,10 +1982,10 @@ void level_c::DTA_M(int x, int y) {
   level[y][x].fg = fg;
   level[y][x].dominoType = 0;
   level[y][x].dominoDir = 0;
-  markDirty(x, y);
-  markDirty(x+1, y);
-  markDirty(x, y-1);
-  markDirty(x+1, y-1);
+  target.markDirty(x, y);
+  target.markDirty(x+1, y);
+  target.markDirty(x, y-1);
+  target.markDirty(x+1, y-1);
 
   staticDirty[y] |= 1 << x;
   staticDirty[y] |= 1 << (x+1);
@@ -2042,10 +2040,10 @@ void level_c::DTA_A(int x, int y) {
     level[y][x].dominoYOffset = 0;
     level[y][x].dominoExtra = 0;
 
-    markDirty(x, y-a);
-    markDirty(x-1, y-a);
-    markDirty(x, y-a+1);
-    markDirty(x-1, y-a+1);
+    target.markDirty(x, y-a);
+    target.markDirty(x-1, y-a);
+    target.markDirty(x, y-a+1);
+    target.markDirty(x-1, y-a+1);
 
     return;
   }
@@ -2064,10 +2062,10 @@ void level_c::DTA_A(int x, int y) {
     level[y+1-a][x].dominoDir = -1;
     level[y+1-a][x].dominoYOffset = 0;
 
-    markDirty(x, y-a);
-    markDirty(x-1, y-a);
-    markDirty(x, y-a+1);
-    markDirty(x-1, y-a+1);
+    target.markDirty(x, y-a);
+    target.markDirty(x-1, y-a);
+    target.markDirty(x, y-a+1);
+    target.markDirty(x-1, y-a+1);
 
     return;
   }
@@ -2150,10 +2148,10 @@ void level_c::DTA_O(int x, int y) {
     level[y][x].dominoYOffset = 0;
     level[y][x].dominoExtra = 0;
 
-    markDirty(x, y-a);
-    markDirty(x+1, y-a);
-    markDirty(x, y-a+1);
-    markDirty(x+1, y-a+1);
+    target.markDirty(x, y-a);
+    target.markDirty(x+1, y-a);
+    target.markDirty(x, y-a+1);
+    target.markDirty(x+1, y-a+1);
 
     return;
   }
@@ -2179,10 +2177,10 @@ void level_c::DTA_O(int x, int y) {
       DominoCrash(x, y+1-a, level[y][x].dominoType, level[y][x].dominoExtra);
     }
 
-    markDirty(x, y-a);
-    markDirty(x+1, y-a);
-    markDirty(x, y-a+1);
-    markDirty(x+1, y-a+1);
+    target.markDirty(x, y-a);
+    target.markDirty(x+1, y-a);
+    target.markDirty(x, y-a+1);
+    target.markDirty(x+1, y-a+1);
 
     return;
   }
@@ -2219,9 +2217,9 @@ void level_c::DTA_H(int x, int y) {
           level[y][x].dominoState = 16;
           level[y][x].dominoExtra = 0x50;
 
-          markDirty(x, y);
-          markDirty(x, y-2);
-          markDirty(x, y-1);
+          target.markDirty(x, y);
+          target.markDirty(x, y-2);
+          target.markDirty(x, y-1);
           return;
         }
       }
@@ -2234,9 +2232,9 @@ void level_c::DTA_H(int x, int y) {
         {
           level[y][x].dominoState = 16;
           level[y][x].dominoExtra = 0x50;
-          markDirty(x, y);
-          markDirty(x, y-2);
-          markDirty(x, y-1);
+          target.markDirty(x, y);
+          target.markDirty(x, y-2);
+          target.markDirty(x, y-1);
           return;
         }
       }
@@ -2250,9 +2248,9 @@ void level_c::DTA_H(int x, int y) {
           level[y][x].dominoState = 16;
           level[y][x].dominoExtra = 0;
 
-          markDirty(x, y);
-          markDirty(x, y-2);
-          markDirty(x, y-1);
+          target.markDirty(x, y);
+          target.markDirty(x, y-2);
+          target.markDirty(x, y-1);
           return;
         }
       }
@@ -2279,9 +2277,9 @@ void level_c::DTA_H(int x, int y) {
       level[y][x].dominoYOffset = 0;
       level[y][x].dominoExtra = 0;
 
-      markDirty(x, y);
-      markDirty(x, y-2);
-      markDirty(x, y-1);
+      target.markDirty(x, y);
+      target.markDirty(x, y-2);
+      target.markDirty(x, y-1);
       return;
     }
 
@@ -2302,9 +2300,9 @@ void level_c::DTA_H(int x, int y) {
     }
     level[y][x].dominoYOffset -= 2;
 
-    markDirty(x, y);
-    markDirty(x, y-2);
-    markDirty(x, y-1);
+    target.markDirty(x, y);
+    target.markDirty(x, y-2);
+    target.markDirty(x, y-1);
     return;
   }
 
@@ -2344,10 +2342,10 @@ void level_c::DTA_K(int x, int y) {
       level[y][x].dominoState = 0;
       level[y][x].dominoDir = 0;
 
-      markDirty(x, y-1);
-      markDirty(x+1, y-1);
-      markDirty(x, y);
-      markDirty(x+1, y);
+      target.markDirty(x, y-1);
+      target.markDirty(x+1, y-1);
+      target.markDirty(x, y);
+      target.markDirty(x+1, y);
     }
     else
     {
@@ -2363,10 +2361,10 @@ void level_c::DTA_K(int x, int y) {
       level[y][x].dominoState = 0;
       level[y][x].dominoDir = 0;
 
-      markDirty(x, y-1);
-      markDirty(x+1, y-1);
-      markDirty(x, y);
-      markDirty(x+1, y);
+      target.markDirty(x, y-1);
+      target.markDirty(x+1, y-1);
+      target.markDirty(x, y);
+      target.markDirty(x+1, y);
     }
   }
   else
@@ -2391,10 +2389,10 @@ void level_c::DTA_K(int x, int y) {
       level[y][x].dominoDir = 0;
       level[y][x].dominoYOffset = 0;
 
-      markDirty(x, y-1);
-      markDirty(x+1, y-1);
-      markDirty(x, y);
-      markDirty(x+1, y);
+      target.markDirty(x, y-1);
+      target.markDirty(x+1, y-1);
+      target.markDirty(x, y);
+      target.markDirty(x+1, y);
 
       return;
     }
@@ -2419,10 +2417,10 @@ void level_c::DTA_K(int x, int y) {
       level[y][x].dominoDir = 0;
       level[y][x].dominoYOffset = 0;
 
-      markDirty(x, y-1);
-      markDirty(x+1, y-1);
-      markDirty(x, y);
-      markDirty(x+1, y);
+      target.markDirty(x, y-1);
+      target.markDirty(x+1, y-1);
+      target.markDirty(x, y);
+      target.markDirty(x+1, y);
 
       return;
     }
@@ -2461,10 +2459,10 @@ void level_c::DTA_1(int x, int y) {
       level[y][x].dominoState = 0;
       level[y][x].dominoDir = 0;
 
-      markDirty(x, y-1);
-      markDirty(x-1, y-1);
-      markDirty(x, y);
-      markDirty(x-1, y);
+      target.markDirty(x, y-1);
+      target.markDirty(x-1, y-1);
+      target.markDirty(x, y);
+      target.markDirty(x-1, y);
 
       return;
     }
@@ -2482,10 +2480,10 @@ void level_c::DTA_1(int x, int y) {
       level[y][x].dominoState = 0;
       level[y][x].dominoDir = 0;
 
-      markDirty(x, y-1);
-      markDirty(x-1, y-1);
-      markDirty(x, y);
-      markDirty(x-1, y);
+      target.markDirty(x, y-1);
+      target.markDirty(x-1, y-1);
+      target.markDirty(x, y);
+      target.markDirty(x-1, y);
     }
   }
   else
@@ -2510,10 +2508,10 @@ void level_c::DTA_1(int x, int y) {
       level[y][x].dominoDir = 0;
       level[y][x].dominoYOffset = 0;
 
-      markDirty(x, y-1);
-      markDirty(x-1, y-1);
-      markDirty(x, y);
-      markDirty(x-1, y);
+      target.markDirty(x, y-1);
+      target.markDirty(x-1, y-1);
+      target.markDirty(x, y);
+      target.markDirty(x-1, y);
 
       return;
     }
@@ -2538,10 +2536,10 @@ void level_c::DTA_1(int x, int y) {
       level[y][x].dominoDir = 0;
       level[y][x].dominoYOffset = 0;
 
-      markDirty(x, y-1);
-      markDirty(x-1, y-1);
-      markDirty(x, y);
-      markDirty(x-1, y);
+      target.markDirty(x, y-1);
+      target.markDirty(x-1, y-1);
+      target.markDirty(x, y);
+      target.markDirty(x-1, y);
 
       return;
     }
@@ -2586,10 +2584,10 @@ void level_c::DTA_6(int x, int y) {
     level[y][x].dominoState = 0;
     level[y][x].dominoDir = 0;
 
-    markDirty(x, y);
-    markDirty(x-1, y);
-    markDirty(x, y-1);
-    markDirty(x-1, y-1);
+    target.markDirty(x, y);
+    target.markDirty(x-1, y);
+    target.markDirty(x, y-1);
+    target.markDirty(x-1, y-1);
 
     return;
   }
@@ -2614,10 +2612,10 @@ void level_c::DTA_6(int x, int y) {
     level[y][x].dominoDir = 0;
     level[y][x].dominoYOffset = 0;
 
-    markDirty(x, y);
-    markDirty(x-1, y);
-    markDirty(x, y-1);
-    markDirty(x-1, y-1);
+    target.markDirty(x, y);
+    target.markDirty(x-1, y);
+    target.markDirty(x, y-1);
+    target.markDirty(x-1, y-1);
 
     return;
   }
@@ -2642,10 +2640,10 @@ void level_c::DTA_6(int x, int y) {
     level[y][x].dominoDir = 0;
     level[y][x].dominoYOffset = 0;
 
-    markDirty(x, y);
-    markDirty(x-1, y);
-    markDirty(x, y-1);
-    markDirty(x-1, y-1);
+    target.markDirty(x, y);
+    target.markDirty(x-1, y);
+    target.markDirty(x, y-1);
+    target.markDirty(x-1, y-1);
 
     return;
   }
@@ -2665,10 +2663,10 @@ void level_c::DTA_6(int x, int y) {
   level[y][x].dominoType = 0;
   level[y][x].dominoDir = 0;
 
-  markDirty(x, y);
-  markDirty(x-1, y);
-  markDirty(x, y-1);
-  markDirty(x-1, y-1);
+  target.markDirty(x, y);
+  target.markDirty(x-1, y);
+  target.markDirty(x, y-1);
+  target.markDirty(x-1, y-1);
 
 
 }
@@ -2707,10 +2705,10 @@ void level_c::DTA_L(int x, int y) {
     level[y][x].dominoState = 0;
     level[y][x].dominoDir = 0;
 
-    markDirty(x, y);
-    markDirty(x+1, y);
-    markDirty(x, y-1);
-    markDirty(x+1, y-1);
+    target.markDirty(x, y);
+    target.markDirty(x+1, y);
+    target.markDirty(x, y-1);
+    target.markDirty(x+1, y-1);
 
     return;
   }
@@ -2735,10 +2733,10 @@ void level_c::DTA_L(int x, int y) {
     level[y][x].dominoDir = 0;
     level[y][x].dominoYOffset = 0;
 
-    markDirty(x, y);
-    markDirty(x+1, y);
-    markDirty(x, y-1);
-    markDirty(x+1, y-1);
+    target.markDirty(x, y);
+    target.markDirty(x+1, y);
+    target.markDirty(x, y-1);
+    target.markDirty(x+1, y-1);
 
     return;
   }
@@ -2763,10 +2761,10 @@ void level_c::DTA_L(int x, int y) {
     level[y][x].dominoDir = 0;
     level[y][x].dominoYOffset = 0;
 
-    markDirty(x, y);
-    markDirty(x+1, y);
-    markDirty(x, y-1);
-    markDirty(x+1, y-1);
+    target.markDirty(x, y);
+    target.markDirty(x+1, y);
+    target.markDirty(x, y-1);
+    target.markDirty(x+1, y-1);
 
     return;
   }
@@ -2785,10 +2783,10 @@ void level_c::DTA_L(int x, int y) {
   level[y][x].dominoType = 0;
   level[y][x].dominoDir = 0;
 
-  markDirty(x, y);
-  markDirty(x+1, y);
-  markDirty(x, y-1);
-  markDirty(x+1, y-1);
+  target.markDirty(x, y);
+  target.markDirty(x+1, y);
+  target.markDirty(x, y-1);
+  target.markDirty(x+1, y-1);
 }
 
 void level_c::callStateFunction(int type, int state, int x, int y) {
@@ -3002,9 +3000,9 @@ void level_c::performDominos(void) {
 
         if (getDominoType(x, y) == DominoTypeAscender)
         {
-          if (isDirty(x-1, y)) markDirty(x-1, y-1);
-          if (isDirty(x  , y)) markDirty(x  , y-1);
-          if (isDirty(x+1, y)) markDirty(x+1, y-1);
+          if (target.isDirty(x-1, y)) target.markDirty(x-1, y-1);
+          if (target.isDirty(x  , y)) target.markDirty(x  , y-1);
+          if (target.isDirty(x+1, y)) target.markDirty(x+1, y-1);
         }
       }
 

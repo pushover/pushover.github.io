@@ -1,6 +1,7 @@
 #include "levelset.h"
 #include "level.h"
 #include "textsections.h"
+#include "screen.h"
 
 #include <fstream>
 #include <sstream>
@@ -63,8 +64,10 @@ levelset_c::levelset_c(const std::string & path) {
       throw format_error("unexpected string stream error while loading file: " + path);
   }
 
+  // we need a surface for the dummy level
+  surface_c srf;
   /* parse all loaded files */
-  level_c test_level;
+  level_c test_level(srf);
   bool index_loaded = false;
   for (std::vector<textsections_c>::const_iterator i = fileSections.begin(); i != fileSections.end(); i++) {
     const textsections_c & sections = *i;

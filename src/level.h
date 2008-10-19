@@ -8,6 +8,7 @@
 
 class graphics_c;
 class textsections_c;
+class surface_c;
 
 class level_c {
 
@@ -53,12 +54,13 @@ class level_c {
      * foreground with the dominos and the ant, the clock, ...
      */
     uint32_t staticDirty[13];
-    uint32_t dynamicDirty[13];
 
     /* this surface contains the background. It is only updated when necessary
      * the content it used to restore stuff behind the sprites
      */
     SDL_Surface * background;
+
+    surface_c & target;
 
     // requested stated for the 2 doors
     bool openDoorExit;
@@ -99,7 +101,9 @@ class level_c {
 
   public:
 
-    level_c(void);
+    // initializes a leve. From that moment on the level can only paint into
+    // the given surface
+    level_c(surface_c & target);
     ~level_c(void);
 
     void load(const textsections_c & sections);
@@ -168,7 +172,7 @@ class level_c {
     void updateBackground(graphics_c & gr);
 
     /* draw the changed stuff into the target surface */
-    void drawDominos(SDL_Surface * target, graphics_c & gr, bool debug);
+    void drawDominos(graphics_c & gr, bool debug);
 
     /* opens and closes doors */
     void performDoors(void);
@@ -192,13 +196,6 @@ class level_c {
 
     bool pushDomino(int x, int y, int dir);
     void removeDomino(int x, int y) { level[y][x].dominoType = 0; }
-
-
-    // dirty marking of blocks
-    void markDirty(int x, int y) { if (x >= 0 && x < 20 && y >= 0 && y < 13) dynamicDirty[y] |= (1 << x); }
-    bool isDirty(int x, int y) { return (dynamicDirty[y] & (1 << x)) != 0; }
-    void clearDirty(void);
-
 
     void print(void);
 

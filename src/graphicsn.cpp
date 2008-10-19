@@ -234,8 +234,8 @@ static signed int offsets[12][16] = {
   }
 };
 
-signed int graphicsN_c::getCarryOffsetX(unsigned int animation, unsigned int image) { return 5*offsets[animation][2*image+0]/2; }
-signed int graphicsN_c::getCarryOffsetY(unsigned int animation, unsigned int image) { return 3*offsets[animation][2*image+1]; }
+signed int graphicsN_c::getCarryOffsetX(unsigned int animation, unsigned int image) const { return 5*offsets[animation][2*image+0]/2; }
+signed int graphicsN_c::getCarryOffsetY(unsigned int animation, unsigned int image) const { return 3*offsets[animation][2*image+1]; }
 
 static signed int moveOffsets[10][64] = {
 
@@ -332,7 +332,7 @@ static signed int moveOffsets[10][64] = {
   }
 };
 
-signed int graphicsN_c::getMoveOffsetX(unsigned int animation, unsigned int image) { return 5*moveOffsets[animation][4*image+0]/2; }
-signed int graphicsN_c::getMoveOffsetY(unsigned int animation, unsigned int image) { return 3*moveOffsets[animation][4*image+1]; }
-signed int graphicsN_c::getMoveImage(unsigned int animation, unsigned int image) { return moveOffsets[animation][4*image+2]; }
+signed int graphicsN_c::getMoveOffsetX(unsigned int animation, unsigned int image) const { return 5*moveOffsets[animation][4*image+0]/2; }
+signed int graphicsN_c::getMoveOffsetY(unsigned int animation, unsigned int image) const { return 3*moveOffsets[animation][4*image+1]; }
+signed int graphicsN_c::getMoveImage(unsigned int animation, unsigned int image) const { return moveOffsets[animation][4*image+2]; }
 

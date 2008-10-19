@@ -1,13 +1,12 @@
 #ifndef __ANT_H__
 #define __ANT_H__
 
-#include <SDL.h>
-
 // this class contains all necessary code for the ant animation
 
 
 class level_c;
 class graphics_c;
+class surface_c;
 
 // the following defines are used for the keymask
 #define KEY_LEFT 1
@@ -52,9 +51,9 @@ class ant_c {
     ant_c(level_c & level, graphics_c & gr);
 
     // do one animation step for the ant
-    void performAnimation(void);
+    void performAnimation(surface_c & vid);
 
-    void draw(SDL_Surface * video);
+    void draw(surface_c & video);
 
     void setKeyStates(unsigned int keyMask);
 

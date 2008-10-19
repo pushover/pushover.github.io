@@ -1,0 +1,155 @@
+#include "screen.h"
+
+#include "graphics.h"
+
+#include <iostream>
+
+screen_c::screen_c(const graphics_c & g) : gr(g), animationState(0)
+{
+}
+
+screen_c::~screen_c(void)
+{
+}
+
+void screen_c::init(void)
+{
+  SDL_Init(SDL_INIT_VIDEO);
+
+  video = SDL_SetVideoMode(gr.resolutionX(), gr.resolutionY(), 24, 0);
+}
+
+void surface_c::clearDirty(void)
+{
+  for (unsigned int y = 0; y < 13; y++)
+    dynamicDirty[y] = 0;
+}
+
+void surface_c::markAllDirty(void)
+{
+  for (unsigned int y = 0; y < 13; y++)
+    dynamicDirty[y] = 0xFFFFFFFF;
+}
+
+void screen_c::flipComplete(void)
+{
+  SDL_Flip(video);
+}
+
+void screen_c::flipDirty(void)
+{
+  SDL_Rect rects[10*13];
+  int numrects = 0;
+
+  for (int y = 0; y < 13; y++)
+  {
+    int rowStart = -1;
+
+    for (int x = 0; x < 21; x++)
+    {
+      if (isDirty(x, y) && (x < 20))
+      {
+        if (rowStart == -1)
+          rowStart = x;
+      }
+      else if (rowStart != -1)
+      {
+        rects[numrects].y = gr.blockY()*y;
+        rects[numrects].x = gr.blockX()*rowStart;
+
+        if (y == 12)
+          rects[numrects].h = gr.blockY()/2;
+        else
+          rects[numrects].h = gr.blockY();
+
+        rects[numrects].w = gr.blockX()*(x-rowStart);
+        numrects++;
+        rowStart = -1;
+      }
+    }
+  }
+  SDL_UpdateRects(video, numrects, rects);
+}
+
+static int clip(int v) {
+  if (v < 0) return 0;
+  if (v > 256) return 256;
+  return v;
+}
+
+// a list of functions that return value between 0 and 255, depending on x and y
+static int f1(int x, int y, int a) { return clip(y*256/3 - 1024 + a*((1024+256)/32)); }
+static int f2(int x, int y, int a) { return clip(y*x*256/3/20 - 1024 + a*((1024+256)/32)); }
+static int f3(int x, int y, int a) { return clip(((2*y-12)*(2*y-12)+(2*x-19)*(2*x-19))*256/110 - 1024 + a*((1024+256)/32)); }
+
+static void u1(SDL_Surface * video, int x, int y, int f, int blx, int bly) {
+  int by = bly*y;
+  int bx = blx*x;
+  int bw = f*blx/256;
+  int bh = (y == 12) ? bly/2 : bly;
+
+  if (bw > 0)
+    SDL_UpdateRect(video, bx, by, bw, bh);
+}
+
+static void u2(SDL_Surface * video, int x, int y, int f, int blx, int bly) {
+  int by = bly*y;
+  int bx = blx*x;
+  int bw = blx;
+  int bh = (y == 12) ? bly/2 : bly;
+
+  bh = bh*f/256;
+
+  if (bh > 0)
+    SDL_UpdateRect(video, bx, by, bw, bh);
+}
+
+static void u3(SDL_Surface * video, int x, int y, int f, int blx, int bly) {
+  int by = bly*y + bly/2 - bly/2*f/256;
+  int bx = blx*x + blx/2 - blx/2*f/256;
+  int bw = blx;
+  int bh = (y == 12) ? bly/2 : bly;
+
+  bh = bh*f/256;
+  bw = bw*f/256;
+
+  if (bh > 0)
+    SDL_UpdateRect(video, bx, by, bw, bh);
+}
+
+bool screen_c::flipAnimate(void)
+{
+  animationState++;
+
+  int blocks = 0;
+
+  for (int y = 0; y < 13; y++)
+  {
+    for (int x = 0; x < 20; x++)
+    {
+      if (isDirty(x, y))
+      {
+        int valNew = f3(x, y, animationState);
+        int valOld = f3(x, y, animationState-1);
+
+        if (valNew != valOld)
+        {
+          u3(video, x, y, valNew, gr.blockX(), gr.blockY());
+          blocks++;
+        }
+      }
+    }
+  }
+
+  std::cout << blocks << " updated\n";
+
+
+  if (animationState == 32)
+  {
+    animationState = 0;
+    return true;
+  }
+
+  return false;
+}
+

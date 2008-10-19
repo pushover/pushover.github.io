@@ -22,14 +22,14 @@ class graphics_c {
     void setTheme(const std::string & name);
 
     /* to get the resolution that should be used */
-    virtual unsigned int resolutionX(void) = 0;
-    virtual unsigned int resolutionY(void) = 0;
+    virtual unsigned int resolutionX(void) const = 0;
+    virtual unsigned int resolutionY(void) const = 0;
 
     /* to get the blocksize of one block */
-    virtual unsigned int blockX(void) = 0;
-    virtual unsigned int blockY(void) = 0;
-    virtual unsigned int halveBlockDisplace(void) = 0;  // return and noffset to actually place the objects
-    virtual unsigned int antDisplace(void) = 0;  // return and noffset to actually place the objects
+    virtual unsigned int blockX(void) const = 0;
+    virtual unsigned int blockY(void) const = 0;
+    virtual unsigned int halveBlockDisplace(void) const = 0;  // return and noffset to actually place the objects
+    virtual unsigned int antDisplace(void) const = 0;  // return and noffset to actually place the objects
 
     SDL_Surface * getBgTile(unsigned int num) { return bgTiles[curTheme][num]; }
     SDL_Surface * getFgTile(unsigned int num) { return fgTiles[curTheme][num]; }
@@ -42,12 +42,12 @@ class graphics_c {
 
     // these are offsets that are used together with carried domino to displace
     // that domino
-    virtual signed int getCarryOffsetX(unsigned int animation, unsigned int image) = 0;
-    virtual signed int getCarryOffsetY(unsigned int animation, unsigned int image) = 0;
+    virtual signed int getCarryOffsetX(unsigned int animation, unsigned int image) const = 0;
+    virtual signed int getCarryOffsetY(unsigned int animation, unsigned int image) const = 0;
 
-    virtual signed int getMoveOffsetX(unsigned int animation, unsigned int image) = 0;
-    virtual signed int getMoveOffsetY(unsigned int animation, unsigned int image) = 0;
-    virtual signed int getMoveImage(unsigned int animation, unsigned int image) = 0;
+    virtual signed int getMoveOffsetX(unsigned int animation, unsigned int image) const = 0;
+    virtual signed int getMoveOffsetY(unsigned int animation, unsigned int image) const = 0;
+    virtual signed int getMoveImage(unsigned int animation, unsigned int image) const = 0;
 
     virtual void loadTheme(const std::string & name) = 0;
 
@@ -57,13 +57,13 @@ class graphics_c {
     static const unsigned char numAntAnimations;
 
     // the position of the time in the level
-    virtual int timeXPos(void) = 0;
-    virtual int timeYPos(void) = 0;
+    virtual int timeXPos(void) const = 0;
+    virtual int timeYPos(void) const = 0;
 
-    virtual int getDominoYStart(void) = 0;
-    virtual int convertDominoX(int x) = 0;
-    virtual int convertDominoY(int y) = 0;
-    virtual int splitterY(void) = 0;
+    virtual int getDominoYStart(void) const = 0;
+    virtual int convertDominoX(int x) const = 0;
+    virtual int convertDominoY(int y) const = 0;
+    virtual int splitterY(void) const = 0;
 
   protected:
 

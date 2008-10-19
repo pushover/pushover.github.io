@@ -19,27 +19,27 @@ class graphicsN_c : public graphics_c {
 
     void loadTheme(const std::string & name);
 
-    virtual unsigned int resolutionX(void) { return 800; }
-    virtual unsigned int resolutionY(void) { return 600; }
+    virtual unsigned int resolutionX(void) const { return 800; }
+    virtual unsigned int resolutionY(void) const { return 600; }
 
     /* to get the blocksize of one block */
-    virtual unsigned int blockX(void) { return 40; }
-    virtual unsigned int blockY(void) { return 48; }
-    virtual unsigned int halveBlockDisplace(void) { return 8*3; }
-    virtual unsigned int antDisplace(void) { return 6*3; }
+    virtual unsigned int blockX(void) const { return 40; }
+    virtual unsigned int blockY(void) const { return 48; }
+    virtual unsigned int halveBlockDisplace(void) const { return 8*3; }
+    virtual unsigned int antDisplace(void) const { return 6*3; }
 
-    virtual signed int getCarryOffsetX(unsigned int animation, unsigned int image);
-    virtual signed int getCarryOffsetY(unsigned int animation, unsigned int image);
-    virtual signed int getMoveOffsetX(unsigned int animation, unsigned int image);
-    virtual signed int getMoveOffsetY(unsigned int animation, unsigned int image);
-    virtual signed int getMoveImage(unsigned int animation, unsigned int image);
+    virtual signed int getCarryOffsetX(unsigned int animation, unsigned int image) const;
+    virtual signed int getCarryOffsetY(unsigned int animation, unsigned int image) const ;
+    virtual signed int getMoveOffsetX(unsigned int animation, unsigned int image) const;
+    virtual signed int getMoveOffsetY(unsigned int animation, unsigned int image) const;
+    virtual signed int getMoveImage(unsigned int animation, unsigned int image) const;
 
-    virtual int timeXPos(void) { return 5*18/2; }
-    virtual int timeYPos(void) { return 3*186; }
-    virtual int getDominoYStart(void) { return 3*4; }
-    virtual int convertDominoX(int x) { return 5*x/2; }
-    virtual int convertDominoY(int y) { return 3*y; }
-    virtual int splitterY(void) { return 3*12; }
+    virtual int timeXPos(void) const { return 5*18/2; }
+    virtual int timeYPos(void) const { return 3*186; }
+    virtual int getDominoYStart(void) const { return 3*4; }
+    virtual int convertDominoX(int x) const { return 5*x/2; }
+    virtual int convertDominoY(int y) const { return 3*y; }
+    virtual int splitterY(void) const { return 3*12; }
 
   private:
 

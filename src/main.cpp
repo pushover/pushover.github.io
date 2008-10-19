@@ -6,6 +6,7 @@
 #include "recorder.h"
 #include "soundsys.h"
 #include "text.h"
+#include "screen.h"
 
 #include <SDL.h>
 
@@ -65,18 +66,18 @@ int main(int argc, char * argv[]) {
   const std::string datadir((stat(PKGDATADIR, &st) == 0) ? PKGDATADIR : ".");
 
   graphicsN_c gr(datadir);
-  SDL_Surface * video = 0;
+  screen_c screen(gr);
+
+  SDL_Init(SDL_INIT_TIMER);
 
   if (useGraphics)
-    SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO);
-  else
-    SDL_Init(SDL_INIT_TIMER);
+    screen.init();
+
   printf("%i: Init\n", SDL_GetTicks());
   atexit(SDL_Quit);
 
   if (useGraphics)
   {
-    video = SDL_SetVideoMode(gr.resolutionX(), gr.resolutionY(), 24, 0);
     printf("%i: Video Mode set\n", SDL_GetTicks());
     gr.loadGraphics();
     printf("%i: Graphics loaded\n", SDL_GetTicks());
@@ -85,7 +86,7 @@ int main(int argc, char * argv[]) {
     soundSystem_c::instance()->openSound(datadir);
   }
 
-  level_c l;
+  level_c l(screen);
   if (levelFile == "")
   {
     levelsetList_c levelsetList;
@@ -134,7 +135,19 @@ int main(int argc, char * argv[]) {
   bool pause = false;
   bool blocks = false;
   bool singleStep = false;
-  SDL_Rect rects[10*13];
+
+  if (useGraphics)
+  {
+    l.drawDominos(gr, blocks);
+
+    while(!screen.flipAnimate()) {
+
+      ticks += 1000/tickDiv;
+
+      if (SDL_GetTicks() < ticks)
+        SDL_Delay(ticks-SDL_GetTicks());
+    }
+  }
 
   while (!exit) {
 
@@ -230,15 +243,15 @@ int main(int argc, char * argv[]) {
       a.setKeyStates(keyMask);
 
       l.performDoors();
-      a.performAnimation();
+      a.performAnimation(screen);
       l.performDominos();
     }
 
     if (useGraphics)
     {
       l.updateBackground(gr);
-      l.drawDominos(video, gr, blocks);
-      a.draw(video);
+      l.drawDominos(gr, blocks);
+      a.draw(screen);
     }
 
     if (debug)
@@ -248,45 +261,16 @@ int main(int argc, char * argv[]) {
     {
       if (blocks)
       {
-        SDL_Flip(video);
+        screen.flipComplete();
       }
       else
       {
-        int numrects = 0;
-
-        for (int y = 0; y < 13; y++)
-        {
-          int rowStart = -1;
-
-          for (int x = 0; x < 21; x++)
-          {
-            if (l.isDirty(x, y) && (x < 20))
-            {
-              if (rowStart == -1)
-                rowStart = x;
-            }
-            else if (rowStart != -1)
-            {
-              rects[numrects].y = gr.blockY()*y;
-              rects[numrects].x = gr.blockX()*rowStart;
-
-              if (y == 12)
-                rects[numrects].h = gr.blockY()/2;
-              else
-                rects[numrects].h = gr.blockY();
-
-              rects[numrects].w = gr.blockX()*(x-rowStart);
-              numrects++;
-              rowStart = -1;
-            }
-          }
-        }
-        SDL_UpdateRects(video, numrects, rects);
+        screen.flipDirty();
       }
     }
 
     if (!pause && !singleStep)
-      l.clearDirty();
+      screen.clearDirty();
 
     if (play && rec.endOfRecord())
       exit = true;
