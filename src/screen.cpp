@@ -121,8 +121,6 @@ bool screen_c::flipAnimate(void)
 {
   animationState++;
 
-  int blocks = 0;
-
   for (int y = 0; y < 13; y++)
   {
     for (int x = 0; x < 20; x++)
@@ -135,14 +133,10 @@ bool screen_c::flipAnimate(void)
         if (valNew != valOld)
         {
           u3(video, x, y, valNew, gr.blockX(), gr.blockY());
-          blocks++;
         }
       }
     }
   }
-
-  std::cout << blocks << " updated\n";
-
 
   if (animationState == 32)
   {
