@@ -24,23 +24,23 @@ nobase_dist_pkgdata_DATA = \
   data/dominos.png \
   data/carried.png \
   data/box.png \
-  data/01_StandardFalling.wav \
-  data/02_StopperHit.wav \
-  data/03_Splitter.wav \
-  data/04_Exploder.wav \
-  data/05_Delay.wav \
-  data/06_TumblerFalling.wav \
-  data/07_BridgerFalling.wav \
-  data/09_TriggerFalling.wav \
-  data/0A_Ascender.wav \
-  data/0B_Falling.wav \
-  data/0C_Landing.wav \
-  data/0D_PickUpDomino.wav \
-  data/0E_Tapping.wav \
-  data/0F_Schrugging.wav \
-  data/10_DoorClose.wav \
-  data/11_DoorOpen.wav \
-  data/13_Victory.wav \
+  data/01_StandardFalling.ogg \
+  data/02_StopperHit.ogg \
+  data/03_Splitter.ogg \
+  data/04_Exploder.ogg \
+  data/05_Delay.ogg \
+  data/06_TumblerFalling.ogg \
+  data/07_BridgerFalling.ogg \
+  data/09_TriggerFalling.ogg \
+  data/0A_Ascender.ogg \
+  data/0B_Falling.ogg \
+  data/0C_Landing.ogg \
+  data/0D_PickUpDomino.ogg \
+  data/0E_Tapping.ogg \
+  data/0F_Schrugging.ogg \
+  data/10_DoorClose.ogg \
+  data/11_DoorOpen.ogg \
+  data/13_Victory.ogg \
   \
   themes/tools.lua \
   themes/toxcity.lua  themes/toxcity.png \
