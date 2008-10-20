@@ -211,7 +211,7 @@ int main(int argc, char * argv[]) {
                 std::vector<std::string> hints = l.getHint();
 
                 txt = hints[0];
-                for (int i = 1; i < hints.size(); i++)
+                for (unsigned int i = 1; i < hints.size(); i++)
                   txt = txt + " " + hints[i];
               }
               helpwindow_c w(txt, screen, gr);

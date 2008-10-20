@@ -99,7 +99,7 @@ void renderText(SDL_Surface * d, const fontParams_s * par, const std::string & t
     }
 
     SDL_Surface * vv = TTF_RenderUTF8_Blended(fonts[par->font], curLine.c_str(), par->color);
-    SDL_Surface * vb;
+    SDL_Surface * vb = NULL;
 
     if (par->shadow)
     {

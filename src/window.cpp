@@ -18,10 +18,10 @@ window_c::window_c(unsigned char x_, unsigned char y_, unsigned char w_, unsigne
       int yp = 1;
 
       if (i == 0) xp = 0;
-      if (i == w-1) xp = 2;
+      if (i+1 == w) xp = 2;
 
       if (j == 0) yp = 0;
-      if (j == h-1) yp = 2;
+      if (j+1 == h) yp = 2;
 
 
       SDL_Surface * v = gr.getBoxBlock(yp*3+xp);
