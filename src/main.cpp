@@ -7,6 +7,7 @@
 #include "soundsys.h"
 #include "text.h"
 #include "screen.h"
+#include "window.h"
 
 #include <SDL.h>
 
@@ -202,6 +203,36 @@ int main(int argc, char * argv[]) {
               pause = false;
               ticks = SDL_GetTicks();
               singleStep = true;
+            }
+            if (event.key.keysym.sym == SDLK_F1) {
+              std::string txt = "Arrange dominos in a run so that trigger falls last. You have 1 push.";
+              if (!l.someTimeLeft())
+              {
+                std::vector<std::string> hints = l.getHint();
+
+                txt = hints[0];
+                for (int i = 1; i < hints.size(); i++)
+                  txt = txt + " " + hints[i];
+              }
+              helpwindow_c w(txt, screen, gr);
+              screen.flipComplete();
+
+              bool exit = false;
+
+              while (!exit) {
+
+                SDL_Delay(100);
+
+                while(SDL_PollEvent(&event)) {
+                  if (event.type == SDL_KEYDOWN &&
+                      event.key.keysym.sym == SDLK_ESCAPE)
+                    exit = true;
+                }
+              }
+              ticks = SDL_GetTicks() + 1000/tickDiv;
+
+              screen.markAllDirty();
+
             }
             break;
         }

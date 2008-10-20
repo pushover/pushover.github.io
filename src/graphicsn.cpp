@@ -148,7 +148,11 @@ void graphicsN_c::loadGraphics(void) {
     SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
     for (int i = 0; i < 3; i++) {
+
+      png.getPart(v);
+
       for (int x = 0; x < 3; x++) {
+
         SDL_Surface * w = SDL_CreateRGBSurface(0, 40, 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
         SDL_SetAlpha(w, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 

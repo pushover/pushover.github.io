@@ -20,7 +20,8 @@ enum {
 
 enum {
   ALN_TEXT,
-  ALN_CENTER
+  ALN_CENTER,
+  ALN_TEXT_CENTER
 };
 
 
