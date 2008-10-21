@@ -78,9 +78,39 @@ void renderText(SDL_Surface * d, const fontParams_s * par, const std::string & t
 
   std::vector<std::string> words = split(t, ' ');
 
-  unsigned int word = 0;
-
   int ypos = par->box.y;
+
+  if (par->alignment == ALN_CENTER)
+  {
+    unsigned int word = 0;
+    int height = 0;
+
+    while (word < words.size()) {
+
+      std::string curLine = words[word];
+      word++;
+
+      while (word < words.size())
+      {
+        int w;
+        TTF_SizeUTF8(fonts[par->font], (curLine+words[word]).c_str(), &w, 0);
+
+        if (w > par->box.w) break;
+
+        curLine = curLine + " " + words[word];
+        word++;
+      }
+
+      int h, w;
+      TTF_SizeUTF8(fonts[par->font], curLine.c_str(), &w, &h);
+
+      height += h;
+    }
+
+    ypos += (par->box.h-height)/2;
+  }
+
+  unsigned int word = 0;
 
   while (word < words.size()) {
 
@@ -128,30 +158,7 @@ void renderText(SDL_Surface * d, const fontParams_s * par, const std::string & t
       }
       SDL_BlitSurface(vv, 0, d, &r);
     }
-    else if (par->alignment == ALN_CENTER) {
-
-      SDL_Rect r = par->box;
-
-      r.x += (r.w - vv->w)/2;
-      r.y += (r.h - vv->h)/2;
-
-      r.w = vv->w;
-      r.h = vv->h;
-
-      if (par->shadow)
-      {
-        int sa = 1;
-        if (par->font == FNT_BIG) sa = 2;
-
-        r.x-=sa; r.y-=sa; SDL_BlitSurface(vb, 0, d, &r);
-        r.x+=2*sa;        SDL_BlitSurface(vb, 0, d, &r);
-        r.y+=2*sa;        SDL_BlitSurface(vb, 0, d, &r);
-        r.x-=2*sa;        SDL_BlitSurface(vb, 0, d, &r);
-        r.y-=sa; r.x+=sa;
-      }
-      SDL_BlitSurface(vv, 0, d, &r);
-    }
-    else if (par->alignment == ALN_TEXT_CENTER) {
+    else if (par->alignment == ALN_TEXT_CENTER || par->alignment == ALN_CENTER) {
 
       SDL_Rect r;
 

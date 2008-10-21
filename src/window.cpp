@@ -120,13 +120,13 @@ helpwindow_c::helpwindow_c(const std::string text, surface_c & s, graphics_c & g
   }
 
   par.font = FNT_NORMAL;
-  par.alignment = ALN_TEXT_CENTER;
+  par.alignment = ALN_CENTER;
   par.color.r = par.color.g = 255; par.color.b = 0;
   par.shadow = false;
   par.box.x = 400-3*55;
   par.box.w = 6*55;
-  par.box.y = 240;
-  par.box.h = 160;
+  par.box.y = 235;
+  par.box.h = 145;
 
   renderText(s.getVideo(), &par, text);
 }
