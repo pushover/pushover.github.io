@@ -22,14 +22,6 @@ unsigned int luaClass_c::getArraySize(const std::string & name) {
   return lua_objlen(L, -1);
 }
 
-/* functions to get and set variables */
-void luaClass_c::setNumber(const std::string & name, lua_Number value) {
-}
-void luaClass_c::setString(const std::string & name, const std::string & value) {
-}
-void luaClass_c::setBool(const std::string & name, bool value) {
-}
-
 lua_Number luaClass_c::getNumberArray(const std::string & name, unsigned int idx) {
   lua_getglobal(L, name.c_str());
   lua_pushnumber(L, idx);
@@ -53,25 +45,9 @@ bool luaClass_c::getBool(const std::string & name) {
 
 /* functions to evaluate lua code */
 int luaClass_c::doFile(const std::string & fname) {
-  luaL_loadfile(L, fname.c_str()) || lua_pcall(L, 0, 0, 0);
+  return luaL_dofile(L, fname.c_str());
 }
 int luaClass_c::doString(const std::string & code) {
-  luaL_loadbuffer(L, code.c_str(), code.length(), "line") || lua_pcall(L, 0, 0, 0);
-}
-
-/* functions that allow calling lua functions
- *
- * I decided to leave out the generic interface and only provide some
- * overloaded functions to call a lua function with specific parameters
- * the return value is encoded within the name, the othe parameters
- * should be selected by the ...
- */
-void luaClass_c::callV(const std::string & fname) {
-}
-void luaClass_c::callV(const std::string & fname, lua_Number p1) {
-}
-lua_Number luaClass_c::callN(const std::string & fname) {
-}
-lua_Number luaClass_c::callN(const std::string & fname, lua_Number p1) {
+  return luaL_dostring(L, code.c_str());
 }
 
