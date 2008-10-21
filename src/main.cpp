@@ -186,9 +186,7 @@ int main(int argc, char * argv[]) {
             if (event.key.keysym.sym == SDLK_d)
               debug = !debug;
             if (event.key.keysym.sym == SDLK_h) {
-              const std::vector<std::string> hint = l.getHint();
-              for (std::vector<std::string>::const_iterator i = hint.begin(); i != hint.end(); i++)
-                  std::cout << (*i) << std::endl;
+              std::cout << l.getHint() << std::endl;
             }
             if (event.key.keysym.sym == SDLK_b)
               blocks = !blocks;
@@ -205,16 +203,12 @@ int main(int argc, char * argv[]) {
               singleStep = true;
             }
             if (event.key.keysym.sym == SDLK_F1) {
-              std::string txt = "Arrange dominos in a run so that trigger falls last. You have 1 push.";
-              if (!l.someTimeLeft())
-              {
-                std::vector<std::string> hints = l.getHint();
-
-                txt = hints[0];
-                for (unsigned int i = 1; i < hints.size(); i++)
-                  txt = txt + " " + hints[i];
-              }
-              helpwindow_c w(txt, screen, gr);
+              std::string text;
+              if (l.someTimeLeft())
+                text = "Arrange dominos in a run so that trigger falls last. You have 1 push.";
+              else
+                text = l.getHint();
+              helpwindow_c w(text, screen, gr);
               screen.flipComplete();
 
               bool exit = false;

@@ -84,7 +84,9 @@ void level_c::load(const textsections_c & sections) {
   }
 
   /* Hint section */
-  hint = sections.getSingleSection("Hint");
+  hint = sections.getSingleLine("Hint");
+  if (hint == "")
+    hint = "No hint!";
 
   /* Level section */
   const std::vector<std::string> & givenLevelRows =
@@ -267,15 +269,10 @@ void level_c::save(std::ostream & stream) const {
   "| " << (timeSeconds / 60)
        << ':'
        << std::setfill('0') << std::setw(2) << (timeSeconds % 60)
-       << "\n";
-
-  stream << '\n';
-  stream << "Hint\n";
-  for (std::vector<std::string>::const_iterator i = hint.begin(); i != hint.end(); i++)
-    if (*i == "")
-      stream << "|\n";
-    else
-      stream << "| " << (*i) << "\n";
+       << "\n"
+  "\n"
+  "Hint\n"
+  "| " << hint << "\n";
 
   stream << '\n';
   stream << "Level\n";

@@ -40,7 +40,7 @@ class level_c {
 
     std::string name;
     std::string theme;
-    std::vector<std::string> hint;
+    std::string hint;
 
     std::string checksum;
 
@@ -114,7 +114,7 @@ class level_c {
 
     const std::string getName(void) const { return name; }
     const std::string getTheme(void) const { return theme; }
-    const std::vector<std::string> getHint(void) const { return hint; }
+    const std::string getHint(void) const { return hint; }
 
     const std::string getChecksum(void) const { return checksum; }
 
