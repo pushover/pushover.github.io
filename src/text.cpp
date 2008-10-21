@@ -8,7 +8,7 @@
 std::vector<TTF_Font * > fonts;
 
 
-void initText(void) {
+void initText(std::string dir) {
 
   if (TTF_Init() == -1) {
     std::cout << "Oops could not initialite font engine\n";
@@ -17,7 +17,7 @@ void initText(void) {
 
   TTF_Font * ft;
 
-  ft = TTF_OpenFont("/usr/share/fonts/freefont-ttf/FreeSans.ttf", 20);
+  ft = TTF_OpenFont((dir+"/data/FreeSans.ttf").c_str(), 20);
   if (!ft) {
     std::cout << "Oops can not open Font file\n";
     exit(1);
@@ -25,7 +25,7 @@ void initText(void) {
 
   fonts.push_back(ft);
 
-  ft = TTF_OpenFont("/usr/share/fonts/freefont-ttf/FreeSans.ttf", 30);
+  ft = TTF_OpenFont((dir+"/data/FreeSans.ttf").c_str(), 30);
   if (!ft) {
     std::cout << "Oops can not open Font file\n";
     exit(1);
@@ -33,7 +33,7 @@ void initText(void) {
 
   fonts.push_back(ft);
 
-  ft = TTF_OpenFont("/usr/share/fonts/freefont-ttf/FreeSans.ttf", 35);
+  ft = TTF_OpenFont((dir+"/data/FreeSans.ttf").c_str(), 35);
   if (!ft) {
     std::cout << "Oops can not open Font file\n";
     exit(1);

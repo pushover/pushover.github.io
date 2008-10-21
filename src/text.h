@@ -34,7 +34,7 @@ typedef struct {
 } fontParams_s;
 
 
-void initText(void);
+void initText(std::string datadir);
 void deinitText(void);
 
 // render a given UFT-8 encoded text to the surface v into the given box

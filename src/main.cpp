@@ -83,7 +83,7 @@ int main(int argc, char * argv[]) {
     gr.loadGraphics();
     printf("%i: Graphics loaded\n", SDL_GetTicks());
 
-    initText();
+    initText(datadir);
     soundSystem_c::instance()->openSound(datadir);
   }
 
