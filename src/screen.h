@@ -40,6 +40,7 @@ class screen_c : public surface_c {
 
     const graphics_c & gr;
     int animationState;
+    bool fullscreen;
 
   public:
 
@@ -53,6 +54,8 @@ class screen_c : public surface_c {
     void flipComplete(void);  // flips the complete screen, not looking at the dirty blocks
     void flipDirty(void);     // updates only the dirty blocks
     bool flipAnimate(void);   // updates only the dirty blocks, but does that step by step resultin in an blending effetc return true, when done
+
+    void toggleFullscreen(void);
 };
 
 #endif

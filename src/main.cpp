@@ -333,7 +333,12 @@ int main(int argc, char * argv[]) {
             {
               switch(dynamic_cast<listWindow_c*>(window)->getSelection())
               {
-                case 0: break;  // toggle full screen
+                case 0:   // toggle full screen
+                  screen.toggleFullscreen();
+                  screen.markAllDirty();
+                  delete window;
+                  window = getConfigWindow(screen, gr);
+                  break;
                 case 1: break;  // toggle sound effects
                 default: nextState = ST_MAIN; break;  // back to main menu
               }

@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-screen_c::screen_c(const graphics_c & g) : gr(g), animationState(0)
+screen_c::screen_c(const graphics_c & g) : gr(g), animationState(0), fullscreen(false)
 {
 }
 
@@ -16,7 +16,13 @@ void screen_c::init(void)
 {
   SDL_Init(SDL_INIT_VIDEO);
 
-  video = SDL_SetVideoMode(gr.resolutionX(), gr.resolutionY(), 24, 0);
+  video = SDL_SetVideoMode(gr.resolutionX(), gr.resolutionY(), 24, fullscreen?SDL_FULLSCREEN:0);
+}
+
+void screen_c::toggleFullscreen(void)
+{
+  fullscreen = !fullscreen;
+  video = SDL_SetVideoMode(gr.resolutionX(), gr.resolutionY(), 24, fullscreen?SDL_FULLSCREEN:0);
 }
 
 void surface_c::clearDirty(void)
