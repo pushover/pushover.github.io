@@ -7,6 +7,8 @@
 void recorder_c::load(const std::string & filename) {
   std::ifstream stream(filename.c_str());
 
+  if (!stream) throw std::exception();
+
   if (!getline(stream, levelsetName))
     throw std::exception();
   if (!getline(stream, levelName))
@@ -60,4 +62,8 @@ void recorder_c::save(void) const {
     pos++;
   }
   stream << cnt << ' ' << val << '\n';
+}
+
+void recorder_c::truncate(void) {
+  record.resize(playpos);
 }

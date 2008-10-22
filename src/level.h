@@ -9,6 +9,7 @@
 class graphics_c;
 class textsections_c;
 class surface_c;
+class ant_c;
 
 class level_c {
 
@@ -50,6 +51,10 @@ class level_c {
     // the number of 1/18 seconds that are left for solving the level
     int timeLeft;
     int Min, Sec;   // number of minutes and seconds shown in display
+
+    // has the level been chacked for completion, that is
+    // only done once, once a trigger has falln
+    bool finishCheckDone;
 
     /* 2 bitmasks containing a bit for each block saying if it changed
      * there is one array for the static background and one for the dynamic
@@ -188,7 +193,7 @@ class level_c {
     unsigned int getEntryDoorPosX(void) { return doorEntryX; }
     unsigned int getEntryDoorPosY(void) { return doorEntryY; }
 
-    void performDominos(void);
+    void performDominos(ant_c & ant);
 
     // query level information of certain places
     bool containsPlank(int x, int y);

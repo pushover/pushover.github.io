@@ -24,6 +24,9 @@ class recorder_c {
     int getEvent(void) { return playpos < record.size() ? record[playpos++] : 0; }
     bool endOfRecord(void) const { return playpos >= record.size(); }
 
+    // remove all events from the current position
+    void truncate(void);
+
   private:
 
     std::vector<int> record;

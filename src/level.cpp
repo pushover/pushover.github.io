@@ -6,6 +6,7 @@
 #include "soundsys.h"
 #include "text.h"
 #include "screen.h"
+#include "ant.h"
 
 #include <stdio.h>
 
@@ -20,6 +21,21 @@ level_c::level_c(surface_c & t) : target(t) {
         vid->format->Rmask, vid->format->Gmask, vid->format->Bmask, 0);
   else
     background = 0;
+
+  for (unsigned int y = 0; y < 13; y++)
+    for (unsigned int x = 0; x < 20; x++) {
+      for (unsigned int i = 0; i < maxBg; i++)
+        level[y][x].bg[i] = 0;
+      level[y][x].fg = 0;
+      level[y][x].dominoType = DominoTypeEmpty;
+      level[y][x].dominoState = 8;
+      level[y][x].dominoDir = 0;
+      level[y][x].dominoYOffset = 0;
+      level[y][x].dominoExtra = 0;
+    }
+
+  // invalid time...
+  timeLeft = 60*60*18;
 }
 
 level_c::~level_c(void) {
@@ -52,6 +68,7 @@ void level_c::load(const textsections_c & sections) {
     staticDirty[i] = 0xFFFFF;
   target.markAllDirty();
   triggerFalln = false;
+  finishCheckDone = false;
   memset(level, 0, sizeof(level));
 
   /* Version section */
@@ -779,6 +796,7 @@ void level_c::drawDominos(graphics_c & gr, bool debug) {
       }
   }
 
+  if (timeLeft < 60*60*18)
   { // output the time
     char time[6];
 
@@ -2993,7 +3011,7 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
   }
 }
 
-void level_c::performDominos(void) {
+void level_c::performDominos(ant_c & a) {
 
   for (int y = 0; y < 13; y++)
     for (int x = 0; x < 20; x++)
@@ -3011,6 +3029,19 @@ void level_c::performDominos(void) {
       }
 
   timeLeft--;
+
+  if (triggerIsFalln() && !finishCheckDone)
+  {
+    finishCheckDone = true;
+    if (levelCompleted(0) && !a.carrySomething() && a.isLiving())
+    {
+      a.success();
+    }
+    else
+    {
+      a.fail();
+    }
+  }
 }
 
 bool level_c::levelCompleted(int *fail) {

@@ -50,6 +50,8 @@ class ant_c {
     // marking, and level modification
     ant_c(level_c & level, graphics_c & gr);
 
+    void initForLevel(void);
+
     // do one animation step for the ant
     void performAnimation(surface_c & vid);
 

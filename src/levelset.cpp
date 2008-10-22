@@ -118,6 +118,7 @@ levelset_c::levelset_c(const std::string & path) {
     const std::string & levelName = test_level.getName();
     if (!levels.insert(make_pair(levelName, sections)).second)
       throw format_error("duplicate level name: " + levelName);
+    checksums.insert(make_pair(levelName, test_level.getChecksum()));
   }
 
   /* Check for consistency and completeness */
@@ -136,6 +137,12 @@ levelset_c::levelset_c(const std::string & path) {
     if (levelNamesMap.find(levelName) == levelNamesMap.end())
       throw format_error("missing entry in levelset index for level: " + levelName);
   }
+}
+
+const std::string & levelset_c::getChecksum(const std::string & levelName) const {
+  if (checksums.find(levelName) == checksums.end())
+    throw std::exception();
+  return checksums.find(levelName)->second;
 }
 
 void levelset_c::loadLevel(level_c & level, const std::string & levelName) const {

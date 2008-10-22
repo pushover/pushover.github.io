@@ -15,6 +15,7 @@ class levelset_c {
     std::string name;
     unsigned int priority;
     std::vector<std::string> levelNames;
+    std::map<std::string, std::string> checksums;
     std::map<std::string, textsections_c> levels;
 
   public:
@@ -24,6 +25,7 @@ class levelset_c {
     const unsigned int getPriority(void) const { return priority; }
 
     const std::vector<std::string> & getLevelNames(void) const { return levelNames; }
+    const std::string & getChecksum(const std::string & levelName) const;
     void loadLevel(level_c & level, const std::string & levelName) const;
 };
 

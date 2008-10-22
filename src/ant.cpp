@@ -82,6 +82,10 @@ typedef enum {
 // marking, and level modification
 ant_c::ant_c(level_c & level, graphics_c & gr): level(level), gr(gr) {
 
+  initForLevel();
+}
+
+void ant_c::initForLevel(void) {
   // ant invisible, outside the screen
   blockX = blockY = 200;
   subBlock = screenBlock = 0;

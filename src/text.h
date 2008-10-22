@@ -51,4 +51,6 @@ void deinitText(void);
 // string with additional parameters
 void renderText(SDL_Surface * v, const fontParams_s * par, const std::string & t);
 
+unsigned int getFontHeight(int font);
+
 #endif
