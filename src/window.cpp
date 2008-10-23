@@ -399,7 +399,7 @@ listWindow_c * getFailedWindow(const std::string & reason, surface_c & surf, gra
         entries.push_back("Return to Main menu");
     }
 
-    return new listWindow_c(3, 3, 14, 6, surf, gr, "You failed: " + reason, entries, false);
+    return new listWindow_c(2, 3, 16, 6, surf, gr, "You failed: " + reason, entries, false);
 }
 
 

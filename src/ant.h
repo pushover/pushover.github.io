@@ -60,7 +60,7 @@ class ant_c {
     void setKeyStates(unsigned int keyMask);
 
     bool carrySomething(void) { return carriedDomino != 0; }
-    bool isLiving(void) { return state != 64 && state != 65; }
+    bool isLiving(void) { return state != 64 && state != 65 && state != 53; }
 
     void success(void);
     void fail(void);

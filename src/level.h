@@ -190,10 +190,11 @@ class level_c {
     void openExitDoor(bool open) { openDoorExit = open; }
     bool isEntryDoorOpen(void) { return getFg(doorEntryX, doorEntryY) == FgElementDoor3; }
     bool isExitDoorOpen(void) { return getFg(doorExitX, doorExitY) == FgElementDoor3; }
+    bool isExitDoorClosed(void) { return getFg(doorExitX, doorExitY) == FgElementDoor0; }
     unsigned int getEntryDoorPosX(void) { return doorEntryX; }
     unsigned int getEntryDoorPosY(void) { return doorEntryY; }
 
-    void performDominos(ant_c & ant);
+    int performDominos(ant_c & ant);
 
     // query level information of certain places
     bool containsPlank(int x, int y);
@@ -210,7 +211,7 @@ class level_c {
 
     // check, if the level has been successfully solved
     // if not the reason for failure is in fail
-    bool levelCompleted(int *fail);
+    bool levelCompleted(int & fail);
 
     bool triggerIsFalln(void) { return triggerFalln; }
 

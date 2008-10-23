@@ -3011,7 +3011,7 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
   }
 }
 
-void level_c::performDominos(ant_c & a) {
+int level_c::performDominos(ant_c & a) {
 
   for (int y = 0; y < 13; y++)
     for (int x = 0; x < 20; x++)
@@ -3033,25 +3033,37 @@ void level_c::performDominos(ant_c & a) {
   if (triggerIsFalln() && !finishCheckDone)
   {
     finishCheckDone = true;
-    if (levelCompleted(0) && !a.carrySomething() && a.isLiving())
+
+    int reason = 0;
+
+    if (levelCompleted(reason) && !a.carrySomething() && a.isLiving())
     {
       a.success();
     }
     else
     {
       a.fail();
+
+      if (reason)
+        return reason;
+      else if (a.carrySomething())
+        return 4;
+      else
+        return 5;
     }
   }
+
+  return 0;
 }
 
-bool level_c::levelCompleted(int *fail) {
+bool level_c::levelCompleted(int & fail) {
 
   for (int y = 0; y < 13; y++)
     for (int x = 0; x < 20; x++) {
       if (level[y][x].dominoType >= DominoTypeCrash0 &&
           level[y][x].dominoType <= DominoTypeCrash5)
       {
-        if (fail) *fail = 1;
+        fail = 3;
         return false;
       }
 
@@ -3061,7 +3073,7 @@ bool level_c::levelCompleted(int *fail) {
         { // for splitters is must have started to fall
           if (level[y][x].dominoState > 2 && level[y][x].dominoState <= 8)
           {
-            if (fail) *fail = 2;
+            fail = 6;
             return false;
           }
         }
@@ -3069,7 +3081,7 @@ bool level_c::levelCompleted(int *fail) {
         { // triggers must as least have started to fall
           if (level[y][x].dominoState == 8)
           {
-            if (fail) *fail = 2;
+            fail = 6;
             return false;
           }
         }
@@ -3077,7 +3089,7 @@ bool level_c::levelCompleted(int *fail) {
         { // tumbler must lie on something or lean against a wall
           // not falln far enough
           if (level[y][x].dominoState > 3 && level[y][x].dominoState < 13) {
-            if (fail) *fail = 2;
+            fail = 6;
             return false;
           }
 
@@ -3086,7 +3098,7 @@ bool level_c::levelCompleted(int *fail) {
               level[y][x-1].fg != FgElementPlatformStep4 &&
               level[y][x-1].fg != FgElementPlatformStep7)
           {
-            if (fail) *fail = 2;
+            fail = 6;
             return false;
           }
 
@@ -3094,7 +3106,7 @@ bool level_c::levelCompleted(int *fail) {
               level[y][x+1].fg != FgElementPlatformStep4 &&
               level[y][x+1].fg != FgElementPlatformStep7)
           {
-            if (fail) *fail = 2;
+            fail = 6;
             return false;
           }
 
@@ -3103,23 +3115,28 @@ bool level_c::levelCompleted(int *fail) {
               && level[y][x-1].dominoType == DominoTypeEmpty
               && (level[y][x-2].dominoType == DominoTypeEmpty || level[y][x-2].dominoState < 14))
           {
-            if (fail) *fail = 2;
+            fail = 6;
             return false;
           }
           if (   level[y][x].dominoState >= 14
               && level[y][x+1].dominoType == DominoTypeEmpty
               && (level[y][x+2].dominoType == DominoTypeEmpty || level[y][x+2].dominoState > 2)) {
-            if (fail) *fail = 2;
+            fail = 6;
             return false;
           }
 
         }
         else
         {
+          if (level[y][x].dominoState == 8)
+          {
+            fail = 4;
+            return false;
+          }
           if (level[y][x].dominoState > 3 && level[y][x].dominoState < 13)
           {
             // here we certainly fail
-            if (fail) *fail = 2;
+            fail = 6;
             return false;
           }
           // in this case we might still succeed, when we lean against a block
@@ -3131,7 +3148,7 @@ bool level_c::levelCompleted(int *fail) {
              )
           {
             // here we lean against a of a blocker and can not go back
-            if (fail) *fail = 2;
+            fail = 6;
             return false;
           }
 
@@ -3143,7 +3160,7 @@ bool level_c::levelCompleted(int *fail) {
              )
           {
             // here we lean against a step
-            if (fail) *fail = 2;
+            fail = 6;
             return false;
           }
         }

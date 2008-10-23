@@ -56,19 +56,20 @@ static unsigned int getKeyMask(void) {
 // 1 success
 // 2 too slow
 // 3 crashes
-// 4 die
+// 4 not all dominos fell
+// 5 die
 //
 int playTick(level_c & l, ant_c & a, graphics_c & gr, screen_c & screen)
 {
   l.performDoors();
   a.performAnimation(screen);
-  l.performDominos(a);
+  int res = l.performDominos(a);
 
   l.updateBackground(gr);
   l.drawDominos(gr, false);
   a.draw(screen);
 
-  if (l.triggerIsFalln() && !a.isVisible()) {
+  if (l.triggerIsFalln() && !a.isVisible() && l.isExitDoorClosed()) {
 
     if (l.someTimeLeft())
     {
@@ -80,7 +81,10 @@ int playTick(level_c & l, ant_c & a, graphics_c & gr, screen_c & screen)
     }
   }
 
-  return 0;
+  if (!a.isLiving())
+    return 5;
+
+  return res;
 }
 
 // the states of the program
@@ -88,12 +92,14 @@ typedef enum {
   ST_INIT,     // inistal transition state
   ST_MAIN,     // main menu
   ST_CONFIG,   // config menu
+  ST_CONFIGTOG,// config menu toggled something, repaint
   ST_LEVELSET, // level set selection
   ST_LEVEL,    // level selection
   ST_PREREPLAY,// prepare replay for running
   ST_REPLAY,   // replay currently running
   ST_PREPLAY,  // prepare level for playing
   ST_PLAY,     // currently playing
+  ST_FAILDELAY,// play a second more after failing
   ST_SOLVED,   // current level solved
   ST_FAILED,   // current level failed (reason in failreason)
   ST_HELP,     // help dialog showing
@@ -209,6 +215,8 @@ int main(int argc, char * argv[]) {
   Uint32 ticks = SDL_GetTicks();
 
   window_c * window = 0; // the currently visible window
+  unsigned int failReason;
+  unsigned int failDelay;  // a counter to delay the fail window a bit after failing
 
   while (!exitProgram) {
 
@@ -240,12 +248,12 @@ int main(int argc, char * argv[]) {
 
           case ST_PREREPLAY:
           case ST_PREPLAY:
-            break;
-
           case ST_INIT:
           case ST_REPLAY:
           case ST_PLAY:
+          case ST_FAILDELAY:
           case ST_EXIT:
+          case ST_CONFIGTOG:
             break;
 
         }
@@ -259,7 +267,19 @@ int main(int argc, char * argv[]) {
           case ST_QUIT:     window = getQuitWindow(screen, gr); break;
           case ST_CONFIG:   window = getConfigWindow(screen, gr); break;
           case ST_SOLVED:   window = getSolvedWindow(screen, gr); break;
-          case ST_FAILED:   window = getFailedWindow("You died", screen, gr); break;
+          case ST_FAILED:
+            {
+              std::string reason;
+              switch (failReason) {
+                case 2: reason = "You've been too slow"; break;
+                case 3: reason = "Some dominoes crashed"; break;
+                case 4: reason = "Not all dominoes fell"; break;
+                case 5: reason = "You died"; break;
+                case 6: reason = "Trigger was not last to fall"; break;
+              }
+              window = getFailedWindow(reason, screen, gr);
+            }
+            break;
 
           case ST_HELP:
             {
@@ -284,6 +304,8 @@ int main(int argc, char * argv[]) {
           case ST_PLAY:
           case ST_INIT:
           case ST_REPLAY:
+          case ST_FAILDELAY:
+          case ST_CONFIGTOG:
             break;
 
           case ST_EXIT:
@@ -336,8 +358,7 @@ int main(int argc, char * argv[]) {
                 case 0:   // toggle full screen
                   screen.toggleFullscreen();
                   screen.markAllDirty();
-                  delete window;
-                  window = getConfigWindow(screen, gr);
+                  nextState = ST_CONFIGTOG;
                   break;
                 case 1: break;  // toggle sound effects
                 default: nextState = ST_MAIN; break;  // back to main menu
@@ -564,6 +585,8 @@ int main(int argc, char * argv[]) {
           break;
 
         case ST_INIT:
+        case ST_CONFIGTOG:
+        case ST_FAILDELAY:
         case ST_EXIT:
           break;
       }
@@ -595,13 +618,27 @@ int main(int argc, char * argv[]) {
         // the record has ended to allow the player to
         // continue playing
 
+      case ST_FAILDELAY:
+        if (failDelay > 0)
+        {
+          failDelay--;
+          a.setKeyStates(0);
+          playTick(l, a, gr, screen);
+        }
+        else
+        {
+          nextState = ST_FAILED;
+        }
+        break;
+
       case ST_PLAY:
         {
           unsigned int keyMask = getKeyMask();
           rec.addEvent(keyMask);
           a.setKeyStates(keyMask);
         }
-        switch (playTick(l, a, gr, screen)) {
+        failReason = playTick(l, a, gr, screen);
+        switch (failReason) {
           case 1:
             rec.save();
             solved.addLevel(l.getChecksum());
@@ -609,10 +646,18 @@ int main(int argc, char * argv[]) {
             break;
           case 0:
             break;
-          default:
+          case 2:
             nextState = ST_FAILED;
             break;
+          default:
+            failDelay = 36;
+            nextState = ST_FAILDELAY;
+            break;
         }
+        break;
+
+      case ST_CONFIGTOG:
+        nextState = ST_CONFIG;
         break;
 
       case ST_INIT:
