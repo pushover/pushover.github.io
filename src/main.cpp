@@ -1,6 +1,6 @@
 #include "graphicsn.h"
 #include "textsections.h"
-#include "level.h"
+#include "levelplayer.h"
 #include "levelset.h"
 #include "ant.h"
 #include "recorder.h"
@@ -59,7 +59,7 @@ static unsigned int getKeyMask(void) {
 // 4 not all dominos fell
 // 5 die
 //
-int playTick(level_c & l, ant_c & a, graphics_c & gr, screen_c & screen)
+int playTick(levelPlayer_c & l, ant_c & a, graphics_c & gr, screen_c & screen)
 {
   l.performDoors();
   a.performAnimation(screen);
@@ -130,7 +130,7 @@ int main(int argc, char * argv[]) {
   gr.loadGraphics();
   initText(datadir);
   soundSystem_c::instance()->openSound(datadir);
-  level_c l(screen);
+  levelPlayer_c l(screen);
   recorder_c rec;
   ant_c a(l, gr);
   solvedMap_c solved;

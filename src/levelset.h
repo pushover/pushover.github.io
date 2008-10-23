@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 
-class level_c;
+class levelData_c;
 class textsections_c;
 
 class levelset_c {
@@ -26,7 +26,7 @@ class levelset_c {
 
     const std::vector<std::string> & getLevelNames(void) const { return levelNames; }
     const std::string & getChecksum(const std::string & levelName) const;
-    void loadLevel(level_c & level, const std::string & levelName) const;
+    void loadLevel(levelData_c & level, const std::string & levelName) const;
 };
 
 class levelsetList_c {

@@ -1,5 +1,5 @@
 #include "levelset.h"
-#include "level.h"
+#include "leveldata.h"
 #include "textsections.h"
 #include "screen.h"
 
@@ -64,10 +64,8 @@ levelset_c::levelset_c(const std::string & path) {
       throw format_error("unexpected string stream error while loading file: " + path);
   }
 
-  // we need a surface for the dummy level
-  surface_c srf;
   /* parse all loaded files */
-  level_c test_level(srf);
+  levelData_c test_level;
   bool index_loaded = false;
   for (std::vector<textsections_c>::const_iterator i = fileSections.begin(); i != fileSections.end(); i++) {
     const textsections_c & sections = *i;
@@ -145,7 +143,7 @@ const std::string & levelset_c::getChecksum(const std::string & levelName) const
   return checksums.find(levelName)->second;
 }
 
-void levelset_c::loadLevel(level_c & level, const std::string & levelName) const {
+void levelset_c::loadLevel(levelData_c & level, const std::string & levelName) const {
 
   const std::map<std::string, textsections_c>::const_iterator i = levels.find(levelName);
   if (i == levels.end())

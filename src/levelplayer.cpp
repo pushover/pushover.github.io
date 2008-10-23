@@ -1,4 +1,4 @@
-#include "level.h"
+#include "levelplayer.h"
 
 #include "textsections.h"
 #include "sha1.h"
@@ -13,825 +13,16 @@
 #include <sstream>
 #include <iomanip>
 
-level_c::level_c(surface_c & t) : target(t) {
-  SDL_Surface * vid = SDL_GetVideoSurface();
+void levelPlayer_c::load(const textsections_c & sections) {
 
-  if (vid)
-    background = SDL_CreateRGBSurface(0, vid->w, vid->h, 32,
-        vid->format->Rmask, vid->format->Gmask, vid->format->Bmask, 0);
-  else
-    background = 0;
-
-  for (unsigned int y = 0; y < 13; y++)
-    for (unsigned int x = 0; x < 20; x++) {
-      for (unsigned int i = 0; i < maxBg; i++)
-        level[y][x].bg[i] = 0;
-      level[y][x].fg = 0;
-      level[y][x].dominoType = DominoTypeEmpty;
-      level[y][x].dominoState = 8;
-      level[y][x].dominoDir = 0;
-      level[y][x].dominoYOffset = 0;
-      level[y][x].dominoExtra = 0;
-    }
-
-  // invalid time...
-  timeLeft = 60*60*18;
-}
-
-level_c::~level_c(void) {
-  SDL_FreeSurface(background);
-}
-
-const std::string level_c::dominoChars =
-  "_" /* DominoTypeEmpty    */
-  "I" /* DominoTypeStandard */
-  "#" /* DominoTypeStopper  */
-  "Y" /* DominoTypeSplitter */
-  "*" /* DominoTypeExploder */
-  "?" /* DominoTypeDelay    */
-  "O" /* DominoTypeTumbler  */
-  "=" /* DominoTypeBridger  */
-  ":" /* DominoTypeVanish   */
-  "!" /* DominoTypeTrigger  */
-  "A" /* DominoTypeAscender */
-  ;
-
-bool level_c::isDominoChar(char ch) {
-  return dominoChars.find_first_of(ch) != std::string::npos;
-}
-
-void level_c::load(const textsections_c & sections) {
-
-  /* initialize all state variables */
   openDoorEntry = openDoorExit = false;
-  for (unsigned int i = 0; i < 13; i++)
-    staticDirty[i] = 0xFFFFF;
-  target.markAllDirty();
   triggerFalln = false;
   finishCheckDone = false;
-  memset(level, 0, sizeof(level));
 
-  /* Version section */
-  {
-    std::istringstream versionStream(sections.getSingleLine("Version"));
-    unsigned int givenVersion;
-    versionStream >> givenVersion;
-    if (!versionStream.eof() || !versionStream)
-      throw format_error("invalid level version");
-  }
-
-  /* Name section */
-  name = sections.getSingleLine("Name");
-
-  /* Theme section */
-  theme = sections.getSingleLine("Theme");
-
-  /* Time section (time format is M:SS) */
-  {
-    std::istringstream timeStream(sections.getSingleLine("Time"));
-    unsigned int timeMinutes;
-    timeStream >> timeMinutes;
-    if (timeStream.get() != ':')
-      throw format_error("invalid time format");
-    unsigned int timeSeconds;
-    timeStream >> timeSeconds;
-    if (!timeStream.eof() || !timeStream)
-      throw format_error("invalid time format");
-    timeLeft = (((timeMinutes * 60) + timeSeconds) * 18) + 17;
-  }
-
-  /* Hint section */
-  hint = sections.getSingleLine("Hint");
-  if (hint == "")
-    hint = "No hint!";
-
-  /* Level section */
-  const std::vector<std::string> & givenLevelRows =
-    sections.getSingleSection("Level");
-  if (givenLevelRows.size() != 13)
-    throw format_error("wrong number of level rows");
-  std::string levelRows[13];
-  for (unsigned int y = 0; y < 13; y++) {
-    std::string::size_type len = givenLevelRows[y].size();
-    if (len > 20)
-      throw format_error("level row is too long");
-    /* padding with spaces to the whole width */
-    levelRows[y] = givenLevelRows[y] + std::string(20-len, ' ');
-  }
-
-  bool doorEntryDefined = false;
-  bool doorExitDefined = false;
-  for (unsigned int y = 0; y < 13; y++) {
-    for (unsigned int x = 0; x < 20; x++) {
-
-      level[y][x].dominoType = DominoTypeEmpty;
-      level[y][x].dominoState = 8;
-      level[y][x].dominoDir = 0;
-      level[y][x].dominoYOffset = 0;
-      level[y][x].dominoExtra = 0;
-
-      switch (levelRows[y][x]) {
-
-        case '1':
-          if (doorEntryDefined)
-            throw format_error("duplicate entry door");
-          doorEntryDefined = true;
-          doorEntryX = x;
-          doorEntryY = y;
-          level[y][x].fg = FgElementDoor0;
-          break;
-
-        case '2':
-          if (doorExitDefined)
-            throw format_error("duplicate exit door");
-          doorExitDefined = true;
-          doorExitX = x;
-          doorExitY = y;
-          level[y][x].fg = FgElementDoor0;
-          break;
-
-        case ' ':
-        case '^':
-          if (x > 0 && levelRows[y][x-1] == '/')
-            level[y][x].fg = FgElementPlatformStep8;
-          else
-            level[y][x].fg = FgElementEmpty;
-          break;
-
-        case '$':
-          level[y][x].fg = FgElementEmpty;
-          level[y][x].dominoType = DominoTypeStandard;
-          level[y][x].dominoExtra = 0x70;
-          break;
-
-        case '\\':
-          if (y <= 0 || x <= 0)
-            throw format_error("platform step '\\' has an invalid position");
-          level[y-1][x-1].fg = FgElementPlatformStep1;
-          level[y-1][x  ].fg = FgElementPlatformStep2;
-          level[y  ][x-1].fg = FgElementPlatformStep3;
-          level[y  ][x  ].fg = FgElementPlatformStep4;
-          break;
-
-        case '/':
-          if (y <= 0 || x+1 >= 20)
-            throw format_error("platform step '/' has an invalid position");
-          level[y-1][x  ].fg = FgElementPlatformStep5;
-          level[y-1][x+1].fg = FgElementPlatformStep6;
-          level[y  ][x  ].fg = FgElementPlatformStep7;
-          break;
-
-        case 'H':
-        case 'V':
-          level[y][x].fg = FgElementLadder;
-          break;
-
-        case '.':
-          level[y][x].fg = FgElementPlatformStrip;
-          break;
-
-        default:
-          std::string::size_type dt = dominoChars.find_first_of(levelRows[y][x]);
-          if (dt == std::string::npos)
-            throw format_error("invalid domino type");
-          level[y][x].dominoType = dt;
-
-          bool ladderAbove   = y > 0
-                               && levelRows[y-1][x] == 'H';
-          bool ladderBelow   = y+1 < 13
-                               && (levelRows[y+1][x] == 'H'
-                                   || levelRows[y+1][x] == 'V'
-                                   || levelRows[y+1][x] == '^');
-          bool platformLeft  = x <= 0
-                               || isDominoChar(levelRows[y][x-1])
-                               || levelRows[y][x-1] == '\\';
-          bool platformRight = x+1 >= 20
-                               || isDominoChar(levelRows[y][x+1])
-                               || levelRows[y][x+1] == '/';
-          if (ladderBelow)
-            level[y][x].fg = FgElementPlatformLadderDown;
-          else if (ladderAbove)
-            level[y][x].fg = FgElementPlatformLadderUp;
-          else if (!platformLeft && !platformRight)
-            level[y][x].fg = FgElementPlatformStrip;
-          else if (!platformLeft)
-            level[y][x].fg = FgElementPlatformStart;
-          else if (!platformRight)
-            level[y][x].fg = FgElementPlatformEnd;
-          else
-            level[y][x].fg = FgElementPlatformMiddle;
-      }
-    }
-  }
-
-  if (!doorEntryDefined)
-    throw format_error("missing entry door");
-  if (!doorExitDefined)
-    throw format_error("missing exit door");
-
-  /* Background sections */
-  const std::vector<std::vector<std::string> > & bgSections =
-    sections.getMultiSection("Background");
-  numBg = bgSections.size();
-  if (numBg == 0)
-    throw format_error("missing Background section");
-  if (numBg > maxBg)
-    throw format_error("too many Background sections");
-  for (unsigned char b = 0; b < numBg; b++) {
-    if (bgSections[b].size() != 13)
-      throw format_error("wrong number of background rows");
-    for (unsigned int y = 0; y < 13; y++) {
-      std::istringstream line(bgSections[b][y]);
-      for (unsigned int x = 0; x < 20; x++) {
-        line >> level[y][x].bg[b];
-        if (!line)
-          throw format_error("not enough background tiles in a row");
-      }
-      if (!line.eof())
-        throw format_error("too many background tiles in a row");
-    }
-  }
-
-  /* Calculate checksum */
-  {
-    SHA1 sha1;
-    for (unsigned int y = 0; y < 13; y++) {
-      sha1.update(levelRows[y]);
-    }
-    {
-      std::ostringstream timeLeftStream;
-      timeLeftStream << timeLeft;
-      sha1.update(timeLeftStream.str());
-    }
-    checksum = sha1.final();
-  }
+  levelDisplay_c::load(sections);
 }
 
-void level_c::save(std::ostream & stream) const {
-
-  unsigned int timeSeconds = timeLeft/18;
-  stream <<
-  textsections_c::firstLine << "\n"
-  "\n"
-  "Version\n"
-  "| " << version << "\n"
-  "\n"
-  "Name\n"
-  "| " << name << "\n"
-  "\n"
-  "Theme\n"
-  "| " << theme << "\n"
-  "\n"
-  "Time\n"
-  "| " << (timeSeconds / 60)
-       << ':'
-       << std::setfill('0') << std::setw(2) << (timeSeconds % 60)
-       << "\n"
-  "\n"
-  "Hint\n"
-  "| " << hint << "\n";
-
-  stream << '\n';
-  stream << "Level\n";
-  stream << '+' << std::string(20+1, '-') << '\n';
-  for (unsigned int y = 0; y < 13; y++) {
-    std::string line = "| ";
-    for (unsigned int x = 0; x < 20; x++) {
-      if (x == doorEntryX && y == doorEntryY)
-        line += '1';
-      else if (x == doorExitX && y == doorExitY)
-        line += '2';
-      else switch (level[y][x].fg) {
-        case FgElementEmpty:
-        case FgElementPlatformStep2:
-        case FgElementPlatformStep3:
-        case FgElementPlatformStep5:
-        case FgElementPlatformStep8:
-        case FgElementDoor0:
-        case FgElementDoor1:
-        case FgElementDoor2:
-        case FgElementDoor3:
-          if (y > 0 && level[y-1][x].fg == FgElementPlatformLadderDown)
-            line += '^';
-          else if (level[y][x].dominoType != DominoTypeEmpty)
-            line += '$';
-          else
-            line += ' ';
-          break;
-        case FgElementPlatformStep4:
-          line += '\\';
-          break;
-        case FgElementPlatformStep7:
-          line += '/';
-          break;
-        case FgElementLadder:
-          if (y+1 >= 13
-              || level[y+1][x].fg == FgElementPlatformLadderDown
-              || level[y+1][x].fg == FgElementLadder
-              || level[y+1][x].fg == FgElementPlatformLadderUp)
-            line += 'H';
-          else
-            line += 'V';
-          break;
-        default:
-          unsigned char dt = level[y][x].dominoType;
-          if (dt == DominoTypeEmpty
-              && level[y][x].fg == FgElementPlatformStrip)
-            line += '.';
-          else if (dt < dominoChars.size())
-            line += dominoChars[dt];
-          else
-            throw format_error("level contains a domino type which can't be saved");
-      }
-    }
-    stream << line.substr(0, line.find_last_not_of(' ')+1) << '\n';
-  }
-  stream << '+' << std::string(20+1, '-') << '\n';
-
-  for (unsigned char b = 0; b < numBg; b++) {
-    stream << '\n';
-    stream << "Background\n";
-    stream << '+' << std::string((3+1)*20, '-') << '\n';
-    for (unsigned int y = 0; y < 13; y++) {
-      stream << '|';
-      for (unsigned int x = 0; x < 20; x++)
-        stream << ' ' << std::setfill(' ') << std::setw(3) << level[y][x].bg[b];
-      stream << '\n';
-    }
-    stream << '+' << std::string((3+1)*20, '-') << '\n';
-  }
-}
-
-bool level_c::operator==(const level_c & other) const {
-  return
-    name == other.name &&
-    theme == other.theme &&
-    hint == other.hint &&
-    timeLeft == other.timeLeft &&
-    memcmp(level, other.level, sizeof(level)) == 0 &&
-    numBg == other.numBg &&
-    doorEntryX == other.doorEntryX &&
-    doorEntryY == other.doorEntryY &&
-    doorExitX == other.doorExitX &&
-    doorExitY == other.doorExitY;
-}
-
-void level_c::print(void) {
-
-  char directions[] = "<0>";
-
-  for (unsigned int y = 0; y < 13; y++) {
-    for (unsigned int x = 0; x < 20; x++)
-      printf("%x", level[y][x].dominoType);
-    printf("  ");
-    for (unsigned int x = 0; x < 20; x++)
-      printf("%x", level[y][x].dominoState);
-    printf("  ");
-    for (unsigned int x = 0; x < 20; x++)
-      printf("%c", directions[level[y][x].dominoDir+1]);
-    printf("  ");
-    for (unsigned int x = 0; x < 20; x++)
-      printf("%c", 'a'+level[y][x].dominoYOffset);
-    printf("  ");
-    for (unsigned int x = 0; x < 20; x++)
-      printf("%02x", level[y][x].dominoExtra);
-    printf("\n");
-  }
-
-  printf("\n");
-
-}
-
-void level_c::updateBackground(graphics_c & gr) {
-  for (unsigned int y = 0; y < 13; y++) {
-
-    // check, if the current row contains any dirty blocks and only iterate through it
-    // when that is the case
-    if (staticDirty[y] == 0) continue;
-
-    for (unsigned int x = 0; x < 20; x++) {
-
-      // when the current block is dirty, recreate it
-      if ((staticDirty[y] >> x) & 1) {
-
-        SDL_Rect dst;
-        dst.x = x*gr.blockX();
-        dst.y = y*gr.blockY();
-        dst.w = gr.blockX();
-        dst.h = gr.blockY();
-        for (unsigned char b = 0; b < numBg; b++)
-          SDL_BlitSurface(gr.getBgTile(level[y][x].bg[b]), 0, background, &dst);
-        SDL_BlitSurface(gr.getFgTile(level[y][x].fg), 0, background, &dst);
-
-        // apply gradient effect
-        for (unsigned int i = 0; i < gr.blockY() && y*gr.blockY()+i < (unsigned int)background->h; i++)
-          for (unsigned int j = 0; j < gr.blockX(); j++) {
-
-            uint32_t col = *((uint32_t*)(((uint8_t*)background->pixels) + (y*gr.blockY()+i) * background->pitch +
-                  background->format->BytesPerPixel*(x*gr.blockX()+j)));
-
-            Uint8 r, g, b;
-
-            SDL_GetRGB(col, background->format, &r, &g, &b);
-
-            double val = (2.0-((1.0*x*gr.blockX()+j)/background->w + (1.0*y*gr.blockY()+i)/background->h));
-            val += (1.0*rand()/RAND_MAX)/20 - 1.0/40;
-            if (val < 0) val = 0;
-            if (val > 2) val = 2;
-
-            r = (Uint8)(((255.0-r)*val+r)*r/255);
-            g = (Uint8)(((255.0-g)*val+g)*g/255);
-            b = (Uint8)(((255.0-b)*val+b)*b/255);
-
-            col = SDL_MapRGB(background->format, r, g, b);
-
-            *((uint32_t*)(((uint8_t*)background->pixels) + (y*gr.blockY()+i) * background->pitch +
-                  background->format->BytesPerPixel*(x*gr.blockX()+j))) = col;
-          }
-      }
-    }
-
-    // remove all dirty marks for this block
-    staticDirty[y] = 0;
-  }
-}
-
-
-static void PutSprite(int nr, int x, int y, SDL_Surface * v, SDL_Surface * target)
-{
-  if (v)
-  {
-    SDL_Rect dst;
-    dst.x = x;
-    dst.y = y - v->h;
-    dst.w = v->w;
-    dst.h = v->h;
-
-    SDL_BlitSurface(v, 0, target, &dst);
-
-#if 0 // this is for debugging domino display functionality, it draws a little colored rectangle
-      // below the dominos for me to see which if the many ifs in the function below is painting it
-    dst.x = x+2*40+20-4;
-    dst.y = y;
-    dst.w = 8;
-    dst.h = 8;
-
-    Uint32 cols[] = {
-      0xFF0000, // 0
-      0x00FF00, // 1
-      0x0000FF, // 2
-      0x00FFFF, // 3
-      0xFF00FF, // 4
-      0xFFFF00, // 5
-      0xFFFFFF, // 6
-      0x800000, // 7
-      0x008000, // 8
-      0x000080, // 9
-      0x008080, // 10
-      0x800080, // 11
-      0x808000, // 12
-      0x808080, // 13
-      0xFF8000, // 14
-      0x00FF80, // 15
-      0xFF0080, // 16
-    };
-
-
-    SDL_FillRect(target, &dst, cols[nr]);
-#endif
-  }
-}
-
-void level_c::drawDominos(graphics_c & gr, bool debug) {
-
-  // the dirty marks for the clock
-  {
-    // calculate the second left
-    int tm = timeLeft/18;
-
-    // if negative make positive again
-    if (timeLeft < 0)
-      tm = -tm+1;
-
-    int newSec = tm%60;
-    int newMin = tm/60;
-
-    if (newSec != Sec || timeLeft == -1)
-    {
-      target.markDirty(3, 11);
-      target.markDirty(3, 12);
-    }
-
-    if (newSec != Sec || newMin != Min || timeLeft % 18 == 17 || timeLeft % 18 == 8 || timeLeft == -1)
-    {
-      target.markDirty(2, 11);
-      target.markDirty(2, 12);
-    }
-
-    if (newMin != Min || timeLeft == -1)
-    {
-      target.markDirty(1, 11);
-      target.markDirty(1, 12);
-    }
-
-    Min = newMin;
-    Sec = newSec;
-  }
-
-  for (unsigned int y = 0; y < 13; y++)
-    for (unsigned int x = 0; x < 20; x++) {
-      if (target.isDirty(x, y) || debug) {
-
-        // copy background from background surface
-        {
-          SDL_Rect src, dst;
-          dst.x = x*gr.blockX();
-          dst.y = y*gr.blockY();
-          dst.w = gr.blockX();
-          dst.h = gr.blockY();
-          src.x = x*gr.blockX();
-          src.y = y*gr.blockY();
-          src.w = gr.blockX();
-          src.h = gr.blockY();
-          SDL_BlitSurface(background, &src, target.getVideo(), &dst);
-        }
-      }
-    }
-
-  static int XposOffset[] = {-16, -16,  0,-16,  0,  0, 0, 0, 0,  0, 0, 16,  0, 16, 16, 0};
-  static int YposOffset[] = { -8,  -6,  0, -4,  0, -2, 0, 0, 0, -2, 0, -4,  0, -6, -8, 0};
-  static int StoneImageOffset[] = {  7, 6, 0, 5, 0, 4, 0, 0, 0, 3, 0, 2, 0, 1, 0, 0};
-
-  // the idea behind this code is to repaint the dirty blocks. Dominos that are actually
-  // within neighbor block must be repaint, too, when they might reach into the actual
-  // block. But painting the neighbors is only necessary, when they are not drawn on
-  // their own anyway, so always check for !dirty of the "homeblock" of each domino
-
-  int SpriteYPos = gr.getDominoYStart();
-
-  for (int y = 0; y < 13; y++, SpriteYPos += gr.blockY()) {
-
-    int SpriteXPos = -2*gr.blockX();
-
-    for (int x = 0; x < 20; x++, SpriteXPos += gr.blockX()) {
-
-      if (!target.isDirty(x, y) && !debug) continue;
-
-      // paint the left neighbor domino, if it leans in our direction and is not painted on its own
-      if (y < 12 && x > 0 && !target.isDirty(x-1, y+1) && level[y+1][x-1].dominoType != DominoTypeEmpty &&
-          (level[y+1][x-1].dominoState > 8 ||
-           level[y+1][x-1].dominoType == DominoTypeSplitter && level[y+1][x-1].dominoState != 8 ||
-           level[y+1][x-1].dominoState >= DominoTypeCrash0))
-      {
-        PutSprite(0,
-            SpriteXPos-gr.blockX(),
-            SpriteYPos+gr.convertDominoY(level[y+1][x-1].dominoYOffset)+gr.blockY(),
-            gr.getDomino(level[y+1][x-1].dominoType-1, level[y+1][x-1].dominoState-1), target.getVideo()
-            );
-      }
-
-      if (x > 0 && !target.isDirty(x-1, y) && level[y][x-1].dominoType != DominoTypeEmpty &&
-          (level[y][x-1].dominoState > 8 ||
-           level[y][x-1].dominoType == DominoTypeSplitter && level[y][x-1].dominoState != 8 ||
-           level[y][x-1].dominoType >= DominoTypeCrash0))
-      {
-        PutSprite(1,
-            SpriteXPos-gr.blockX(),
-            SpriteYPos+gr.convertDominoY(level[y][x-1].dominoYOffset),
-            gr.getDomino(level[y][x-1].dominoType-1, level[y][x-1].dominoState-1), target.getVideo()
-            );
-      }
-
-      if (y < 12 && !target.isDirty(x, y+1) && level[y+1][x].dominoType != DominoTypeEmpty)
-      {
-        PutSprite(2,
-            SpriteXPos,
-            SpriteYPos+gr.convertDominoY(level[y+1][x].dominoYOffset)+gr.blockY(),
-            gr.getDomino(level[y+1][x].dominoType-1, level[y+1][x].dominoState-1), target.getVideo()
-            );
-      }
-
-      // paint the splitting domino for the splitter
-      if (level[y][x].dominoType == DominoTypeSplitter &&
-          level[y][x].dominoState == 6 &&
-          level[y][x].dominoExtra != 0)
-      {
-        PutSprite(3,
-            SpriteXPos,
-            SpriteYPos-gr.splitterY(),
-            gr.getDomino(level[y][x].dominoExtra-1, level[y][x].dominoExtra>=DominoTypeCrash0?0:7), target.getVideo()
-            );
-        level[y][x].dominoExtra = 0;
-      }
-
-      // paint the actual domino but take care of the special cases of the ascender domino
-      if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoExtra == 0x60 &&
-          level[y][x].dominoState < 16 && level[y][x].dominoState != 8)
-      {
-        PutSprite(4,
-            SpriteXPos+gr.convertDominoX(XposOffset[level[y][x].dominoState-1]),
-            SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
-            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target.getVideo()
-            );
-      }
-      else if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoState == 1 && level[y][x].dominoExtra == 0 &&
-          level[y-2][x-1].fg == 0)
-      { // this is the case of the ascender domino completely horizontal and with the plank it is below not existing
-        // so we see the above face of the domino. Normally there is a wall above us so we only see
-        // the front face of the domino
-        PutSprite(5,
-            SpriteXPos+gr.convertDominoX(XposOffset[level[y][x].dominoState-1]+6),
-            SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
-            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target.getVideo()
-            );
-      }
-      else if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoState == 15 && level[y][x].dominoExtra == 0 &&
-          level[y-2][x+1].fg == 0)
-      {
-        PutSprite(6,
-            SpriteXPos+gr.convertDominoX(XposOffset[level[y][x].dominoState-1]-2),
-            SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
-            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target.getVideo()
-            );
-      }
-      else if (level[y][x].dominoType != DominoTypeEmpty)
-      {
-        PutSprite(7,
-            SpriteXPos,
-            SpriteYPos+gr.convertDominoY(level[y][x].dominoYOffset),
-            gr.getDomino(level[y][x].dominoType-1, level[y][x].dominoState-1), target.getVideo()
-            );
-      }
-
-      // paint the right neighor if it is leaning in our direction
-      if (x < 19 && y < 12 && !target.isDirty(x+1, y+1) && level[y+1][x+1].dominoType != DominoTypeEmpty &&
-          (level[y+1][x+1].dominoState < 8 ||
-           level[y+1][x+1].dominoType == DominoTypeSplitter && level[y+1][x+1].dominoState != 8 ||
-           level[y+1][x+1].dominoType >= DominoTypeCrash0))
-      {
-        PutSprite(8,
-            SpriteXPos+gr.blockX(),
-            SpriteYPos+gr.convertDominoY(level[y+1][x+1].dominoYOffset)+gr.blockY(),
-            gr.getDomino(level[y+1][x+1].dominoType-1, level[y+1][x+1].dominoState-1), target.getVideo()
-            );
-      }
-
-      if (x < 19 && !target.isDirty(x+1, y) && level[y][x+1].dominoType != DominoTypeEmpty &&
-          (level[y][x+1].dominoState < 8 ||
-           level[y][x+1].dominoType == DominoTypeSplitter && level[y][x+1].dominoState != 8 ||
-           level[y][x+1].dominoType >= DominoTypeCrash0))
-      {
-        PutSprite(9,
-            SpriteXPos+gr.blockX(),
-            SpriteYPos+gr.convertDominoY(level[y][x+1].dominoYOffset),
-            gr.getDomino(level[y][x+1].dominoType-1, level[y][x+1].dominoState-1), target.getVideo()
-            );
-      }
-
-      if (y >= 11) continue;
-
-      if (!target.isDirty(x, y+2) && level[y+2][x].dominoType == DominoTypeAscender)
-      {
-        PutSprite(10,
-            SpriteXPos,
-            SpriteYPos+gr.convertDominoY(level[y+2][x].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1), target.getVideo()
-            );
-      }
-
-      if (x > 0 && !target.isDirty(x-1, y+2) && level[y+2][x-1].dominoType == DominoTypeAscender)
-      {
-        PutSprite(11,
-            SpriteXPos-gr.blockX(),
-            SpriteYPos+gr.convertDominoY(level[y+2][x-1].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1), target.getVideo()
-            );
-      }
-
-      if (x < 19 && !target.isDirty(x+1, y+2) && level[y+2][x+1].dominoType == DominoTypeAscender)
-      {
-        PutSprite(12,
-            SpriteXPos+gr.blockX(),
-            SpriteYPos+gr.convertDominoY(level[y+2][x+1].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1), target.getVideo()
-            );
-      }
-
-      if (level[y][x].dominoType != DominoTypeAscender) continue;
-
-      if (!target.isDirty(x, y+2) && level[y+2][x].dominoType != DominoTypeEmpty)
-      {
-        PutSprite(13,
-            SpriteXPos,
-            SpriteYPos+gr.convertDominoY(level[y+2][x].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1), target.getVideo()
-            );
-      }
-
-      if (x > 0 && !target.isDirty(x-1, y+2) && level[y+2][x-1].dominoType != DominoTypeEmpty)
-      {
-        PutSprite(14,
-            SpriteXPos-gr.blockX(),
-            SpriteYPos+gr.convertDominoY(level[y+2][x-1].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1), target.getVideo()
-            );
-      }
-
-      if (x >= 19) continue;
-
-      if (!target.isDirty(x+1, y+2)) continue;
-
-      if (level[y+2][x+1].dominoType == DominoTypeEmpty) continue;
-
-      PutSprite(15,
-          SpriteXPos+gr.blockX(),
-          SpriteYPos+gr.convertDominoY(level[y+2][x+1].dominoYOffset)+2*gr.blockY(),
-          gr.getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1), target.getVideo()
-          );
-    }
-  }
-
-  // repaint the ladders in front of dominos
-  for (unsigned int y = 0; y < 13; y++)
-    for (unsigned int x = 0; x < 20; x++) {
-      if (target.isDirty(x, y) || debug) {
-        if (getFg(x, y) == FgElementPlatformLadderDown || getFg(x, y) == FgElementLadder) {
-          SDL_Rect dst;
-          dst.x = x*gr.blockX();
-          dst.y = y*gr.blockY();
-          dst.w = gr.blockX();
-          dst.h = gr.blockY();
-          SDL_BlitSurface(gr.getFgTile(FgElementLadder2), 0, target.getVideo(), &dst);
-        }
-        else if (getFg(x, y) == FgElementPlatformLadderUp)
-        {
-          SDL_Rect dst;
-          dst.x = x*gr.blockX();
-          dst.y = y*gr.blockY();
-          dst.w = gr.blockX();
-          dst.h = gr.blockY();
-          SDL_BlitSurface(gr.getFgTile(FgElementLadderMiddle), 0, target.getVideo(), &dst);
-        }
-      }
-    }
-
-  if (debug)
-  {
-    for (unsigned int y = 0; y < 13; y++)
-      for (unsigned int x = 0; x < 20; x++) {
-
-        if (target.isDirty(x, y))
-        {
-          for (unsigned int h = 0; h < gr.blockY(); h+=2)
-          {
-            SDL_Rect dst;
-            dst.w = gr.blockX();
-            dst.h = 1;
-            dst.x = x*gr.blockX();
-            dst.y = y*gr.blockY()+h;
-            Uint32 color = SDL_MapRGB(target.getVideo()->format, 0, 0, 0);
-            SDL_FillRect(target.getVideo(), &dst, color);
-          }
-        }
-      }
-  }
-
-  if (timeLeft < 60*60*18)
-  { // output the time
-    char time[6];
-
-    // care for the : between the minutes and seconds and
-    // make a string out of the time
-    // in the new font ':' and ' ' have different width, so keep it
-    // just a colon for now, we will make it blink later on again
-    // TODO
-//    if (timeLeft % 18 < 9)
-      snprintf(time, 6, "%02i:%02i", Min, Sec);
-//    else
-//      snprintf(time, 6, "%02i %02i", Min, Sec);
-
-    fontParams_s pars;
-    if (timeLeft >= 0)
-    {
-      pars.color.r = pars.color.g = 255; pars.color.b = 0;
-    }
-    else
-    {
-      pars.color.r = 255; pars.color.g = pars.color.b = 0;
-    }
-    pars.font = FNT_BIG;
-    pars.alignment = ALN_TEXT;
-    pars.box.x = gr.timeXPos();
-    pars.box.y = gr.timeYPos();
-    pars.box.w = 50;
-    pars.box.h = 50;
-    pars.shadow = true;
-
-    renderText(target.getVideo(), &pars, time);
-  }
-}
-
-void level_c::performDoors(void) {
+void levelPlayer_c::performDoors(void) {
 
   if (openDoorEntry) {
 
@@ -879,30 +70,7 @@ void level_c::performDoors(void) {
   }
 }
 
-bool level_c::containsPlank(int x, int y) {
-  if (x < 0 || x >= 20 || y < 0 || y >= 13) return false;
-
-  unsigned int fg = getFg(x, y);
-
-  return (fg == 1 || fg == 2 | fg == 3 || fg == 4 || fg == 6 || fg == 7 || fg == 10 || fg == 15);
-}
-
-bool level_c::noGround(int x, int y, bool onLadder) {
-
-  if (y >= 12) return true;
-
-  if (getFg(x, y) == FgElementEmpty) return true;
-
-  if (getFg(x, y) >= FgElementDoor0) return true;
-
-  if (getFg(x, y) != FgElementLadder) return false;
-
-  if (onLadder) return false;
-
-  return true;
-}
-
-int level_c::pickUpDomino(int x, int y) {
+int levelPlayer_c::pickUpDomino(int x, int y) {
   int dom = level[y][x].dominoType;
   level[y][x].dominoType = DominoTypeEmpty;
   level[y][x].dominoState = 8;
@@ -913,7 +81,7 @@ int level_c::pickUpDomino(int x, int y) {
   return dom;
 }
 
-void level_c::putDownDomino(int x, int y, int domino, bool pushin) {
+void levelPlayer_c::putDownDomino(int x, int y, int domino, bool pushin) {
 
   if (level[y][x].dominoType != 0)
   { // there is a domino in the place where we want to put our domino
@@ -940,7 +108,7 @@ void level_c::putDownDomino(int x, int y, int domino, bool pushin) {
   }
 }
 
-void level_c::fallingDomino(int x, int y) {
+void levelPlayer_c::fallingDomino(int x, int y) {
   if (level[y][x].dominoType == DominoTypeAscender)
     level[y][x].dominoExtra = 0x60;
   else
@@ -949,7 +117,7 @@ void level_c::fallingDomino(int x, int y) {
   soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
 }
 
-bool level_c::pushDomino(int x, int y, int dir) {
+bool levelPlayer_c::pushDomino(int x, int y, int dir) {
 
   bool retVal = true;
 
@@ -1096,12 +264,12 @@ bool level_c::pushDomino(int x, int y, int dir) {
 
 // the 2 tigger falln functions. They just call the
 // normal domino falln function and additionally set the trigger bit
-void level_c::DTA_9(int x, int y) {
+void levelPlayer_c::DTA_9(int x, int y) {
   DTA_1(x, y);
 
   triggerFalln = true;
 }
-void level_c::DTA_N(int x, int y) {
+void levelPlayer_c::DTA_N(int x, int y) {
   DTA_K(x, y);
 
   triggerFalln = true;
@@ -1110,24 +278,24 @@ void level_c::DTA_N(int x, int y) {
 // this is for the stopper, splitter and exploder dominos, when they
 // are falling after beeing lost when going over the edge
 // we check, if we are still falling and only handle the falling case
-  void level_c::DTA_F(int x, int y) {
-    if (getDominoExtra(x, y) == 0x70)
-      DTA_E(x, y);
-  }
+void levelPlayer_c::DTA_F(int x, int y) {
+  if (getDominoExtra(x, y) == 0x70)
+    DTA_E(x, y);
+}
 
 // this is for the delay domino. We check, if we are falling down when
 // falling over the edge or when the delay time is up
 // if the delay time is still running, decrement and wait
-  void level_c::DTA_G(int x, int y) {
-    if (getDominoExtra(x, y) <= 1 || getDominoExtra(x, y) == 0x70)
-      DTA_E(x, y);
-    else
-      level[y][x].dominoExtra--;
-  }
+void levelPlayer_c::DTA_G(int x, int y) {
+  if (getDominoExtra(x, y) <= 1 || getDominoExtra(x, y) == 0x70)
+    DTA_E(x, y);
+  else
+    level[y][x].dominoExtra--;
+}
 
 // crash case with dust clouds, we need to call DTA_E because
 // dominos might crash in the air and the rubble needs to fall down
-void level_c::DTA_B(int x, int y) {
+void levelPlayer_c::DTA_B(int x, int y) {
   DTA_E(x, y);
 
   target.markDirty(x+1, y);
@@ -1137,7 +305,7 @@ void level_c::DTA_B(int x, int y) {
 // splitter opening simply call the normal domino falling
 // function and mark some more blocks because we split left and
 // right and the normal function will only mark one side
-void level_c::DTA_D(int x, int y) {
+void levelPlayer_c::DTA_D(int x, int y) {
   target.markDirty(x+1, y-1);
   target.markDirty(x+1, y);
 
@@ -1149,7 +317,7 @@ void level_c::DTA_D(int x, int y) {
 
 // the final vansher state, remove the vanisher
 // from the level and mark things dirty
-void level_c::DTA_8(int x, int y) {
+void levelPlayer_c::DTA_8(int x, int y) {
   target.markDirty(x, y);
   target.markDirty(x+getDominoDir(x, y), y);
   target.markDirty(x, y-1);
@@ -1161,7 +329,7 @@ void level_c::DTA_8(int x, int y) {
 }
 
 // this is the nearly falln down left case
-void level_c::DTA_2(int x, int y) {
+void levelPlayer_c::DTA_2(int x, int y) {
 
   if (getDominoExtra(x, y) == 0x40 || getDominoExtra(x, y) == 0x70)
   {
@@ -1199,7 +367,7 @@ void level_c::DTA_2(int x, int y) {
 }
 
 // nearly falln down right
-void level_c::DTA_J(int x, int y) {
+void levelPlayer_c::DTA_J(int x, int y) {
 
   if (getDominoExtra(x, y) == 0x40 || getDominoExtra(x, y) == 0x70)
   {
@@ -1237,7 +405,7 @@ void level_c::DTA_J(int x, int y) {
 }
 
 // normal falling case
-void level_c::DTA_4(int x, int y) {
+void levelPlayer_c::DTA_4(int x, int y) {
   if (getDominoExtra(x, y) == 0x40 || getDominoExtra(x, y) == 0x70)
   {
     level[y][x].dominoYOffset += 2;
@@ -1290,7 +458,7 @@ void level_c::DTA_4(int x, int y) {
 }
 
 // exploder making its hole
-void level_c::DTA_5(int x, int y) {
+void levelPlayer_c::DTA_5(int x, int y) {
 
   level[y][x].dominoType = 0;
   level[y][x].dominoState = 0;
@@ -1328,7 +496,7 @@ void level_c::DTA_5(int x, int y) {
 }
 
 // hitting next domino to the left
-void level_c::DTA_3(int x, int y) {
+void levelPlayer_c::DTA_3(int x, int y) {
 
   // if we hit a step, stop falling
   if (x > 0 && getFg(x-1, y) == FgElementPlatformStep4)
@@ -1388,7 +556,7 @@ void level_c::DTA_3(int x, int y) {
 }
 
 // same as DTA_3 but for the right direction
-void level_c::DTA_I(int x, int y) {
+void levelPlayer_c::DTA_I(int x, int y) {
 
   if (x < 19 && getFg(x+1, y) == FgElementPlatformStep7)
     return;
@@ -1437,39 +605,8 @@ void level_c::DTA_I(int x, int y) {
   DTA_4(x, y);
 }
 
-// return true, if there is a platform at the given position
-bool level_c::isTherePlatform(int x, int y) {
-
-  switch (level[y][x].fg)
-  {
-    case FgElementEmpty:              return false;
-    case FgElementPlatformStart:      return true;
-    case FgElementPlatformMiddle:     return true;
-    case FgElementPlatformEnd:        return true;
-    case FgElementPlatformLadderDown: return true;
-    case FgElementLadder:             return false;
-    case FgElementPlatformLadderUp:   return true;
-    case FgElementPlatformStep1:      return true;
-    case FgElementPlatformStep2:      return true;
-    case FgElementPlatformStep3:      return false;
-    case FgElementPlatformStep4:      return false;
-    case FgElementPlatformStep5:      return true;
-    case FgElementPlatformStep6:      return true;
-    case FgElementPlatformStep7:      return false;
-    case FgElementPlatformStep8:      return false;
-    case FgElementLadderMiddle:       return false;
-    case FgElementPlatformStrip:      return true;
-    case FgElementLadder2:            return false;
-    case FgElementDoor0:              return false;
-    case FgElementDoor1:              return false;
-    case FgElementDoor2:              return false;
-    case FgElementDoor3:              return false;
-    default:                          return false;
-  }
-}
-
 // handle dominos crashing into something
-void level_c::DominoCrash(int x, int y, int type, int extra) {
+void levelPlayer_c::DominoCrash(int x, int y, int type, int extra) {
 
   // what do we crash into?
   int next = level[y][x].dominoType;
@@ -1544,7 +681,7 @@ void level_c::DominoCrash(int x, int y, int type, int extra) {
 }
 
 // vertial stone
-void level_c::DTA_E(int x, int y) {
+void levelPlayer_c::DTA_E(int x, int y) {
 
   if (level[y][x].dominoExtra == 0x40)
   {
@@ -1666,7 +803,7 @@ void level_c::DTA_E(int x, int y) {
 }
 
 // splitter parts falling further
-void level_c::DTA_C(int x, int y) {
+void levelPlayer_c::DTA_C(int x, int y) {
 
   // this table contains the positions of the 2 splitter halves
   // for each splitter state, 8 = vertial, 1 = horizontal
@@ -1761,7 +898,7 @@ void level_c::DTA_C(int x, int y) {
 // bridger left this is mainly a lot of ifs to
 // find out the new level elements that need to
 // be placed
-void level_c::DTA_7(int x, int y) {
+void levelPlayer_c::DTA_7(int x, int y) {
 
   int fg2;
 
@@ -1889,7 +1026,7 @@ void level_c::DTA_7(int x, int y) {
 }
 
 // Brider right same as DTA_7 but for other direction
-void level_c::DTA_M(int x, int y) {
+void levelPlayer_c::DTA_M(int x, int y) {
 
   int fg2;
 
@@ -2016,7 +1153,7 @@ void level_c::DTA_M(int x, int y) {
 
 
 // riser
-void level_c::DTA_A(int x, int y) {
+void levelPlayer_c::DTA_A(int x, int y) {
 
   int a;
 
@@ -2110,7 +1247,7 @@ void level_c::DTA_A(int x, int y) {
 
 
 // Riser
-void level_c::DTA_O(int x, int y) {
+void levelPlayer_c::DTA_O(int x, int y) {
 
   int a;
 
@@ -2224,7 +1361,7 @@ void level_c::DTA_O(int x, int y) {
 }
 
 // riser risign vertically
-void level_c::DTA_H(int x, int y) {
+void levelPlayer_c::DTA_H(int x, int y) {
 
   int riserDir = level[y][x].dominoDir;
 
@@ -2339,7 +1476,7 @@ void level_c::DTA_H(int x, int y) {
 
 // Stone completely falln down right used for
 // standard, Trigger, Delay, Bridger
-void level_c::DTA_K(int x, int y) {
+void levelPlayer_c::DTA_K(int x, int y) {
   int fg;
 
   if (x < 19)
@@ -2455,7 +1592,7 @@ void level_c::DTA_K(int x, int y) {
 
 // Stone completely falln down left used for
 // standard, Trigger, Delay, Bridger
-void level_c::DTA_1(int x, int y) {
+void levelPlayer_c::DTA_1(int x, int y) {
 
   int fg;
 
@@ -2573,7 +1710,7 @@ void level_c::DTA_1(int x, int y) {
 }
 
 // Tumbler falln down left
-void level_c::DTA_6(int x, int y) {
+void levelPlayer_c::DTA_6(int x, int y) {
 
   int fg;
 
@@ -2694,7 +1831,7 @@ void level_c::DTA_6(int x, int y) {
 }
 
 // Tumbler falln down right
-void level_c::DTA_L(int x, int y) {
+void levelPlayer_c::DTA_L(int x, int y) {
 
   int fg;
 
@@ -2811,7 +1948,7 @@ void level_c::DTA_L(int x, int y) {
   target.markDirty(x+1, y-1);
 }
 
-void level_c::callStateFunction(int type, int state, int x, int y) {
+void levelPlayer_c::callStateFunction(int type, int state, int x, int y) {
 
   switch ((type-1)*17+state-1) {
 
@@ -3011,7 +2148,7 @@ void level_c::callStateFunction(int type, int state, int x, int y) {
   }
 }
 
-int level_c::performDominos(ant_c & a) {
+int levelPlayer_c::performDominos(ant_c & a) {
 
   for (int y = 0; y < 13; y++)
     for (int x = 0; x < 20; x++)
@@ -3056,7 +2193,7 @@ int level_c::performDominos(ant_c & a) {
   return 0;
 }
 
-bool level_c::levelCompleted(int & fail) {
+bool levelPlayer_c::levelCompleted(int & fail) {
 
   for (int y = 0; y < 13; y++)
     for (int x = 0; x < 20; x++) {

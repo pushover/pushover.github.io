@@ -1,6 +1,6 @@
 #include "ant.h"
 #include "graphics.h"
-#include "level.h"
+#include "levelplayer.h"
 #include "soundsys.h"
 #include "screen.h"
 
@@ -80,7 +80,7 @@ typedef enum {
 // init the ant state for level entering
 // the level is saved and used later on for dirty block
 // marking, and level modification
-ant_c::ant_c(level_c & level, graphics_c & gr): level(level), gr(gr) {
+ant_c::ant_c(levelPlayer_c & level, graphics_c & gr): level(level), gr(gr) {
 
   initForLevel();
 }
@@ -172,103 +172,103 @@ void ant_c::draw(surface_c & video) {
   if (animation >= AntAnimCarryLadder1 && animation <= AntAnimCarryLadder4) return;
   if (animation >= AntAnimXXX1 && animation <= AntAnimXXX4) return;
 
-  if (level.getFg(blockX, blockY) == level_c::FgElementPlatformLadderUp)
+  if (level.getFg(blockX, blockY) == levelData_c::FgElementPlatformLadderUp)
   {
     dst.x = (blockX)*gr.blockX();
     dst.y = (blockY)*gr.blockY();
     dst.w = gr.blockX();
     dst.h = gr.blockY();
-    SDL_BlitSurface(gr.getFgTile(level_c::FgElementLadderMiddle), 0, video.getVideo(), &dst);
+    SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadderMiddle), 0, video.getVideo(), &dst);
   }
   else
   {
-    if (level.getFg(blockX, blockY) == level_c::FgElementPlatformLadderDown ||
-        level.getFg(blockX, blockY) == level_c::FgElementLadder)
+    if (level.getFg(blockX, blockY) == levelData_c::FgElementPlatformLadderDown ||
+        level.getFg(blockX, blockY) == levelData_c::FgElementLadder)
     {
       dst.x = (blockX)*gr.blockX();
       dst.y = (blockY)*gr.blockY();
       dst.w = gr.blockX();
       dst.h = gr.blockY();
-      SDL_BlitSurface(gr.getFgTile(level_c::FgElementLadder), 0, video.getVideo(), &dst);
+      SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadder), 0, video.getVideo(), &dst);
     }
   }
 
   if (blockY > 0 &&
-      level.getFg(blockX, blockY-1) == level_c::FgElementPlatformLadderDown ||
-      level.getFg(blockX, blockY-1) == level_c::FgElementLadder)
+      level.getFg(blockX, blockY-1) == levelData_c::FgElementPlatformLadderDown ||
+      level.getFg(blockX, blockY-1) == levelData_c::FgElementLadder)
   {
     dst.x = (blockX)*gr.blockX();
     dst.y = (blockY-1)*gr.blockY();
     dst.w = gr.blockX();
     dst.h = gr.blockY();
-    SDL_BlitSurface(gr.getFgTile(level_c::FgElementLadder), 0, video.getVideo(), &dst);
+    SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadder), 0, video.getVideo(), &dst);
   }
 
   if (blockX > 0 && video.isDirty(blockX-1, blockY))
   {
-    if (level.getFg(blockX-1, blockY) == level_c::FgElementPlatformLadderUp)
+    if (level.getFg(blockX-1, blockY) == levelData_c::FgElementPlatformLadderUp)
     {
       dst.x = (blockX-1)*gr.blockX();
       dst.y = (blockY)*gr.blockY();
       dst.w = gr.blockX();
       dst.h = gr.blockY();
-      SDL_BlitSurface(gr.getFgTile(level_c::FgElementLadderMiddle), 0, video.getVideo(), &dst);
+      SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadderMiddle), 0, video.getVideo(), &dst);
     }
     else
     {
-      if (level.getFg(blockX-1, blockY) == level_c::FgElementPlatformLadderDown ||
-          level.getFg(blockX-1, blockY) == level_c::FgElementLadder)
+      if (level.getFg(blockX-1, blockY) == levelData_c::FgElementPlatformLadderDown ||
+          level.getFg(blockX-1, blockY) == levelData_c::FgElementLadder)
       {
         dst.x = (blockX-1)*gr.blockX();
         dst.y = (blockY)*gr.blockY();
         dst.w = gr.blockX();
         dst.h = gr.blockY();
-        SDL_BlitSurface(gr.getFgTile(level_c::FgElementLadder), 0, video.getVideo(), &dst);
+        SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadder), 0, video.getVideo(), &dst);
       }
     }
     if (blockY > 0 &&
-        level.getFg(blockX-1, blockY-1) == level_c::FgElementPlatformLadderDown ||
-        level.getFg(blockX-1, blockY-1) == level_c::FgElementLadder)
+        level.getFg(blockX-1, blockY-1) == levelData_c::FgElementPlatformLadderDown ||
+        level.getFg(blockX-1, blockY-1) == levelData_c::FgElementLadder)
     {
       dst.x = (blockX-1)*gr.blockX();
       dst.y = (blockY-1)*gr.blockY();
       dst.w = gr.blockX();
       dst.h = gr.blockY();
-      SDL_BlitSurface(gr.getFgTile(level_c::FgElementLadder), 0, video.getVideo(), &dst);
+      SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadder), 0, video.getVideo(), &dst);
     }
   }
 
   if (blockX < 19 && video.isDirty(blockX+1, blockY))
   {
-    if (level.getFg(blockX+1, blockY) == level_c::FgElementPlatformLadderUp)
+    if (level.getFg(blockX+1, blockY) == levelData_c::FgElementPlatformLadderUp)
     {
       dst.x = (blockX+1)*gr.blockX();
       dst.y = (blockY)*gr.blockY();
       dst.w = gr.blockX();
       dst.h = gr.blockY();
-      SDL_BlitSurface(gr.getFgTile(level_c::FgElementLadderMiddle), 0, video.getVideo(), &dst);
+      SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadderMiddle), 0, video.getVideo(), &dst);
     }
     else
     {
-      if (level.getFg(blockX+1, blockY) == level_c::FgElementPlatformLadderDown ||
-          level.getFg(blockX+1, blockY) == level_c::FgElementLadder)
+      if (level.getFg(blockX+1, blockY) == levelData_c::FgElementPlatformLadderDown ||
+          level.getFg(blockX+1, blockY) == levelData_c::FgElementLadder)
       {
         dst.x = (blockX+1)*gr.blockX();
         dst.y = (blockY)*gr.blockY();
         dst.w = gr.blockX();
         dst.h = gr.blockY();
-        SDL_BlitSurface(gr.getFgTile(level_c::FgElementLadder), 0, video.getVideo(), &dst);
+        SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadder), 0, video.getVideo(), &dst);
       }
     }
     if (blockY > 0 &&
-        level.getFg(blockX+1, blockY-1) == level_c::FgElementPlatformLadderDown ||
-        level.getFg(blockX+1, blockY-1) == level_c::FgElementLadder)
+        level.getFg(blockX+1, blockY-1) == levelData_c::FgElementPlatformLadderDown ||
+        level.getFg(blockX+1, blockY-1) == levelData_c::FgElementLadder)
     {
       dst.x = (blockX+1)*gr.blockX();
       dst.y = (blockY-1)*gr.blockY();
       dst.w = gr.blockX();
       dst.h = gr.blockY();
-      SDL_BlitSurface(gr.getFgTile(level_c::FgElementLadder), 0, video.getVideo(), &dst);
+      SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadder), 0, video.getVideo(), &dst);
     }
   }
 }
@@ -566,21 +566,21 @@ unsigned int ant_c::SFPushLeft(void) {
       if (pushDelay == 0) {
 
         switch(level.getDominoType(blockX-1, blockY)) {
-          case level_c::DominoTypeStopper:
+          case levelData_c::DominoTypeStopper:
             pushDelay = 5;
             pushAnimation = AntAnimPushStopperLeft;
             break;
 
-          case level_c::DominoTypeExploder:
+          case levelData_c::DominoTypeExploder:
             animationImage = 9;
             break;
 
-          case level_c::DominoTypeDelay:
+          case levelData_c::DominoTypeDelay:
             pushDelay = 5;
             pushAnimation = AntAnimPushDelayLeft;
             break;
 
-          case level_c::DominoTypeAscender:
+          case levelData_c::DominoTypeAscender:
             pushDelay = 2;
             pushAnimation = AntAnimPushRiserLeft;
             break;
@@ -611,21 +611,21 @@ unsigned int ant_c::SFPushRight(void) {
       if (pushDelay == 0) {
 
         switch(level.getDominoType(blockX+1, blockY)) {
-          case level_c::DominoTypeStopper:
+          case levelData_c::DominoTypeStopper:
             pushDelay = 5;
             pushAnimation = AntAnimPushStopperRight;
             break;
 
-          case level_c::DominoTypeExploder:
+          case levelData_c::DominoTypeExploder:
             animationImage = 9;
             break;
 
-          case level_c::DominoTypeDelay:
+          case levelData_c::DominoTypeDelay:
             pushDelay = 5;
             pushAnimation = AntAnimPushDelayRight;
             break;
 
-          case level_c::DominoTypeAscender:
+          case levelData_c::DominoTypeAscender:
             pushDelay = 2;
             pushAnimation = AntAnimPushRiserRight;
             break;
@@ -766,7 +766,7 @@ unsigned int ant_c::SFPushInLeft(void) {
   blockX--;
   animation = AntAnimWalkLeft;
   level.putDownDomino(blockX, blockY, carriedDomino, true);
-  carriedDomino = level_c::DominoTypeEmpty;
+  carriedDomino = levelData_c::DominoTypeEmpty;
 
   return AntAnimNothing;
 }
@@ -778,7 +778,7 @@ unsigned int ant_c::SFPushInRight(void) {
   blockX++;
   animation = AntAnimWalkRight;
   level.putDownDomino(blockX, blockY, carriedDomino, true);
-  carriedDomino = level_c::DominoTypeEmpty;
+  carriedDomino = levelData_c::DominoTypeEmpty;
 
   return AntAnimNothing;
 }
@@ -1114,11 +1114,11 @@ unsigned int ant_c::checkForNoKeyActions(void) {
       return ReturnAntState;
     }
 
-    if (level.getFg(blockX, blockY) == level_c::FgElementPlatformLadderDown ||
-        level.getFg(blockX, blockY) == level_c::FgElementPlatformLadderUp)
+    if (level.getFg(blockX, blockY) == levelData_c::FgElementPlatformLadderDown ||
+        level.getFg(blockX, blockY) == levelData_c::FgElementPlatformLadderUp)
     {
-      if (level.getFg(blockX-1, blockY) > level_c::FgElementEmpty &&
-          level.getFg(blockX-1, blockY) != level_c::FgElementLadder)
+      if (level.getFg(blockX-1, blockY) > levelData_c::FgElementEmpty &&
+          level.getFg(blockX-1, blockY) != levelData_c::FgElementLadder)
       {
         if (carriedDomino != 0)
         {
@@ -1214,7 +1214,7 @@ unsigned int ant_c::checkForNoKeyActions(void) {
   }
 
   // is we are in front of an exploder -> push hands on ears
-  if (level.getDominoType(blockX, blockY) == level_c::DominoTypeExploder)
+  if (level.getDominoType(blockX, blockY) == levelData_c::DominoTypeExploder)
   {
     if (animation == AntAnimInFrontOfExploderWait)
     {
@@ -1268,39 +1268,39 @@ bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
   if (x > 19 && ofs == 1) return false;
 
   // if the target position is not empty, we can not put the domino there
-  if (level.getDominoType(x, y) != level_c::DominoTypeEmpty) return false;
+  if (level.getDominoType(x, y) != levelData_c::DominoTypeEmpty) return false;
 
   // we can not place dominos at the edge, if we are too close to them
   // because we need to step back to do that
-  if (level.getFg(x, y) == level_c::FgElementPlatformStep1)
+  if (level.getFg(x, y) == levelData_c::FgElementPlatformStep1)
   {
     if (ofs  == -1) return false;
   }
-  else if (level.getFg(x, y) == level_c::FgElementPlatformStep6)
+  else if (level.getFg(x, y) == levelData_c::FgElementPlatformStep6)
   {
     if (ofs == 1) return false;
   }
-  else if (level.getFg(x, y) != level_c::FgElementPlatformStart &&
-      level.getFg(x, y) != level_c::FgElementPlatformMiddle &&
-      level.getFg(x, y) != level_c::FgElementPlatformEnd &&
-      level.getFg(x, y) != level_c::FgElementPlatformLadderDown &&
-      level.getFg(x, y) != level_c::FgElementPlatformLadderUp)
+  else if (level.getFg(x, y) != levelData_c::FgElementPlatformStart &&
+      level.getFg(x, y) != levelData_c::FgElementPlatformMiddle &&
+      level.getFg(x, y) != levelData_c::FgElementPlatformEnd &&
+      level.getFg(x, y) != levelData_c::FgElementPlatformLadderDown &&
+      level.getFg(x, y) != levelData_c::FgElementPlatformLadderUp)
   {   // we need a proper ground for the domino
     return false;
   }
-  else if (carriedDomino != level_c::DominoTypeVanish && y > 0 &&
-      level.getFg(x, y-1) >= level_c::FgElementDoor0 &&
-      level.getFg(x, y-1) <= level_c::FgElementDoor3)
+  else if (carriedDomino != levelData_c::DominoTypeVanish && y > 0 &&
+      level.getFg(x, y-1) >= levelData_c::FgElementDoor0 &&
+      level.getFg(x, y-1) <= levelData_c::FgElementDoor3)
   {   // No domino, except for vanishers may be placed in front of doors
     return false;
   }
 
   // check neighbor places, if there is a domino falling in our direction, we
   // must not place the domino there....
-  if ((x < 19) && level.getDominoType(x+1, y) != level_c::DominoTypeEmpty && level.getDominoState(x+1, y) < 8)
+  if ((x < 19) && level.getDominoType(x+1, y) != levelData_c::DominoTypeEmpty && level.getDominoState(x+1, y) < 8)
     return false;
 
-  if ((x >  0) && level.getDominoType(x-1, y) != level_c::DominoTypeEmpty && level.getDominoState(x-1, y) > 8)
+  if ((x >  0) && level.getDominoType(x-1, y) != levelData_c::DominoTypeEmpty && level.getDominoState(x-1, y) > 8)
     return false;
 
   // no other reason to not place the domino
@@ -1311,14 +1311,14 @@ bool ant_c::PushableDomino(int x, int y, int ofs) {
 
   if (carriedDomino != 0) return false;
 
-  if (level.getDominoType(x+ofs, y) == level_c::DominoTypeEmpty) return false;
-  if (level.getFg(x+ofs, y) == level_c::FgElementEmpty) return false;
-  if (level.getFg(x+ofs, y) == level_c::FgElementLadder) return false;
+  if (level.getDominoType(x+ofs, y) == levelData_c::DominoTypeEmpty) return false;
+  if (level.getFg(x+ofs, y) == levelData_c::FgElementEmpty) return false;
+  if (level.getFg(x+ofs, y) == levelData_c::FgElementLadder) return false;
   if (subBlock != 0) return false;
-  if (level.getDominoType(x+ofs, y) == level_c::DominoTypeSplitter) return false;
+  if (level.getDominoType(x+ofs, y) == levelData_c::DominoTypeSplitter) return false;
   if (level.getDominoState(x+ofs, y) != 8) return false;
 
-  if (level.getDominoType(x, y) == level_c::DominoTypeEmpty) return true;
+  if (level.getDominoType(x, y) == levelData_c::DominoTypeEmpty) return true;
 
   if (ofs == -1)
   {
@@ -1408,8 +1408,8 @@ unsigned int ant_c::SFNextAction(void) {
     else
     {
       animation = returnState = AntAnimLanding;
-      if (level.getFg(blockX, blockY) != level_c::FgElementPlatformStep2 &&
-          level.getFg(blockX, blockY) != level_c::FgElementPlatformStep5)
+      if (level.getFg(blockX, blockY) != levelData_c::FgElementPlatformStep2 &&
+          level.getFg(blockX, blockY) != levelData_c::FgElementPlatformStep5)
       {
       }
       else
@@ -1473,17 +1473,17 @@ unsigned int ant_c::SFNextAction(void) {
         direction = -1;
       }
     }
-    else if (level.getFg(blockX, blockY) == level_c::FgElementPlatformStep2)
+    else if (level.getFg(blockX, blockY) == levelData_c::FgElementPlatformStep2)
     {
       animation = returnState = AntAnimJunpUpLeft;
       direction = -1;
     }
-    else if (level.getFg(blockX, blockY) == level_c::FgElementPlatformStep5)
+    else if (level.getFg(blockX, blockY) == levelData_c::FgElementPlatformStep5)
     {
       animation = returnState = AntAnimJunpDownLeft;
       direction = -1;
     }
-    else if (level.getFg(blockX, blockY) == level_c::FgElementLadder)
+    else if (level.getFg(blockX, blockY) == levelData_c::FgElementLadder)
     {
     }
     else if (level.getFg(blockX-1, blockY) == 0 ||
@@ -1587,21 +1587,21 @@ unsigned int ant_c::SFNextAction(void) {
         direction = 1;
       }
     }
-    else if (level.getFg(blockX, blockY) == level_c::FgElementPlatformStep2)
+    else if (level.getFg(blockX, blockY) == levelData_c::FgElementPlatformStep2)
     {
       animation = returnState = AntAnimJunpDownRight;
       direction = 1;
     }
-    else if (level.getFg(blockX, blockY) == level_c::FgElementPlatformStep5)
+    else if (level.getFg(blockX, blockY) == levelData_c::FgElementPlatformStep5)
     {
       animation = returnState = AntAnimJunpUpRight;
       direction = 1;
     }
-    else if (level.getFg(blockX, blockY) == level_c::FgElementLadder)
+    else if (level.getFg(blockX, blockY) == levelData_c::FgElementLadder)
     {
     }
-    else if (level.getFg(blockX+1, blockY) == level_c::FgElementEmpty ||
-        level.getFg(blockX+1, blockY) == level_c::FgElementLadder)
+    else if (level.getFg(blockX+1, blockY) == levelData_c::FgElementEmpty ||
+        level.getFg(blockX+1, blockY) == levelData_c::FgElementLadder)
     {
       if (carriedDomino != 0)
       {
@@ -1620,12 +1620,12 @@ unsigned int ant_c::SFNextAction(void) {
         direction = 1;
       }
     }
-    else if (level.getFg(blockX+1, blockY) == level_c::FgElementPlatformStep2)
+    else if (level.getFg(blockX+1, blockY) == levelData_c::FgElementPlatformStep2)
     {
       animation = returnState = AntAnimJunpDownRight;
       direction = 1;
     }
-    else if (level.getFg(blockX+1, blockY) == level_c::FgElementPlatformStep7)
+    else if (level.getFg(blockX+1, blockY) == levelData_c::FgElementPlatformStep7)
     {
       animation = returnState = AntAnimJunpUpRight;
       direction = 1;
@@ -1649,7 +1649,7 @@ unsigned int ant_c::SFNextAction(void) {
   }
   else if (keyMask & KEY_UP)
   {
-    if ((level.getFg(blockX, blockY-1) == level_c::FgElementDoor3) &&
+    if ((level.getFg(blockX, blockY-1) == levelData_c::FgElementDoor3) &&
         (level.getDominoType(blockX, blockY) == 0 ||
          level.getDominoState(blockX, blockY) > 8) &&
         (level.getDominoType(blockX-1, blockY) == 0 ||
@@ -1668,7 +1668,7 @@ unsigned int ant_c::SFNextAction(void) {
         upChecker = true;
       }
     }
-    else if (level.getFg(blockX, blockY) == level_c::FgElementPlatformLadderUp)
+    else if (level.getFg(blockX, blockY) == levelData_c::FgElementPlatformLadderUp)
     {
       if (carriedDomino == 0)
       {
@@ -1689,13 +1689,13 @@ unsigned int ant_c::SFNextAction(void) {
         upChecker = true;
       }
     }
-    else if (level.getFg(blockX, blockY-1) == level_c::FgElementLadder)
+    else if (level.getFg(blockX, blockY-1) == levelData_c::FgElementLadder)
     {
       animation = returnState = AntAnimLadder1;
       direction = -20;
       upChecker = true;
     }
-    else if (level.getFg(blockX, blockY-1) == level_c::FgElementPlatformLadderDown)
+    else if (level.getFg(blockX, blockY-1) == levelData_c::FgElementPlatformLadderDown)
     {
       animation = returnState = AntAnimLadder2;
       direction = -20;
@@ -1751,7 +1751,7 @@ unsigned int ant_c::SFNextAction(void) {
       animationImage = 9;
       downChecker = true;
     }
-    else if (level.getFg(blockX, blockY) == level_c::FgElementPlatformLadderDown)
+    else if (level.getFg(blockX, blockY) == levelData_c::FgElementPlatformLadderDown)
     {
       if (carriedDomino != 0)
       {
@@ -1775,7 +1775,7 @@ unsigned int ant_c::SFNextAction(void) {
         direction = 20;
       }
     }
-    else if (level.getFg(blockX, blockY+1) == level_c::FgElementLadder)
+    else if (level.getFg(blockX, blockY+1) == levelData_c::FgElementLadder)
     {
       animation = returnState = AntAnimLadder3;
       direction = 20;
@@ -1800,11 +1800,11 @@ unsigned int ant_c::SFNextAction(void) {
     else if ((carriedDomino == 0)
         && (level.getDominoType(blockX, blockY) != 0)
         && (level.getDominoState(blockX, blockY) == 8)
-        && (level.getDominoType(blockX, blockY) != level_c::DominoTypeAscender || level.getDominoExtra(blockX, blockY) != 0x60)
-        && (level.getFg(blockX, blockY) != level_c::FgElementLadder)
+        && (level.getDominoType(blockX, blockY) != levelData_c::DominoTypeAscender || level.getDominoExtra(blockX, blockY) != 0x60)
+        && (level.getFg(blockX, blockY) != levelData_c::FgElementLadder)
         )
     {
-      if (level.getDominoType(blockX, blockY) == level_c::DominoTypeTrigger)
+      if (level.getDominoType(blockX, blockY) == levelData_c::DominoTypeTrigger)
       {
         animation = returnState = AntAnimNoNo;
       }
@@ -1902,7 +1902,7 @@ unsigned int ant_c::SFNextAction(void) {
   {
     inactiveTimer = 0;
   }
-  else if (carriedDomino != 0 || level.getFg(blockX, blockY) == level_c::FgElementLadder || finalAnimationPlayed)
+  else if (carriedDomino != 0 || level.getFg(blockX, blockY) == levelData_c::FgElementLadder || finalAnimationPlayed)
   {
     inactiveTimer++;
     returnState = checkForNoKeyActions();

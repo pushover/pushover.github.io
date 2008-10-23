@@ -4,7 +4,7 @@
 // this class contains all necessary code for the ant animation
 
 
-class level_c;
+class levelPlayer_c;
 class graphics_c;
 class surface_c;
 
@@ -28,7 +28,7 @@ class ant_c {
     int blockX, blockY;
     int subBlock, screenBlock;
 
-    level_c & level;
+    levelPlayer_c & level;
     graphics_c & gr;
 
     unsigned int keyMask;
@@ -48,7 +48,7 @@ class ant_c {
     // init the ant state for level entering
     // the level is saved and used later on for dirty block
     // marking, and level modification
-    ant_c(level_c & level, graphics_c & gr);
+    ant_c(levelPlayer_c & level, graphics_c & gr);
 
     void initForLevel(void);
 

@@ -6,7 +6,9 @@ pushover_SOURCES = \
   src/ant.cpp src/ant.h \
   src/graphics.cpp src/graphics.h \
   src/graphicsn.cpp src/graphicsn.h \
-  src/level.cpp src/level.h \
+  src/leveldata.cpp src/leveldata.h \
+  src/leveldisplay.cpp src/leveldisplay.h \
+  src/levelplayer.cpp src/levelplayer.h \
   src/levelset.cpp src/levelset.h \
   src/luaclass.cpp src/luaclass.h \
   src/main.cpp \
