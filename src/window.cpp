@@ -387,7 +387,7 @@ listWindow_c * getSolvedWindow(surface_c & surf, graphics_c & gr) {
         entries.push_back("Return to Main menu");
     }
 
-    return new listWindow_c(2, 3, 16, 6, surf, gr, "Gratulation You solved the level", entries, false);
+    return new listWindow_c(2, 3, 16, 6, surf, gr, "Gratulation! You solved the level.", entries, false);
 }
 
 listWindow_c * getFailedWindow(const std::string & reason, surface_c & surf, graphics_c & gr) {
