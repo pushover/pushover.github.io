@@ -5,7 +5,6 @@
 #include "ant.h"
 #include "recorder.h"
 #include "soundsys.h"
-#include "text.h"
 #include "screen.h"
 #include "window.h"
 #include "solvedmap.h"
@@ -59,7 +58,7 @@ static unsigned int getKeyMask(void) {
 // 4 not all dominos fell
 // 5 die
 //
-int playTick(levelPlayer_c & l, ant_c & a, screen_c & screen)
+int playTick(levelPlayer_c & l, ant_c & a, surface_c & screen)
 {
   l.performDoors();
   int res = l.performDominos(a);
@@ -122,10 +121,10 @@ int main(int argc, char * argv[]) {
 
   // initialize SDL, graphics, timer, video mode, and level data structure
   SDL_Init(SDL_INIT_TIMER);
+  SDL_Init(SDL_INIT_VIDEO);
   atexit(SDL_Quit);
   graphicsN_c gr(datadir);
   screen_c screen(gr);
-  screen.init();
   gr.loadGraphics();
   initText(datadir);
   soundSystem_c::instance()->openSound(datadir);

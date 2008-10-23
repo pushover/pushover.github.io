@@ -4,7 +4,6 @@
 #include "sha1.h"
 #include "graphics.h"
 #include "soundsys.h"
-#include "text.h"
 #include "screen.h"
 #include "ant.h"
 
@@ -37,40 +36,11 @@ void levelDisplay_c::updateBackground(void)
       // when the current block is dirty, recreate it
       if (background.isDirty(x, y))
       {
-        SDL_Rect dst;
-        dst.x = x*gr.blockX();
-        dst.y = y*gr.blockY();
-        dst.w = gr.blockX();
-        dst.h = gr.blockY();
         for (unsigned char b = 0; b < numBg; b++)
-          background.blitBlock(gr.getBgTile(level[y][x].bg[b]), dst.x, dst.y);
-        background.blitBlock(gr.getFgTile(level[y][x].fg), dst.x, dst.y);
+          background.blitBlock(gr.getBgTile(level[y][x].bg[b]), x*gr.blockX(), y*gr.blockY());
+        background.blitBlock(gr.getFgTile(level[y][x].fg), x*gr.blockX(), y*gr.blockY());
 
-        // apply gradient effect
-        for (unsigned int i = 0; i < gr.blockY() && y*gr.blockY()+i < (unsigned int)background.getVideo()->h; i++)
-          for (unsigned int j = 0; j < gr.blockX(); j++) {
-
-            uint32_t col = *((uint32_t*)(((uint8_t*)background.getVideo()->pixels) + (y*gr.blockY()+i) * background.getVideo()->pitch +
-                  background.getVideo()->format->BytesPerPixel*(x*gr.blockX()+j)));
-
-            Uint8 r, g, b;
-
-            SDL_GetRGB(col, background.getVideo()->format, &r, &g, &b);
-
-            double val = (2.0-((1.0*x*gr.blockX()+j)/background.getVideo()->w + (1.0*y*gr.blockY()+i)/background.getVideo()->h));
-            val += (1.0*rand()/RAND_MAX)/20 - 1.0/40;
-            if (val < 0) val = 0;
-            if (val > 2) val = 2;
-
-            r = (Uint8)(((255.0-r)*val+r)*r/255);
-            g = (Uint8)(((255.0-g)*val+g)*g/255);
-            b = (Uint8)(((255.0-b)*val+b)*b/255);
-
-            col = SDL_MapRGB(background.getVideo()->format, r, g, b);
-
-            *((uint32_t*)(((uint8_t*)background.getVideo()->pixels) + (y*gr.blockY()+i) * background.getVideo()->pitch +
-                  background.getVideo()->format->BytesPerPixel*(x*gr.blockX()+j))) = col;
-          }
+        background.gradient(gr.blockX()*x, gr.blockY()*y, gr.blockX(), gr.blockY());
       }
     }
 
@@ -336,7 +306,7 @@ void levelDisplay_c::drawDominos(void) {
     pars.box.h = 50;
     pars.shadow = true;
 
-    renderText(target.getVideo(), &pars, time);
+    target.renderText(&pars, time);
   }
 }
 

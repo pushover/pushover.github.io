@@ -2,7 +2,6 @@
 
 #include "screen.h"
 #include "graphics.h"
-#include "text.h"
 #include "levelset.h"
 #include "textsections.h"
 #include "solvedmap.h"
@@ -93,30 +92,9 @@ helpWindow_c::helpWindow_c(const std::string text, surface_c & s, graphics_c & g
 
   for (unsigned int d = 0; d < 10; d++)
   {
-    SDL_Rect r;
-
-    r.x = SX*positions[2*d+0]+TX;
-    r.y = SY*positions[2*d+1]+TY;
-    r.w = 50;
-    r.h = 80;
-
-    SDL_FillRect(s.getVideo(), &r, SDL_MapRGB(s.getVideo()->format, 0, 0, 0));
-
-    r.x += 2;
-    r.y += 2;
-    r.w -= 4;
-    r.h -= 4;
-
-    SDL_FillRect(s.getVideo(), &r, SDL_MapRGB(s.getVideo()->format, 112, 39, 0));
-
-    SDL_Surface * v = g.getDomino(d, 7);
-
-    r.x = SX*positions[2*d+0]+TX  - 80;
-    r.y = SY*positions[2*d+1]+TY  + 5;
-    r.w = v->w;
-    r.h = v->h;
-
-    SDL_BlitSurface(v, 0, s.getVideo(), &r);
+    s.fillRect(SX*positions[2*d+0]+TX,   SY*positions[2*d+1]+TY,   50,   80, 0, 0, 0);
+    s.fillRect(SX*positions[2*d+0]+TX+2, SY*positions[2*d+1]+TY+2, 50-4, 80-4, 112, 39, 0);
+    s.blitBlock(g.getDomino(d, 7), SX*positions[2*d+0]+TX - 80, SY*positions[2*d+1]+TY + 5);
 
     par.font = FNT_SMALL;
     par.alignment = ALN_CENTER;
@@ -127,7 +105,7 @@ helpWindow_c::helpWindow_c(const std::string text, surface_c & s, graphics_c & g
     par.box.y = SY*positions[2*d+1]+TY-25;
     par.box.h = 20;
 
-    renderText(s.getVideo(), &par, texts[d]);
+    s.renderText(&par, texts[d]);
   }
 
   par.font = FNT_NORMAL;
@@ -139,7 +117,7 @@ helpWindow_c::helpWindow_c(const std::string text, surface_c & s, graphics_c & g
   par.box.y = 235;
   par.box.h = 145;
 
-  renderText(s.getVideo(), &par, text);
+  s.renderText(&par, text);
 }
 
 bool helpWindow_c::handleEvent(const SDL_Event & event) {
@@ -168,20 +146,12 @@ void listWindow_c::redraw(void) {
   par.box.w = gr.blockX()*(w-2);
   par.box.h = getFontHeight(FNT_BIG);
 
-  renderText(surf.getVideo(), &par, title);
+  surf.renderText(&par, title);
 
   int ypos = gr.blockY()*(y+1) + getFontHeight(FNT_BIG);
 
-  SDL_Rect r;
-
-  r.x = gr.blockX()*(x+1);
-  r.y = ypos;
-  r.w = gr.blockX()*(w-2);
-  r.h = 2;
-
+  surf.fillRect(gr.blockX()*(x+1), ypos, gr.blockX()*(w-2), 2, 112, 39, 0);
   ypos += 20;
-
-  SDL_FillRect(surf.getVideo(), &r, SDL_MapRGB(surf.getVideo()->format, 112, 39, 0));
 
   unsigned int lineH = getFontHeight(FNT_NORMAL);  // hight of one entry line
   menuLines = (gr.blockY()*(y+h-1)-ypos) / lineH;  // number of entriy lines that fit
@@ -221,7 +191,7 @@ void listWindow_c::redraw(void) {
     par.box.w = gr.blockX()*(w-2);
     par.box.h = lineH;
 
-    renderText(surf.getVideo(), &par, entries[line]);
+    surf.renderText(&par, entries[line]);
 
     line++;
     ypos += lineH;

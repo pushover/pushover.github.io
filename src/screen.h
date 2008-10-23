@@ -3,6 +3,8 @@
 
 #include <SDL.h>
 
+#include <string>
+
 /* this is the display class, there is only one instance fo this class and it contains
  * the complete screen
  * the background is always a level.
@@ -10,6 +12,35 @@
  */
 
 class graphics_c;
+
+/* the 3 vavailable fonts, they are a fixed size and are supposed to contain
+ * all the required letters
+ */
+enum {
+  FNT_SMALL,
+  FNT_NORMAL,
+  FNT_BIG
+};
+
+enum {
+  ALN_TEXT,
+  ALN_CENTER,
+  ALN_TEXT_CENTER
+};
+
+
+typedef struct {
+  int font;
+  SDL_Rect box;
+  int alignment;
+  SDL_Color color;
+  bool shadow;
+} fontParams_s;
+
+
+void initText(std::string datadir);
+void deinitText(void);
+unsigned int getFontHeight(unsigned int font);
 
 
 class surface_c {
@@ -25,11 +56,11 @@ class surface_c {
 
   public:
 
-    surface_c(void) : video(0) {}
+    SDL_Surface * getIdentical(void) const;
 
-    // maybe temporarily??? return the video surface to draw something
-    const SDL_Surface * getVideo(void) const { return video; }
-    SDL_Surface * getVideo(void) { return video; }
+    surface_c(void) : video(0) {}
+    surface_c(SDL_Surface * c) : video(c) {}
+    ~surface_c(void);
 
     void markDirty(int x, int y) { if (x >= 0 && x < 20 && y >= 0 && y < 13) dynamicDirty[y] |= (1 << x); }
     bool isDirty(int x, int y) {
@@ -45,6 +76,24 @@ class surface_c {
     void blit(SDL_Surface * s, int x, int y);
     void blitBlock(SDL_Surface * s, int x, int y);
     void copy(surface_c & src, int x, int y, int w, int h);
+    void fillRect(int x, int y, int w, int h, int r, int g, int b);
+
+    // render a given UFT-8 encoded text to the surface v into the given box
+    // the text is automatically broken into lines and newlines within the
+    // text are considered to be new paragraphs
+    // depending on the alignment mode the text is either:
+    //   put as paragraph text starting with the upper corner, no block alignment, left or right
+    //   alignment depending on language
+    //   centered within the box
+    //
+    // the text will not leave the assign box, if it is too big it will be clipped
+    // the given text will be put through gettext for translation before it is displayed
+    // the function behaves a bit like printf in that you can format values into the
+    // string with additional parameters
+    void renderText(const fontParams_s * par, const std::string & t);
+
+    // apply the gradient within the givne area
+    void gradient(int x, int y, int w, int h);
 };
 
 class pixelSurface_c : public surface_c {
@@ -53,7 +102,6 @@ class pixelSurface_c : public surface_c {
 
     // creates a surface of ther same size and same format at the given surface
     pixelSurface_c(const surface_c & pre);
-    ~pixelSurface_c(void);
 };
 
 class screen_c : public surface_c {
@@ -69,9 +117,6 @@ class screen_c : public surface_c {
     // constructor, does nothing for the time beeing
     screen_c(const graphics_c & gr);
     ~screen_c(void);
-
-    // initialized the screen as long as this is not done, all the actions will do nothing
-    void init(void);
 
     void flipComplete(void);  // flips the complete screen, not looking at the dirty blocks
     void flipDirty(void);     // updates only the dirty blocks

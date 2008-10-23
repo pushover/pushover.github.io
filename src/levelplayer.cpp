@@ -4,7 +4,6 @@
 #include "sha1.h"
 #include "graphics.h"
 #include "soundsys.h"
-#include "text.h"
 #include "screen.h"
 #include "ant.h"
 
