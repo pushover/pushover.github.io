@@ -153,3 +153,18 @@ bool screen_c::flipAnimate(void)
   return false;
 }
 
+pixelSurface_c::pixelSurface_c(const surface_c & pre) {
+
+  const SDL_Surface * vid = pre.getVideo();
+
+  if (!vid)
+    throw std::exception();
+
+  video = SDL_CreateRGBSurface(0, vid->w, vid->h, 32,
+        vid->format->Rmask, vid->format->Gmask, vid->format->Bmask, 0);
+}
+
+pixelSurface_c::~pixelSurface_c(void) {
+  delete video;
+}
+

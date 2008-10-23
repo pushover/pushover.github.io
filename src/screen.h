@@ -25,13 +25,30 @@ class surface_c {
 
   public:
 
+    surface_c(void) : video(0) {}
+
     // maybe temporarily??? return the video surface to draw something
+    const SDL_Surface * getVideo(void) const { return video; }
     SDL_Surface * getVideo(void) { return video; }
 
     void markDirty(int x, int y) { if (x >= 0 && x < 20 && y >= 0 && y < 13) dynamicDirty[y] |= (1 << x); }
-    bool isDirty(int x, int y) { if (x >= 0 && x < 20 && y >= 0 && y < 13) return (dynamicDirty[y] & (1 << x)) != 0; else return false; }
+    bool isDirty(int x, int y) {
+      if (x >= 0 && x < 20 && y >= 0 && y < 13)
+        return (dynamicDirty[y] & (1 << x)) != 0;
+      else
+        return false;
+    }
     void clearDirty(void);
     void markAllDirty(void);
+};
+
+class pixelSurface_c : public surface_c {
+
+  public:
+
+    // creates a surface of ther same size and same format at the given surface
+    pixelSurface_c(const surface_c & pre);
+    ~pixelSurface_c(void);
 };
 
 class screen_c : public surface_c {

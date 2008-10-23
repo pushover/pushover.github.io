@@ -62,7 +62,6 @@ static unsigned int getKeyMask(void) {
 int playTick(levelPlayer_c & l, ant_c & a, screen_c & screen)
 {
   l.performDoors();
-  a.performAnimation(screen);
   int res = l.performDominos(a);
 
   l.updateBackground();

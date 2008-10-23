@@ -31,7 +31,7 @@ void levelPlayer_c::performDoors(void) {
 
     if (getFg(doorEntryX, doorEntryY) < FgElementDoor3) {
       level[doorEntryY][doorEntryX].fg++;
-      staticDirty[doorEntryY] |= 1 << doorEntryX;
+      background.markDirty(doorEntryX, doorEntryY);
       target.markDirty(doorEntryX, doorEntryY);
     }
 
@@ -42,7 +42,7 @@ void levelPlayer_c::performDoors(void) {
 
     if (getFg(doorEntryX, doorEntryY) > FgElementDoor0) {
       level[doorEntryY][doorEntryX].fg--;
-      staticDirty[doorEntryY] |= 1 << doorEntryX;
+      background.markDirty(doorEntryX, doorEntryY);
       target.markDirty(doorEntryX, doorEntryY);
     }
   }
@@ -54,7 +54,7 @@ void levelPlayer_c::performDoors(void) {
 
     if (getFg(doorExitX, doorExitY) < FgElementDoor3) {
       level[doorExitY][doorExitX].fg++;
-      staticDirty[doorExitY] |= 1 << doorExitX;
+      background.markDirty(doorExitX, doorExitY);
       target.markDirty(doorExitX, doorExitY);
     }
   } else {
@@ -64,7 +64,7 @@ void levelPlayer_c::performDoors(void) {
 
     if (getFg(doorExitX, doorExitY) > FgElementDoor0) {
       level[doorExitY][doorExitX].fg--;
-      staticDirty[doorExitY] |= 1 << doorExitX;
+      background.markDirty(doorExitX, doorExitY);
       target.markDirty(doorExitX, doorExitY);
     }
   }
@@ -490,9 +490,9 @@ void levelPlayer_c::DTA_5(int x, int y) {
   target.markDirty(x-1, y);
   target.markDirty(x+1, y);
 
-  staticDirty[y] |= 1 << x;
-  staticDirty[y] |= 1 << (x+1);
-  staticDirty[y] |= 1 << (x-1);
+  background.markDirty(x-1, y);
+  background.markDirty(x, y);
+  background.markDirty(x+1, y);
 }
 
 // hitting next domino to the left
@@ -1020,9 +1020,9 @@ void levelPlayer_c::DTA_7(int x, int y) {
   target.markDirty(x, y-1);
   target.markDirty(x-1, y-1);
 
-  staticDirty[y] |= 1 << x;
-  staticDirty[y] |= 1 << (x-1);
-  staticDirty[y] |= 1 << (x-2);
+  background.markDirty(x-2, y);
+  background.markDirty(x-1, y);
+  background.markDirty(x  , y);
 }
 
 // Brider right same as DTA_7 but for other direction
@@ -1146,9 +1146,9 @@ void levelPlayer_c::DTA_M(int x, int y) {
   target.markDirty(x, y-1);
   target.markDirty(x+1, y-1);
 
-  staticDirty[y] |= 1 << x;
-  staticDirty[y] |= 1 << (x+1);
-  staticDirty[y] |= 1 << (x+2);
+  background.markDirty(x  , y);
+  background.markDirty(x+1, y);
+  background.markDirty(x+2, y);
 }
 
 
@@ -2149,6 +2149,8 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y) {
 }
 
 int levelPlayer_c::performDominos(ant_c & a) {
+
+  a.performAnimation(target);
 
   for (int y = 0; y < 13; y++)
     for (int x = 0; x < 20; x++)

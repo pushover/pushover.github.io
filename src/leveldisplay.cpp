@@ -15,65 +15,49 @@
 
 void levelDisplay_c::load(const textsections_c & sections) {
 
-  /* initialize all state variables */
-  for (unsigned int i = 0; i < 13; i++)
-    staticDirty[i] = 0xFFFFF;
-  target.markAllDirty();
-
   levelData_c::load(sections);
 
   // attention don't use many levels on the same graphics object
   gr.setTheme(getTheme());
+  background.markAllDirty();
+  target.markAllDirty();
 }
 
-levelDisplay_c::levelDisplay_c(surface_c & t, graphics_c & g) : target(t), gr(g) {
-  SDL_Surface * vid = SDL_GetVideoSurface();
-
-  if (vid)
-    background = SDL_CreateRGBSurface(0, vid->w, vid->h, 32,
-        vid->format->Rmask, vid->format->Gmask, vid->format->Bmask, 0);
-  else
-    background = 0;
+levelDisplay_c::levelDisplay_c(surface_c & t, graphics_c & g) : background(t), target(t), gr(g) {
 }
 
-levelDisplay_c::~levelDisplay_c(void) {
-  if (background)
-    SDL_FreeSurface(background);
-}
+levelDisplay_c::~levelDisplay_c(void) { }
 
-void levelDisplay_c::updateBackground(void) {
-  for (unsigned int y = 0; y < 13; y++) {
-
-    // check, if the current row contains any dirty blocks and only iterate through it
-    // when that is the case
-    if (staticDirty[y] == 0) continue;
-
-    for (unsigned int x = 0; x < 20; x++) {
-
+void levelDisplay_c::updateBackground(void)
+{
+  for (unsigned int y = 0; y < 13; y++)
+  {
+    for (unsigned int x = 0; x < 20; x++)
+    {
       // when the current block is dirty, recreate it
-      if ((staticDirty[y] >> x) & 1) {
-
+      if (background.isDirty(x, y))
+      {
         SDL_Rect dst;
         dst.x = x*gr.blockX();
         dst.y = y*gr.blockY();
         dst.w = gr.blockX();
         dst.h = gr.blockY();
         for (unsigned char b = 0; b < numBg; b++)
-          SDL_BlitSurface(gr.getBgTile(level[y][x].bg[b]), 0, background, &dst);
-        SDL_BlitSurface(gr.getFgTile(level[y][x].fg), 0, background, &dst);
+          SDL_BlitSurface(gr.getBgTile(level[y][x].bg[b]), 0, background.getVideo(), &dst);
+        SDL_BlitSurface(gr.getFgTile(level[y][x].fg), 0, background.getVideo(), &dst);
 
         // apply gradient effect
-        for (unsigned int i = 0; i < gr.blockY() && y*gr.blockY()+i < (unsigned int)background->h; i++)
+        for (unsigned int i = 0; i < gr.blockY() && y*gr.blockY()+i < (unsigned int)background.getVideo()->h; i++)
           for (unsigned int j = 0; j < gr.blockX(); j++) {
 
-            uint32_t col = *((uint32_t*)(((uint8_t*)background->pixels) + (y*gr.blockY()+i) * background->pitch +
-                  background->format->BytesPerPixel*(x*gr.blockX()+j)));
+            uint32_t col = *((uint32_t*)(((uint8_t*)background.getVideo()->pixels) + (y*gr.blockY()+i) * background.getVideo()->pitch +
+                  background.getVideo()->format->BytesPerPixel*(x*gr.blockX()+j)));
 
             Uint8 r, g, b;
 
-            SDL_GetRGB(col, background->format, &r, &g, &b);
+            SDL_GetRGB(col, background.getVideo()->format, &r, &g, &b);
 
-            double val = (2.0-((1.0*x*gr.blockX()+j)/background->w + (1.0*y*gr.blockY()+i)/background->h));
+            double val = (2.0-((1.0*x*gr.blockX()+j)/background.getVideo()->w + (1.0*y*gr.blockY()+i)/background.getVideo()->h));
             val += (1.0*rand()/RAND_MAX)/20 - 1.0/40;
             if (val < 0) val = 0;
             if (val > 2) val = 2;
@@ -82,17 +66,16 @@ void levelDisplay_c::updateBackground(void) {
             g = (Uint8)(((255.0-g)*val+g)*g/255);
             b = (Uint8)(((255.0-b)*val+b)*b/255);
 
-            col = SDL_MapRGB(background->format, r, g, b);
+            col = SDL_MapRGB(background.getVideo()->format, r, g, b);
 
-            *((uint32_t*)(((uint8_t*)background->pixels) + (y*gr.blockY()+i) * background->pitch +
-                  background->format->BytesPerPixel*(x*gr.blockX()+j))) = col;
+            *((uint32_t*)(((uint8_t*)background.getVideo()->pixels) + (y*gr.blockY()+i) * background.getVideo()->pitch +
+                  background.getVideo()->format->BytesPerPixel*(x*gr.blockX()+j))) = col;
           }
       }
     }
 
-    // remove all dirty marks for this block
-    staticDirty[y] = 0;
   }
+  background.clearDirty();
 }
 
 
@@ -192,7 +175,7 @@ void levelDisplay_c::drawDominos(bool debug) {
           src.y = y*gr.blockY();
           src.w = gr.blockX();
           src.h = gr.blockY();
-          SDL_BlitSurface(background, &src, target.getVideo(), &dst);
+          SDL_BlitSurface(background.getVideo(), &src, target.getVideo(), &dst);
         }
       }
     }
