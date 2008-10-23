@@ -22,9 +22,11 @@ void levelDisplay_c::load(const textsections_c & sections) {
 
   levelData_c::load(sections);
 
+  // attention don't use many levels on the same graphics object
+  gr.setTheme(getTheme());
 }
 
-levelDisplay_c::levelDisplay_c(surface_c & t) : target(t) {
+levelDisplay_c::levelDisplay_c(surface_c & t, graphics_c & g) : target(t), gr(g) {
   SDL_Surface * vid = SDL_GetVideoSurface();
 
   if (vid)
@@ -39,7 +41,7 @@ levelDisplay_c::~levelDisplay_c(void) {
     SDL_FreeSurface(background);
 }
 
-void levelDisplay_c::updateBackground(graphics_c & gr) {
+void levelDisplay_c::updateBackground(void) {
   for (unsigned int y = 0; y < 13; y++) {
 
     // check, if the current row contains any dirty blocks and only iterate through it
@@ -139,7 +141,7 @@ static void PutSprite(int nr, int x, int y, SDL_Surface * v, SDL_Surface * targe
   }
 }
 
-void levelDisplay_c::drawDominos(graphics_c & gr, bool debug) {
+void levelDisplay_c::drawDominos(bool debug) {
 
   // the dirty marks for the clock
   {

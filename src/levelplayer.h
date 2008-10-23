@@ -50,7 +50,7 @@ class levelPlayer_c : public levelDisplay_c {
 
   public:
 
-    levelPlayer_c(surface_c & screen) : levelDisplay_c(screen) {}
+    levelPlayer_c(surface_c & screen, graphics_c & gr) : levelDisplay_c(screen, gr) {}
 
     void load(const textsections_c & sections);
 

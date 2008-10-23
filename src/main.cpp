@@ -59,14 +59,14 @@ static unsigned int getKeyMask(void) {
 // 4 not all dominos fell
 // 5 die
 //
-int playTick(levelPlayer_c & l, ant_c & a, graphics_c & gr, screen_c & screen)
+int playTick(levelPlayer_c & l, ant_c & a, screen_c & screen)
 {
   l.performDoors();
   a.performAnimation(screen);
   int res = l.performDominos(a);
 
-  l.updateBackground(gr);
-  l.drawDominos(gr, false);
+  l.updateBackground();
+  l.drawDominos(false);
   a.draw(screen);
 
   if (l.triggerIsFalln() && !a.isVisible() && l.isExitDoorClosed()) {
@@ -130,7 +130,7 @@ int main(int argc, char * argv[]) {
   gr.loadGraphics();
   initText(datadir);
   soundSystem_c::instance()->openSound(datadir);
-  levelPlayer_c l(screen);
+  levelPlayer_c l(screen, gr);
   recorder_c rec;
   ant_c a(l, gr);
   solvedMap_c solved;
@@ -156,7 +156,6 @@ int main(int argc, char * argv[]) {
       rec.load(argv[2]);
       selectedMission = rec.getLevelsetName();
       levelsetList.getLevelset(selectedMission).loadLevel(l, rec.getLevelName());
-      gr.setTheme(l.getTheme());
       a.initForLevel();
 
       nextState = ST_REPLAY;
@@ -176,7 +175,6 @@ int main(int argc, char * argv[]) {
     try {
 
       levelsetList.getLevelset(selectedMission).loadLevel(l, levelName);
-      gr.setTheme(l.getTheme());
       rec.setLevel(selectedMission, levelName);
       a.initForLevel();
 
@@ -242,7 +240,7 @@ int main(int argc, char * argv[]) {
           case ST_FAILED:
             delete window;
             window = 0;
-            l.drawDominos(gr, false);
+            l.drawDominos(false);
             a.draw(screen);
             break;
 
@@ -295,8 +293,8 @@ int main(int argc, char * argv[]) {
 
           case ST_PREREPLAY:
           case ST_PREPLAY:
-            l.updateBackground(gr);
-            l.drawDominos(gr, false);
+            l.updateBackground();
+            l.drawDominos(false);
             a.draw(screen);
             ticks = SDL_GetTicks();    // this might have taken some time so reinit the ticks
             break;
@@ -409,7 +407,6 @@ int main(int argc, char * argv[]) {
                 nextState = ST_PREPLAY;
                 ls.loadLevel(l, ls.getLevelNames()[sel]);
                 a.initForLevel();
-                gr.setTheme(l.getTheme());
                 rec.setLevel(selectedMission, l.getName());
               }
             }
@@ -469,7 +466,6 @@ int main(int argc, char * argv[]) {
                     levelset_c ls = levelsetList.getLevelset(selectedMission);
                     ls.loadLevel(l, l.getName());
                     a.initForLevel();
-                    gr.setTheme(l.getTheme());
                   }
                   break;
                 default:
@@ -519,7 +515,6 @@ int main(int argc, char * argv[]) {
                              foundNext = true;
                              ls.loadLevel(l, levels[i]);
                              a.initForLevel();
-                             gr.setTheme(l.getTheme());
                              break;
                            }
                            i++;
@@ -568,7 +563,6 @@ int main(int argc, char * argv[]) {
                       {
                         ls.loadLevel(l, levels[i]);
                         a.initForLevel();
-                        gr.setTheme(l.getTheme());
                         foundLevel = true;
                         break;
                       }
@@ -610,7 +604,7 @@ int main(int argc, char * argv[]) {
         else
         {
           a.setKeyStates(rec.getEvent());
-          if (playTick(l, a, gr, screen))
+          if (playTick(l, a, screen))
             nextState = ST_MAIN;
           break;
         }
@@ -623,7 +617,7 @@ int main(int argc, char * argv[]) {
         {
           failDelay--;
           a.setKeyStates(0);
-          playTick(l, a, gr, screen);
+          playTick(l, a, screen);
         }
         else
         {
@@ -637,7 +631,7 @@ int main(int argc, char * argv[]) {
           rec.addEvent(keyMask);
           a.setKeyStates(keyMask);
         }
-        failReason = playTick(l, a, gr, screen);
+        failReason = playTick(l, a, screen);
         switch (failReason) {
           case 1:
             rec.save();

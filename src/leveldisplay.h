@@ -29,6 +29,7 @@ class levelDisplay_c : public levelData_c {
     uint32_t staticDirty[13];
 
     surface_c & target;
+    graphics_c & gr;
 
   public:
 
@@ -36,15 +37,15 @@ class levelDisplay_c : public levelData_c {
 
     // initializes a leve. From that moment on the level can only paint into
     // the given surface
-    levelDisplay_c(surface_c & target);
+    levelDisplay_c(surface_c & target, graphics_c & gr);
 
     void load(const textsections_c & sections);
 
     /* update the background where necessary */
-    void updateBackground(graphics_c & gr);
+    void updateBackground(void);
 
     /* draw the changed stuff into the target surface */
-    void drawDominos(graphics_c & gr, bool debug);
+    void drawDominos(bool debug);
 };
 
 
