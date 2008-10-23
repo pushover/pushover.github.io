@@ -189,8 +189,8 @@ void renderText(SDL_Surface * d, const fontParams_s * par, const std::string & t
   }
 }
 
-unsigned int getFontHeight(int font) {
-  if (font >= 0 && font < fonts.size())
+unsigned int getFontHeight(unsigned int font) {
+  if (font < fonts.size())
     return TTF_FontLineSkip(fonts[font]);
   else
     return 0;
