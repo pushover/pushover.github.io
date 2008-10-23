@@ -29,18 +29,7 @@ window_c::window_c(unsigned char x_, unsigned char y_, unsigned char w_, unsigne
 
       if (xp == 1 && yp == 1) continue;
 
-      SDL_Surface * v = gr.getBoxBlock(yp*3+xp);
-
-      SDL_Rect r;
-
-      r.x = (x+i)*gr.blockX();
-      r.y = (y+j)*gr.blockY();
-
-      r.w = gr.blockX();
-      r.h = gr.blockY();
-
-      SDL_BlitSurface(v, 0, surf.getVideo(), &r);
-
+      surf.blitBlock(gr.getBoxBlock(yp*3+xp), (x+i)*gr.blockX(), (y+j)*gr.blockY());
       surf.markDirty(x+i, y+j);
     }
 
@@ -52,19 +41,9 @@ void window_c::clearInside(void) {
 
   for (int i = 0; i < w-2; i++)
     for (int j = 0; j < h-2; j++) {
+
+      surf.blitBlock(gr.getBoxBlock(4), (1+x+i)*gr.blockX(), (1+y+j)*gr.blockY());
       surf.markDirty(1+x+i, 1+y+j);
-
-      SDL_Surface * v = gr.getBoxBlock(4);
-
-      SDL_Rect r;
-
-      r.x = (1+x+i)*gr.blockX();
-      r.y = (1+y+j)*gr.blockY();
-
-      r.w = gr.blockX();
-      r.h = gr.blockY();
-
-      SDL_BlitSurface(v, 0, surf.getVideo(), &r);
     }
 }
 

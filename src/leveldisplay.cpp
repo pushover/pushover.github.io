@@ -43,8 +43,8 @@ void levelDisplay_c::updateBackground(void)
         dst.w = gr.blockX();
         dst.h = gr.blockY();
         for (unsigned char b = 0; b < numBg; b++)
-          SDL_BlitSurface(gr.getBgTile(level[y][x].bg[b]), 0, background.getVideo(), &dst);
-        SDL_BlitSurface(gr.getFgTile(level[y][x].fg), 0, background.getVideo(), &dst);
+          background.blitBlock(gr.getBgTile(level[y][x].bg[b]), dst.x, dst.y);
+        background.blitBlock(gr.getFgTile(level[y][x].fg), dst.x, dst.y);
 
         // apply gradient effect
         for (unsigned int i = 0; i < gr.blockY() && y*gr.blockY()+i < (unsigned int)background.getVideo()->h; i++)
@@ -291,7 +291,7 @@ void levelDisplay_c::drawDominos(void) {
           dst.y = y*gr.blockY();
           dst.w = gr.blockX();
           dst.h = gr.blockY();
-          SDL_BlitSurface(gr.getFgTile(FgElementLadder2), 0, target.getVideo(), &dst);
+          target.blitBlock(gr.getFgTile(FgElementLadder2), dst.x, dst.y);
         }
         else if (getFg(x, y) == FgElementPlatformLadderUp)
         {
@@ -300,7 +300,7 @@ void levelDisplay_c::drawDominos(void) {
           dst.y = y*gr.blockY();
           dst.w = gr.blockX();
           dst.h = gr.blockY();
-          SDL_BlitSurface(gr.getFgTile(FgElementLadderMiddle), 0, target.getVideo(), &dst);
+          target.blitBlock(gr.getFgTile(FgElementLadderMiddle), dst.x, dst.y);
         }
       }
     }

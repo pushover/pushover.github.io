@@ -43,6 +43,7 @@ class surface_c {
 
     // blit the complete surface s so that the lower left corner of x is at x, y
     void blit(SDL_Surface * s, int x, int y);
+    void blitBlock(SDL_Surface * s, int x, int y);
     void copy(surface_c & src, int x, int y, int w, int h);
 };
 

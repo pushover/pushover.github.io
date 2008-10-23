@@ -52,6 +52,21 @@ void surface_c::blit(SDL_Surface * s, int x, int y) {
   }
 }
 
+void surface_c::blitBlock(SDL_Surface * s, int x, int y) {
+
+  if (s && video)
+  {
+    SDL_Rect dst;
+
+    dst.x = x;
+    dst.y = y;
+    dst.w = s->w;
+    dst.h = s->h;
+
+    SDL_BlitSurface(s, 0, video, &dst);
+  }
+}
+
 void surface_c::copy(surface_c & s, int x, int y, int w, int h) {
 
   if (s.video && video)

@@ -105,24 +105,19 @@ void ant_c::initForLevel(void) {
 
 void ant_c::draw(surface_c & video) {
 
-  SDL_Rect dst;
-
   if (blockX < 0 || blockX > 19 || blockY < 0 || blockY > 13) return;
 
   if (carriedDomino != 0)
   {
     if (animation >= AntAnimPullOutLeft && animation <= AntAnimLoosingDominoLeft)
     {
-      dst.w = gr.blockX();
-      dst.h = gr.blockY();
-
       int a = animation - AntAnimPullOutLeft;
 
-      dst.x = (blockX-2)*gr.blockX();
-      dst.y = (blockY)*gr.blockY()+screenBlock+gr.antDisplace();
+      int x = (blockX-2)*gr.blockX();
+      int y = (blockY)*gr.blockY()+screenBlock+gr.antDisplace();
 
-      dst.y += gr.getMoveOffsetY(a, animationImage);
-      dst.x += gr.getMoveOffsetX(a, animationImage);
+      y += gr.getMoveOffsetY(a, animationImage);
+      x += gr.getMoveOffsetX(a, animationImage);
 
       int img = gr.getMoveImage(a, animationImage);
 
@@ -133,13 +128,11 @@ void ant_c::draw(surface_c & video) {
           img = 7;
         }
 
-        dst.y -= gr.getDomino((carriedDomino -1) % 10, img)->h;
-        SDL_BlitSurface(gr.getDomino((carriedDomino - 1) % 10, img), 0, video.getVideo(), &dst);
+        video.blit(gr.getDomino((carriedDomino - 1) % 10, img), x, y);
       }
       else
       {
-        dst.y -= gr.getCarriedDomino(img-32, (carriedDomino -1) % 10)->h;
-        SDL_BlitSurface(gr.getCarriedDomino(img-32, (carriedDomino-1)%10), 0, video.getVideo(), &dst);
+        video.blit(gr.getCarriedDomino(img-32, (carriedDomino-1)%10), x, y);
       }
     }
     if (animation >= AntAnimCarryLeft && animation <= AntAnimCarryStopRight)
@@ -147,21 +140,16 @@ void ant_c::draw(surface_c & video) {
       /* put the domino image of the carried domino */
       int a = animation - AntAnimCarryLeft;
 
-      dst.x = (blockX-2)*gr.blockX()+gr.getCarryOffsetX(a, animationImage);
-      dst.y = (blockY)*gr.blockY()-gr.getCarriedDomino(a, carriedDomino-1)->h+screenBlock+gr.antDisplace()+gr.getCarryOffsetY(a, animationImage);
-      dst.w = gr.blockX();
-      dst.h = gr.blockY();
-      SDL_BlitSurface(gr.getCarriedDomino(a, carriedDomino-1), 0, video.getVideo(), &dst);
+      video.blit(gr.getCarriedDomino(a, carriedDomino-1),
+          (blockX-2)*gr.blockX()+gr.getCarryOffsetX(a, animationImage),
+          (blockY)*gr.blockY()+screenBlock+gr.antDisplace()+gr.getCarryOffsetY(a, animationImage));
+
     }
   }
 
   if (gr.getAnt(animation, animationImage))
   {
-    dst.x = (blockX-2)*gr.blockX();
-    dst.y = (blockY)*gr.blockY()-gr.getAnt(animation, animationImage)->h+screenBlock+gr.antDisplace();
-    dst.w = gr.blockX();
-    dst.h = gr.blockY();
-    SDL_BlitSurface(gr.getAnt(animation, animationImage), 0, video.getVideo(), &dst);
+    video.blit(gr.getAnt(animation, animationImage), (blockX-2)*gr.blockX(), (blockY)*gr.blockY()+screenBlock+gr.antDisplace());
   }
 
   /* what comes now, is to put the ladders back in front of the ant,
@@ -174,22 +162,14 @@ void ant_c::draw(surface_c & video) {
 
   if (level.getFg(blockX, blockY) == levelData_c::FgElementPlatformLadderUp)
   {
-    dst.x = (blockX)*gr.blockX();
-    dst.y = (blockY)*gr.blockY();
-    dst.w = gr.blockX();
-    dst.h = gr.blockY();
-    SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadderMiddle), 0, video.getVideo(), &dst);
+    video.blitBlock(gr.getFgTile(levelData_c::FgElementLadderMiddle), (blockX)*gr.blockX(), (blockY)*gr.blockY());
   }
   else
   {
     if (level.getFg(blockX, blockY) == levelData_c::FgElementPlatformLadderDown ||
         level.getFg(blockX, blockY) == levelData_c::FgElementLadder)
     {
-      dst.x = (blockX)*gr.blockX();
-      dst.y = (blockY)*gr.blockY();
-      dst.w = gr.blockX();
-      dst.h = gr.blockY();
-      SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadder), 0, video.getVideo(), &dst);
+      video.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX)*gr.blockX(), (blockY)*gr.blockY());
     }
   }
 
@@ -197,44 +177,28 @@ void ant_c::draw(surface_c & video) {
       level.getFg(blockX, blockY-1) == levelData_c::FgElementPlatformLadderDown ||
       level.getFg(blockX, blockY-1) == levelData_c::FgElementLadder)
   {
-    dst.x = (blockX)*gr.blockX();
-    dst.y = (blockY-1)*gr.blockY();
-    dst.w = gr.blockX();
-    dst.h = gr.blockY();
-    SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadder), 0, video.getVideo(), &dst);
+    video.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX)*gr.blockX(), (blockY-1)*gr.blockY());
   }
 
   if (blockX > 0 && video.isDirty(blockX-1, blockY))
   {
     if (level.getFg(blockX-1, blockY) == levelData_c::FgElementPlatformLadderUp)
     {
-      dst.x = (blockX-1)*gr.blockX();
-      dst.y = (blockY)*gr.blockY();
-      dst.w = gr.blockX();
-      dst.h = gr.blockY();
-      SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadderMiddle), 0, video.getVideo(), &dst);
+      video.blitBlock(gr.getFgTile(levelData_c::FgElementLadderMiddle), (blockX-1)*gr.blockX(), (blockY)*gr.blockY());
     }
     else
     {
       if (level.getFg(blockX-1, blockY) == levelData_c::FgElementPlatformLadderDown ||
           level.getFg(blockX-1, blockY) == levelData_c::FgElementLadder)
       {
-        dst.x = (blockX-1)*gr.blockX();
-        dst.y = (blockY)*gr.blockY();
-        dst.w = gr.blockX();
-        dst.h = gr.blockY();
-        SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadder), 0, video.getVideo(), &dst);
+        video.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX-1)*gr.blockX(), (blockY)*gr.blockY());
       }
     }
     if (blockY > 0 &&
         level.getFg(blockX-1, blockY-1) == levelData_c::FgElementPlatformLadderDown ||
         level.getFg(blockX-1, blockY-1) == levelData_c::FgElementLadder)
     {
-      dst.x = (blockX-1)*gr.blockX();
-      dst.y = (blockY-1)*gr.blockY();
-      dst.w = gr.blockX();
-      dst.h = gr.blockY();
-      SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadder), 0, video.getVideo(), &dst);
+      video.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX-1)*gr.blockX(), (blockY-1)*gr.blockY());
     }
   }
 
@@ -242,33 +206,21 @@ void ant_c::draw(surface_c & video) {
   {
     if (level.getFg(blockX+1, blockY) == levelData_c::FgElementPlatformLadderUp)
     {
-      dst.x = (blockX+1)*gr.blockX();
-      dst.y = (blockY)*gr.blockY();
-      dst.w = gr.blockX();
-      dst.h = gr.blockY();
-      SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadderMiddle), 0, video.getVideo(), &dst);
+      video.blitBlock(gr.getFgTile(levelData_c::FgElementLadderMiddle), (blockX+1)*gr.blockX(), (blockY)*gr.blockY());
     }
     else
     {
       if (level.getFg(blockX+1, blockY) == levelData_c::FgElementPlatformLadderDown ||
           level.getFg(blockX+1, blockY) == levelData_c::FgElementLadder)
       {
-        dst.x = (blockX+1)*gr.blockX();
-        dst.y = (blockY)*gr.blockY();
-        dst.w = gr.blockX();
-        dst.h = gr.blockY();
-        SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadder), 0, video.getVideo(), &dst);
+        video.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX+1)*gr.blockX(), (blockY)*gr.blockY());
       }
     }
     if (blockY > 0 &&
         level.getFg(blockX+1, blockY-1) == levelData_c::FgElementPlatformLadderDown ||
         level.getFg(blockX+1, blockY-1) == levelData_c::FgElementLadder)
     {
-      dst.x = (blockX+1)*gr.blockX();
-      dst.y = (blockY-1)*gr.blockY();
-      dst.w = gr.blockX();
-      dst.h = gr.blockY();
-      SDL_BlitSurface(gr.getFgTile(levelData_c::FgElementLadder), 0, video.getVideo(), &dst);
+      video.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX+1)*gr.blockX(), (blockY-1)*gr.blockY());
     }
   }
 }
