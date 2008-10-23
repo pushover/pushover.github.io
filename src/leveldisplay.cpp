@@ -78,53 +78,7 @@ void levelDisplay_c::updateBackground(void)
   background.clearDirty();
 }
 
-
-static void PutSprite(int nr, int x, int y, SDL_Surface * v, SDL_Surface * target)
-{
-  if (v)
-  {
-    SDL_Rect dst;
-    dst.x = x;
-    dst.y = y - v->h;
-    dst.w = v->w;
-    dst.h = v->h;
-
-    SDL_BlitSurface(v, 0, target, &dst);
-
-#if 0 // this is for debugging domino display functionality, it draws a little colored rectangle
-      // below the dominos for me to see which if the many ifs in the function below is painting it
-    dst.x = x+2*40+20-4;
-    dst.y = y;
-    dst.w = 8;
-    dst.h = 8;
-
-    Uint32 cols[] = {
-      0xFF0000, // 0
-      0x00FF00, // 1
-      0x0000FF, // 2
-      0x00FFFF, // 3
-      0xFF00FF, // 4
-      0xFFFF00, // 5
-      0xFFFFFF, // 6
-      0x800000, // 7
-      0x008000, // 8
-      0x000080, // 9
-      0x008080, // 10
-      0x800080, // 11
-      0x808000, // 12
-      0x808080, // 13
-      0xFF8000, // 14
-      0x00FF80, // 15
-      0xFF0080, // 16
-    };
-
-
-    SDL_FillRect(target, &dst, cols[nr]);
-#endif
-  }
-}
-
-void levelDisplay_c::drawDominos(bool debug) {
+void levelDisplay_c::drawDominos(void) {
 
   // the dirty marks for the clock
   {
@@ -160,25 +114,11 @@ void levelDisplay_c::drawDominos(bool debug) {
     Sec = newSec;
   }
 
+  // copy background, where necessary
   for (unsigned int y = 0; y < 13; y++)
-    for (unsigned int x = 0; x < 20; x++) {
-      if (target.isDirty(x, y) || debug) {
-
-        // copy background from background surface
-        {
-          SDL_Rect src, dst;
-          dst.x = x*gr.blockX();
-          dst.y = y*gr.blockY();
-          dst.w = gr.blockX();
-          dst.h = gr.blockY();
-          src.x = x*gr.blockX();
-          src.y = y*gr.blockY();
-          src.w = gr.blockX();
-          src.h = gr.blockY();
-          SDL_BlitSurface(background.getVideo(), &src, target.getVideo(), &dst);
-        }
-      }
-    }
+    for (unsigned int x = 0; x < 20; x++)
+      if (target.isDirty(x, y))
+        target.copy(background, x*gr.blockX(), y*gr.blockY(), gr.blockX(), gr.blockY());
 
   static int XposOffset[] = {-16, -16,  0,-16,  0,  0, 0, 0, 0,  0, 0, 16,  0, 16, 16, 0};
   static int YposOffset[] = { -8,  -6,  0, -4,  0, -2, 0, 0, 0, -2, 0, -4,  0, -6, -8, 0};
@@ -197,7 +137,7 @@ void levelDisplay_c::drawDominos(bool debug) {
 
     for (int x = 0; x < 20; x++, SpriteXPos += gr.blockX()) {
 
-      if (!target.isDirty(x, y) && !debug) continue;
+      if (!target.isDirty(x, y)) continue;
 
       // paint the left neighbor domino, if it leans in our direction and is not painted on its own
       if (y < 12 && x > 0 && !target.isDirty(x-1, y+1) && level[y+1][x-1].dominoType != DominoTypeEmpty &&
@@ -205,11 +145,9 @@ void levelDisplay_c::drawDominos(bool debug) {
            level[y+1][x-1].dominoType == DominoTypeSplitter && level[y+1][x-1].dominoState != 8 ||
            level[y+1][x-1].dominoState >= DominoTypeCrash0))
       {
-        PutSprite(0,
+        target.blit(gr.getDomino(level[y+1][x-1].dominoType-1, level[y+1][x-1].dominoState-1),
             SpriteXPos-gr.blockX(),
-            SpriteYPos+gr.convertDominoY(level[y+1][x-1].dominoYOffset)+gr.blockY(),
-            gr.getDomino(level[y+1][x-1].dominoType-1, level[y+1][x-1].dominoState-1), target.getVideo()
-            );
+            SpriteYPos+gr.convertDominoY(level[y+1][x-1].dominoYOffset)+gr.blockY());
       }
 
       if (x > 0 && !target.isDirty(x-1, y) && level[y][x-1].dominoType != DominoTypeEmpty &&
@@ -217,20 +155,16 @@ void levelDisplay_c::drawDominos(bool debug) {
            level[y][x-1].dominoType == DominoTypeSplitter && level[y][x-1].dominoState != 8 ||
            level[y][x-1].dominoType >= DominoTypeCrash0))
       {
-        PutSprite(1,
+        target.blit(gr.getDomino(level[y][x-1].dominoType-1, level[y][x-1].dominoState-1),
             SpriteXPos-gr.blockX(),
-            SpriteYPos+gr.convertDominoY(level[y][x-1].dominoYOffset),
-            gr.getDomino(level[y][x-1].dominoType-1, level[y][x-1].dominoState-1), target.getVideo()
-            );
+            SpriteYPos+gr.convertDominoY(level[y][x-1].dominoYOffset));
       }
 
       if (y < 12 && !target.isDirty(x, y+1) && level[y+1][x].dominoType != DominoTypeEmpty)
       {
-        PutSprite(2,
+        target.blit(gr.getDomino(level[y+1][x].dominoType-1, level[y+1][x].dominoState-1),
             SpriteXPos,
-            SpriteYPos+gr.convertDominoY(level[y+1][x].dominoYOffset)+gr.blockY(),
-            gr.getDomino(level[y+1][x].dominoType-1, level[y+1][x].dominoState-1), target.getVideo()
-            );
+            SpriteYPos+gr.convertDominoY(level[y+1][x].dominoYOffset)+gr.blockY());
       }
 
       // paint the splitting domino for the splitter
@@ -238,11 +172,9 @@ void levelDisplay_c::drawDominos(bool debug) {
           level[y][x].dominoState == 6 &&
           level[y][x].dominoExtra != 0)
       {
-        PutSprite(3,
+        target.blit(gr.getDomino(level[y][x].dominoExtra-1, level[y][x].dominoExtra>=DominoTypeCrash0?0:7),
             SpriteXPos,
-            SpriteYPos-gr.splitterY(),
-            gr.getDomino(level[y][x].dominoExtra-1, level[y][x].dominoExtra>=DominoTypeCrash0?0:7), target.getVideo()
-            );
+            SpriteYPos-gr.splitterY());
         level[y][x].dominoExtra = 0;
       }
 
@@ -250,39 +182,31 @@ void levelDisplay_c::drawDominos(bool debug) {
       if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoExtra == 0x60 &&
           level[y][x].dominoState < 16 && level[y][x].dominoState != 8)
       {
-        PutSprite(4,
+        target.blit(gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]),
             SpriteXPos+gr.convertDominoX(XposOffset[level[y][x].dominoState-1]),
-            SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
-            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target.getVideo()
-            );
+            SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset));
       }
       else if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoState == 1 && level[y][x].dominoExtra == 0 &&
           level[y-2][x-1].fg == 0)
       { // this is the case of the ascender domino completely horizontal and with the plank it is below not existing
         // so we see the above face of the domino. Normally there is a wall above us so we only see
         // the front face of the domino
-        PutSprite(5,
+        target.blit(gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]),
             SpriteXPos+gr.convertDominoX(XposOffset[level[y][x].dominoState-1]+6),
-            SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
-            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target.getVideo()
-            );
+            SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset));
       }
       else if (level[y][x].dominoType == DominoTypeAscender && level[y][x].dominoState == 15 && level[y][x].dominoExtra == 0 &&
           level[y-2][x+1].fg == 0)
       {
-        PutSprite(6,
+        target.blit(gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]),
             SpriteXPos+gr.convertDominoX(XposOffset[level[y][x].dominoState-1]-2),
-            SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset),
-            gr.getDomino(DominoTypeRiserCont-1, StoneImageOffset[level[y][x].dominoState-1]), target.getVideo()
-            );
+            SpriteYPos+gr.convertDominoY(YposOffset[level[y][x].dominoState-1]+level[y][x].dominoYOffset));
       }
       else if (level[y][x].dominoType != DominoTypeEmpty)
       {
-        PutSprite(7,
+        target.blit(gr.getDomino(level[y][x].dominoType-1, level[y][x].dominoState-1),
             SpriteXPos,
-            SpriteYPos+gr.convertDominoY(level[y][x].dominoYOffset),
-            gr.getDomino(level[y][x].dominoType-1, level[y][x].dominoState-1), target.getVideo()
-            );
+            SpriteYPos+gr.convertDominoY(level[y][x].dominoYOffset));
       }
 
       // paint the right neighor if it is leaning in our direction
@@ -291,11 +215,9 @@ void levelDisplay_c::drawDominos(bool debug) {
            level[y+1][x+1].dominoType == DominoTypeSplitter && level[y+1][x+1].dominoState != 8 ||
            level[y+1][x+1].dominoType >= DominoTypeCrash0))
       {
-        PutSprite(8,
+        target.blit(gr.getDomino(level[y+1][x+1].dominoType-1, level[y+1][x+1].dominoState-1),
             SpriteXPos+gr.blockX(),
-            SpriteYPos+gr.convertDominoY(level[y+1][x+1].dominoYOffset)+gr.blockY(),
-            gr.getDomino(level[y+1][x+1].dominoType-1, level[y+1][x+1].dominoState-1), target.getVideo()
-            );
+            SpriteYPos+gr.convertDominoY(level[y+1][x+1].dominoYOffset)+gr.blockY());
       }
 
       if (x < 19 && !target.isDirty(x+1, y) && level[y][x+1].dominoType != DominoTypeEmpty &&
@@ -303,60 +225,48 @@ void levelDisplay_c::drawDominos(bool debug) {
            level[y][x+1].dominoType == DominoTypeSplitter && level[y][x+1].dominoState != 8 ||
            level[y][x+1].dominoType >= DominoTypeCrash0))
       {
-        PutSprite(9,
+        target.blit(gr.getDomino(level[y][x+1].dominoType-1, level[y][x+1].dominoState-1),
             SpriteXPos+gr.blockX(),
-            SpriteYPos+gr.convertDominoY(level[y][x+1].dominoYOffset),
-            gr.getDomino(level[y][x+1].dominoType-1, level[y][x+1].dominoState-1), target.getVideo()
-            );
+            SpriteYPos+gr.convertDominoY(level[y][x+1].dominoYOffset));
       }
 
       if (y >= 11) continue;
 
       if (!target.isDirty(x, y+2) && level[y+2][x].dominoType == DominoTypeAscender)
       {
-        PutSprite(10,
+        target.blit(gr.getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1),
             SpriteXPos,
-            SpriteYPos+gr.convertDominoY(level[y+2][x].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1), target.getVideo()
-            );
+            SpriteYPos+gr.convertDominoY(level[y+2][x].dominoYOffset)+2*gr.blockY());
       }
 
       if (x > 0 && !target.isDirty(x-1, y+2) && level[y+2][x-1].dominoType == DominoTypeAscender)
       {
-        PutSprite(11,
+        target.blit(gr.getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1),
             SpriteXPos-gr.blockX(),
-            SpriteYPos+gr.convertDominoY(level[y+2][x-1].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1), target.getVideo()
-            );
+            SpriteYPos+gr.convertDominoY(level[y+2][x-1].dominoYOffset)+2*gr.blockY());
       }
 
       if (x < 19 && !target.isDirty(x+1, y+2) && level[y+2][x+1].dominoType == DominoTypeAscender)
       {
-        PutSprite(12,
+        target.blit(gr.getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1),
             SpriteXPos+gr.blockX(),
-            SpriteYPos+gr.convertDominoY(level[y+2][x+1].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1), target.getVideo()
-            );
+            SpriteYPos+gr.convertDominoY(level[y+2][x+1].dominoYOffset)+2*gr.blockY());
       }
 
       if (level[y][x].dominoType != DominoTypeAscender) continue;
 
       if (!target.isDirty(x, y+2) && level[y+2][x].dominoType != DominoTypeEmpty)
       {
-        PutSprite(13,
+        target.blit(gr.getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1),
             SpriteXPos,
-            SpriteYPos+gr.convertDominoY(level[y+2][x].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x].dominoType-1, level[y+2][x].dominoState-1), target.getVideo()
-            );
+            SpriteYPos+gr.convertDominoY(level[y+2][x].dominoYOffset)+2*gr.blockY());
       }
 
       if (x > 0 && !target.isDirty(x-1, y+2) && level[y+2][x-1].dominoType != DominoTypeEmpty)
       {
-        PutSprite(14,
+        target.blit(gr.getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1),
             SpriteXPos-gr.blockX(),
-            SpriteYPos+gr.convertDominoY(level[y+2][x-1].dominoYOffset)+2*gr.blockY(),
-            gr.getDomino(level[y+2][x-1].dominoType-1, level[y+2][x-1].dominoState-1), target.getVideo()
-            );
+            SpriteYPos+gr.convertDominoY(level[y+2][x-1].dominoYOffset)+2*gr.blockY());
       }
 
       if (x >= 19) continue;
@@ -365,18 +275,16 @@ void levelDisplay_c::drawDominos(bool debug) {
 
       if (level[y+2][x+1].dominoType == DominoTypeEmpty) continue;
 
-      PutSprite(15,
+      target.blit(gr.getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1),
           SpriteXPos+gr.blockX(),
-          SpriteYPos+gr.convertDominoY(level[y+2][x+1].dominoYOffset)+2*gr.blockY(),
-          gr.getDomino(level[y+2][x+1].dominoType-1, level[y+2][x+1].dominoState-1), target.getVideo()
-          );
+          SpriteYPos+gr.convertDominoY(level[y+2][x+1].dominoYOffset)+2*gr.blockY());
     }
   }
 
   // repaint the ladders in front of dominos
   for (unsigned int y = 0; y < 13; y++)
     for (unsigned int x = 0; x < 20; x++) {
-      if (target.isDirty(x, y) || debug) {
+      if (target.isDirty(x, y)) {
         if (getFg(x, y) == FgElementPlatformLadderDown || getFg(x, y) == FgElementLadder) {
           SDL_Rect dst;
           dst.x = x*gr.blockX();
@@ -396,27 +304,6 @@ void levelDisplay_c::drawDominos(bool debug) {
         }
       }
     }
-
-  if (debug)
-  {
-    for (unsigned int y = 0; y < 13; y++)
-      for (unsigned int x = 0; x < 20; x++) {
-
-        if (target.isDirty(x, y))
-        {
-          for (unsigned int h = 0; h < gr.blockY(); h+=2)
-          {
-            SDL_Rect dst;
-            dst.w = gr.blockX();
-            dst.h = 1;
-            dst.x = x*gr.blockX();
-            dst.y = y*gr.blockY()+h;
-            Uint32 color = SDL_MapRGB(target.getVideo()->format, 0, 0, 0);
-            SDL_FillRect(target.getVideo(), &dst, color);
-          }
-        }
-      }
-  }
 
   if (timeLeft < 60*60*18)
   { // output the time

@@ -38,7 +38,7 @@ class levelDisplay_c : public levelData_c {
     void updateBackground(void);
 
     /* draw the changed stuff into the target surface */
-    void drawDominos(bool debug);
+    void drawDominos(void);
 };
 
 

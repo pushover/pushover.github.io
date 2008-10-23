@@ -37,6 +37,34 @@ void surface_c::markAllDirty(void)
     dynamicDirty[y] = 0xFFFFFFFF;
 }
 
+void surface_c::blit(SDL_Surface * s, int x, int y) {
+
+  if (s && video)
+  {
+    SDL_Rect dst;
+
+    dst.x = x;
+    dst.y = y - s->h;
+    dst.w = s->w;
+    dst.h = s->h;
+
+    SDL_BlitSurface(s, 0, video, &dst);
+  }
+}
+
+void surface_c::copy(surface_c & s, int x, int y, int w, int h) {
+
+  if (s.video && video)
+  {
+    SDL_Rect src, dst;
+    src.x = dst.x = x;
+    src.y = dst.y = y;
+    src.w = dst.w = w;
+    src.h = dst.h = h;
+    SDL_BlitSurface(s.video, &src, video, &dst);
+  }
+}
+
 void screen_c::flipComplete(void)
 {
   SDL_Flip(video);

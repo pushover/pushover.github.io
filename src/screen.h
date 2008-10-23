@@ -40,6 +40,10 @@ class surface_c {
     }
     void clearDirty(void);
     void markAllDirty(void);
+
+    // blit the complete surface s so that the lower left corner of x is at x, y
+    void blit(SDL_Surface * s, int x, int y);
+    void copy(surface_c & src, int x, int y, int w, int h);
 };
 
 class pixelSurface_c : public surface_c {

@@ -65,7 +65,7 @@ int playTick(levelPlayer_c & l, ant_c & a, screen_c & screen)
   int res = l.performDominos(a);
 
   l.updateBackground();
-  l.drawDominos(false);
+  l.drawDominos();
   a.draw(screen);
 
   if (l.triggerIsFalln() && !a.isVisible() && l.isExitDoorClosed()) {
@@ -239,7 +239,7 @@ int main(int argc, char * argv[]) {
           case ST_FAILED:
             delete window;
             window = 0;
-            l.drawDominos(false);
+            l.drawDominos();
             a.draw(screen);
             break;
 
@@ -293,7 +293,7 @@ int main(int argc, char * argv[]) {
           case ST_PREREPLAY:
           case ST_PREPLAY:
             l.updateBackground();
-            l.drawDominos(false);
+            l.drawDominos();
             a.draw(screen);
             ticks = SDL_GetTicks();    // this might have taken some time so reinit the ticks
             break;
