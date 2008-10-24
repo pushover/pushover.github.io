@@ -1,0 +1,14 @@
+#!/usr/bin/env pushover
+
+Name
+| A&V
+
+Priority
+| 2
+
+Version
+| 1
+
+Levels
+| Run!
+| Too easy
