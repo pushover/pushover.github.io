@@ -211,8 +211,8 @@ int main(int argc, char * argv[]) {
   Uint32 ticks = SDL_GetTicks();
 
   window_c * window = 0; // the currently visible window
-  unsigned int failReason;
-  unsigned int failDelay;  // a counter to delay the fail window a bit after failing
+  unsigned int failReason = 0;
+  unsigned int failDelay = 0; // a counter to delay the fail window a bit after failing
 
   while (!exitProgram) {
 
