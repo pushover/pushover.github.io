@@ -31,8 +31,19 @@ class graphics_c {
     virtual unsigned int halveBlockDisplace(void) const = 0;  // return and noffset to actually place the objects
     virtual unsigned int antDisplace(void) const = 0;  // return and noffset to actually place the objects
 
-    SDL_Surface * getBgTile(unsigned int num) { return bgTiles[curTheme][num]; }
-    SDL_Surface * getFgTile(unsigned int num) { return fgTiles[curTheme][num]; }
+    SDL_Surface * getBgTile(unsigned int num) {
+      if (num < bgTiles[curTheme].size())
+        return bgTiles[curTheme][num];
+      else
+        throw std::exception();
+    }
+    SDL_Surface * getFgTile(unsigned int num) {
+      if (num < fgTiles[curTheme].size())
+        return fgTiles[curTheme][num];
+      else
+        throw std::exception();
+    }
+
 
     SDL_Surface * getDomino(unsigned int domino, unsigned int image) { return dominos[domino][image]; }
     SDL_Surface * getAnt(unsigned int animation, unsigned int step) { return ant[animation][step].v; }
