@@ -1,12 +1,12 @@
 /*
     sha1.cpp - source code of
- 
+
     ============
     SHA-1 in C++
     ============
- 
+
     100% Public Domain.
- 
+
     Original C Code
         -- Steve Reid <steve@edmweb.com>
     Small changes to fit into bglibs
@@ -86,7 +86,7 @@ std::string SHA1::final()
 
     /* Hex std::string */
     std::ostringstream result;
-    for (uint i = 0; i < DIGEST_INTS; i++)
+    for (unsigned int i = 0; i < DIGEST_INTS; i++)
     {
         result << std::hex << std::setfill('0') << std::setw(8);
         result << (digest[i] & 0xffffffff);
@@ -244,7 +244,7 @@ void SHA1::transform(uint32 block[BLOCK_BYTES])
 void SHA1::buffer_to_block(const std::string &buffer, uint32 block[BLOCK_BYTES])
 {
     /* Convert the std::string (byte buffer) to a uint32 array (MSB) */
-    for (uint i = 0; i < BLOCK_INTS; i++)
+    for (unsigned int i = 0; i < BLOCK_INTS; i++)
     {
         block[i] = (buffer[4*i+3] & 0xff)
                    | (buffer[4*i+2] & 0xff)<<8
