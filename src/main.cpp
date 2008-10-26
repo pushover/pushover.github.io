@@ -198,11 +198,13 @@ int main(int argc, char * argv[]) {
     else
     {
       nextState = ST_MAIN;
+      screen.markAllDirty();
     }
   }
   else
   {
     nextState = ST_MAIN;
+    screen.markAllDirty();
   }
 
 

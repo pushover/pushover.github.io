@@ -20,6 +20,8 @@ void levelDisplay_c::load(const textsections_c & sections) {
   gr.setTheme(getTheme());
   background.markAllDirty();
   target.markAllDirty();
+
+  Min = Sec = -1;
 }
 
 levelDisplay_c::levelDisplay_c(surface_c & t, graphics_c & g) : background(t), target(t), gr(g) {
