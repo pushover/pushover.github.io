@@ -5,21 +5,30 @@
 
 solvedMap_c::solvedMap_c(void) {
 
-    std::ifstream in("solved.txt");
-    std::string line;
+  std::ifstream in("solved.txt");
+  std::string line;
 
-    while (in) {
-        in >> line;
+  while (in) {
+    in >> line;
 
-        addLevel(line);
-    }
+    addLevel(line);
+  }
 }
 
 solvedMap_c::~solvedMap_c(void) {
 
-    std::ofstream out("solved.txt");
+  std::ofstream out("solved.txt");
 
-    for (std::set<std::string>::iterator i = map.begin(); i != map.end(); i++)
-        out << *i << std::endl;
+  for (std::set<std::string>::iterator i = map.begin(); i != map.end(); i++)
+    out << *i << std::endl;
+}
+
+void solvedMap_c::addLevel(const std::string & hash) {
+  map.insert(hash);
+
+  std::ofstream out("solved.txt");
+
+  for (std::set<std::string>::iterator i = map.begin(); i != map.end(); i++)
+    out << *i << std::endl;
 }
 

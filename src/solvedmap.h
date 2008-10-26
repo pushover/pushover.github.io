@@ -20,7 +20,7 @@ class solvedMap_c {
         solvedMap_c(void);
         ~solvedMap_c(void);
 
-        void addLevel(const std::string & hash) { map.insert(hash); }
+        void addLevel(const std::string & hash);
 
         bool solved(const std::string & hash) const {
             return map.find(hash) != map.end();
