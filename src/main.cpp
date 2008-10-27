@@ -103,6 +103,7 @@ typedef enum {
   ST_HELP,     // help dialog showing
   ST_QUIT,     // play exit dialog showing
   ST_EXIT,     // exiting program
+  ST_ABOUT,
 } states_e;
 
 
@@ -238,6 +239,7 @@ int main(int argc, char * argv[]) {
           case ST_CONFIG:
           case ST_SOLVED:
           case ST_FAILED:
+          case ST_ABOUT:
             delete window;
             window = 0;
             l.drawDominos();
@@ -265,6 +267,7 @@ int main(int argc, char * argv[]) {
           case ST_QUIT:     window = getQuitWindow(screen, gr); break;
           case ST_CONFIG:   window = getConfigWindow(screen, gr); break;
           case ST_SOLVED:   window = getSolvedWindow(screen, gr); break;
+          case ST_ABOUT:    window = getAboutWindow(screen, gr); break;
           case ST_FAILED:
             {
               std::string reason;
@@ -336,6 +339,7 @@ int main(int argc, char * argv[]) {
                 case 0: nextState = ST_LEVELSET; break;// select level set
                 case 1: nextState = ST_CONFIG; break;  // open config menu
                 case 2: nextState = ST_EXIT; break;    // exit program
+                case 3: nextState = ST_ABOUT; break;   // about window
               }
             }
           }
@@ -444,6 +448,19 @@ int main(int argc, char * argv[]) {
             window->handleEvent(event);
             if (window->isDone())
               nextState = ST_PLAY;
+          }
+          break;
+
+        case ST_ABOUT:
+          if (!window) {
+            std::cout << "Oops no window\n";
+            nextState = ST_MAIN;
+          }
+          else
+          {
+            window->handleEvent(event);
+            if (window->isDone())
+              nextState = ST_MAIN;
           }
           break;
 
@@ -664,6 +681,7 @@ int main(int argc, char * argv[]) {
       case ST_HELP:
       case ST_QUIT:
       case ST_EXIT:
+      case ST_ABOUT:
         break;
     }
 

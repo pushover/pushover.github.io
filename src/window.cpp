@@ -131,6 +131,81 @@ bool helpWindow_c::handleEvent(const SDL_Event & event) {
   return false;
 }
 
+class aboutWindow_c : public window_c {
+
+  public:
+
+    aboutWindow_c(surface_c & s, graphics_c & g);
+    bool handleEvent(const SDL_Event & event);
+};
+
+aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 1, 16, 10, s, g) {
+
+  int x = 2;
+  int y = 1;
+  int w = 16;
+  int h = 10;
+
+  clearInside();
+
+  fontParams_s par;
+
+  par.font = FNT_BIG;
+  par.alignment = ALN_CENTER;
+  par.color.r = 112; par.color.g = 39; par.color.b = 0;
+  par.shadow = false;
+  par.box.x = gr.blockX()*(x+1);
+  par.box.y = gr.blockY()*(y+1);
+  par.box.w = gr.blockX()*(w-2);
+  par.box.h = getFontHeight(FNT_BIG);
+
+  surf.renderText(&par, "Pushover - About");
+
+  int ypos = gr.blockY()*(y+1) + getFontHeight(FNT_BIG);
+
+  surf.fillRect(gr.blockX()*(x+1), ypos, gr.blockX()*(w-2), 2, 112, 39, 0);
+  ypos += 20;
+
+  unsigned int lineH = getFontHeight(FNT_SMALL);  // hight of one entry line
+
+  par.font = FNT_SMALL;
+  par.alignment = ALN_TEXT;
+  par.box.x = gr.blockX()*(x+1);
+  par.box.y = ypos;
+  par.box.w = gr.blockX()*(w-2)-30;
+  par.box.h = lineH;
+
+  par.box.y += surf.renderText(&par, "Original Concept:")*lineH; par.box.x += 30;
+  par.box.y += surf.renderText(&par, "Chas Partington")*lineH; par.box.x -= 30;
+
+  par.box.y += surf.renderText(&par, "Original Programming:")*lineH; par.box.x += 30;
+  par.box.y += surf.renderText(&par, "Dave Elcock, Helen Elcock, Keith Watterson")*lineH; par.box.x -= 30;
+
+  par.box.y += surf.renderText(&par, "Original Graphics:")*lineH; par.box.x += 30;
+  par.box.y += surf.renderText(&par, "Bryan King, Barry Armstrong")*lineH; par.box.x -= 30;
+
+  par.box.y += surf.renderText(&par, "Original Music & SFX:")*lineH; par.box.x += 30;
+  par.box.y += surf.renderText(&par, "Keith Tinman, Dean Evans, Johnathan Dunn")*lineH; par.box.x -= 30;
+
+  par.box.y += surf.renderText(&par, "Original Levels:")*lineH; par.box.x += 30;
+  par.box.y += surf.renderText(&par, "Harry Nadler, Avril Rigby, Don Rigby, Chris Waterworth")*lineH; par.box.x -= 30;
+
+  par.box.y += surf.renderText(&par, "New Programming:")*lineH; par.box.x += 30;
+  par.box.y += surf.renderText(&par, "Andreas Röver, Volker Grabsch")*lineH; par.box.x -= 30;
+}
+
+
+bool aboutWindow_c::handleEvent(const SDL_Event & event) {
+  if (event.type == SDL_KEYDOWN &&
+      event.key.keysym.sym == SDLK_ESCAPE)
+  {
+    done = true;
+    return true;
+  }
+
+  return false;
+}
+
 void listWindow_c::redraw(void) {
 
   clearInside();
@@ -269,9 +344,10 @@ listWindow_c * getMainWindow(surface_c & surf, graphics_c & gr) {
         entries.push_back("Play Levelset");
         entries.push_back("Configuration");
         entries.push_back("Quit");
+        entries.push_back("About");
     }
 
-    return new listWindow_c(4, 3, 12, 6, surf, gr, "Main menu", entries, false);
+    return new listWindow_c(4, 3, 12, 7, surf, gr, "Main menu", entries, false);
 }
 
 listWindow_c * getConfigWindow(surface_c & surf, graphics_c & gr) {
@@ -325,6 +401,10 @@ listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr) {
 
 listWindow_c * getLevelWindow(levelset_c & ls, surface_c & surf, graphics_c & gr) {
     return new listWindow_c(3, 2, 14, 9, surf, gr, "Select Level", ls.getLevelNames(), true);
+}
+
+window_c * getAboutWindow(surface_c & surf, graphics_c & gr) {
+    return new aboutWindow_c(surf, gr);
 }
 
 listWindow_c * getSolvedWindow(surface_c & surf, graphics_c & gr) {

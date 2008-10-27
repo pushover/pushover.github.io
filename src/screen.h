@@ -90,7 +90,9 @@ class surface_c {
     // the given text will be put through gettext for translation before it is displayed
     // the function behaves a bit like printf in that you can format values into the
     // string with additional parameters
-    void renderText(const fontParams_s * par, const std::string & t);
+    //
+    // return value is the number of lines that were output
+    unsigned int renderText(const fontParams_s * par, const std::string & t);
 
     // apply the gradient within the givne area
     void gradient(int x, int y, int w, int h);

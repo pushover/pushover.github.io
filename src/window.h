@@ -90,6 +90,7 @@ listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr);
 listWindow_c * getLevelWindow(levelset_c & ls, surface_c & surf, graphics_c & gr);
 listWindow_c * getSolvedWindow(surface_c & surf, graphics_c & gr);
 listWindow_c * getFailedWindow(const std::string & reason, surface_c & surf, graphics_c & gr);
+window_c * getAboutWindow(surface_c & surf, graphics_c & gr);
 
 #endif
 

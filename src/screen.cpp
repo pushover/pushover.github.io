@@ -314,7 +314,7 @@ static std::vector<std::string> split(const std::string & text, char splitter)
   return res;
 }
 
-void surface_c::renderText(const fontParams_s * par, const std::string & t) {
+unsigned int surface_c::renderText(const fontParams_s * par, const std::string & t) {
 
   std::vector<std::string> words = split(t, ' ');
 
@@ -351,11 +351,13 @@ void surface_c::renderText(const fontParams_s * par, const std::string & t) {
   }
 
   unsigned int word = 0;
+  unsigned int lines = 0;
 
   while (word < words.size()) {
 
     std::string curLine = words[word];
     word++;
+    lines++;
 
     while (word < words.size())
     {
@@ -427,6 +429,8 @@ void surface_c::renderText(const fontParams_s * par, const std::string & t) {
     SDL_FreeSurface(vv);
     if (par->shadow) SDL_FreeSurface(vb);
   }
+
+  return lines;
 }
 
 unsigned int getFontHeight(unsigned int font) {
