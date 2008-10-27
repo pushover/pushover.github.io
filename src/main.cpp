@@ -8,6 +8,7 @@
 #include "screen.h"
 #include "window.h"
 #include "solvedmap.h"
+#include "tools.h"
 
 #include <SDL.h>
 
@@ -137,9 +138,8 @@ int main(int argc, char * argv[]) {
   // prepare the list of levelsets
   levelsetList_c levelsetList;
   levelsetList.load(datadir + "/levels");
-  char *home = getenv("HOME");
-  if (home != NULL) {
-    const std::string userleveldir(std::string(home) + "/.pushover/levels");
+  {
+    const std::string userleveldir(getHome() + "/.pushover/levels");
     struct stat st;
     if (stat(userleveldir.c_str(), &st) == 0)
       levelsetList.load(userleveldir);

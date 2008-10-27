@@ -19,6 +19,7 @@ pushover_SOURCES = \
   src/solvedmap.cpp src/solvedmap.h \
   src/soundsys.cpp src/soundsys.h \
   src/textsections.cpp src/textsections.h \
+  src/tools.cpp src/tools.h \
   src/window.cpp src/window.h
 
 nobase_dist_pkgdata_DATA = \
