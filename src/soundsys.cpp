@@ -51,6 +51,10 @@ void soundSystem_c::addsound(const std::string & fname, int vol)
 
     sounds.push_back(d);
   }
+  else
+  {
+    std::cout << "can not load sound from file " << fname << std::endl;
+  }
 }
 
 void soundSystem_c::startSound(unsigned int snd)
