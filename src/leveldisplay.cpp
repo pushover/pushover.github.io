@@ -52,8 +52,11 @@ void levelDisplay_c::updateBackground(void)
 
 void levelDisplay_c::drawDominos(void) {
 
+  int timeLeft = getTimeLeft();
+
   // the dirty marks for the clock
   {
+
     // calculate the second left
     int tm = timeLeft/18;
 

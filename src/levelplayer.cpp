@@ -25,46 +25,46 @@ void levelPlayer_c::performDoors(void) {
 
   if (openDoorEntry) {
 
-    if (getFg(doorEntryX, doorEntryY) == FgElementDoor0)
+    if (getEntryDoor() == FgElementDoor0)
       soundSystem_c::instance()->startSound(soundSystem_c::SE_DOOR_OPEN);
 
-    if (getFg(doorEntryX, doorEntryY) < FgElementDoor3) {
-      level[doorEntryY][doorEntryX].fg++;
-      background.markDirty(doorEntryX, doorEntryY);
-      target.markDirty(doorEntryX, doorEntryY);
+    if (getEntryDoor() < FgElementDoor3) {
+      openEntryDoorStep();
+      background.markDirty(getEntryX(), getEntryY());
+      target.markDirty(getEntryX(), getEntryY());
     }
 
   } else {
 
-    if (getFg(doorEntryX, doorEntryY) == FgElementDoor3)
+    if (getEntryDoor() == FgElementDoor3)
       soundSystem_c::instance()->startSound(soundSystem_c::SE_DOOR_CLOSE);
 
-    if (getFg(doorEntryX, doorEntryY) > FgElementDoor0) {
-      level[doorEntryY][doorEntryX].fg--;
-      background.markDirty(doorEntryX, doorEntryY);
-      target.markDirty(doorEntryX, doorEntryY);
+    if (getEntryDoor() > FgElementDoor0) {
+      closeEntryDoorStep();
+      background.markDirty(getEntryX(), getEntryY());
+      target.markDirty(getEntryX(), getEntryY());
     }
   }
 
   if (openDoorExit) {
 
-    if (getFg(doorExitX, doorExitY) == FgElementDoor0)
+    if (getExitDoor() == FgElementDoor0)
       soundSystem_c::instance()->startSound(soundSystem_c::SE_DOOR_OPEN);
 
-    if (getFg(doorExitX, doorExitY) < FgElementDoor3) {
-      level[doorExitY][doorExitX].fg++;
-      background.markDirty(doorExitX, doorExitY);
-      target.markDirty(doorExitX, doorExitY);
+    if (getExitDoor() < FgElementDoor3) {
+      openExitDoorStep();
+      background.markDirty(getExitX(), getExitY());
+      target.markDirty(getExitX(), getExitY());
     }
   } else {
 
-    if (getFg(doorExitX, doorExitY) == FgElementDoor3)
+    if (getExitDoor() == FgElementDoor3)
       soundSystem_c::instance()->startSound(soundSystem_c::SE_DOOR_CLOSE);
 
-    if (getFg(doorExitX, doorExitY) > FgElementDoor0) {
-      level[doorExitY][doorExitX].fg--;
-      background.markDirty(doorExitX, doorExitY);
-      target.markDirty(doorExitX, doorExitY);
+    if (getExitDoor() > FgElementDoor0) {
+      closeExitDoorStep();
+      background.markDirty(getExitX(), getExitY());
+      target.markDirty(getExitX(), getExitY());
     }
   }
 }
@@ -2166,7 +2166,7 @@ int levelPlayer_c::performDominos(ant_c & a) {
         }
       }
 
-  timeLeft--;
+  timeTick();
 
   if (triggerIsFalln() && !finishCheckDone)
   {

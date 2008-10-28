@@ -21,7 +21,11 @@ class levelData_c {
 
     std::string checksum;
 
+    // the number of 1/18 seconds that are left for solving the level
+    int timeLeft;
 
+    // the positions of the 2 doors
+    unsigned char doorEntryX, doorEntryY, doorExitX, doorExitY;
 
   protected:
 
@@ -44,11 +48,7 @@ class levelData_c {
     levelEntry level[13][20];
     unsigned char numBg;
 
-    // the number of 1/18 seconds that are left for solving the level
-    int timeLeft;
 
-    // the positions of the 2 doors
-    unsigned char doorEntryX, doorEntryY, doorExitX, doorExitY;
 
   public:
     levelData_c(void);
@@ -61,6 +61,10 @@ class levelData_c {
     const std::string getName(void) const { return name; }
     const std::string getTheme(void) const { return theme; }
     const std::string getHint(void) const { return hint; }
+
+    int getTimeLeft(void) const { return timeLeft; }
+    void timeTick(void) { timeLeft--; }
+    bool someTimeLeft(void) { return timeLeft > 0; }
 
     const std::string getChecksum(void) const { return checksum; }
     /* Foreground elements */
@@ -116,6 +120,18 @@ class levelData_c {
     signed char   getDominoDir(unsigned int x, unsigned int y) const { return level[y][x].dominoDir; }
     unsigned char getDominoExtra(unsigned int x, unsigned int y) const { return level[y][x].dominoExtra; }
 
+    unsigned char getEntryDoor(void) const { return getFg(doorEntryX, doorEntryY); }
+    unsigned char getExitDoor(void) const { return getFg(doorExitX, doorExitY); }
+    void openEntryDoorStep(void) { level[doorEntryY][doorEntryX].fg++; }
+    void closeEntryDoorStep(void) { level[doorEntryY][doorEntryX].fg--; }
+    void openExitDoorStep(void) { level[doorExitY][doorExitX].fg++; }
+    void closeExitDoorStep(void) { level[doorExitY][doorExitX].fg--; }
+
+    unsigned char getEntryX(void) const { return doorEntryX; }
+    unsigned char getEntryY(void) const { return doorEntryY; }
+    unsigned char getExitX(void) const { return doorExitX; }
+    unsigned char getExitY(void) const { return doorExitY; }
+
     unsigned int getEntryDoorPosX(void) { return doorEntryX; }
     unsigned int getEntryDoorPosY(void) { return doorEntryY; }
     bool isEntryDoorOpen(void) { return getFg(doorEntryX, doorEntryY) == FgElementDoor3; }
@@ -129,7 +145,6 @@ class levelData_c {
 
     void print(void);
 
-    bool someTimeLeft(void) { return timeLeft > 0; }
 };
 
 
