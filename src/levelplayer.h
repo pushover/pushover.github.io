@@ -67,7 +67,6 @@ class levelPlayer_c : public levelDisplay_c {
     void fallingDomino(int x, int y);
 
     bool pushDomino(int x, int y, int dir);
-    void removeDomino(int x, int y) { level[y][x].dominoType = levelData_c::DominoTypeEmpty; }
 
     // check, if the level has been successfully solved
     // if not the reason for failure is in fail

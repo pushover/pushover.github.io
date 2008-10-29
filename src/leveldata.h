@@ -27,8 +27,6 @@ class levelData_c {
     // the positions of the 2 doors
     unsigned char doorEntryX, doorEntryY, doorExitX, doorExitY;
 
-  protected:
-
     typedef struct levelEntry {
       unsigned short bg[maxBg];
       unsigned char fg;
@@ -114,11 +112,26 @@ class levelData_c {
       DominoTypeRiserCont,
       DominoTypeQuaver
     };
+
+    unsigned char getNumBgLayer(void) const { return numBg; }
+
+    unsigned short getBg(unsigned int x, unsigned int y, int layer) const { return level[y][x].bg[layer]; }
     unsigned char getFg(unsigned int x, unsigned int y) const { return level[y][x].fg; }
     unsigned char getDominoType(unsigned int x, unsigned int y) const { return level[y][x].dominoType; }
     unsigned char getDominoState(unsigned int x, unsigned int y) const { return level[y][x].dominoState; }
     signed char   getDominoDir(unsigned int x, unsigned int y) const { return level[y][x].dominoDir; }
     unsigned char getDominoExtra(unsigned int x, unsigned int y) const { return level[y][x].dominoExtra; }
+    signed char getDominoYOffset(unsigned int x, unsigned int y) const { return level[y][x].dominoYOffset; }
+
+    void setFg(unsigned int x, unsigned int y, int val) { level[y][x].fg = val; }
+    void setDominoType(unsigned int x, unsigned int y, int val) { level[y][x].dominoType = val; }
+    void setDominoState(unsigned int x, unsigned int y, int val) { level[y][x].dominoState = val; }
+    void setDominoDir(unsigned int x, unsigned int y, int val) { level[y][x].dominoDir = val; }
+    void setDominoExtra(unsigned int x, unsigned int y, int val) { level[y][x].dominoExtra = val; }
+    void setDominoYOffset(unsigned int x, unsigned int y, int val) { level[y][x].dominoYOffset = val; }
+
+    void removeDomino(int x, int y) { level[y][x].dominoType = levelData_c::DominoTypeEmpty; }
+    void clearDominoExtra(int x, int y) { level[y][x].dominoExtra = 0; }
 
     unsigned char getEntryDoor(void) const { return getFg(doorEntryX, doorEntryY); }
     unsigned char getExitDoor(void) const { return getFg(doorExitX, doorExitY); }
