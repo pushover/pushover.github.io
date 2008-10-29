@@ -123,3 +123,9 @@ install-data-local:
 	  cat $(srcdir)/levels/$$p/* | gzip -c -9 > "$(DESTDIR)$(pkgdatadir)/levels/$$p.gz"; \
 	  chmod 644 "$(DESTDIR)$(pkgdatadir)/levels/$$p.gz"; \
 	done
+
+check: ${bin_PROGRAMS}
+	for i in recordings/finished/*; do  ./pushover -c $$i; done; \
+	for i in recordings/mustCrash/*; do ./pushover -f $$i; done; \
+	for i in recordings/mustFail/*; do  ./pushover -y $$i; done
+

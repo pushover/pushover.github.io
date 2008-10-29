@@ -238,9 +238,9 @@ bool screen_c::flipAnimate(void)
 SDL_Surface * surface_c::getIdentical(void) const {
 
   if (!video)
-    throw std::exception();
-
-  return SDL_CreateRGBSurface(0, video->w, video->h, 32, video->format->Rmask, video->format->Gmask, video->format->Bmask, 0);
+    return 0;
+  else
+    return SDL_CreateRGBSurface(0, video->w, video->h, 32, video->format->Rmask, video->format->Gmask, video->format->Bmask, 0);
 }
 
 

@@ -36,6 +36,9 @@ void graphicsN_c::getAnimation(int anim, pngLoader_c * png) {
 
 void graphicsN_c::loadGraphics(void) {
 
+  // if no data path has been set, we don't even try to load something...
+  if (dataPath == "") return;
+
   /* load domino sprites */
 
   /* the number of sprites for each domino type is fixed */
@@ -168,6 +171,9 @@ void graphicsN_c::loadGraphics(void) {
 }
 
 void graphicsN_c::loadTheme(const std::string & name) {
+
+  // if no data path has been set, we don't even try to load something...
+  if (dataPath == "") return;
 
   luaClass_c l;
   l.doFile(dataPath+"/themes/tools.lua");

@@ -21,13 +21,67 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-int check(std::string file) {
+int check1(std::string file) {
   recorder_c rec;
   rec.load(file);
   std::string levelsetName = rec.getLevelsetName();
   std::string levelName = rec.getLevelName();
 
-  return 0;
+  levelsetList_c levelsetList;
+  levelsetList.load("levels");
+
+  graphicsN_c gr("");
+  surface_c surf;
+  levelPlayer_c l(surf, gr);
+  levelsetList.getLevelset(levelsetName).loadLevel(l, rec.getLevelName());
+  ant_c a(l, gr);
+
+  while (!rec.endOfRecord()) {
+    a.setKeyStates(rec.getEvent());
+    l.performDoors();
+    l.performDominos(a);
+  }
+
+  // add a few more iterations at the end to make sure the ant has left the level
+  a.setKeyStates(0);
+  for (unsigned int i = 0; i < 100; i++)
+  {
+    l.performDoors();
+    l.performDominos(a);
+  }
+
+  // we succeeded, when the ant has vanished, then it went out of the door
+  return a.isVisible() == false;
+}
+
+int check2(std::string file) {
+  recorder_c rec;
+  rec.load(file);
+  std::string levelsetName = rec.getLevelsetName();
+  std::string levelName = rec.getLevelName();
+
+  levelsetList_c levelsetList;
+  levelsetList.load("levels");
+
+  graphicsN_c gr("");
+  surface_c surf;
+  levelPlayer_c l(surf, gr);
+  levelsetList.getLevelset(levelsetName).loadLevel(l, rec.getLevelName());
+  ant_c a(l, gr);
+
+  while (!rec.endOfRecord()) {
+    a.setKeyStates(rec.getEvent());
+    l.performDoors();
+    l.performDominos(a);
+  }
+
+  // we succeeded, when the ant has vanished, then it went out of the door
+  for (int y = 0; y < 13; y++)
+    for (int x = 0; x < 20; x++)
+      if (l.getDominoType(x, y) >= levelData_c::DominoTypeCrash0 &&
+          l.getDominoType(x, y) <= levelData_c::DominoTypeCrash5)
+        return true;
+  return false;
 }
 
 static std::string getDataDir(void)
@@ -112,9 +166,45 @@ int main(int argc, char * argv[]) {
 
   // filter out the no graphic cases, they are special and will be treated
   // separately
-  if (argc == 3 && strcmp(argv[1], "-c") == 0)
+  if (argc == 3 && strcmp(argv[1], "-c") == 0)   // the must complete tests
   {
-    return check(argv[2]);
+    if (check1(argv[2]))
+    {
+      std::cout << argv[2] << " Level Finished\n";
+      return 0;
+    }
+    else
+    {
+      std::cout << argv[2] << " Level not Finished\n";
+      return 1;
+    }
+  }
+  if (argc == 3 && strcmp(argv[1], "-y") == 0)   // the must complete tests
+  {
+    if (check1(argv[2]))
+    {
+      std::cout << argv[2] << " Level not Failed\n";
+      return 1;
+    }
+    else
+    {
+      std::cout << argv[2] << " Level Failed\n";
+      return 1;
+    }
+  }
+
+  if (argc == 3 && strcmp(argv[1], "-f") == 0)   // the must crash tests
+  {
+    if (check2(argv[2]))
+    {
+      std::cout << argv[2] << " Crashes happened\n";
+      return 0;
+    }
+    else
+    {
+      std::cout << argv[2] << " Crashes did not happen\n";
+      return 1;
+    }
   }
 
   // now off to all modes that use graphics
@@ -615,6 +705,19 @@ int main(int argc, char * argv[]) {
         if (screen.flipAnimate()) nextState = ST_REPLAY;
         break;
 
+      case ST_FAILDELAY:
+        if (failDelay > 0)
+        {
+          failDelay--;
+          a.setKeyStates(0);
+          playTick(l, a, screen);
+        }
+        else
+        {
+          nextState = ST_FAILED;
+        }
+        break;
+
       case ST_REPLAY:
         if (rec.endOfRecord())
           nextState = ST_PLAY;
@@ -628,19 +731,6 @@ int main(int argc, char * argv[]) {
         // intentionally fall through to ST_PLAY when
         // the record has ended to allow the player to
         // continue playing
-
-      case ST_FAILDELAY:
-        if (failDelay > 0)
-        {
-          failDelay--;
-          a.setKeyStates(0);
-          playTick(l, a, screen);
-        }
-        else
-        {
-          nextState = ST_FAILED;
-        }
-        break;
 
       case ST_PLAY:
         {
