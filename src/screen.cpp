@@ -24,7 +24,7 @@ surface_c::~surface_c(void)
 void screen_c::toggleFullscreen(void)
 {
   fullscreen = !fullscreen;
-//  video = SDL_SetVideoMode(gr.resolutionX(), gr.resolutionY(), 24, fullscreen?SDL_FULLSCREEN:0);
+  video = SDL_SetVideoMode(gr.resolutionX(), gr.resolutionY(), 24, fullscreen?SDL_FULLSCREEN:0);
 }
 
 void surface_c::clearDirty(void)
