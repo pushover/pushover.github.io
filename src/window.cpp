@@ -122,7 +122,9 @@ helpWindow_c::helpWindow_c(const std::string text, surface_c & s, graphics_c & g
 
 bool helpWindow_c::handleEvent(const SDL_Event & event) {
   if (event.type == SDL_KEYDOWN &&
-      event.key.keysym.sym == SDLK_ESCAPE)
+      (event.key.keysym.sym == SDLK_ESCAPE ||
+       event.key.keysym.sym == SDLK_RETURN)
+     )
   {
     done = true;
     return true;
