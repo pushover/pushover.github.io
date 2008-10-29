@@ -110,7 +110,7 @@ void levelData_c::load(const textsections_c & sections) {
       level[y][x].dominoYOffset = 0;
       level[y][x].dominoExtra = 0;
 
-      switch (levelRows[y][x]) {
+      switch (levelRows[y].c_str()[x]) {
 
         case '1':
           if (doorEntryDefined)
@@ -132,7 +132,7 @@ void levelData_c::load(const textsections_c & sections) {
 
         case ' ':
         case '^':
-          if (x > 0 && levelRows[y][x-1] == '/')
+          if (x > 0 && levelRows[y].c_str()[x-1] == '/')
             level[y][x].fg = FgElementPlatformStep8;
           else
             level[y][x].fg = FgElementEmpty;
@@ -171,23 +171,23 @@ void levelData_c::load(const textsections_c & sections) {
           break;
 
         default:
-          std::string::size_type dt = dominoChars.find_first_of(levelRows[y][x]);
+          std::string::size_type dt = dominoChars.find_first_of(levelRows[y].c_str()[x]);
           if (dt == std::string::npos)
             throw format_error("invalid domino type");
           level[y][x].dominoType = dt;
 
           bool ladderAbove   = y > 0
-                               && levelRows[y-1][x] == 'H';
+                               && levelRows[y-1].c_str()[x] == 'H';
           bool ladderBelow   = y+1 < 13
-                               && (levelRows[y+1][x] == 'H'
-                                   || levelRows[y+1][x] == 'V'
-                                   || levelRows[y+1][x] == '^');
+                               && (levelRows[y+1].c_str()[x] == 'H'
+                                   || levelRows[y+1].c_str()[x] == 'V'
+                                   || levelRows[y+1].c_str()[x] == '^');
           bool platformLeft  = x <= 0
-                               || isDominoChar(levelRows[y][x-1])
-                               || levelRows[y][x-1] == '\\';
+                               || isDominoChar(levelRows[y].c_str()[x-1])
+                               || levelRows[y].c_str()[x-1] == '\\';
           bool platformRight = x+1 >= 20
-                               || isDominoChar(levelRows[y][x+1])
-                               || levelRows[y][x+1] == '/';
+                               || isDominoChar(levelRows[y].c_str()[x+1])
+                               || levelRows[y].c_str()[x+1] == '/';
           if (ladderBelow)
             level[y][x].fg = FgElementPlatformLadderDown;
           else if (ladderAbove)
