@@ -14,8 +14,6 @@ class levelDisplay_c : public levelData_c {
 
     int Min, Sec;   // number of minutes and seconds shown in display
 
-  protected:
-
     /* this surface contains the background. It is only updated when necessary
      * the content it used to restore stuff behind the sprites
      */
@@ -39,6 +37,10 @@ class levelDisplay_c : public levelData_c {
 
     /* draw the changed stuff into the target surface */
     void drawDominos(void);
+
+    void markDirty(int x, int y) { target.markDirty(x, y); }
+    void markDirtyBg(int x, int y) { background.markDirty(x, y); target.markDirty(x, y); }
+    bool isDirty(int x, int y) { return target.isDirty(x, y); }
 };
 
 

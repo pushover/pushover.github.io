@@ -30,8 +30,7 @@ void levelPlayer_c::performDoors(void) {
 
     if (getEntryDoor() < FgElementDoor3) {
       openEntryDoorStep();
-      background.markDirty(getEntryX(), getEntryY());
-      target.markDirty(getEntryX(), getEntryY());
+      markDirtyBg(getEntryX(), getEntryY());
     }
 
   } else {
@@ -41,8 +40,7 @@ void levelPlayer_c::performDoors(void) {
 
     if (getEntryDoor() > FgElementDoor0) {
       closeEntryDoorStep();
-      background.markDirty(getEntryX(), getEntryY());
-      target.markDirty(getEntryX(), getEntryY());
+      markDirtyBg(getEntryX(), getEntryY());
     }
   }
 
@@ -53,8 +51,7 @@ void levelPlayer_c::performDoors(void) {
 
     if (getExitDoor() < FgElementDoor3) {
       openExitDoorStep();
-      background.markDirty(getExitX(), getExitY());
-      target.markDirty(getExitX(), getExitY());
+      markDirtyBg(getExitX(), getExitY());
     }
   } else {
 
@@ -63,8 +60,7 @@ void levelPlayer_c::performDoors(void) {
 
     if (getExitDoor() > FgElementDoor0) {
       closeExitDoorStep();
-      background.markDirty(getExitX(), getExitY());
-      target.markDirty(getExitX(), getExitY());
+      markDirtyBg(getExitX(), getExitY());
     }
   }
 }
@@ -297,30 +293,30 @@ void levelPlayer_c::DTA_G(int x, int y) {
 void levelPlayer_c::DTA_B(int x, int y) {
   DTA_E(x, y);
 
-  target.markDirty(x+1, y);
-  target.markDirty(x+1, y-1);
+  markDirty(x+1, y);
+  markDirty(x+1, y-1);
 }
 
 // splitter opening simply call the normal domino falling
 // function and mark some more blocks because we split left and
 // right and the normal function will only mark one side
 void levelPlayer_c::DTA_D(int x, int y) {
-  target.markDirty(x+1, y-1);
-  target.markDirty(x+1, y);
+  markDirty(x+1, y-1);
+  markDirty(x+1, y);
 
   DTA_4(x, y);
 
   if (getDominoState(x, y) == 5)
-    target.markDirty(x, y-2);
+    markDirty(x, y-2);
 }
 
 // the final vansher state, remove the vanisher
 // from the level and mark things dirty
 void levelPlayer_c::DTA_8(int x, int y) {
-  target.markDirty(x, y);
-  target.markDirty(x+getDominoDir(x, y), y);
-  target.markDirty(x, y-1);
-  target.markDirty(x+getDominoDir(x, y), y-1);
+  markDirty(x, y);
+  markDirty(x+getDominoDir(x, y), y);
+  markDirty(x, y-1);
+  markDirty(x+getDominoDir(x, y), y-1);
 
   setDominoType(x, y, DominoTypeEmpty);
   setDominoDir(x, y, 0);
@@ -426,33 +422,33 @@ void levelPlayer_c::DTA_4(int x, int y) {
     setDominoState(x, y, 16);
   }
 
-  target.markDirty(x, y);
-  target.markDirty(x, y-1);
+  markDirty(x, y);
+  markDirty(x, y-1);
 
   // add some dirty blocks depending on the direction we have falln
   if (getDominoState(x, y) > 8)
   {
-    target.markDirty(x+1, y);
-    target.markDirty(x+1, y-1);
+    markDirty(x+1, y);
+    markDirty(x+1, y-1);
   }
 
   if (getDominoState(x, y) < 8)
   {
-    target.markDirty(x-1, y);
-    target.markDirty(x-1, y-1);
+    markDirty(x-1, y);
+    markDirty(x-1, y-1);
   }
 
   if (getDominoYOffset(x, y) == 8)
   {
-    target.markDirty(x+getDominoDir(x, y), y);
-    target.markDirty(x+getDominoDir(x, y), y-1);
+    markDirty(x+getDominoDir(x, y), y);
+    markDirty(x+getDominoDir(x, y), y-1);
   }
 
   if (getDominoType(x, y) == DominoTypeAscender)
   {
-    target.markDirty(x+getDominoDir(x, y), y-2);
-    target.markDirty(x-getDominoDir(x, y), y-2);
-    target.markDirty(x, y-2);
+    markDirty(x+getDominoDir(x, y), y-2);
+    markDirty(x-getDominoDir(x, y), y-2);
+    markDirty(x, y-2);
   }
 }
 
@@ -485,13 +481,9 @@ void levelPlayer_c::DTA_5(int x, int y) {
     setFg(x-1, y, FgElementPlatformStrip);
   }
 
-  target.markDirty(x, y);
-  target.markDirty(x-1, y);
-  target.markDirty(x+1, y);
-
-  background.markDirty(x-1, y);
-  background.markDirty(x, y);
-  background.markDirty(x+1, y);
+  markDirtyBg(x-1, y);
+  markDirtyBg(x, y);
+  markDirtyBg(x+1, y);
 }
 
 // hitting next domino to the left
@@ -672,9 +664,9 @@ void levelPlayer_c::DominoCrash(int x, int y, int type, int extra) {
     setDominoExtra(x, y, 0);
   }
 
-  target.markDirty(x-1, y);
-  target.markDirty(x, y);
-  target.markDirty(x+1, y);
+  markDirty(x-1, y);
+  markDirty(x, y);
+  markDirty(x+1, y);
 
   soundSystem_c::instance()->startSound(soundSystem_c::SE_EXPLODER);
 }
@@ -704,8 +696,8 @@ void levelPlayer_c::DTA_E(int x, int y) {
     // if we have not yet reached the next level of the level data
     if (getDominoYOffset(x, y) != 12) {
       setDominoYOffset(x, y, getDominoYOffset(x, y)+4);
-      target.markDirty(x, y-1);
-      target.markDirty(x, y);
+      markDirty(x, y-1);
+      markDirty(x, y);
       return;
     }
 
@@ -727,9 +719,9 @@ void levelPlayer_c::DTA_E(int x, int y) {
     setDominoYOffset(x, y, 0);
     setDominoExtra(x, y, 0);
 
-    target.markDirty(x, y+1);
-    target.markDirty(x, y);
-    target.markDirty(x, y-1);
+    markDirty(x, y+1);
+    markDirty(x, y);
+    markDirty(x, y-1);
     return;
   }
 
@@ -752,8 +744,8 @@ void levelPlayer_c::DTA_E(int x, int y) {
       setDominoYOffset(x, y, 8);
     }
 
-    target.markDirty(x, y);
-    target.markDirty(x, y+1);
+    markDirty(x, y);
+    markDirty(x, y+1);
     return;
   }
 
@@ -764,8 +756,8 @@ void levelPlayer_c::DTA_E(int x, int y) {
   if (y >= 12 || getDominoType(x, y+1) == DominoTypeEmpty)
   {
     setDominoYOffset(x, y, getDominoYOffset(x, y)+4);
-    target.markDirty(x, y);
-    target.markDirty(x, y+1);
+    markDirty(x, y);
+    markDirty(x, y+1);
     return;
   }
 
@@ -780,8 +772,8 @@ void levelPlayer_c::DTA_E(int x, int y) {
     setDominoYOffset(x, y, 0);
     setDominoExtra(x, y, 0);
 
-    target.markDirty(x, y);
-    target.markDirty(x, y+1);
+    markDirty(x, y);
+    markDirty(x, y+1);
 
     return;
   }
@@ -797,8 +789,8 @@ void levelPlayer_c::DTA_E(int x, int y) {
   setDominoYOffset(x, y, 0);
   setDominoExtra(x, y, 0);
 
-  target.markDirty(x, y);
-  target.markDirty(x, y+1);
+  markDirty(x, y);
+  markDirty(x, y+1);
 }
 
 // splitter parts falling further
@@ -879,12 +871,12 @@ void levelPlayer_c::DTA_C(int x, int y) {
       if (getDominoState(x, y) != i)
       {
         setDominoState(x, y, i);
-        target.markDirty(x, y);
-        target.markDirty(x+1, y);
-        target.markDirty(x-1, y);
-        target.markDirty(x, y-1);
-        target.markDirty(x-1, y-1);
-        target.markDirty(x+1, y-1);
+        markDirty(x, y);
+        markDirty(x+1, y);
+        markDirty(x-1, y);
+        markDirty(x, y-1);
+        markDirty(x-1, y-1);
+        markDirty(x+1, y-1);
       }
       return;
     }
@@ -1003,7 +995,7 @@ void levelPlayer_c::DTA_7(int x, int y) {
   if (x >= 2)
   {
     setFg(x-2, y, fg2);
-    target.markDirty(x-2, y);
+    markDirty(x-2, y);
   }
 
   if (x >= 1)
@@ -1014,14 +1006,12 @@ void levelPlayer_c::DTA_7(int x, int y) {
   setFg(x, y, fg);
   setDominoType(x, y, 0);
   setDominoDir(x, y, 0);
-  target.markDirty(x, y);
-  target.markDirty(x-1, y);
-  target.markDirty(x, y-1);
-  target.markDirty(x-1, y-1);
+  markDirty(x, y-1);
+  markDirty(x-1, y-1);
 
-  background.markDirty(x-2, y);
-  background.markDirty(x-1, y);
-  background.markDirty(x  , y);
+  markDirtyBg(x-2, y);
+  markDirtyBg(x-1, y);
+  markDirtyBg(x  , y);
 }
 
 // Brider right same as DTA_7 but for other direction
@@ -1129,7 +1119,7 @@ void levelPlayer_c::DTA_M(int x, int y) {
   if (x < 18)
   {
     setFg(x+2, y, fg2);
-    target.markDirty(x+2, y);
+    markDirty(x+2, y);
   }
 
   if (x < 19)
@@ -1141,14 +1131,12 @@ void levelPlayer_c::DTA_M(int x, int y) {
   setDominoType(x, y, 0);
   setDominoDir(x, y, 0);
 
-  target.markDirty(x, y);
-  target.markDirty(x+1, y);
-  target.markDirty(x, y-1);
-  target.markDirty(x+1, y-1);
+  markDirty(x, y-1);
+  markDirty(x+1, y-1);
 
-  background.markDirty(x  , y);
-  background.markDirty(x+1, y);
-  background.markDirty(x+2, y);
+  markDirtyBg(x  , y);
+  markDirtyBg(x+1, y);
+  markDirtyBg(x+2, y);
 }
 
 
@@ -1199,10 +1187,10 @@ void levelPlayer_c::DTA_A(int x, int y) {
     setDominoYOffset(x, y, 0);
     setDominoExtra(x, y, 0);
 
-    target.markDirty(x, y-a);
-    target.markDirty(x-1, y-a);
-    target.markDirty(x, y-a+1);
-    target.markDirty(x-1, y-a+1);
+    markDirty(x, y-a);
+    markDirty(x-1, y-a);
+    markDirty(x, y-a+1);
+    markDirty(x-1, y-a+1);
 
     return;
   }
@@ -1221,10 +1209,10 @@ void levelPlayer_c::DTA_A(int x, int y) {
     setDominoDir(x, y+1-a, -1);
     setDominoYOffset(x, y+1-a, 0);
 
-    target.markDirty(x, y-a);
-    target.markDirty(x-1, y-a);
-    target.markDirty(x, y-a+1);
-    target.markDirty(x-1, y-a+1);
+    markDirty(x, y-a);
+    markDirty(x-1, y-a);
+    markDirty(x, y-a+1);
+    markDirty(x-1, y-a+1);
 
     return;
   }
@@ -1307,10 +1295,10 @@ void levelPlayer_c::DTA_O(int x, int y) {
     setDominoYOffset(x, y, 0);
     setDominoExtra(x, y, 0);
 
-    target.markDirty(x, y-a);
-    target.markDirty(x+1, y-a);
-    target.markDirty(x, y-a+1);
-    target.markDirty(x+1, y-a+1);
+    markDirty(x, y-a);
+    markDirty(x+1, y-a);
+    markDirty(x, y-a+1);
+    markDirty(x+1, y-a+1);
 
     return;
   }
@@ -1336,10 +1324,10 @@ void levelPlayer_c::DTA_O(int x, int y) {
       DominoCrash(x, y+1-a, getDominoType(x, y), getDominoExtra(x, y));
     }
 
-    target.markDirty(x, y-a);
-    target.markDirty(x+1, y-a);
-    target.markDirty(x, y-a+1);
-    target.markDirty(x+1, y-a+1);
+    markDirty(x, y-a);
+    markDirty(x+1, y-a);
+    markDirty(x, y-a+1);
+    markDirty(x+1, y-a+1);
 
     return;
   }
@@ -1376,9 +1364,9 @@ void levelPlayer_c::DTA_H(int x, int y) {
           setDominoState(x, y, 16);
           setDominoExtra(x, y, 0x50);
 
-          target.markDirty(x, y);
-          target.markDirty(x, y-2);
-          target.markDirty(x, y-1);
+          markDirty(x, y);
+          markDirty(x, y-2);
+          markDirty(x, y-1);
           return;
         }
       }
@@ -1391,9 +1379,9 @@ void levelPlayer_c::DTA_H(int x, int y) {
         {
           setDominoState(x, y, 16);
           setDominoExtra(x, y, 0x50);
-          target.markDirty(x, y);
-          target.markDirty(x, y-2);
-          target.markDirty(x, y-1);
+          markDirty(x, y);
+          markDirty(x, y-2);
+          markDirty(x, y-1);
           return;
         }
       }
@@ -1407,9 +1395,9 @@ void levelPlayer_c::DTA_H(int x, int y) {
           setDominoState(x, y, 16);
           setDominoExtra(x, y, 0);
 
-          target.markDirty(x, y);
-          target.markDirty(x, y-2);
-          target.markDirty(x, y-1);
+          markDirty(x, y);
+          markDirty(x, y-2);
+          markDirty(x, y-1);
           return;
         }
       }
@@ -1436,9 +1424,9 @@ void levelPlayer_c::DTA_H(int x, int y) {
       setDominoYOffset(x, y, 0);
       setDominoExtra(x, y, 0);
 
-      target.markDirty(x, y);
-      target.markDirty(x, y-2);
-      target.markDirty(x, y-1);
+      markDirty(x, y);
+      markDirty(x, y-2);
+      markDirty(x, y-1);
       return;
     }
 
@@ -1459,9 +1447,9 @@ void levelPlayer_c::DTA_H(int x, int y) {
     }
     setDominoYOffset(x, y, getDominoYOffset(x, y)-2);
 
-    target.markDirty(x, y);
-    target.markDirty(x, y-2);
-    target.markDirty(x, y-1);
+    markDirty(x, y);
+    markDirty(x, y-2);
+    markDirty(x, y-1);
     return;
   }
 
@@ -1501,10 +1489,10 @@ void levelPlayer_c::DTA_K(int x, int y) {
       setDominoState(x, y, 0);
       setDominoDir(x, y, 0);
 
-      target.markDirty(x, y-1);
-      target.markDirty(x+1, y-1);
-      target.markDirty(x, y);
-      target.markDirty(x+1, y);
+      markDirty(x, y-1);
+      markDirty(x+1, y-1);
+      markDirty(x, y);
+      markDirty(x+1, y);
     }
     else
     {
@@ -1520,10 +1508,10 @@ void levelPlayer_c::DTA_K(int x, int y) {
       setDominoState(x, y, 0);
       setDominoDir(x, y, 0);
 
-      target.markDirty(x, y-1);
-      target.markDirty(x+1, y-1);
-      target.markDirty(x, y);
-      target.markDirty(x+1, y);
+      markDirty(x, y-1);
+      markDirty(x+1, y-1);
+      markDirty(x, y);
+      markDirty(x+1, y);
     }
   }
   else
@@ -1548,10 +1536,10 @@ void levelPlayer_c::DTA_K(int x, int y) {
       setDominoDir(x, y, 0);
       setDominoYOffset(x, y, 0);
 
-      target.markDirty(x, y-1);
-      target.markDirty(x+1, y-1);
-      target.markDirty(x, y);
-      target.markDirty(x+1, y);
+      markDirty(x, y-1);
+      markDirty(x+1, y-1);
+      markDirty(x, y);
+      markDirty(x+1, y);
 
       return;
     }
@@ -1576,10 +1564,10 @@ void levelPlayer_c::DTA_K(int x, int y) {
       setDominoDir(x, y, 0);
       setDominoYOffset(x, y, 0);
 
-      target.markDirty(x, y-1);
-      target.markDirty(x+1, y-1);
-      target.markDirty(x, y);
-      target.markDirty(x+1, y);
+      markDirty(x, y-1);
+      markDirty(x+1, y-1);
+      markDirty(x, y);
+      markDirty(x+1, y);
 
       return;
     }
@@ -1618,10 +1606,10 @@ void levelPlayer_c::DTA_1(int x, int y) {
       setDominoState(x, y, 0);
       setDominoDir(x, y, 0);
 
-      target.markDirty(x, y-1);
-      target.markDirty(x-1, y-1);
-      target.markDirty(x, y);
-      target.markDirty(x-1, y);
+      markDirty(x, y-1);
+      markDirty(x-1, y-1);
+      markDirty(x, y);
+      markDirty(x-1, y);
 
       return;
     }
@@ -1639,10 +1627,10 @@ void levelPlayer_c::DTA_1(int x, int y) {
       setDominoState(x, y, 0);
       setDominoDir(x, y, 0);
 
-      target.markDirty(x, y-1);
-      target.markDirty(x-1, y-1);
-      target.markDirty(x, y);
-      target.markDirty(x-1, y);
+      markDirty(x, y-1);
+      markDirty(x-1, y-1);
+      markDirty(x, y);
+      markDirty(x-1, y);
     }
   }
   else
@@ -1667,10 +1655,10 @@ void levelPlayer_c::DTA_1(int x, int y) {
       setDominoDir(x, y, 0);
       setDominoYOffset(x, y, 0);
 
-      target.markDirty(x, y-1);
-      target.markDirty(x-1, y-1);
-      target.markDirty(x, y);
-      target.markDirty(x-1, y);
+      markDirty(x, y-1);
+      markDirty(x-1, y-1);
+      markDirty(x, y);
+      markDirty(x-1, y);
 
       return;
     }
@@ -1695,10 +1683,10 @@ void levelPlayer_c::DTA_1(int x, int y) {
       setDominoDir(x, y, 0);
       setDominoYOffset(x, y, 0);
 
-      target.markDirty(x, y-1);
-      target.markDirty(x-1, y-1);
-      target.markDirty(x, y);
-      target.markDirty(x-1, y);
+      markDirty(x, y-1);
+      markDirty(x-1, y-1);
+      markDirty(x, y);
+      markDirty(x-1, y);
 
       return;
     }
@@ -1743,10 +1731,10 @@ void levelPlayer_c::DTA_6(int x, int y) {
     setDominoState(x, y, 0);
     setDominoDir(x, y, 0);
 
-    target.markDirty(x, y);
-    target.markDirty(x-1, y);
-    target.markDirty(x, y-1);
-    target.markDirty(x-1, y-1);
+    markDirty(x, y);
+    markDirty(x-1, y);
+    markDirty(x, y-1);
+    markDirty(x-1, y-1);
 
     return;
   }
@@ -1771,10 +1759,10 @@ void levelPlayer_c::DTA_6(int x, int y) {
     setDominoDir(x, y, 0);
     setDominoYOffset(x, y, 0);
 
-    target.markDirty(x, y);
-    target.markDirty(x-1, y);
-    target.markDirty(x, y-1);
-    target.markDirty(x-1, y-1);
+    markDirty(x, y);
+    markDirty(x-1, y);
+    markDirty(x, y-1);
+    markDirty(x-1, y-1);
 
     return;
   }
@@ -1799,10 +1787,10 @@ void levelPlayer_c::DTA_6(int x, int y) {
     setDominoDir(x, y, 0);
     setDominoYOffset(x, y, 0);
 
-    target.markDirty(x, y);
-    target.markDirty(x-1, y);
-    target.markDirty(x, y-1);
-    target.markDirty(x-1, y-1);
+    markDirty(x, y);
+    markDirty(x-1, y);
+    markDirty(x, y-1);
+    markDirty(x-1, y-1);
 
     return;
   }
@@ -1822,12 +1810,10 @@ void levelPlayer_c::DTA_6(int x, int y) {
   setDominoType(x, y, 0);
   setDominoDir(x, y, 0);
 
-  target.markDirty(x, y);
-  target.markDirty(x-1, y);
-  target.markDirty(x, y-1);
-  target.markDirty(x-1, y-1);
-
-
+  markDirty(x, y);
+  markDirty(x-1, y);
+  markDirty(x, y-1);
+  markDirty(x-1, y-1);
 }
 
 // Tumbler falln down right
@@ -1864,10 +1850,10 @@ void levelPlayer_c::DTA_L(int x, int y) {
     setDominoState(x, y, 0);
     setDominoDir(x, y, 0);
 
-    target.markDirty(x, y);
-    target.markDirty(x+1, y);
-    target.markDirty(x, y-1);
-    target.markDirty(x+1, y-1);
+    markDirty(x, y);
+    markDirty(x+1, y);
+    markDirty(x, y-1);
+    markDirty(x+1, y-1);
 
     return;
   }
@@ -1892,10 +1878,10 @@ void levelPlayer_c::DTA_L(int x, int y) {
     setDominoDir(x, y, 0);
     setDominoYOffset(x, y, 0);
 
-    target.markDirty(x, y);
-    target.markDirty(x+1, y);
-    target.markDirty(x, y-1);
-    target.markDirty(x+1, y-1);
+    markDirty(x, y);
+    markDirty(x+1, y);
+    markDirty(x, y-1);
+    markDirty(x+1, y-1);
 
     return;
   }
@@ -1920,10 +1906,10 @@ void levelPlayer_c::DTA_L(int x, int y) {
     setDominoDir(x, y, 0);
     setDominoYOffset(x, y, 0);
 
-    target.markDirty(x, y);
-    target.markDirty(x+1, y);
-    target.markDirty(x, y-1);
-    target.markDirty(x+1, y-1);
+    markDirty(x, y);
+    markDirty(x+1, y);
+    markDirty(x, y-1);
+    markDirty(x+1, y-1);
 
     return;
   }
@@ -1942,10 +1928,10 @@ void levelPlayer_c::DTA_L(int x, int y) {
   setDominoType(x, y, 0);
   setDominoDir(x, y, 0);
 
-  target.markDirty(x, y);
-  target.markDirty(x+1, y);
-  target.markDirty(x, y-1);
-  target.markDirty(x+1, y-1);
+  markDirty(x, y);
+  markDirty(x+1, y);
+  markDirty(x, y-1);
+  markDirty(x+1, y-1);
 }
 
 void levelPlayer_c::callStateFunction(int type, int state, int x, int y) {
@@ -2150,7 +2136,7 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y) {
 
 int levelPlayer_c::performDominos(ant_c & a) {
 
-  a.performAnimation(target);
+  a.performAnimation();
 
   for (int y = 0; y < 13; y++)
     for (int x = 0; x < 20; x++)
@@ -2161,9 +2147,9 @@ int levelPlayer_c::performDominos(ant_c & a) {
 
         if (getDominoType(x, y) == DominoTypeAscender)
         {
-          if (target.isDirty(x-1, y)) target.markDirty(x-1, y-1);
-          if (target.isDirty(x  , y)) target.markDirty(x  , y-1);
-          if (target.isDirty(x+1, y)) target.markDirty(x+1, y-1);
+          if (isDirty(x-1, y)) markDirty(x-1, y-1);
+          if (isDirty(x  , y)) markDirty(x  , y-1);
+          if (isDirty(x+1, y)) markDirty(x+1, y-1);
         }
       }
 

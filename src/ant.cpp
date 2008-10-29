@@ -80,7 +80,7 @@ typedef enum {
 // init the ant state for level entering
 // the level is saved and used later on for dirty block
 // marking, and level modification
-ant_c::ant_c(levelPlayer_c & level, graphics_c & gr): level(level), gr(gr) {
+ant_c::ant_c(levelPlayer_c & level, graphics_c & gr, surface_c & target): level(level), gr(gr), vid(target) {
 
   initForLevel();
 }
@@ -103,7 +103,7 @@ void ant_c::initForLevel(void) {
   finalAnimationPlayed = levelFail = levelSuccess = false;
 }
 
-void ant_c::draw(surface_c & video) {
+void ant_c::draw(void) {
 
   if (blockX < 0 || blockX > 19 || blockY < 0 || blockY > 13) return;
 
@@ -128,11 +128,11 @@ void ant_c::draw(surface_c & video) {
           img = 7;
         }
 
-        video.blit(gr.getDomino((carriedDomino - 1) % 10, img), x, y);
+        vid.blit(gr.getDomino((carriedDomino - 1) % 10, img), x, y);
       }
       else
       {
-        video.blit(gr.getCarriedDomino(img-32, (carriedDomino-1)%10), x, y);
+        vid.blit(gr.getCarriedDomino(img-32, (carriedDomino-1)%10), x, y);
       }
     }
     if (animation >= AntAnimCarryLeft && animation <= AntAnimCarryStopRight)
@@ -140,7 +140,7 @@ void ant_c::draw(surface_c & video) {
       /* put the domino image of the carried domino */
       int a = animation - AntAnimCarryLeft;
 
-      video.blit(gr.getCarriedDomino(a, carriedDomino-1),
+      vid.blit(gr.getCarriedDomino(a, carriedDomino-1),
           (blockX-2)*gr.blockX()+gr.getCarryOffsetX(a, animationImage),
           (blockY)*gr.blockY()+screenBlock+gr.antDisplace()+gr.getCarryOffsetY(a, animationImage));
 
@@ -149,7 +149,7 @@ void ant_c::draw(surface_c & video) {
 
   if (gr.getAnt(animation, animationImage))
   {
-    video.blit(gr.getAnt(animation, animationImage), (blockX-2)*gr.blockX(), (blockY)*gr.blockY()+screenBlock+gr.antDisplace());
+    vid.blit(gr.getAnt(animation, animationImage), (blockX-2)*gr.blockX(), (blockY)*gr.blockY()+screenBlock+gr.antDisplace());
   }
 
   /* what comes now, is to put the ladders back in front of the ant,
@@ -162,14 +162,14 @@ void ant_c::draw(surface_c & video) {
 
   if (level.getFg(blockX, blockY) == levelData_c::FgElementPlatformLadderUp)
   {
-    video.blitBlock(gr.getFgTile(levelData_c::FgElementLadderMiddle), (blockX)*gr.blockX(), (blockY)*gr.blockY());
+    vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadderMiddle), (blockX)*gr.blockX(), (blockY)*gr.blockY());
   }
   else
   {
     if (level.getFg(blockX, blockY) == levelData_c::FgElementPlatformLadderDown ||
         level.getFg(blockX, blockY) == levelData_c::FgElementLadder)
     {
-      video.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX)*gr.blockX(), (blockY)*gr.blockY());
+      vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX)*gr.blockX(), (blockY)*gr.blockY());
     }
   }
 
@@ -177,50 +177,50 @@ void ant_c::draw(surface_c & video) {
       level.getFg(blockX, blockY-1) == levelData_c::FgElementPlatformLadderDown ||
       level.getFg(blockX, blockY-1) == levelData_c::FgElementLadder)
   {
-    video.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX)*gr.blockX(), (blockY-1)*gr.blockY());
+    vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX)*gr.blockX(), (blockY-1)*gr.blockY());
   }
 
-  if (blockX > 0 && video.isDirty(blockX-1, blockY))
+  if (blockX > 0 && vid.isDirty(blockX-1, blockY))
   {
     if (level.getFg(blockX-1, blockY) == levelData_c::FgElementPlatformLadderUp)
     {
-      video.blitBlock(gr.getFgTile(levelData_c::FgElementLadderMiddle), (blockX-1)*gr.blockX(), (blockY)*gr.blockY());
+      vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadderMiddle), (blockX-1)*gr.blockX(), (blockY)*gr.blockY());
     }
     else
     {
       if (level.getFg(blockX-1, blockY) == levelData_c::FgElementPlatformLadderDown ||
           level.getFg(blockX-1, blockY) == levelData_c::FgElementLadder)
       {
-        video.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX-1)*gr.blockX(), (blockY)*gr.blockY());
+        vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX-1)*gr.blockX(), (blockY)*gr.blockY());
       }
     }
     if (blockY > 0 &&
         level.getFg(blockX-1, blockY-1) == levelData_c::FgElementPlatformLadderDown ||
         level.getFg(blockX-1, blockY-1) == levelData_c::FgElementLadder)
     {
-      video.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX-1)*gr.blockX(), (blockY-1)*gr.blockY());
+      vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX-1)*gr.blockX(), (blockY-1)*gr.blockY());
     }
   }
 
-  if (blockX < 19 && video.isDirty(blockX+1, blockY))
+  if (blockX < 19 && vid.isDirty(blockX+1, blockY))
   {
     if (level.getFg(blockX+1, blockY) == levelData_c::FgElementPlatformLadderUp)
     {
-      video.blitBlock(gr.getFgTile(levelData_c::FgElementLadderMiddle), (blockX+1)*gr.blockX(), (blockY)*gr.blockY());
+      vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadderMiddle), (blockX+1)*gr.blockX(), (blockY)*gr.blockY());
     }
     else
     {
       if (level.getFg(blockX+1, blockY) == levelData_c::FgElementPlatformLadderDown ||
           level.getFg(blockX+1, blockY) == levelData_c::FgElementLadder)
       {
-        video.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX+1)*gr.blockX(), (blockY)*gr.blockY());
+        vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX+1)*gr.blockX(), (blockY)*gr.blockY());
       }
     }
     if (blockY > 0 &&
         level.getFg(blockX+1, blockY-1) == levelData_c::FgElementPlatformLadderDown ||
         level.getFg(blockX+1, blockY-1) == levelData_c::FgElementLadder)
     {
-      video.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX+1)*gr.blockX(), (blockY-1)*gr.blockY());
+      vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX+1)*gr.blockX(), (blockY-1)*gr.blockY());
     }
   }
 }
@@ -230,7 +230,7 @@ void ant_c::setKeyStates(unsigned int km) {
 }
 
 // do one animation step for the ant
-void ant_c::performAnimation(surface_c & vid) {
+void ant_c::performAnimation(void) {
 
   unsigned int oldAnimation = animation;
   unsigned int oldImage = animationImage;
