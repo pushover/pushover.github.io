@@ -41,6 +41,7 @@ typedef struct {
 void initText(std::string datadir);
 void deinitText(void);
 unsigned int getFontHeight(unsigned int font);
+unsigned int getTextWidth(unsigned int font, const std::string & t);
 
 
 class surface_c {

@@ -430,7 +430,21 @@ listWindow_c * getFailedWindow(const std::string & reason, surface_c & surf, gra
         entries.push_back("Return to Main menu");
     }
 
-    return new listWindow_c(2, 3, 16, 6, surf, gr, "You failed: " + reason, entries, false);
+    std::string title = std::string("You failed: ") + reason;
+
+    unsigned int w = (getTextWidth(FNT_BIG, title) + gr.blockX() - 1) / gr.blockX();
+
+    // make sure minimum size is fulfilled
+    if (w < 14) w = 14;
+    // try to accommodate the header in the withd
+    if (w > 18) w = 18;
+    // make sure widow is centerable by having an even width
+    if (w & 1) w++;
+
+    // add the border
+    w += 2;
+
+    return new listWindow_c((20-w)/2, 3, w, 6, surf, gr, title, entries, false);
 }
 
 
