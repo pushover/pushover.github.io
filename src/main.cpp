@@ -510,6 +510,7 @@ int main(int argc, char * argv[]) {
         case ST_PLAY:
           if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) nextState = ST_QUIT;
           if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F1)     nextState = ST_HELP;
+          if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'r')         rec.save();
           break;
 
         case ST_PREPLAY:
