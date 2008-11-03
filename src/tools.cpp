@@ -13,9 +13,12 @@
 #include <unistd.h>
 #endif
 
-#include <fstream>
+#include <dirent.h>
+
+#include <stdexcept>
 
 std::string getHome(void) {
+
 #ifdef WIN32
 
   static char userHome[MAX_PATH];
@@ -38,11 +41,30 @@ std::string getHome(void) {
   userHome[size] = '\\';
   userHome[size+1] = '\0';
 
-  return std::string(userHome);
+  std::string home = std::string(userHome) + "\\pushover\\";
+
 
 #else
-  return getenv("HOME");
+
+  std::string home = std::string(getenv("HOME"))+"/.pushover/";
+
 #endif
+
+  DIR * dir = ::opendir(home.c_str());
+
+  if (!dir)
+  {
+    // create it
+    if (::mkdir(home.c_str(), S_IRWXU) != 0)
+      throw std::runtime_error("Can not create home directory\n");
+  }
+  else
+  {
+    if (::closedir(dir) != 0)
+      throw std::runtime_error("Can not close dir in find home\n");
+  }
+
+  return home;
 }
 
 

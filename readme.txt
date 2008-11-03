@@ -92,12 +92,14 @@ The following files are saved:
 - solved.txt: This file contains checksums of all the levels that you have
   successfully solved. In the level selection dialog those levels contain a
   mark. If you loose this file thos marks are gone
-- recordings: This is a subdirectory that contains recordings of activities
-  within a level. They are automatically done whenever you solve a level but you
-  can also actively make a recording by pressing R while you play a level. When
-  you observe something strange while playing, make a recording and send it to
-  me. Also when the game crashes a recording will be saved.  You can delete
-  these files whenever you want.
+- *.rec: These filed contain recordings of activities within a level. They are
+  automatically created whenever you solve a level but you can also actively
+  make a recording by pressing 'r' while you play a level. When you observe
+  something strange while playing, make a recording and send it to me. Also when
+  the game crashes a recording will be saved.  You can delete these files
+  whenever you want. You can distinguish the recordings by the prefix in their
+  name. "Sol" stands for solved levels, "Man" for manually created recordings
+  and "Err" for recordings made when the program crashed.
 
 
 Graphics

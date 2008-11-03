@@ -6,7 +6,7 @@
 
 solvedMap_c::solvedMap_c(void) {
 
-  std::ifstream in((getHome()+"/.pushover/solved.txt").c_str());
+  std::ifstream in((getHome()+"solved.txt").c_str());
   std::string line;
 
   while (in) {
@@ -21,7 +21,7 @@ void solvedMap_c::addLevel(const std::string & hash) {
 
   map.insert(hash);
 
-  std::ofstream out((getHome()+"/.pushover/solved.txt").c_str());
+  std::ofstream out((getHome()+"solved.txt").c_str());
 
   for (std::set<std::string>::iterator i = map.begin(); i != map.end(); i++)
     out << *i << std::endl;

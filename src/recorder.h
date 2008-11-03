@@ -11,7 +11,7 @@ class recorder_c {
     recorder_c(void) : playpos(0), levelsetName("unknown"), levelName("unknown") {};
 
     void load(const std::string & filename);
-    void save() const;
+    void save(const std::string & prefix) const;
 
     const std::string & getLevelsetName(void) const { return levelsetName; }
     const std::string & getLevelName(void) const { return levelName; }

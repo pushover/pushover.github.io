@@ -512,7 +512,7 @@ int main(int argc, char * argv[]) {
           case ST_PLAY:
             if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) nextState = ST_QUIT;
             if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F1)     nextState = ST_HELP;
-            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'r')         rec.save();
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'r')         rec.save("man");
             break;
 
           case ST_PREPLAY:
@@ -744,7 +744,7 @@ int main(int argc, char * argv[]) {
           failReason = playTick(l, a);
           switch (failReason) {
             case 1:
-              rec.save();
+              rec.save("sol");
               solved.addLevel(l.getChecksum());
               nextState = ST_SOLVED;
               break;
@@ -790,7 +790,7 @@ int main(int argc, char * argv[]) {
   catch (...) {
 
     if (currentState == ST_PLAY)
-      rec.save();
+      rec.save("err");
 
   }
 

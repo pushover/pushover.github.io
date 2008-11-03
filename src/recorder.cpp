@@ -1,5 +1,7 @@
 #include "recorder.h"
 
+#include "tools.h"
+
 #include <fstream>
 #include <sstream>
 #include <iomanip>
@@ -27,12 +29,12 @@ void recorder_c::load(const std::string & filename) {
   }
 }
 
-void recorder_c::save(void) const {
+void recorder_c::save(const std::string & prefix) const {
   /* find first unused filename */
   std::string filename;
   for (unsigned int num = 1; ; num++) {
     std::ostringstream s;
-    s << "recordings/" << std::setfill('0') << std::setw(5) << num << ".rec";
+    s << getHome() << prefix << std::setfill('0') << std::setw(5) << num << ".rec";
     filename = s.str();
     std::ifstream stream(filename.c_str());
     if (!stream)
