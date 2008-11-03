@@ -307,481 +307,491 @@ int main(int argc, char * argv[]) {
   unsigned int failReason = 0;
   unsigned int failDelay = 0; // a counter to delay the fail window a bit after failing
 
-  while (!exitProgram) {
+  try {
 
-    // wait for the right amount of time for the next frame
-    ticks += 1000/18;
-    if (SDL_GetTicks() < ticks)
-      SDL_Delay(ticks-SDL_GetTicks());
+    while (!exitProgram) {
 
-    while (true) {
+      // wait for the right amount of time for the next frame
+      ticks += 1000/18;
+      if (SDL_GetTicks() < ticks)
+        SDL_Delay(ticks-SDL_GetTicks());
 
-      if (nextState != currentState) {
+      while (true) {
 
-        // switch states, first leave the old one
+        if (nextState != currentState) {
+
+          // switch states, first leave the old one
+          switch (currentState) {
+
+            case ST_MAIN:
+            case ST_HELP:
+            case ST_QUIT:
+            case ST_LEVELSET:
+            case ST_LEVEL:
+            case ST_CONFIG:
+            case ST_SOLVED:
+            case ST_FAILED:
+            case ST_ABOUT:
+              delete window;
+              window = 0;
+              l.drawDominos();
+              a.draw();
+              break;
+
+            case ST_PREREPLAY:
+            case ST_PREPLAY:
+            case ST_INIT:
+            case ST_REPLAY:
+            case ST_PLAY:
+            case ST_FAILDELAY:
+            case ST_EXIT:
+            case ST_CONFIGTOG:
+              break;
+
+          }
+
+          // now enter the new one
+          switch (nextState) {
+
+            case ST_MAIN:     window = getMainWindow(screen, gr); break;
+            case ST_LEVELSET: window = getMissionWindow(levelsetList, screen, gr); break;
+            case ST_LEVEL:    window = getLevelWindow(levelsetList.getLevelset(selectedMission), solved, screen, gr); break;
+            case ST_QUIT:     window = getQuitWindow(screen, gr); break;
+            case ST_CONFIG:   window = getConfigWindow(screen, gr); break;
+            case ST_SOLVED:   window = getSolvedWindow(screen, gr); break;
+            case ST_ABOUT:    window = getAboutWindow(screen, gr); break;
+            case ST_FAILED:
+                              {
+                                std::string reason;
+                                switch (failReason) {
+                                  case 2: reason = "You've been too slow"; break;
+                                  case 3: reason = "Some dominoes crashed"; break;
+                                  case 4: reason = "Not all dominoes fell"; break;
+                                  case 5: reason = "You died"; break;
+                                  case 6: reason = "Trigger was not last to fall"; break;
+                                }
+                                window = getFailedWindow(reason, screen, gr);
+                              }
+                              break;
+
+            case ST_HELP:
+                              {
+                                std::string text;
+                                if (l.someTimeLeft())
+                                  text = "Arrange dominos in a run so that trigger falls last. You have 1 push.";
+                                else
+                                  text = l.getHint();
+
+                                window = new helpWindow_c(text, screen, gr);
+                              }
+                              break;
+
+            case ST_PREREPLAY:
+            case ST_PREPLAY:
+                              l.updateBackground();
+                              l.drawDominos();
+                              a.draw();
+                              ticks = SDL_GetTicks();    // this might have taken some time so reinit the ticks
+                              break;
+
+            case ST_PLAY:
+            case ST_INIT:
+            case ST_REPLAY:
+            case ST_FAILDELAY:
+            case ST_CONFIGTOG:
+                              break;
+
+            case ST_EXIT:
+                              exitProgram = true;
+                              break;
+
+          }
+
+          currentState = nextState;
+        }
+
+        // if there is no event to process, leave the loop, otherwise handle the event and loop again
+        SDL_Event event;
+        if (!SDL_PollEvent(&event)) break;
+
         switch (currentState) {
 
           case ST_MAIN:
-          case ST_HELP:
-          case ST_QUIT:
-          case ST_LEVELSET:
-          case ST_LEVEL:
-          case ST_CONFIG:
-          case ST_SOLVED:
-          case ST_FAILED:
-          case ST_ABOUT:
-            delete window;
-            window = 0;
-            l.drawDominos();
-            a.draw();
-            break;
-
-          case ST_PREREPLAY:
-          case ST_PREPLAY:
-          case ST_INIT:
-          case ST_REPLAY:
-          case ST_PLAY:
-          case ST_FAILDELAY:
-          case ST_EXIT:
-          case ST_CONFIGTOG:
-            break;
-
-        }
-
-        // now enter the new one
-        switch (nextState) {
-
-          case ST_MAIN:     window = getMainWindow(screen, gr); break;
-          case ST_LEVELSET: window = getMissionWindow(levelsetList, screen, gr); break;
-          case ST_LEVEL:    window = getLevelWindow(levelsetList.getLevelset(selectedMission), solved, screen, gr); break;
-          case ST_QUIT:     window = getQuitWindow(screen, gr); break;
-          case ST_CONFIG:   window = getConfigWindow(screen, gr); break;
-          case ST_SOLVED:   window = getSolvedWindow(screen, gr); break;
-          case ST_ABOUT:    window = getAboutWindow(screen, gr); break;
-          case ST_FAILED:
+            if (!window) {
+              std::cout << "Oops no window\n";
+              nextState = ST_MAIN;
+            }
+            else
             {
-              std::string reason;
-              switch (failReason) {
-                case 2: reason = "You've been too slow"; break;
-                case 3: reason = "Some dominoes crashed"; break;
-                case 4: reason = "Not all dominoes fell"; break;
-                case 5: reason = "You died"; break;
-                case 6: reason = "Trigger was not last to fall"; break;
+              window->handleEvent(event);
+              if (window->isDone())
+              {
+                switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                {
+                  case 0: nextState = ST_LEVELSET; break;// select level set
+                  case 1: nextState = ST_CONFIG; break;  // open config menu
+                  case 2: nextState = ST_ABOUT; break;   // about window
+                  case 3: nextState = ST_EXIT; break;    // exit program
+                }
               }
-              window = getFailedWindow(reason, screen, gr);
+            }
+            break;
+
+          case ST_CONFIG:
+            if (!window) {
+              std::cout << "Oops no window\n";
+              nextState = ST_MAIN;
+            }
+            else
+            {
+              window->handleEvent(event);
+              if (window->isDone())
+              {
+                switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                {
+                  case 0:   // toggle full screen
+                    screen.toggleFullscreen();
+                    screen.markAllDirty();
+                    nextState = ST_CONFIGTOG;
+                    break;
+                  case 1: break;  // toggle sound effects
+                  default: nextState = ST_MAIN; break;  // back to main menu
+                }
+              }
+            }
+            break;
+
+          case ST_LEVELSET:
+            if (!window) {
+              std::cout << "Oops no window\n";
+              nextState = ST_MAIN;
+            }
+            else
+            {
+              window->handleEvent(event);
+              if (window->isDone())
+              {
+                unsigned int sel = dynamic_cast<listWindow_c*>(window)->getSelection();
+                if (sel >= levelsetList.getLevelsetNames().size())
+                  nextState = ST_MAIN;
+                else
+                {
+                  nextState = ST_LEVEL;
+                  selectedMission = levelsetList.getLevelsetNames()[sel];
+                }
+              }
+            }
+            break;
+
+          case ST_LEVEL:
+            if (!window) {
+              std::cout << "Oops no window\n";
+              nextState = ST_MAIN;
+            }
+            else
+            {
+              window->handleEvent(event);
+              if (window->isDone())
+              {
+                unsigned int sel = dynamic_cast<listWindow_c*>(window)->getSelection();
+                levelset_c ls = levelsetList.getLevelset(selectedMission);
+
+                if (sel >= ls.getLevelNames().size())
+                  nextState = ST_LEVELSET;
+                else
+                {
+                  nextState = ST_PREPLAY;
+                  ls.loadLevel(l, ls.getLevelNames()[sel]);
+                  a.initForLevel();
+                  rec.setLevel(selectedMission, l.getName());
+                }
+              }
+            }
+            break;
+
+          case ST_PLAY:
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) nextState = ST_QUIT;
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F1)     nextState = ST_HELP;
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'r')         rec.save();
+            break;
+
+          case ST_PREPLAY:
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) nextState = ST_PLAY;
+            break;
+
+          case ST_PREREPLAY:
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) nextState = ST_REPLAY;
+            break;
+
+          case ST_REPLAY:
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+            {
+              rec.truncate();
+              nextState = ST_PLAY;
             }
             break;
 
           case ST_HELP:
+            if (!window) {
+              std::cout << "Oops no window\n";
+              nextState = ST_MAIN;
+            }
+            else
             {
-              std::string text;
-              if (l.someTimeLeft())
-                text = "Arrange dominos in a run so that trigger falls last. You have 1 push.";
-              else
-                text = l.getHint();
-
-              window = new helpWindow_c(text, screen, gr);
+              window->handleEvent(event);
+              if (window->isDone())
+                nextState = ST_PLAY;
             }
             break;
 
-          case ST_PREREPLAY:
-          case ST_PREPLAY:
-            l.updateBackground();
-            l.drawDominos();
-            a.draw();
-            ticks = SDL_GetTicks();    // this might have taken some time so reinit the ticks
+          case ST_ABOUT:
+            if (!window) {
+              std::cout << "Oops no window\n";
+              nextState = ST_MAIN;
+            }
+            else
+            {
+              window->handleEvent(event);
+              if (window->isDone())
+                nextState = ST_MAIN;
+            }
             break;
 
-          case ST_PLAY:
+          case ST_QUIT:
+            if (!window) {
+              std::cout << "Oops no window\n";
+              nextState = ST_MAIN;
+            }
+            else
+            {
+              window->handleEvent(event);
+              if (window->isDone())
+              {
+                switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                {
+                  case 2: nextState = ST_MAIN; break;    // return to main menu
+                  case 1:
+                          {       // restart level
+                            nextState = ST_PREPLAY;
+                            levelset_c ls = levelsetList.getLevelset(selectedMission);
+                            ls.loadLevel(l, l.getName());
+                            a.initForLevel();
+                          }
+                          break;
+                  default:
+                  case 0:
+                          nextState = ST_PLAY; break;    // return to play
+                }
+              }
+            }
+            break;
+
+          case ST_SOLVED:
+            if (!window) {
+              std::cout << "Oops no window\n";
+              nextState = ST_MAIN;
+            }
+            else
+            {
+              window->handleEvent(event);
+              if (window->isDone())
+              {
+                switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                {
+                  case 0:                            // play next level
+                    {
+                      // find the current level
+                      levelset_c ls = levelsetList.getLevelset(selectedMission);
+
+                      std::vector<std::string> levels = ls.getLevelNames();
+
+                      // could not find the level ??? or no next level
+                      // TODO find next _unsolvd_ level in mission
+
+                      bool foundLevel = false;
+                      bool foundNext = false;
+
+                      for (unsigned int i = 0; i < levels.size(); i++)
+                      {
+                        if (levels[i] == l.getName())
+                        {  // ok we found our level, continue forwar until we get the first
+                          // unsolved level behint it
+                          foundLevel = true;
+                          i++;
+                          while (i < levels.size())
+                          {
+                            if (!solved.solved(ls.getChecksum(levels[i])))
+                            {  // fine we found one
+                              foundNext = true;
+                              ls.loadLevel(l, levels[i]);
+                              a.initForLevel();
+                              break;
+                            }
+                            i++;
+                          }
+
+                          break;
+                        }
+                      }
+
+                      if (!foundLevel) nextState = ST_MAIN;
+                      else if (!foundNext) nextState = ST_MAIN; // TODO present solved all window
+                      else nextState = ST_PREPLAY;
+                    }
+                    break;
+                  case 1: nextState = ST_MAIN; break;  // back to main
+                }
+              }
+            }
+            break;
+
+          case ST_FAILED:
+            if (!window) {
+              std::cout << "Oops no window\n";
+              nextState = ST_MAIN;
+            }
+            else
+            {
+              window->handleEvent(event);
+              if (window->isDone())
+              {
+                switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                {
+                  case 0:                            // try again
+                    {
+                      nextState = ST_PREPLAY;
+                      // find the current level
+                      levelset_c ls = levelsetList.getLevelset(selectedMission);
+
+                      std::vector<std::string> levels = ls.getLevelNames();
+
+                      bool foundLevel = false;
+
+                      for (unsigned int i = 0; i < levels.size(); i++)
+                      {
+                        if (levels[i] == l.getName())
+                        {
+                          ls.loadLevel(l, levels[i]);
+                          a.initForLevel();
+                          foundLevel = true;
+                          break;
+                        }
+                      }
+
+                      if (!foundLevel) nextState = ST_MAIN;
+                      else nextState = ST_PREPLAY;
+                    }
+                    break;
+                  case 1: nextState = ST_MAIN; break;  // back to main
+                }
+              }
+            }
+            break;
+
           case ST_INIT:
-          case ST_REPLAY:
-          case ST_FAILDELAY:
           case ST_CONFIGTOG:
-            break;
-
+          case ST_FAILDELAY:
           case ST_EXIT:
-            exitProgram = true;
             break;
-
         }
-
-        currentState = nextState;
       }
 
-      // if there is no event to process, leave the loop, otherwise handle the event and loop again
-      SDL_Event event;
-      if (!SDL_PollEvent(&event)) break;
+      // do the handling of the current state
 
       switch (currentState) {
 
-        case ST_MAIN:
-          if (!window) {
-            std::cout << "Oops no window\n";
-            nextState = ST_MAIN;
-          }
-          else
-          {
-            window->handleEvent(event);
-            if (window->isDone())
-            {
-              switch(dynamic_cast<listWindow_c*>(window)->getSelection())
-              {
-                case 0: nextState = ST_LEVELSET; break;// select level set
-                case 1: nextState = ST_CONFIG; break;  // open config menu
-                case 2: nextState = ST_ABOUT; break;   // about window
-                case 3: nextState = ST_EXIT; break;    // exit program
-              }
-            }
-          }
-          break;
-
-        case ST_CONFIG:
-          if (!window) {
-            std::cout << "Oops no window\n";
-            nextState = ST_MAIN;
-          }
-          else
-          {
-            window->handleEvent(event);
-            if (window->isDone())
-            {
-              switch(dynamic_cast<listWindow_c*>(window)->getSelection())
-              {
-                case 0:   // toggle full screen
-                  screen.toggleFullscreen();
-                  screen.markAllDirty();
-                  nextState = ST_CONFIGTOG;
-                  break;
-                case 1: break;  // toggle sound effects
-                default: nextState = ST_MAIN; break;  // back to main menu
-              }
-            }
-          }
-          break;
-
-        case ST_LEVELSET:
-          if (!window) {
-            std::cout << "Oops no window\n";
-            nextState = ST_MAIN;
-          }
-          else
-          {
-            window->handleEvent(event);
-            if (window->isDone())
-            {
-              unsigned int sel = dynamic_cast<listWindow_c*>(window)->getSelection();
-              if (sel >= levelsetList.getLevelsetNames().size())
-                nextState = ST_MAIN;
-              else
-              {
-                nextState = ST_LEVEL;
-                selectedMission = levelsetList.getLevelsetNames()[sel];
-              }
-            }
-          }
-          break;
-
-        case ST_LEVEL:
-          if (!window) {
-            std::cout << "Oops no window\n";
-            nextState = ST_MAIN;
-          }
-          else
-          {
-            window->handleEvent(event);
-            if (window->isDone())
-            {
-              unsigned int sel = dynamic_cast<listWindow_c*>(window)->getSelection();
-              levelset_c ls = levelsetList.getLevelset(selectedMission);
-
-              if (sel >= ls.getLevelNames().size())
-                nextState = ST_LEVELSET;
-              else
-              {
-                nextState = ST_PREPLAY;
-                ls.loadLevel(l, ls.getLevelNames()[sel]);
-                a.initForLevel();
-                rec.setLevel(selectedMission, l.getName());
-              }
-            }
-          }
-          break;
-
-        case ST_PLAY:
-          if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) nextState = ST_QUIT;
-          if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F1)     nextState = ST_HELP;
-          if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'r')         rec.save();
-          break;
-
         case ST_PREPLAY:
-          if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) nextState = ST_PLAY;
+          if (screen.flipAnimate()) nextState = ST_PLAY;
           break;
 
         case ST_PREREPLAY:
-          if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) nextState = ST_REPLAY;
+          if (screen.flipAnimate()) nextState = ST_REPLAY;
+          break;
+
+        case ST_FAILDELAY:
+          if (failDelay > 0)
+          {
+            failDelay--;
+            a.setKeyStates(0);
+            playTick(l, a);
+          }
+          else
+          {
+            nextState = ST_FAILED;
+          }
           break;
 
         case ST_REPLAY:
-          if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
-          {
-            rec.truncate();
+          if (rec.endOfRecord())
             nextState = ST_PLAY;
-          }
-          break;
-
-        case ST_HELP:
-          if (!window) {
-            std::cout << "Oops no window\n";
-            nextState = ST_MAIN;
-          }
           else
           {
-            window->handleEvent(event);
-            if (window->isDone())
-              nextState = ST_PLAY;
-          }
-          break;
-
-        case ST_ABOUT:
-          if (!window) {
-            std::cout << "Oops no window\n";
-            nextState = ST_MAIN;
-          }
-          else
-          {
-            window->handleEvent(event);
-            if (window->isDone())
+            a.setKeyStates(rec.getEvent());
+            if (playTick(l, a))
               nextState = ST_MAIN;
+            break;
+          }
+          // intentionally fall through to ST_PLAY when
+          // the record has ended to allow the player to
+          // continue playing
+
+        case ST_PLAY:
+          {
+            unsigned int keyMask = getKeyMask();
+            rec.addEvent(keyMask);
+            a.setKeyStates(keyMask);
+          }
+          failReason = playTick(l, a);
+          switch (failReason) {
+            case 1:
+              rec.save();
+              solved.addLevel(l.getChecksum());
+              nextState = ST_SOLVED;
+              break;
+            case 0:
+              break;
+            case 2:
+              nextState = ST_FAILED;
+              break;
+            default:
+              failDelay = 36;
+              nextState = ST_FAILDELAY;
+              break;
           }
           break;
 
-        case ST_QUIT:
-          if (!window) {
-            std::cout << "Oops no window\n";
-            nextState = ST_MAIN;
-          }
-          else
-          {
-            window->handleEvent(event);
-            if (window->isDone())
-            {
-              switch(dynamic_cast<listWindow_c*>(window)->getSelection())
-              {
-                case 2: nextState = ST_MAIN; break;    // return to main menu
-                case 1:
-                  {       // restart level
-                    nextState = ST_PREPLAY;
-                    levelset_c ls = levelsetList.getLevelset(selectedMission);
-                    ls.loadLevel(l, l.getName());
-                    a.initForLevel();
-                  }
-                  break;
-                default:
-                case 0:
-                  nextState = ST_PLAY; break;    // return to play
-              }
-            }
-          }
-          break;
-
-        case ST_SOLVED:
-          if (!window) {
-            std::cout << "Oops no window\n";
-            nextState = ST_MAIN;
-          }
-          else
-          {
-            window->handleEvent(event);
-            if (window->isDone())
-            {
-              switch(dynamic_cast<listWindow_c*>(window)->getSelection())
-              {
-                case 0:                            // play next level
-                  {
-                    // find the current level
-                    levelset_c ls = levelsetList.getLevelset(selectedMission);
-
-                    std::vector<std::string> levels = ls.getLevelNames();
-
-                    // could not find the level ??? or no next level
-                    // TODO find next _unsolvd_ level in mission
-
-                    bool foundLevel = false;
-                    bool foundNext = false;
-
-                    for (unsigned int i = 0; i < levels.size(); i++)
-                    {
-                      if (levels[i] == l.getName())
-                      {  // ok we found our level, continue forwar until we get the first
-                         // unsolved level behint it
-                         foundLevel = true;
-                         i++;
-                         while (i < levels.size())
-                         {
-                           if (!solved.solved(ls.getChecksum(levels[i])))
-                           {  // fine we found one
-                             foundNext = true;
-                             ls.loadLevel(l, levels[i]);
-                             a.initForLevel();
-                             break;
-                           }
-                           i++;
-                         }
-
-                         break;
-                      }
-                    }
-
-                    if (!foundLevel) nextState = ST_MAIN;
-                    else if (!foundNext) nextState = ST_MAIN; // TODO present solved all window
-                    else nextState = ST_PREPLAY;
-                  }
-                  break;
-                case 1: nextState = ST_MAIN; break;  // back to main
-              }
-            }
-          }
-          break;
-
-        case ST_FAILED:
-          if (!window) {
-            std::cout << "Oops no window\n";
-            nextState = ST_MAIN;
-          }
-          else
-          {
-            window->handleEvent(event);
-            if (window->isDone())
-            {
-              switch(dynamic_cast<listWindow_c*>(window)->getSelection())
-              {
-                case 0:                            // try again
-                  {
-                    nextState = ST_PREPLAY;
-                    // find the current level
-                    levelset_c ls = levelsetList.getLevelset(selectedMission);
-
-                    std::vector<std::string> levels = ls.getLevelNames();
-
-                    bool foundLevel = false;
-
-                    for (unsigned int i = 0; i < levels.size(); i++)
-                    {
-                      if (levels[i] == l.getName())
-                      {
-                        ls.loadLevel(l, levels[i]);
-                        a.initForLevel();
-                        foundLevel = true;
-                        break;
-                      }
-                    }
-
-                    if (!foundLevel) nextState = ST_MAIN;
-                    else nextState = ST_PREPLAY;
-                  }
-                  break;
-                case 1: nextState = ST_MAIN; break;  // back to main
-              }
-            }
-          }
+        case ST_CONFIGTOG:
+          nextState = ST_CONFIG;
           break;
 
         case ST_INIT:
-        case ST_CONFIGTOG:
-        case ST_FAILDELAY:
+        case ST_MAIN:
+        case ST_CONFIG:
+        case ST_LEVELSET:
+        case ST_LEVEL:
+        case ST_SOLVED:
+        case ST_FAILED:
+        case ST_HELP:
+        case ST_QUIT:
         case ST_EXIT:
+        case ST_ABOUT:
           break;
       }
+
+      // flip the screen, but not when in the preplaymodes
+      if (currentState != ST_PREPLAY && currentState != ST_PREREPLAY)
+      {
+        screen.flipDirty();
+        screen.clearDirty();
+      }
     }
+  }
 
-    // do the handling of the current state
+  catch (...) {
 
-    switch (currentState) {
+    if (currentState == ST_PLAY)
+      rec.save();
 
-      case ST_PREPLAY:
-        if (screen.flipAnimate()) nextState = ST_PLAY;
-        break;
-
-      case ST_PREREPLAY:
-        if (screen.flipAnimate()) nextState = ST_REPLAY;
-        break;
-
-      case ST_FAILDELAY:
-        if (failDelay > 0)
-        {
-          failDelay--;
-          a.setKeyStates(0);
-          playTick(l, a);
-        }
-        else
-        {
-          nextState = ST_FAILED;
-        }
-        break;
-
-      case ST_REPLAY:
-        if (rec.endOfRecord())
-          nextState = ST_PLAY;
-        else
-        {
-          a.setKeyStates(rec.getEvent());
-          if (playTick(l, a))
-            nextState = ST_MAIN;
-          break;
-        }
-        // intentionally fall through to ST_PLAY when
-        // the record has ended to allow the player to
-        // continue playing
-
-      case ST_PLAY:
-        {
-          unsigned int keyMask = getKeyMask();
-          rec.addEvent(keyMask);
-          a.setKeyStates(keyMask);
-        }
-        failReason = playTick(l, a);
-        switch (failReason) {
-          case 1:
-            rec.save();
-            solved.addLevel(l.getChecksum());
-            nextState = ST_SOLVED;
-            break;
-          case 0:
-            break;
-          case 2:
-            nextState = ST_FAILED;
-            break;
-          default:
-            failDelay = 36;
-            nextState = ST_FAILDELAY;
-            break;
-        }
-        break;
-
-      case ST_CONFIGTOG:
-        nextState = ST_CONFIG;
-        break;
-
-      case ST_INIT:
-      case ST_MAIN:
-      case ST_CONFIG:
-      case ST_LEVELSET:
-      case ST_LEVEL:
-      case ST_SOLVED:
-      case ST_FAILED:
-      case ST_HELP:
-      case ST_QUIT:
-      case ST_EXIT:
-      case ST_ABOUT:
-        break;
-    }
-
-    // flip the screen, but not when in the preplaymodes
-    if (currentState != ST_PREPLAY && currentState != ST_PREREPLAY)
-    {
-      screen.flipDirty();
-      screen.clearDirty();
-    }
   }
 
   return 0;
