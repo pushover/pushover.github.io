@@ -428,8 +428,8 @@ int main(int argc, char * argv[]) {
               {
                 case 0: nextState = ST_LEVELSET; break;// select level set
                 case 1: nextState = ST_CONFIG; break;  // open config menu
-                case 2: nextState = ST_EXIT; break;    // exit program
-                case 3: nextState = ST_ABOUT; break;   // about window
+                case 2: nextState = ST_ABOUT; break;   // about window
+                case 3: nextState = ST_EXIT; break;    // exit program
               }
             }
           }

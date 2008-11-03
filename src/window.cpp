@@ -340,8 +340,8 @@ listWindow_c * getMainWindow(surface_c & surf, graphics_c & gr) {
     {
         entries.push_back("Play Levelset");
         entries.push_back("Configuration");
-        entries.push_back("Quit");
         entries.push_back("About");
+        entries.push_back("Quit");
     }
 
     return new listWindow_c(4, 3, 12, 7, surf, gr, "Main menu", entries, false);
