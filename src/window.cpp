@@ -143,11 +143,6 @@ class aboutWindow_c : public window_c {
 
 aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 1, 16, 10, s, g) {
 
-  int x = 2;
-  int y = 1;
-  int w = 16;
-  int h = 10;
-
   clearInside();
 
   fontParams_s par;
@@ -156,25 +151,25 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 1, 16,
   par.alignment = ALN_CENTER;
   par.color.r = 112; par.color.g = 39; par.color.b = 0;
   par.shadow = false;
-  par.box.x = gr.blockX()*(x+1);
-  par.box.y = gr.blockY()*(y+1);
-  par.box.w = gr.blockX()*(w-2);
+  par.box.x = gr.blockX()*(X()+1);
+  par.box.y = gr.blockY()*(Y()+1);
+  par.box.w = gr.blockX()*(W()-2);
   par.box.h = getFontHeight(FNT_BIG);
 
   surf.renderText(&par, "Pushover - About");
 
-  int ypos = gr.blockY()*(y+1) + getFontHeight(FNT_BIG);
+  int ypos = gr.blockY()*(Y()+1) + getFontHeight(FNT_BIG);
 
-  surf.fillRect(gr.blockX()*(x+1), ypos, gr.blockX()*(w-2), 2, 112, 39, 0);
+  surf.fillRect(gr.blockX()*(X()+1), ypos, gr.blockX()*(W()-2), 2, 112, 39, 0);
   ypos += 20;
 
   unsigned int lineH = getFontHeight(FNT_SMALL);  // hight of one entry line
 
   par.font = FNT_SMALL;
   par.alignment = ALN_TEXT;
-  par.box.x = gr.blockX()*(x+1);
+  par.box.x = gr.blockX()*(X()+1);
   par.box.y = ypos;
-  par.box.w = gr.blockX()*(w-2)-30;
+  par.box.w = gr.blockX()*(W()-2)-30;
   par.box.h = lineH;
 
   par.box.y += surf.renderText(&par, "Original Concept:")*lineH; par.box.x += 30;

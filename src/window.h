@@ -39,6 +39,11 @@ class window_c {
     virtual bool handleEvent(const SDL_Event & event) { return false; }
 
     bool isDone(void) { return done; }
+
+    unsigned char X(void) { return x; }
+    unsigned char Y(void) { return y; }
+    unsigned char W(void) { return w; }
+    unsigned char H(void) { return h; }
 };
 
 class helpWindow_c : public window_c {
