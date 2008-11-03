@@ -9,72 +9,72 @@ sound as the original game.
 Gameplay
 -----------
 
-The task of the game is to rearrange the dominos on the different patforms so
-that you can start a chainreation that makes all dominos topple over. You may
-rearrange all dominos (except for one kind of domino) and place them wherever
+The task of the game is to rearrange the dominoes on the different patforms so
+that you can start a chainreation that makes all dominoes topple over. You may
+rearrange all dominoes (except for one kind of domino) and place them wherever
 suitable (except in front of the door).
 
 
 You win the level, when:
 
-- all dominos (except for the blocker) have toppled
-- no dominos have crashed, they may fall off the screen though
+- all dominoes (except for the blocker) have toppled
+- no dominoes have crashed, they may fall off the screen though
 - the trigger domino fell last
 - and you reached the exit door within the time limit
 
-The dominos:
+The dominoes:
 
-All in all there are 10 different types of dominos:
+All in all there are 10 different types of dominoes:
 
 - Standard, completely yellow. There is nothing special with this stone, it
   falls when pushed.
 - Blocker, completely red. This domino can not fallover, so it is the only kind
-  of stone they may still be standing when the level is solved. Dominos falling
-  against this stone will bounce back, if possible
+  of stone they may still be standing when the level is solved. Dominoes falling
+  against this stone will bounce back, if possible.
 - Tumbler, big red stripe. This domino will stand up again after falling and
-  will continue to tubmle until it hits an obstacle of rests on an other stone
-- Delay stone, diagonally divided. This domino will take some time until if
-  falls, when it is pushed. Dominos falling against this stone will bounce back
-  and later on this stone will fall
+  will continue to tubmle until it hits an obstacle of rests on an other stone.
+- Delay stone, diagonally divided. This domino will take some time until it
+  falls, when it is pushed. Dominoes falling against this stone will bounce back
+  and later this stone will fall.
 - Splitter, horizontally divided. This stone will split into 2 stones, one
-  falling to the left and the other falling to the right. The splitter can not
-  be pushed it must be split by a stone falling onto it from above.
+  falling to the left and the other falling to the right. The splitter can't
+  be pushed. It must be split by a stone falling onto it from above.
 - Exploder, vertically divided. This stone will blast a gap into the platform it
   is standing on, when it is pushed. Neither the ant nor the pushing domino are
-  harmed by that, the pushing domino will fall into the gap
-- Bridger, 1 hrozontal strip. The bridger will try to conned the edge it is
+  harmed by that, the pushing domino will fall into the gap.
+- Bridger, 1 horizontal strip. The bridger will try to connect the edge it is
   standing on with the next edge, if it is close enough, if not it will simply
   fall into the gap.
 - Vanisher, 2 horizontal strips. The Vanisher will disappear as soon as it lies
-  flat on the ground. This is the only stone you may place in front of doors
+  flat on the ground. This is the only stone you may place in front of doors.
 - Trigger, 3 horizontal strips. This stone will open the exit door, as soon as
   it lies completely flat and all other conditions are met (see above). This is
-  the only stone that you may not move around
+  the only stone that you may not move around.
 - Ascender, vertical strip. This stone will start to rise as soon as it is
   pushed. It will rise until is hits the ceiling, then it will start to flip
   into the direction it was initially pushed. When you fall into a gap while
-  holdig this stone it will also rise and stay at the ceiling until pushed.
+  holding this stone it will also rise and stay at the ceiling until pushed.
 
 Controls
 
 The ant is controlled using the cursor keys and space. Use the space key to pick
 up the domino behind the ant or to place it down where you are currently
-standing. To push press first up to let the ent enter the row of dominos. Then
-press space and either left or right corsor key depending on if you want to push
-the domino to your left or your right.
+standing. To push press first up to let the ant enter the row of dominoes. Then
+press space and either left or right corsor key depending on whether you want to
+push the domino to your left or your right.
 
 Hints
 
-If you don't know where to start in a level, simply if one stone a push and see
+If you don't know where to start in a level, simply push a stone and observe
 what happens. This helps very often to get a general idea how to solve a level
-and where the problem is
+and where the problem is.
 
 If you forgot which domino has what kind of special property press F1 to get a
 short help. This window also displays a short hint, once the time of the level
 is out.
 
-The first few levels introduce you to the dominos here you can explore how the
-different dominos behave in different situations
+The first few levels introduce you to the dominoes. Here you can explore how
+the different dominoes behave in different situations.
 
 
 Files
@@ -83,8 +83,7 @@ Files
 Pushover places a few files on your harddisc in everyday running. Those files
 will be placed in your home directory. This directory is in
 
--  Eigene Dateien\Pushover  on German Windows systems, don't know what it is
-                            called in other languages
+-  My Documents\Pushover    on Windows systems
 -  ~/.pushover              on Unix systems
 
 The following files are saved:
@@ -110,7 +109,7 @@ You are very much invited to improve those graphics. Please contact me if you
 are interested so that I can tell you what the state of affairs is. But I will
 tell here the basics
 
-I have already replaced the dominos with new graphics, but the graphics for the
+I have already replaced the dominoes with new graphics, but the graphics for the
 ant, the background themes still need improvements.
 
 The backgrounds are made out of 20x13 blocks. Each block has a size of 40x48
