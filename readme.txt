@@ -9,8 +9,8 @@ sound as the original game.
 Gameplay
 -----------
 
-The task of the game is to rearrange the dominoes on the different patforms so
-that you can start a chainreation that makes all dominoes topple over. You may
+The task of the game is to rearrange the dominoes on the different platforms so
+that you can start a chainreaction that makes all dominoes topple over. You may
 rearrange all dominoes (except for one kind of domino) and place them wherever
 suitable (except in front of the door).
 
@@ -28,11 +28,11 @@ All in all there are 10 different types of dominoes:
 
 - Standard, completely yellow. There is nothing special with this stone, it
   falls when pushed.
-- Blocker, completely red. This domino can not fallover, so it is the only kind
+- Blocker, completely red. This domino can not fall over, so it is the only kind
   of stone they may still be standing when the level is solved. Dominoes falling
   against this stone will bounce back, if possible.
 - Tumbler, big red stripe. This domino will stand up again after falling and
-  will continue to tubmle until it hits an obstacle of rests on an other stone.
+  will continue to tumble until it hits an obstacle of rests on an other stone.
 - Delay stone, diagonally divided. This domino will take some time until it
   falls, when it is pushed. Dominoes falling against this stone will bounce back
   and later this stone will fall.
@@ -60,7 +60,7 @@ Controls
 The ant is controlled using the cursor keys and space. Use the space key to pick
 up the domino behind the ant or to place it down where you are currently
 standing. To push press first up to let the ant enter the row of dominoes. Then
-press space and either left or right corsor key depending on whether you want to
+press space and either left or right cursor key depending on whether you want to
 push the domino to your left or your right.
 
 Hints
@@ -80,7 +80,7 @@ the different dominoes behave in different situations.
 Files
 --------
 
-Pushover places a few files on your harddisc in everyday running. Those files
+Pushover places a few files on your hard-disc in everyday running. Those files
 will be placed in your home directory. This directory is in
 
 -  My Documents\Pushover    on Windows systems
@@ -89,8 +89,8 @@ will be placed in your home directory. This directory is in
 The following files are saved:
 
 - solved.txt: This file contains checksums of all the levels that you have
-  successfully solved. In the level selection dialog those levels contain a
-  mark. If you loose this file thos marks are gone
+  successfully solved. In the level selection dialogue those levels contain a
+  mark. If you loose this file those marks are gone
 - *.rec: These filed contain recordings of activities within a level. They are
   automatically created whenever you solve a level but you can also actively
   make a recording by pressing 'r' while you play a level. When you observe
@@ -119,10 +119,10 @@ blocks that may be used by the levels. To make is possible to put the blocks
 more freely into the PNG file a LUA file accompanies the image. This LUA files
 contains the block positions of all the used blocks. Right now all the blocks
 are one below another so the LUA files contain ever increasing y positions and
-always the same x positon.
+always the same x position.
 
 It is already implemented to use transparency within the blocks. All the
-existing levels use just one layer and thus need completely opague tiles. But
+existing levels use just one layer and thus need completely opaque tiles. But
 many of those tiles could be separated into a stack of different tiles. This
 then means the level need to be updated to actually use a stack of tiles instead
 of just one. Right now we are limited to 8 layers, but if necessary this can be
@@ -136,7 +136,7 @@ breeze, a bird that sails through the sky from time to time....
 
 The ant is more complicated. The image ant.png contains all possible animation
 images for the ant, one animation below the other. I have an additional GIMP
-image that contains in seperate layers possible surrondings of the ant in
+image that contains in separate layers possible surroundings of the ant in
 different animation frames (like ladders, steps, ground, a carried domino...). I
 will happily provide that image to the interested artist.
 
