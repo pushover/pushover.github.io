@@ -9,9 +9,10 @@ solvedMap_c::solvedMap_c(void) {
   std::ifstream in((getHome()+"solved.txt").c_str());
   std::string line;
 
-  while (in) {
-    if (!(in >> line)) break;
-    addLevel(line);
+  while (in.good()) {
+    getline(in, line);
+    if (line != "")
+      map.insert(line);
   }
 }
 

@@ -9,10 +9,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <unistd.h>
 #endif
 
+#include <sys/stat.h>
 #include <dirent.h>
 
 #include <stdexcept>
@@ -55,7 +55,11 @@ std::string getHome(void) {
   if (!dir)
   {
     // create it
+#ifdef WIN32
+    if (::mkdir(home.c_str()) != 0)
+#else
     if (::mkdir(home.c_str(), S_IRWXU) != 0)
+#endif
       throw std::runtime_error("Can not create home directory\n");
   }
   else
