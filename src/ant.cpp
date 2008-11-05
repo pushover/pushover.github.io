@@ -916,8 +916,8 @@ unsigned int ant_c::SFLeaveDoor(void) {
     return state;
 
   if (animationImage == 0) {
-    blockX = level.getEntryDoorPosX();
-    blockY = level.getEntryDoorPosY()+1;
+    blockX = level.getEntryX();
+    blockY = level.getEntryY()+1;
 
     screenBlock = subBlock + gr.getAntOffset(animation, 0);
   }

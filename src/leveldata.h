@@ -145,8 +145,6 @@ class levelData_c {
     unsigned char getExitX(void) const { return doorExitX; }
     unsigned char getExitY(void) const { return doorExitY; }
 
-    unsigned int getEntryDoorPosX(void) { return doorEntryX; }
-    unsigned int getEntryDoorPosY(void) { return doorEntryY; }
     bool isEntryDoorOpen(void) { return getFg(doorEntryX, doorEntryY) == FgElementDoor3; }
     bool isExitDoorOpen(void) { return getFg(doorExitX, doorExitY) == FgElementDoor3; }
     bool isExitDoorClosed(void) { return getFg(doorExitX, doorExitY) == FgElementDoor0; }
