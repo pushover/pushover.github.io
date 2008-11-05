@@ -382,14 +382,6 @@ void levelData_c::print(void) {
 
 }
 
-bool levelData_c::containsPlank(int x, int y) {
-  if (x < 0 || x >= 20 || y < 0 || y >= 13) return false;
-
-  unsigned int fg = getFg(x, y);
-
-  return (fg == 1 || fg == 2 | fg == 3 || fg == 4 || fg == 6 || fg == 7 || fg == 10 || fg == 15);
-}
-
 bool levelData_c::noGround(int x, int y, bool onLadder) {
 
   if (y >= 12) return true;

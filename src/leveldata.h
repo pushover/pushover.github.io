@@ -152,7 +152,6 @@ class levelData_c {
     bool isExitDoorClosed(void) { return getFg(doorExitX, doorExitY) == FgElementDoor0; }
 
     // query level information of certain places
-    bool containsPlank(int x, int y);
     bool noGround(int x, int y, bool onLadder);  // returns true, if the ant can't stand
     bool isTherePlatform(int x, int y);
 
