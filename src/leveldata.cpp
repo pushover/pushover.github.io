@@ -342,6 +342,15 @@ void levelData_c::save(std::ostream & stream) const {
   }
 }
 
+void levelData_c::removeDomino(int x, int y) {
+  level[y][x].dominoType = DominoTypeEmpty;
+  level[y][x].dominoState = 0;
+  level[y][x].dominoDir = 0;
+  level[y][x].dominoYOffset = 0;
+  level[y][x].dominoExtra = 0;
+}
+
+
 bool levelData_c::operator==(const levelData_c & other) const {
   return
     name == other.name &&

@@ -67,12 +67,7 @@ void levelPlayer_c::performDoors(void) {
 
 int levelPlayer_c::pickUpDomino(int x, int y) {
   int dom = getDominoType(x, y);
-  setDominoType(x, y, DominoTypeEmpty);
-  setDominoState(x, y, 8);
-  setDominoDir(x, y, 0);
-  setDominoYOffset(x, y, 0);
-  setDominoExtra(x, y, 0);
-
+  removeDomino(x, y);
   return dom;
 }
 
@@ -318,9 +313,7 @@ void levelPlayer_c::DTA_8(int x, int y) {
   markDirty(x, y-1);
   markDirty(x+getDominoDir(x, y), y-1);
 
-  setDominoType(x, y, DominoTypeEmpty);
-  setDominoDir(x, y, 0);
-  setDominoState(x, y, 0);
+  removeDomino(x, y);
 }
 
 // this is the nearly falln down left case
@@ -455,8 +448,7 @@ void levelPlayer_c::DTA_4(int x, int y) {
 // exploder making its hole
 void levelPlayer_c::DTA_5(int x, int y) {
 
-  setDominoType(x, y, 0);
-  setDominoState(x, y, 0);
+  removeDomino(x, y);
   setFg(x, y, FgElementEmpty);
 
   if (getFg(x+1, y) == FgElementPlatformMiddle ||
@@ -713,11 +705,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
     }
 
     // remove the old domino
-    setDominoType(x, y, DominoTypeEmpty);
-    setDominoState(x, y, 0);
-    setDominoDir(x, y, 0);
-    setDominoYOffset(x, y, 0);
-    setDominoExtra(x, y, 0);
+    removeDomino(x, y);
 
     markDirty(x, y+1);
     markDirty(x, y);
@@ -766,11 +754,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
   {
     DominoCrash(x, y+1, getDominoType(x, y), getDominoExtra(x, y));
 
-    setDominoType(x, y, DominoTypeEmpty);
-    setDominoState(x, y, 0);
-    setDominoDir(x, y, 0);
-    setDominoYOffset(x, y, 0);
-    setDominoExtra(x, y, 0);
+    removeDomino(x, y);
 
     markDirty(x, y);
     markDirty(x, y+1);
@@ -783,11 +767,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
   pushDomino(x, y+1, -1);
 
   setDominoExtra(x, y+1, getDominoType(x, y));
-  setDominoType(x, y, DominoTypeEmpty);
-  setDominoState(x, y, 0);
-  setDominoDir(x, y, 0);
-  setDominoYOffset(x, y, 0);
-  setDominoExtra(x, y, 0);
+  removeDomino(x, y);
 
   markDirty(x, y);
   markDirty(x, y+1);
@@ -1004,8 +984,7 @@ void levelPlayer_c::DTA_7(int x, int y) {
   }
 
   setFg(x, y, fg);
-  setDominoType(x, y, 0);
-  setDominoDir(x, y, 0);
+  removeDomino(x, y);
   markDirty(x, y-1);
   markDirty(x-1, y-1);
 
@@ -1128,8 +1107,7 @@ void levelPlayer_c::DTA_M(int x, int y) {
   }
 
   setFg(x, y, fg);
-  setDominoType(x, y, 0);
-  setDominoDir(x, y, 0);
+  removeDomino(x, y);
 
   markDirty(x, y-1);
   markDirty(x+1, y-1);
@@ -1181,11 +1159,7 @@ void levelPlayer_c::DTA_A(int x, int y) {
       }
     }
 
-    setDominoType(x, y, DominoTypeEmpty);
-    setDominoState(x, y, 0);
-    setDominoDir(x, y, 0);
-    setDominoYOffset(x, y, 0);
-    setDominoExtra(x, y, 0);
+    removeDomino(x, y);
 
     markDirty(x, y-a);
     markDirty(x-1, y-a);
@@ -1197,11 +1171,7 @@ void levelPlayer_c::DTA_A(int x, int y) {
 
   if (c == 0)
   {
-    setDominoType(x, y, DominoTypeEmpty);
-    setDominoState(x, y, 0);
-    setDominoDir(x, y, 0);
-    setDominoYOffset(x, y, 0);
-    setDominoExtra(x, y, 0);
+    removeDomino(x, y);
 
     setDominoExtra(x, y+1-a, 0x60);
     setDominoType(x, y+1-a, DominoTypeAscender);
@@ -1225,11 +1195,7 @@ void levelPlayer_c::DTA_A(int x, int y) {
     setDominoYOffset(x, y-1, getDominoYOffset(x, y)+16);
     setDominoExtra(x, y-1, 0x50);
 
-    setDominoType(x, y, DominoTypeEmpty);
-    setDominoState(x, y, 0);
-    setDominoDir(x, y, 0);
-    setDominoYOffset(x, y, 0);
-    setDominoExtra(x, y, 0);
+    removeDomino(x, y);
   }
 }
 
@@ -1289,11 +1255,7 @@ void levelPlayer_c::DTA_O(int x, int y) {
       }
     }
 
-    setDominoType(x, y, DominoTypeEmpty);
-    setDominoState(x, y, 0);
-    setDominoDir(x, y, 0);
-    setDominoYOffset(x, y, 0);
-    setDominoExtra(x, y, 0);
+    removeDomino(x, y);
 
     markDirty(x, y-a);
     markDirty(x+1, y-a);
@@ -1305,11 +1267,7 @@ void levelPlayer_c::DTA_O(int x, int y) {
 
   if (c == 0)
   {
-    setDominoType(x, y, DominoTypeEmpty);
-    setDominoState(x, y, 0);
-    setDominoDir(x, y, 0);
-    setDominoYOffset(x, y, 0);
-    setDominoExtra(x, y, 0);
+    removeDomino(x, y);
 
     if (getDominoType(x, y+1-a) == DominoTypeEmpty)
     {
@@ -1340,11 +1298,7 @@ void levelPlayer_c::DTA_O(int x, int y) {
     setDominoYOffset(x, y-1, getDominoYOffset(x, y)+16);
     setDominoExtra(x, y-1, 0x50);
 
-    setDominoType(x, y, DominoTypeEmpty);
-    setDominoState(x, y, 0);
-    setDominoDir(x, y, 0);
-    setDominoYOffset(x, y, 0);
-    setDominoExtra(x, y, 0);
+    removeDomino(x, y);
   }
 }
 
@@ -1418,11 +1372,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
         }
       }
 
-      setDominoType(x, y, 0);
-      setDominoState(x, y, 0);
-      setDominoDir(x, y, 0);
-      setDominoYOffset(x, y, 0);
-      setDominoExtra(x, y, 0);
+      removeDomino(x, y);
 
       markDirty(x, y);
       markDirty(x, y-2);
@@ -1485,9 +1435,7 @@ void levelPlayer_c::DTA_K(int x, int y) {
     if (getDominoType(x+1, y+1) != DominoTypeEmpty)
     {
       DominoCrash(x+1, y+1, getDominoType(x, y), getDominoExtra(x, y));
-      setDominoType(x, y, 0);
-      setDominoState(x, y, 0);
-      setDominoDir(x, y, 0);
+      removeDomino(x, y);
 
       markDirty(x, y-1);
       markDirty(x+1, y-1);
@@ -1504,9 +1452,7 @@ void levelPlayer_c::DTA_K(int x, int y) {
 
       soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
 
-      setDominoType(x, y, 0);
-      setDominoState(x, y, 0);
-      setDominoDir(x, y, 0);
+      removeDomino(x, y);
 
       markDirty(x, y-1);
       markDirty(x+1, y-1);
@@ -1531,10 +1477,7 @@ void levelPlayer_c::DTA_K(int x, int y) {
         setDominoExtra(x+1, y, 0x40);
       }
 
-      setDominoType(x, y, 0);
-      setDominoState(x, y, 0);
-      setDominoDir(x, y, 0);
-      setDominoYOffset(x, y, 0);
+      removeDomino(x, y);
 
       markDirty(x, y-1);
       markDirty(x+1, y-1);
@@ -1559,10 +1502,7 @@ void levelPlayer_c::DTA_K(int x, int y) {
         setDominoExtra(x+1, y+1, 0x40);
       }
 
-      setDominoType(x, y, 0);
-      setDominoState(x, y, 0);
-      setDominoDir(x, y, 0);
-      setDominoYOffset(x, y, 0);
+      removeDomino(x, y);
 
       markDirty(x, y-1);
       markDirty(x+1, y-1);
@@ -1602,9 +1542,7 @@ void levelPlayer_c::DTA_1(int x, int y) {
     if (getDominoType(x-1, y+1) != DominoTypeEmpty)
     {
       DominoCrash(x-1, y+1, getDominoType(x, y), getDominoExtra(x, y));
-      setDominoType(x, y, 0);
-      setDominoState(x, y, 0);
-      setDominoDir(x, y, 0);
+      removeDomino(x, y);
 
       markDirty(x, y-1);
       markDirty(x-1, y-1);
@@ -1623,9 +1561,7 @@ void levelPlayer_c::DTA_1(int x, int y) {
 
       soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
 
-      setDominoType(x, y, 0);
-      setDominoState(x, y, 0);
-      setDominoDir(x, y, 0);
+      removeDomino(x, y);
 
       markDirty(x, y-1);
       markDirty(x-1, y-1);
@@ -1650,10 +1586,7 @@ void levelPlayer_c::DTA_1(int x, int y) {
         setDominoExtra(x-1, y, 0x40);
       }
 
-      setDominoType(x, y, 0);
-      setDominoState(x, y, 0);
-      setDominoDir(x, y, 0);
-      setDominoYOffset(x, y, 0);
+      removeDomino(x, y);
 
       markDirty(x, y-1);
       markDirty(x-1, y-1);
@@ -1678,10 +1611,7 @@ void levelPlayer_c::DTA_1(int x, int y) {
         setDominoExtra(x-1, y+1, 0x40);
       }
 
-      setDominoType(x, y, 0);
-      setDominoState(x, y, 0);
-      setDominoDir(x, y, 0);
-      setDominoYOffset(x, y, 0);
+      removeDomino(x, y);
 
       markDirty(x, y-1);
       markDirty(x-1, y-1);
@@ -1727,9 +1657,7 @@ void levelPlayer_c::DTA_6(int x, int y) {
       soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
     }
 
-    setDominoType(x, y, 0);
-    setDominoState(x, y, 0);
-    setDominoDir(x, y, 0);
+    removeDomino(x, y);
 
     markDirty(x, y);
     markDirty(x-1, y);
@@ -1754,10 +1682,7 @@ void levelPlayer_c::DTA_6(int x, int y) {
       setDominoExtra(x-1, y, 0x40);
     }
 
-    setDominoType(x, y, 0);
-    setDominoState(x, y, 0);
-    setDominoDir(x, y, 0);
-    setDominoYOffset(x, y, 0);
+    removeDomino(x, y);
 
     markDirty(x, y);
     markDirty(x-1, y);
@@ -1782,10 +1707,7 @@ void levelPlayer_c::DTA_6(int x, int y) {
       setDominoExtra(x-1, y+1, 0x40);
     }
 
-    setDominoType(x, y, 0);
-    setDominoState(x, y, 0);
-    setDominoDir(x, y, 0);
-    setDominoYOffset(x, y, 0);
+    removeDomino(x, y);
 
     markDirty(x, y);
     markDirty(x-1, y);
@@ -1807,8 +1729,7 @@ void levelPlayer_c::DTA_6(int x, int y) {
     setDominoYOffset(x-1, y, 0);
   }
 
-  setDominoType(x, y, 0);
-  setDominoDir(x, y, 0);
+  removeDomino(x, y);
 
   markDirty(x, y);
   markDirty(x-1, y);
@@ -1846,9 +1767,7 @@ void levelPlayer_c::DTA_L(int x, int y) {
       soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
     }
 
-    setDominoType(x, y, 0);
-    setDominoState(x, y, 0);
-    setDominoDir(x, y, 0);
+    removeDomino(x, y);
 
     markDirty(x, y);
     markDirty(x+1, y);
@@ -1873,10 +1792,7 @@ void levelPlayer_c::DTA_L(int x, int y) {
       setDominoExtra(x+1, y, 0x40);
     }
 
-    setDominoType(x, y, 0);
-    setDominoState(x, y, 0);
-    setDominoDir(x, y, 0);
-    setDominoYOffset(x, y, 0);
+    removeDomino(x, y);
 
     markDirty(x, y);
     markDirty(x+1, y);
@@ -1901,10 +1817,7 @@ void levelPlayer_c::DTA_L(int x, int y) {
       setDominoExtra(x+1, y+1, 0x40);
     }
 
-    setDominoType(x, y, 0);
-    setDominoState(x, y, 0);
-    setDominoDir(x, y, 0);
-    setDominoYOffset(x, y, 0);
+    removeDomino(x, y);
 
     markDirty(x, y);
     markDirty(x+1, y);
@@ -1925,8 +1838,7 @@ void levelPlayer_c::DTA_L(int x, int y) {
     setDominoDir(x+1, y, getDominoDir(x, y));
   }
 
-  setDominoType(x, y, 0);
-  setDominoDir(x, y, 0);
+  removeDomino(x, y);
 
   markDirty(x, y);
   markDirty(x+1, y);

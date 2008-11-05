@@ -130,7 +130,7 @@ class levelData_c {
     void setDominoExtra(unsigned int x, unsigned int y, int val) { level[y][x].dominoExtra = val; }
     void setDominoYOffset(unsigned int x, unsigned int y, int val) { level[y][x].dominoYOffset = val; }
 
-    void removeDomino(int x, int y) { level[y][x].dominoType = levelData_c::DominoTypeEmpty; }
+    void removeDomino(int x, int y);
     void clearDominoExtra(int x, int y) { level[y][x].dominoExtra = 0; }
 
     unsigned char getEntryDoor(void) const { return getFg(doorEntryX, doorEntryY); }
