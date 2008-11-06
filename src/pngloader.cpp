@@ -48,16 +48,29 @@ pngLoader_c::pngLoader_c(std::string fname) {
   png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth,
       &color_type, &interlace_type, NULL, NULL);
 
-  if (color_type != PNG_COLOR_TYPE_RGB_ALPHA || interlace_type != PNG_INTERLACE_NONE || bit_depth != 8) {
+  if ((color_type != PNG_COLOR_TYPE_RGB_ALPHA && color_type != PNG_COLOR_TYPE_PALETTE) || interlace_type != PNG_INTERLACE_NONE || bit_depth != 8) {
 
-    if (color_type != PNG_COLOR_TYPE_RGB_ALPHA) printf("color type not ok\n");
+    if (color_type != PNG_COLOR_TYPE_RGB_ALPHA && color_type != PNG_COLOR_TYPE_PALETTE) printf("color type not ok\n");
     if (interlace_type != PNG_INTERLACE_NONE) printf("interlace mode not right\n");
     if (bit_depth != 8) printf("bitdepth is %i but must be 8\n", bit_depth);
+
 
     png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)0);
     png_ptr = 0;
     return;
   }
+
+  if (color_type == PNG_COLOR_TYPE_PALETTE)
+  {
+    png_set_palette_to_rgb(png_ptr);
+
+    if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+    {
+      png_set_tRNS_to_alpha(png_ptr);
+    }
+  }
+
+  png_read_update_info(png_ptr, info_ptr);
 }
 
 pngLoader_c::~pngLoader_c(void) {
