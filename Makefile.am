@@ -1,5 +1,7 @@
 bin_PROGRAMS = pushover
 
+dist_doc_DATA=readme.txt
+
 pushover_LDFLAGS = $(LIBINTL) $(LUA_LIBS)
 pushover_CXXFLAGS = -Wall -DPKGDATADIR=\"$(pkgdatadir)\" $(LUA_CFLAGS)
 pushover_SOURCES = \
@@ -128,4 +130,29 @@ check: ${bin_PROGRAMS}
 	for i in recordings/finished/*; do  ./pushover -c $$i; done; \
 	for i in recordings/mustCrash/*; do ./pushover -f $$i; done; \
 	for i in recordings/mustFail/*; do  ./pushover -y $$i; done
+
+abs_builddir = @abs_builddir@
+win32dir = $(PACKAGE)-$(VERSION)-win32
+
+dist-win32: all
+	$(RM) -r $(win32dir)
+	$(INSTALL) -d                        $(win32dir)
+	$(INSTALL) -d                        $(win32dir)/levels
+	for p in $(patsubst levels/%/index.level,%,$(filter levels/%/index.level,$(dist_noinst_DATA))); do \
+	  cat $(srcdir)/levels/$$p/* | gzip -c -9 > "$(win32dir)/levels/$$p.gz"; \
+	  chmod 644 "$(win32dir)/levels/$$p.gz"; \
+	done
+	$(INSTALL) -d                        $(win32dir)/data
+	$(INSTALL) -m644 data/*              $(win32dir)/data
+	$(INSTALL) -d                        $(win32dir)/themes
+	$(INSTALL) -m644 themes/*            $(win32dir)/themes
+	$(INSTALL) -d                        $(win32dir)/data
+	$(INSTALL) -m755 pushover.exe        $(win32dir)/
+	$(INSTALL) -m644 readme.txt          $(win32dir)/
+	$(STRIP) $(win32dir)/*.exe
+	upx --lzma $(win32dir)/*.exe
+	$(RM)   $(win32dir).zip
+	zip -r9 $(win32dir).zip $(win32dir)
+	$(RM) -r $(win32dir)
+
 
