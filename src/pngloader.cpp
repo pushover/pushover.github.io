@@ -48,7 +48,9 @@ pngLoader_c::pngLoader_c(std::string fname) {
   png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth,
       &color_type, &interlace_type, NULL, NULL);
 
-  if ((color_type != PNG_COLOR_TYPE_RGB_ALPHA && color_type != PNG_COLOR_TYPE_PALETTE) || interlace_type != PNG_INTERLACE_NONE || bit_depth != 8) {
+  if (color_type != PNG_COLOR_TYPE_RGB_ALPHA && color_type != PNG_COLOR_TYPE_PALETTE ||
+      interlace_type != PNG_INTERLACE_NONE ||
+      color_type == PNG_COLOR_TYPE_RGB_ALPHA && bit_depth != 8) {
 
     if (color_type != PNG_COLOR_TYPE_RGB_ALPHA && color_type != PNG_COLOR_TYPE_PALETTE) printf("color type not ok\n");
     if (interlace_type != PNG_INTERLACE_NONE) printf("interlace mode not right\n");
