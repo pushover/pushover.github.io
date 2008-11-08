@@ -27,6 +27,9 @@ class recorder_c {
     // remove all events from the current position
     void truncate(void);
 
+    // completely clear record
+    void reset(void);
+
   private:
 
     std::vector<int> record;

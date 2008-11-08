@@ -69,3 +69,9 @@ void recorder_c::save(const std::string & prefix) const {
 void recorder_c::truncate(void) {
   record.resize(playpos);
 }
+
+void recorder_c::reset(void) {
+  playpos = 0;
+  record.resize(playpos);
+}
+

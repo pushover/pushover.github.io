@@ -264,7 +264,6 @@ int main(int argc, char * argv[]) {
     try {
 
       levelsetList.getLevelset(selectedMission).loadLevel(l, levelName);
-      rec.setLevel(selectedMission, levelName);
       a.initForLevel();
 
       nextState = ST_PREPLAY;
@@ -282,7 +281,7 @@ int main(int argc, char * argv[]) {
     {
       textsections_c sections(file, true);
       l.load(sections);
-      rec.setLevel("Original", l.getName());   // TODO we need to find out which levelset this file belongs to
+      selectedMission = "Original";            // TODO we need to find out which levelset this file belongs to
 
       nextState = ST_PREPLAY;
     }
@@ -395,6 +394,9 @@ int main(int argc, char * argv[]) {
                               break;
 
             case ST_PLAY:
+                              rec.setLevel(selectedMission, l.getName());
+                              rec.reset();
+                              break;
             case ST_INIT:
             case ST_REPLAY:
             case ST_FAILDELAY:
@@ -503,7 +505,6 @@ int main(int argc, char * argv[]) {
                   nextState = ST_PREPLAY;
                   ls.loadLevel(l, ls.getLevelNames()[sel]);
                   a.initForLevel();
-                  rec.setLevel(selectedMission, l.getName());
                 }
               }
             }
