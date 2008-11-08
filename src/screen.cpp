@@ -8,9 +8,10 @@
 #include <vector>
 
 screen_c::screen_c(const graphics_c & g) :
-  gr(g), animationState(0), fullscreen(false)
+  gr(g), animationState(0)
 {
   video = SDL_SetVideoMode(gr.resolutionX(), gr.resolutionY(), 24, 0);
+  SDL_WM_SetCaption("Pushover", "Pushover");
 }
 
 screen_c::~screen_c(void) { }
@@ -23,8 +24,7 @@ surface_c::~surface_c(void)
 
 void screen_c::toggleFullscreen(void)
 {
-  fullscreen = !fullscreen;
-  video = SDL_SetVideoMode(gr.resolutionX(), gr.resolutionY(), 24, fullscreen?SDL_FULLSCREEN:0);
+  SDL_WM_ToggleFullScreen(video);
 }
 
 void surface_c::clearDirty(void)

@@ -113,7 +113,6 @@ class screen_c : public surface_c {
 
     const graphics_c & gr;
     int animationState;
-    bool fullscreen;
 
   public:
 
