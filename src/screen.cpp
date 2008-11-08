@@ -207,6 +207,24 @@ static void u3(SDL_Surface * video, int x, int y, int f, int blx, int bly) {
 
 bool screen_c::flipAnimate(void)
 {
+  static int (*f)(int, int, int);
+  static void (*u)(SDL_Surface *, int, int, int, int, int);
+
+  if (animationState == 0) {
+    switch (rand()%3) {
+      case 0: f = f1; break;
+      case 1: f = f2; break;
+      case 2: f = f3; break;
+      default: f = f3; break;
+    }
+    switch (rand()%3) {
+      case 0: u = u1; break;
+      case 1: u = u2; break;
+      case 2: u = u3; break;
+      default: u = u3; break;
+    }
+  }
+
   animationState++;
 
   for (int y = 0; y < 13; y++)
@@ -215,12 +233,12 @@ bool screen_c::flipAnimate(void)
     {
       if (isDirty(x, y))
       {
-        int valNew = f3(x, y, animationState);
-        int valOld = f3(x, y, animationState-1);
+        int valNew = f(x, y, animationState);
+        int valOld = f(x, y, animationState-1);
 
         if (valNew != valOld)
         {
-          u3(video, x, y, valNew, gr.blockX(), gr.blockY());
+          u(video, x, y, valNew, gr.blockX(), gr.blockY());
         }
       }
     }
