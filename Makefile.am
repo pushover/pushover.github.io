@@ -127,9 +127,9 @@ install-data-local:
 	done
 
 check: ${bin_PROGRAMS}
-	for i in recordings/finished/*; do  ./pushover -c $$i; done; \
-	for i in recordings/mustCrash/*; do ./pushover -f $$i; done; \
-	for i in recordings/mustFail/*; do  ./pushover -y $$i; done
+	find recordings/finished/  -name "*.rec" | xargs -L 50 ./pushover -c; \
+	find recordings/mustFail/  -name "*.rec" | xargs -L 50 ./pushover -y; \
+	find recordings/mustCrash/ -name "*.rec" | xargs -L 50 ./pushover -f;
 
 abs_builddir = @abs_builddir@
 win32dir = $(PACKAGE)-$(VERSION)-win32

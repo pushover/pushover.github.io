@@ -21,11 +21,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-int check1(std::string file) {
+void check(int argn, char * argv[], void checker(const ant_c & a, const levelData_c & l)) {
   recorder_c rec;
-  rec.load(file);
-  std::string levelsetName = rec.getLevelsetName();
-  std::string levelName = rec.getLevelName();
 
   levelsetList_c levelsetList;
   levelsetList.load("levels");
@@ -33,55 +30,61 @@ int check1(std::string file) {
   graphicsN_c gr("");
   surface_c surf;
   levelPlayer_c l(surf, gr);
-  levelsetList.getLevelset(levelsetName).loadLevel(l, rec.getLevelName());
-  ant_c a(l, gr, surf);
 
-  while (!rec.endOfRecord()) {
-    a.setKeyStates(rec.getEvent());
-    l.performDoors();
-    l.performDominos(a);
-  }
-
-  // add a few more iterations at the end to make sure the ant has left the level
-  a.setKeyStates(0);
-  for (unsigned int i = 0; i < 100; i++)
+  for (int i = 0; i < argn; i++)
   {
-    l.performDoors();
-    l.performDominos(a);
-  }
+    rec.load(argv[i]);
 
-  // we succeeded, when the ant has vanished, then it went out of the door
-  return a.isVisible() == false;
+    levelsetList.getLevelset(rec.getLevelsetName()).loadLevel(l, rec.getLevelName());
+    ant_c a(l, gr, surf);
+
+    while (!rec.endOfRecord()) {
+      a.setKeyStates(rec.getEvent());
+      l.performDoors();
+      l.performDominos(a);
+    }
+
+    // add a few more iterations at the end to make sure the ant has left the level
+    a.setKeyStates(0);
+    for (unsigned int j = 0; j < 100; j++)
+    {
+      l.performDoors();
+      l.performDominos(a);
+    }
+
+    std::cout << argv[i];
+    checker(a, l);
+
+  }
 }
 
-int check2(std::string file) {
-  recorder_c rec;
-  rec.load(file);
-  std::string levelsetName = rec.getLevelsetName();
-  std::string levelName = rec.getLevelName();
+void checker1(const ant_c & a, const levelData_c & l) {
+    // we succeeded, when the ant has vanished, then it went out of the door
+    if (a.isVisible() == false)
+      std::cout << " Level Finished\n";
+    else
+      std::cout << " Level not Finished\n";
+}
 
-  levelsetList_c levelsetList;
-  levelsetList.load("levels");
+void checker2(const ant_c & a, const levelData_c & l) {
+    // we succeeded, when the ant has vanished, then it went out of the door
+    if (a.isVisible() == true)
+      std::cout << " Level Failes\n";
+    else
+      std::cout << " Level not Failed\n";
+}
 
-  graphicsN_c gr("");
-  surface_c surf;
-  levelPlayer_c l(surf, gr);
-  levelsetList.getLevelset(levelsetName).loadLevel(l, rec.getLevelName());
-  ant_c a(l, gr, surf);
-
-  while (!rec.endOfRecord()) {
-    a.setKeyStates(rec.getEvent());
-    l.performDoors();
-    l.performDominos(a);
-  }
-
+void checker3(const ant_c & a, const levelData_c & l) {
   // we succeeded, when the ant has vanished, then it went out of the door
   for (int y = 0; y < 13; y++)
     for (int x = 0; x < 20; x++)
       if (l.getDominoType(x, y) >= levelData_c::DominoTypeCrash0 &&
-          l.getDominoType(x, y) <= levelData_c::DominoTypeCrash5)
-        return true;
-  return false;
+          l.getDominoType(x, y) <= levelData_c::DominoTypeCrash5) {
+        std::cout << " Crashes happened\n";
+        return;
+      }
+
+  std::cout << " Crashes not happened\n";
 }
 
 static std::string getDataDir(void)
@@ -166,45 +169,22 @@ int main(int argc, char * argv[]) {
 
   // filter out the no graphic cases, they are special and will be treated
   // separately
-  if (argc == 3 && strcmp(argv[1], "-c") == 0)   // the must complete tests
+  if (argc >= 3 && strcmp(argv[1], "-c") == 0)   // the must complete tests
   {
-    if (check1(argv[2]))
-    {
-      std::cout << argv[2] << " Level Finished\n";
-      return 0;
-    }
-    else
-    {
-      std::cout << argv[2] << " Level not Finished\n";
-      return 1;
-    }
-  }
-  if (argc == 3 && strcmp(argv[1], "-y") == 0)   // the must complete tests
-  {
-    if (check1(argv[2]))
-    {
-      std::cout << argv[2] << " Level not Failed\n";
-      return 1;
-    }
-    else
-    {
-      std::cout << argv[2] << " Level Failed\n";
-      return 1;
-    }
+    check(argc-2, argv+2, checker1);
+    return 0;
   }
 
-  if (argc == 3 && strcmp(argv[1], "-f") == 0)   // the must crash tests
+  if (argc >= 3 && strcmp(argv[1], "-y") == 0)   // the must complete tests
   {
-    if (check2(argv[2]))
-    {
-      std::cout << argv[2] << " Crashes happened\n";
-      return 0;
-    }
-    else
-    {
-      std::cout << argv[2] << " Crashes did not happen\n";
-      return 1;
-    }
+    check(argc-2, argv+2, checker2);
+    return 0;
+  }
+
+  if (argc >= 3 && strcmp(argv[1], "-f") == 0)   // the must crash tests
+  {
+    check(argc-2, argv+2, checker3);
+    return 0;
   }
 
   // now off to all modes that use graphics

@@ -66,7 +66,7 @@ class ant_c {
     void success(void);
     void fail(void);
 
-    bool isVisible(void) { return blockX >= 0 && blockX < 20 && blockY >= 0 && blockY < 13; }
+    bool isVisible(void) const { return blockX >= 0 && blockX < 20 && blockY >= 0 && blockY < 13; }
 
   private:
 
