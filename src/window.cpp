@@ -409,7 +409,7 @@ listWindow_c * getSolvedWindow(surface_c & surf, graphics_c & gr) {
 
     if (!entries.size())
     {
-        entries.push_back("Continue with next level");
+        entries.push_back("Continue");
         entries.push_back("Return to Main menu");
     }
 

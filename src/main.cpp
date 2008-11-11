@@ -579,47 +579,7 @@ int main(int argc, char * argv[]) {
               {
                 switch(dynamic_cast<listWindow_c*>(window)->getSelection())
                 {
-                  case 0:                            // play next level
-                    {
-                      // find the current level
-                      levelset_c ls = levelsetList.getLevelset(selectedMission);
-
-                      std::vector<std::string> levels = ls.getLevelNames();
-
-                      // could not find the level ??? or no next level
-                      // TODO find next _unsolvd_ level in mission
-
-                      bool foundLevel = false;
-                      bool foundNext = false;
-
-                      for (unsigned int i = 0; i < levels.size(); i++)
-                      {
-                        if (levels[i] == l.getName())
-                        {  // ok we found our level, continue forwar until we get the first
-                          // unsolved level behint it
-                          foundLevel = true;
-                          i++;
-                          while (i < levels.size())
-                          {
-                            if (!solved.solved(ls.getChecksum(levels[i])))
-                            {  // fine we found one
-                              foundNext = true;
-                              ls.loadLevel(l, levels[i]);
-                              a.initForLevel();
-                              break;
-                            }
-                            i++;
-                          }
-
-                          break;
-                        }
-                      }
-
-                      if (!foundLevel) nextState = ST_MAIN;
-                      else if (!foundNext) nextState = ST_MAIN; // TODO present solved all window
-                      else nextState = ST_PREPLAY;
-                    }
-                    break;
+                  case 0: nextState = ST_LEVEL; break; // select next level to play
                   case 1: nextState = ST_MAIN; break;  // back to main
                 }
               }
