@@ -103,6 +103,8 @@ levelset_c::levelset_c(const std::string & path) {
 
         /* Levels section */
         levelNames = sections.getSingleSection("Levels");
+        if (levelNames.empty())
+          throw format_error("missing levels");
 
         index_loaded = true;
 
