@@ -8,6 +8,8 @@
 
 #include <SDL.h>
 
+#include <stdexcept>
+
 
 
 window_c::window_c(unsigned char x_, unsigned char y_, unsigned char w_, unsigned char h_, surface_c & s, graphics_c & g) : x(x_), y(y_), w(w_), h(h_), surf(s), gr(g) {
@@ -379,6 +381,11 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
 
         entries.push_back(e);
     }
+
+    if (entries.size() == 0) throw std::runtime_error("No Level in Levelset");
+
+    // when all levels have been solved, return to the first
+    if (index == -1) index = 0;
 
     return new listWindow_c(4, 0, 12, 12, surf, gr, "Select Level", entries, true, index);
 }
