@@ -12,7 +12,7 @@ Gameplay
 The task of the game is to rearrange the dominoes on the different platforms so
 that you can start a chainreaction that makes all dominoes topple over. You may
 rearrange all dominoes (except for one kind of domino) and place them wherever
-suitable (except in front of the door).
+suitable (except in front of a door).
 
 
 You win the level, when:
