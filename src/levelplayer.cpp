@@ -290,6 +290,8 @@ void levelPlayer_c::DTA_B(int x, int y) {
 
   markDirty(x+1, y);
   markDirty(x+1, y-1);
+  markDirty(x, y-1);
+  markDirty(x, y-2);
 }
 
 // splitter opening simply call the normal domino falling
@@ -1369,6 +1371,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
         else
         {
           DominoCrash(x, y-1, getDominoType(x, y), getDominoExtra(x, y));
+          markDirty(x, y-3);
         }
       }
 
