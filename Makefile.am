@@ -116,8 +116,19 @@ dist_noinst_DATA = \
   levels/original/101.level \
   levels/original/091_snes.level \
   levels/av/index.level \
+  levels/av/easy_distance.level \
+  levels/av/hard_distance.level \
+  levels/av/index.level \
+  levels/av/missing_stopper_2.level \
+  levels/av/missing_stopper.level \
   levels/av/run.level \
-  levels/av/too_easy.level
+  levels/av/run_n_bridge.level \
+  levels/av/still_too_easy.level \
+  levels/av/too_easy.level \
+  levels/av/wrong_direction.level
+
+
+
 
 install-data-local:
 	$(mkdir_p) "$(DESTDIR)$(pkgdatadir)/levels"
