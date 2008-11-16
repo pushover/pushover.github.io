@@ -58,7 +58,7 @@ std::string getHome(void) {
 #else
     if (::mkdir(home.c_str(), S_IRWXU) != 0)
 #endif
-      throw std::runtime_error("Can not create home directory\n");
+      throw std::runtime_error("Can't create home directory: " + home);
   }
 
   return home;
@@ -67,11 +67,11 @@ std::string getHome(void) {
 std::vector<std::string> directoryEntries(const std::string & path) {
   DIR * dir = ::opendir(path.c_str());
   if (dir == NULL)
-    throw std::runtime_error("unable to open directory: " + path);
+    throw std::runtime_error("Can't open directory: " + path);
   std::vector<std::string> entries;
   for (struct dirent * i = ::readdir(dir); i != NULL; i = ::readdir(dir))
     entries.push_back(i->d_name);
   if (::closedir(dir) != 0)
-    throw std::runtime_error("unable to close directory: " + path);
+    throw std::runtime_error("Can't close directory: " + path);
   return entries;
 }

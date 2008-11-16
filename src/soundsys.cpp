@@ -54,7 +54,7 @@ void soundSystem_c::addsound(const std::string & fname, int vol)
   }
   else
   {
-    std::cout << "can not load sound from file " << fname << std::endl;
+    std::cout << "Can't load sound from file: " << fname << std::endl;
   }
 }
 

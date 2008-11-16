@@ -272,7 +272,7 @@ void initText(std::string dir) {
   std::string fname = dir+"/data/FreeSans.ttf";
 
   if (TTF_Init() == -1) {
-    std::cout << "Can not initialize font engine\n";
+    std::cout << "Can't initialize font engine" << std::endl;
     exit(1);
   }
 
@@ -280,7 +280,7 @@ void initText(std::string dir) {
 
   ft = TTF_OpenFont(fname.c_str(), 20);
   if (!ft) {
-    std::cout << "Can not open Font file: " << fname << std::endl;
+    std::cout << "Can't open Font file: " << fname << std::endl;
     exit(1);
   }
 
@@ -288,7 +288,7 @@ void initText(std::string dir) {
 
   ft = TTF_OpenFont(fname.c_str(), 30);
   if (!ft) {
-    std::cout << "Can not open Font file " << fname << std::endl;
+    std::cout << "Can't open Font file: " << fname << std::endl;
     exit(1);
   }
 
@@ -296,7 +296,7 @@ void initText(std::string dir) {
 
   ft = TTF_OpenFont(fname.c_str(), 35);
   if (!ft) {
-    std::cout << "Can not open Font file " << fname << std::endl;
+    std::cout << "Can't open Font file: " << fname << std::endl;
     exit(1);
   }
 

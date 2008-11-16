@@ -334,12 +334,12 @@ void levelPlayer_c::DTA_2(int x, int y) {
     return;
   }
 
-  // if there is a domino left of us, we can not fall down further
+  // if there is a domino left of us, we can't fall down further
   if (getDominoType(x-1, y) != 0)
     return;
 
   // if here is a domino 2 to the left of us and that domino has falln down
-  // far enough to the right, we can not fall farther
+  // far enough to the right, we can't fall farther
   if (x >= 2 && getDominoType(x-2, y) != 0 && getDominoState(x-2, y) > 13)
     return;
 
@@ -2212,7 +2212,7 @@ bool levelPlayer_c::levelCompleted(int & fail) {
                   || (getDominoDir(x+1, y) != -1 && getDominoType(x+1, y) != DominoTypeSplitter))
              )
           {
-            // here we lean against a of a blocker and can not go back
+            // here we lean against a of a blocker and can't go back
             fail = 6;
             return false;
           }

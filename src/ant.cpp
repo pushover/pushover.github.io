@@ -1219,10 +1219,10 @@ bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
   if (x < 0 && ofs == -1) return false;
   if (x > 19 && ofs == 1) return false;
 
-  // if the target position is not empty, we can not put the domino there
+  // if the target position is not empty, we can't put the domino there
   if (level.getDominoType(x, y) != levelData_c::DominoTypeEmpty) return false;
 
-  // we can not place dominos at the edge, if we are too close to them
+  // we can't place dominos at the edge, if we are too close to them
   // because we need to step back to do that
   if (level.getFg(x, y) == levelData_c::FgElementPlatformStep1)
   {

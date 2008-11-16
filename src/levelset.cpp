@@ -29,7 +29,7 @@ static std::string readCompressedFile(const std::string & path) {
 
 levelset_c::levelset_c(const std::string & path) {
 
-  /* load all files */
+  /* Load all files */
   struct stat st;
   if (stat(path.c_str(), &st) != 0)
     throw format_error("file or directory does not exist: " + path);
@@ -51,7 +51,7 @@ levelset_c::levelset_c(const std::string & path) {
       throw format_error("unexpected string stream error while loading file: " + path);
   }
 
-  /* parse all loaded files */
+  /* Parse all loaded files */
   levelData_c test_level;
   bool index_loaded = false;
   for (std::vector<textsections_c>::const_iterator i = fileSections.begin(); i != fileSections.end(); i++) {

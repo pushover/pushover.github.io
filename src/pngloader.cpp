@@ -8,7 +8,7 @@ pngLoader_c::pngLoader_c(std::string fname) {
   f = fopen(fname.c_str(), "rb");
 
   if (!f) {
-    std::cout << "File " << fname << " not found\n";
+    std::cout << "File not found: " << fname << std::endl;
     return;
   }
 
@@ -18,7 +18,7 @@ pngLoader_c::pngLoader_c(std::string fname) {
   // TODO enter error handler in here
   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
   if (!png_ptr) {
-    std::cout << "Can not create PNG reading structure, out of memory\n";
+    std::cout << "Can't create PNG reading structure, out of memory" << std::endl;
     return;
   }
 
@@ -26,7 +26,7 @@ pngLoader_c::pngLoader_c(std::string fname) {
 
   if (info_ptr == 0)
   {
-    std::cout << "Can not create PNG info structure, out of memory\n";
+    std::cout << "Can't create PNG info structure, out of memory" << std::endl;
     png_destroy_read_struct(&png_ptr, (png_infopp)0, (png_infopp)0);
     png_ptr = 0;
     return;

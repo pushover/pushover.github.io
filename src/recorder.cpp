@@ -5,16 +5,18 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <stdexcept>
 
 void recorder_c::load(const std::string & filename) {
   std::ifstream stream(filename.c_str());
 
-  if (!stream) throw std::exception();
+  if (!stream)
+    throw std::runtime_error("Can't open record file: " + filename);
 
   if (!getline(stream, levelsetName))
-    throw std::exception();
+    throw std::runtime_error("Error in record file: " + filename);
   if (!getline(stream, levelName))
-    throw std::exception();
+    throw std::runtime_error("Error in record file: " + filename);
 
   playpos = 0;
 
