@@ -48,7 +48,9 @@ AC_CHECK_LIB(png, png_malloc, ,
 
 PKG_CHECK_EXISTS([lua5.1],
 	[PKG_CHECK_MODULES([LUA], [lua5.1 >= 5.1])],
-	[PKG_CHECK_MODULES([LUA], [lua >= 5.1])])
+	[PKG_CHECK_EXISTS([lua-5.1],
+		[PKG_CHECK_MODULES([LUA], [lua-5.1 >= 5.1])],
+		[PKG_CHECK_MODULES([LUA], [lua >= 5.1])])])
 
 # Checks for header files.
 AC_HEADER_DIRENT
