@@ -2,6 +2,7 @@
 #include "leveldata.h"
 #include "textsections.h"
 #include "screen.h"
+#include "tools.h"
 
 #include <fstream>
 #include <sstream>
@@ -9,21 +10,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <dirent.h>
 #include <zlib.h>
-
-static std::vector<std::string> directoryEntries(const std::string & path) {
-
-  DIR * dir = ::opendir(path.c_str());
-  if (dir == NULL)
-    throw format_error("unable to open directory: " + path);
-  std::vector<std::string> entries;
-  for (struct dirent * i = ::readdir(dir); i != NULL; i = ::readdir(dir))
-    entries.push_back(i->d_name);
-  if (::closedir(dir) != 0)
-    throw format_error("unable to close directory: " + path);
-  return entries;
-}
 
 static std::string readCompressedFile(const std::string & path) {
 

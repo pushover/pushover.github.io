@@ -72,3 +72,14 @@ std::string getHome(void) {
 }
 
 
+std::vector<std::string> directoryEntries(const std::string & path) {
+  DIR * dir = ::opendir(path.c_str());
+  if (dir == NULL)
+    throw std::runtime_error("unable to open directory: " + path);
+  std::vector<std::string> entries;
+  for (struct dirent * i = ::readdir(dir); i != NULL; i = ::readdir(dir))
+    entries.push_back(i->d_name);
+  if (::closedir(dir) != 0)
+    throw std::runtime_error("unable to close directory: " + path);
+  return entries;
+}
