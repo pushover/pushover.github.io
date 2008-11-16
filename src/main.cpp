@@ -445,7 +445,12 @@ int main(int argc, char * argv[]) {
                     screen.markAllDirty();
                     nextState = ST_CONFIGTOG;
                     break;
-                  case 1: break;  // toggle sound effects
+
+                  case 1:  // toggle sound effects
+                    soundSystem_c::instance()->toggleOnOff();
+                    nextState = ST_CONFIGTOG;
+                    break;
+
                   default: nextState = ST_MAIN; break;  // back to main menu
                 }
               }

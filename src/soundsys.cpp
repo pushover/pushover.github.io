@@ -25,6 +25,7 @@
 soundSystem_c::soundSystem_c(void)
 {
   useSound = false;
+  quiet = false;
 }
 
 soundSystem_c::~soundSystem_c(void)
@@ -60,6 +61,7 @@ void soundSystem_c::addsound(const std::string & fname, int vol)
 void soundSystem_c::startSound(unsigned int snd)
 {
   if (!useSound) return;
+  if (quiet) return;
 
   if (snd >= 0 && snd < sounds.size())
   {

@@ -46,6 +46,9 @@ class soundSystem_c {
      */
     static soundSystem_c * instance(void);
 
+    /* toggle quiet sound effects */
+    void toggleOnOff(void) { quiet = !quiet; }
+
   private:
 
     struct soundDat {
@@ -63,6 +66,8 @@ class soundSystem_c {
      * can init it
      */
     bool useSound;
+
+    bool quiet;  // used to toggle sound effects indepentently of sound
 
     std::vector<struct soundDat> sounds;
 
