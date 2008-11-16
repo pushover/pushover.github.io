@@ -14,6 +14,7 @@
 
 #include <vector>
 #include <fstream>
+#include <stdexcept>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,48 +22,66 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-void check(int argn, char * argv[], std::string checker(const ant_c & a, const levelData_c & l)) {
+static void check_record(const std::string & rec_path, levelsetList_c & levelsetList,
+                         unsigned int & count, unsigned int & failed,
+                         std::string checker(const ant_c & a, const levelData_c & l)) {
   recorder_c rec;
-
-  levelsetList_c levelsetList;
-  levelsetList.load("levels");
+  rec.load(rec_path);
 
   graphicsN_c gr("");
   surface_c surf;
   levelPlayer_c l(surf, gr);
+  levelsetList.getLevelset(rec.getLevelsetName()).loadLevel(l, rec.getLevelName());
+  ant_c a(l, gr, surf);
+
+  while (!rec.endOfRecord()) {
+    a.setKeyStates(rec.getEvent());
+    l.performDoors();
+    l.performDominos(a);
+  }
+
+  // add a few more iterations at the end to make sure the ant has left the level
+  a.setKeyStates(0);
+  for (unsigned int j = 0; j < 100; j++)
+  {
+    l.performDoors();
+    l.performDominos(a);
+  }
+
+  const std::string error = checker(a, l);
+  if (!error.empty()) {
+    std::cout << rec_path << " " << error << std::endl;
+    failed++;
+  }
+  count++;
+}
+
+void check(int argn, char * argv[], std::string checker(const ant_c & a, const levelData_c & l)) {
+  levelsetList_c levelsetList;
+  levelsetList.load("levels");
 
   unsigned int count = 0;
   unsigned int failed = 0;
 
   for (int i = 0; i < argn; i++)
   {
-    rec.load(argv[i]);
-
-    levelsetList.getLevelset(rec.getLevelsetName()).loadLevel(l, rec.getLevelName());
-    ant_c a(l, gr, surf);
-
-    while (!rec.endOfRecord()) {
-      a.setKeyStates(rec.getEvent());
-      l.performDoors();
-      l.performDominos(a);
-    }
-
-    // add a few more iterations at the end to make sure the ant has left the level
-    a.setKeyStates(0);
-    for (unsigned int j = 0; j < 100; j++)
+    const std::string path(argv[i]);
+    struct stat st;
+    if (stat(path.c_str(), &st) != 0)
+      throw std::runtime_error("file or directory does not exist: " + path);
+    if (S_ISDIR(st.st_mode))
     {
-      l.performDoors();
-      l.performDominos(a);
+      const std::vector<std::string> entries = directoryEntries(path);
+      for (std::vector<std::string>::const_iterator j = entries.begin(); j != entries.end(); j++) {
+        const std::string & filename = *j;
+        if (filename.size() > 0 && filename[0] != '.')
+          check_record(path + '/' + filename, levelsetList, count, failed, checker);
+      }
     }
-
-    std::string error = checker(a, l);
-
-    if (!error.empty()) {
-      std::cout << argv[i] << " " << error << std::endl;
-      failed++;
+    else
+    {
+      check_record(path, levelsetList, count, failed, checker);
     }
-
-    count++;
   }
 
   std::cout << failed << " out of " << count << " tests failed\n";
