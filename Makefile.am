@@ -138,7 +138,7 @@ install-data-local:
 	done
 
 check: ${bin_PROGRAMS}
-	./pushover -c recordings/finished
+	./pushover -c recordings/finished/*
 	./pushover -y recordings/mustFail
 	./pushover -f recordings/mustCrash
 
