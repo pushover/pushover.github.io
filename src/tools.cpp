@@ -21,7 +21,7 @@ std::string getHome(void) {
 
 #ifdef WIN32
 
-  static char userHome[MAX_PATH];
+  static char userHome[MAX_PATH+1];
 
   HKEY key;
   DWORD size = MAX_PATH;
@@ -38,8 +38,7 @@ std::string getHome(void) {
     RegCloseKey(key);
 
   size = strlen(userHome);
-  userHome[size] = '\\';
-  userHome[size+1] = '\0';
+  userHome[size] = '\0';
 
   std::string home = std::string(userHome) + "\\pushover\\";
 
