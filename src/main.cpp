@@ -21,7 +21,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-void check(int argn, char * argv[], void checker(const ant_c & a, const levelData_c & l)) {
+void check(int argn, char * argv[], std::string checker(const ant_c & a, const levelData_c & l)) {
   recorder_c rec;
 
   levelsetList_c levelsetList;
@@ -30,6 +30,9 @@ void check(int argn, char * argv[], void checker(const ant_c & a, const levelDat
   graphicsN_c gr("");
   surface_c surf;
   levelPlayer_c l(surf, gr);
+
+  unsigned int count = 0;
+  unsigned int failed = 0;
 
   for (int i = 0; i < argn; i++)
   {
@@ -52,39 +55,45 @@ void check(int argn, char * argv[], void checker(const ant_c & a, const levelDat
       l.performDominos(a);
     }
 
-    std::cout << argv[i];
-    checker(a, l);
+    std::string error = checker(a, l);
 
+    if (!error.empty()) {
+      std::cout << argv[i] << " " << error << std::endl;
+      failed++;
+    }
+
+    count++;
   }
+
+  std::cout << failed << " out of " << count << " tests failed\n";
 }
 
-void checker1(const ant_c & a, const levelData_c & l) {
+std::string checker1(const ant_c & a, const levelData_c & l) {
     // we succeeded, when the ant has vanished, then it went out of the door
     if (a.isVisible() == false)
-      std::cout << " Level Finished\n";
+      return "";
     else
-      std::cout << " Level not Finished\n";
+      return "Level not Finished";
 }
 
-void checker2(const ant_c & a, const levelData_c & l) {
+std::string checker2(const ant_c & a, const levelData_c & l) {
     // we succeeded, when the ant has vanished, then it went out of the door
     if (a.isVisible() == true)
-      std::cout << " Level Failes\n";
+      return "";
     else
-      std::cout << " Level not Failed\n";
+      return "Level not Failed";
 }
 
-void checker3(const ant_c & a, const levelData_c & l) {
+std::string checker3(const ant_c & a, const levelData_c & l) {
   // we succeeded, when the ant has vanished, then it went out of the door
   for (int y = 0; y < 13; y++)
     for (int x = 0; x < 20; x++)
       if (l.getDominoType(x, y) >= levelData_c::DominoTypeCrash0 &&
           l.getDominoType(x, y) <= levelData_c::DominoTypeCrash5) {
-        std::cout << " Crashes happened\n";
-        return;
+        return "";
       }
 
-  std::cout << " Crashes not happened\n";
+  return "Crashes didn't happen";
 }
 
 static std::string getDataDir(void)
