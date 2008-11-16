@@ -43,16 +43,14 @@ std::string getHome(void) {
 
   std::string home = std::string(userHome) + "\\pushover\\";
 
-
 #else
 
   std::string home = std::string(getenv("HOME"))+"/.pushover/";
 
 #endif
 
-  DIR * dir = ::opendir(home.c_str());
-
-  if (!dir)
+  struct stat st;
+  if (stat(home.c_str(), &st) != 0)
   {
     // create it
 #ifdef WIN32
@@ -62,15 +60,9 @@ std::string getHome(void) {
 #endif
       throw std::runtime_error("Can not create home directory\n");
   }
-  else
-  {
-    if (::closedir(dir) != 0)
-      throw std::runtime_error("Can not close dir in find home\n");
-  }
 
   return home;
 }
-
 
 std::vector<std::string> directoryEntries(const std::string & path) {
   DIR * dir = ::opendir(path.c_str());
