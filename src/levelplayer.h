@@ -48,6 +48,9 @@ class levelPlayer_c : public levelDisplay_c {
 
     bool triggerFalln;
 
+    // a counter used to see, if nothing happens within the level
+    int inactive;
+
   public:
 
     levelPlayer_c(surface_c & screen, graphics_c & gr) : levelDisplay_c(screen, gr) {}

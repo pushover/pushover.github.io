@@ -2053,12 +2053,20 @@ int levelPlayer_c::performDominos(ant_c & a) {
 
   a.performAnimation();
 
+  inactive++;
+
   for (int y = 0; y < 13; y++)
     for (int x = 0; x < 20; x++)
       if (getDominoType(x, y) != DominoTypeEmpty &&
           getDominoState(x, y) != 0) {
 
+        int oldState = getDominoState(x, y);
+        int oldExtra = getDominoExtra(x, y);
+
         callStateFunction(getDominoType(x, y), getDominoState(x, y), x, y);
+
+        if (oldState != getDominoState(x, y) || oldExtra != getDominoExtra(x, y))
+          inactive = 0;
 
         if (getDominoType(x, y) == DominoTypeAscender)
         {
@@ -2091,6 +2099,23 @@ int levelPlayer_c::performDominos(ant_c & a) {
       else
         return 5;
     }
+  }
+
+  // if level is inactive for a longer time and no ppushed are left
+  if (a.getPushsLeft() == 0 && inactive > 36) {
+    // search for a trigger
+
+    for (int y = 0; y < 13; y++)
+      for (int x = 0; x < 20; x++)
+        if (getDominoType(x, y) == DominoTypeTrigger) {
+
+          // if the trigger is not lying completely flat
+          if (getDominoState(x, y) != 8)
+            return 7;
+
+          x = 20;
+          y = 13;
+        }
   }
 
   return 0;

@@ -124,6 +124,8 @@ static unsigned int getKeyMask(void) {
 // 3 crashes
 // 4 not all dominos fell
 // 5 die
+// 6 trigger not last to fall
+// 7 trigger not flat on the ground
 //
 int playTick(levelPlayer_c & l, ant_c & a)
 {
@@ -357,6 +359,7 @@ int main(int argc, char * argv[]) {
                                   case 4: reason = "Not all dominoes fell"; break;
                                   case 5: reason = "You died"; break;
                                   case 6: reason = "Trigger was not last to fall"; break;
+                                  case 7: reason = "Trigger not flat on the ground"; break;
                                 }
                                 window = getFailedWindow(reason, screen, gr);
                               }

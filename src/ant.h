@@ -68,6 +68,8 @@ class ant_c {
 
     bool isVisible(void) const { return blockX >= 0 && blockX < 20 && blockY >= 0 && blockY < 13; }
 
+    int getPushsLeft(void) const { return numPushsLeft; }
+
   private:
 
     unsigned int callStateFunction(unsigned int state);
