@@ -2062,10 +2062,11 @@ int levelPlayer_c::performDominos(ant_c & a) {
 
         int oldState = getDominoState(x, y);
         int oldExtra = getDominoExtra(x, y);
+        int oldYpos = getDominoYOffset(x, y);
 
         callStateFunction(getDominoType(x, y), getDominoState(x, y), x, y);
 
-        if (oldState != getDominoState(x, y) || oldExtra != getDominoExtra(x, y))
+        if (oldState != getDominoState(x, y) || oldExtra != getDominoExtra(x, y) || oldYpos != getDominoYOffset(x, y))
           inactive = 0;
 
         if (getDominoType(x, y) == DominoTypeAscender)
@@ -2110,7 +2111,7 @@ int levelPlayer_c::performDominos(ant_c & a) {
         if (getDominoType(x, y) == DominoTypeTrigger) {
 
           // if the trigger is not lying completely flat
-          if (getDominoState(x, y) != 8)
+          if (getDominoState(x, y) != 8 && getDominoState(x, y) != 1 && getDominoState(x, y) != 15)
             return 7;
 
           x = 20;
