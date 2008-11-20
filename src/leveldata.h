@@ -114,6 +114,7 @@ class levelData_c {
     };
 
     unsigned char getNumBgLayer(void) const { return numBg; }
+    void setNumBgLayer(unsigned char n) { numBg = n; }
 
     unsigned short getBg(unsigned int x, unsigned int y, int layer) const { return level[y][x].bg[layer]; }
     unsigned char getFg(unsigned int x, unsigned int y) const { return level[y][x].fg; }
@@ -123,6 +124,7 @@ class levelData_c {
     unsigned char getDominoExtra(unsigned int x, unsigned int y) const { return level[y][x].dominoExtra; }
     signed char getDominoYOffset(unsigned int x, unsigned int y) const { return level[y][x].dominoYOffset; }
 
+    void setBg(unsigned int x, unsigned int y, int layer, int val) { level[y][x].bg[layer] = val; }
     void setFg(unsigned int x, unsigned int y, int val) { level[y][x].fg = val; }
     void setDominoType(unsigned int x, unsigned int y, int val) { level[y][x].dominoType = val; }
     void setDominoState(unsigned int x, unsigned int y, int val) { level[y][x].dominoState = val; }
