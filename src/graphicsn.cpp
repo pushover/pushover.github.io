@@ -254,8 +254,6 @@ void graphicsN_c::loadTheme(const std::string & name) {
   unsigned int xBlocks = png.getWidth()/40;
   unsigned int yBlocks = png.getHeight()/48;
 
-  std::cout << "loading theme: " << name << " image size: " << xBlocks << ":" << yBlocks << std::endl;
-
   unsigned int foreSize = l.getArraySize("foreground")/2;
   unsigned int backSize = l.getArraySize("background")/2;
 
