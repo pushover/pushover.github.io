@@ -346,7 +346,8 @@ void levelPlayer_c::DTA_2(int x, int y) {
   // if the domino is a splitter, we need to check, if it is in one of the
   // states where the left halve is far enough down
   // if this is not the case or it is no splitter fall further
-  if (getDominoType(x-2, y) != DominoTypeSplitter ||
+  if (x < 2 ||
+      getDominoType(x-2, y) != DominoTypeSplitter ||
       getDominoState(x-2, y) != 1 &&
       getDominoState(x-2, y) != 10 &&
       getDominoState(x-2, y) != 12 &&
@@ -384,7 +385,8 @@ void levelPlayer_c::DTA_J(int x, int y) {
   // if the domino is a splitter, we need to check, if it is in one of the
   // states where the right halve is far enough down
   // if this is not the case or it is no splitter fall further
-  if (getDominoType(x+2, y) != DominoTypeSplitter ||
+  if (x > 17 ||
+      getDominoType(x+2, y) != DominoTypeSplitter ||
       getDominoState(x+2, y) != 1 &&
       getDominoState(x+2, y) != 9 &&
       getDominoState(x+2, y) != 11 &&
