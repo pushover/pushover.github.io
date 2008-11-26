@@ -18,7 +18,7 @@ foreground = {
  14, 0,  -- FgElementPlatformStep8
  17, 0,  -- FgElementLadderMiddle
  18, 0,  -- FgElementPlatformStrip
- 19, 0,  -- FgElementLadder2
+  5, 0,  -- FgElementLadder2 -- identical with FgElementLadder
  20, 0,  -- FgElementDoor0
  21, 0,  -- FgElementDoor1
  22, 0,  -- FgElementDoor2
@@ -97,8 +97,6 @@ background = {
  26, 2,
  27, 2,
  28, 2,
- 29, 2,
- 30, 2,
  31, 2,
   0, 3,
   1, 3,
@@ -142,12 +140,6 @@ background = {
   7, 4,
   8, 4,
   9, 4,
- 10, 4,
- 11, 4,
- 12, 4,
- 13, 4,
- 14, 4,
- 15, 4,
  16, 4,
  17, 4,
  18, 4,
