@@ -1,5 +1,7 @@
 #include "pngloader.h"
 
+#include "../config.h"
+
 #include <iostream>
 
 
@@ -71,6 +73,14 @@ pngLoader_c::pngLoader_c(std::string fname) {
       png_set_tRNS_to_alpha(png_ptr);
     }
   }
+
+#ifdef WORDS_BIGENDIAN
+
+  // for bigendian system we swap everything around
+  png_set_bgr(png_ptr);
+  png_set_swap_alpha(png_ptr);
+
+#endif
 
   png_read_update_info(png_ptr, info_ptr);
 }

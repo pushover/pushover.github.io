@@ -10,6 +10,7 @@ AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR(src/main.cpp)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
+AC_CONFIG_HEADERS       # required for AC_C_BIGENDIAN
 
 # General information.
 AC_SUBST(FULLNAME,"Pushover")
@@ -33,6 +34,8 @@ AM_PATH_SDL($SDL_VERSION,
 	AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!]))
 CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
+
+AC_C_BIGENDIAN
 
 AC_CHECK_LIB(SDL_mixer, main, ,
 	AC_MSG_WARN([Can't find SDL_mixer.]))
