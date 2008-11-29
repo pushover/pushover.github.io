@@ -288,6 +288,8 @@ void levelPlayer_c::DTA_G(int x, int y) {
 void levelPlayer_c::DTA_B(int x, int y) {
   DTA_E(x, y);
 
+  markDirty(x-1, y);
+  markDirty(x-1, y-1);
   markDirty(x+1, y);
   markDirty(x+1, y-1);
   markDirty(x, y-1);
