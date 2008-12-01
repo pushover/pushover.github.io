@@ -397,7 +397,7 @@ listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr) {
     {
         entries.push_back("Return to level");
         entries.push_back("Restart level");
-        entries.push_back("Return to Main menu");
+        entries.push_back("Return to menu");
     }
 
     return new listWindow_c(4, 3, 12, 6, surf, gr, "Nu What?", entries, true);
@@ -417,7 +417,6 @@ listWindow_c * getSolvedWindow(surface_c & surf, graphics_c & gr) {
     if (!entries.size())
     {
         entries.push_back("Continue");
-        entries.push_back("Return to Main menu");
     }
 
     return new listWindow_c(2, 3, 16, 6, surf, gr, "Gratulation! You solved the level.", entries, false);
@@ -429,7 +428,7 @@ listWindow_c * getFailedWindow(const std::string & reason, surface_c & surf, gra
     if (!entries.size())
     {
         entries.push_back("Retry the level");
-        entries.push_back("Return to Main menu");
+        entries.push_back("Return to menu");
     }
 
     std::string title = std::string("You failed: ") + reason;

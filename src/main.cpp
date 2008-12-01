@@ -586,7 +586,7 @@ int main(int argc, char * argv[]) {
               {
                 switch(dynamic_cast<listWindow_c*>(window)->getSelection())
                 {
-                  case 2: nextState = ST_MAIN; break;    // return to main menu
+                  case 2: nextState = ST_LEVEL; break;    // return to level list
                   case 1:
                           {       // restart level
                             nextState = ST_PREPLAY;
@@ -616,7 +616,6 @@ int main(int argc, char * argv[]) {
                 switch(dynamic_cast<listWindow_c*>(window)->getSelection())
                 {
                   case 0: nextState = ST_LEVEL; break; // select next level to play
-                  case 1: nextState = ST_MAIN; break;  // back to main
                 }
               }
             }
@@ -659,7 +658,7 @@ int main(int argc, char * argv[]) {
                       else nextState = ST_PREPLAY;
                     }
                     break;
-                  case 1: nextState = ST_MAIN; break;  // back to main
+                  case 1: nextState = ST_LEVEL; break;  // back to level list
                 }
               }
             }
