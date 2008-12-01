@@ -1,7 +1,5 @@
 bin_PROGRAMS = pushover
 
-dist_doc_DATA=readme.txt
-
 pushover_LDFLAGS = $(LIBINTL) $(LUA_LIBS)
 pushover_CXXFLAGS = -Wall -DPKGDATADIR=\"$(pkgdatadir)\" $(LUA_CFLAGS)
 pushover_SOURCES = \
@@ -23,6 +21,9 @@ pushover_SOURCES = \
   src/textsections.cpp src/textsections.h \
   src/tools.cpp src/tools.h \
   src/window.cpp src/window.h
+
+dist_doc_DATA = \
+  readme.txt
 
 nobase_dist_pkgdata_DATA = \
   data/ant.png \
