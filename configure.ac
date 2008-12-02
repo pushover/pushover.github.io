@@ -27,6 +27,10 @@ AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_LIBTOOL
 
+# Checks for i18n.
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION(0.16.1)
+
 # Checks for libraries.
 SDL_VERSION=1.2.0
 AM_PATH_SDL($SDL_VERSION,
@@ -72,5 +76,5 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([atexit malloc realloc memmove memset mkdir setlocale strcasecmp strchr strstr])
 
 # Output.
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile po/Makefile.in])
 AC_OUTPUT

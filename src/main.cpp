@@ -121,6 +121,12 @@ static std::string getDataDir(void)
   return std::string((stat(PKGDATADIR, &st) == 0) ? PKGDATADIR : ".");
 }
 
+static std::string getLocaleDir(void)
+{
+  struct stat st;
+  return std::string((stat(LOCALEDIR, &st) == 0) ? LOCALEDIR : "locale");
+}
+
 static unsigned int getKeyMask(void) {
   unsigned int keyMask = 0;
 
@@ -216,6 +222,12 @@ int main(int argc, char * argv[]) {
     check(argc-2, argv+2, checker3);
     return 0;
   }
+
+  // setup internationalisation
+  setlocale(LC_MESSAGES, "");
+  bindtextdomain("pushover", getLocaleDir().c_str());
+  bind_textdomain_codeset("pushover", "UTF-8");
+  textdomain("pushover");
 
   // now off to all modes that use graphics
   const std::string datadir = getDataDir();
@@ -369,26 +381,13 @@ int main(int argc, char * argv[]) {
             case ST_CONFIG:   window = getConfigWindow(screen, gr); break;
             case ST_SOLVED:   window = getSolvedWindow(screen, gr); break;
             case ST_ABOUT:    window = getAboutWindow(screen, gr); break;
-            case ST_FAILED:
-                              {
-                                std::string reason;
-                                switch (failReason) {
-                                  case 2: reason = "You've been too slow"; break;
-                                  case 3: reason = "Some dominoes crashed"; break;
-                                  case 4: reason = "Not all dominoes fell"; break;
-                                  case 5: reason = "You died"; break;
-                                  case 6: reason = "Trigger was not last to fall"; break;
-                                  case 7: reason = "Trigger not flat on the ground"; break;
-                                }
-                                window = getFailedWindow(reason, screen, gr);
-                              }
-                              break;
+            case ST_FAILED:   window = getFailedWindow(failReason, screen, gr); break;
 
             case ST_HELP:
                               {
                                 std::string text;
                                 if (l.someTimeLeft())
-                                  text = "Arrange dominos in a run so that trigger falls last. You have 1 push.";
+                                  text = _("Arrange dominos in a run so that trigger falls last. You have 1 push.");
                                 else
                                   text = l.getHint();
 

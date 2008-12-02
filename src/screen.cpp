@@ -2,6 +2,8 @@
 
 #include "graphics.h"
 
+#include "libintl.h"
+
 #include <SDL/SDL_ttf.h>
 
 #include <iostream>
@@ -336,39 +338,12 @@ static std::vector<std::string> split(const std::string & text, char splitter)
 
 unsigned int surface_c::renderText(const fontParams_s * par, const std::string & t) {
 
-  std::vector<std::string> words = split(t, ' ');
+  std::vector<std::string> words = split(gettext(t.c_str()), ' ');
 
   int ypos = par->box.y;
 
   if (par->alignment == ALN_CENTER)
-  {
-    unsigned int word = 0;
-    int height = 0;
-
-    while (word < words.size()) {
-
-      std::string curLine = words[word];
-      word++;
-
-      while (word < words.size())
-      {
-        int w;
-        TTF_SizeUTF8(fonts[par->font], (curLine+words[word]).c_str(), &w, 0);
-
-        if (w > par->box.w) break;
-
-        curLine = curLine + " " + words[word];
-        word++;
-      }
-
-      int h, w;
-      TTF_SizeUTF8(fonts[par->font], curLine.c_str(), &w, &h);
-
-      height += h;
-    }
-
-    ypos += (par->box.h-height)/2;
-  }
+    ypos += (par->box.h-getTextHeight(par, t))/2;
 
   unsigned int word = 0;
   unsigned int lines = 0;
@@ -462,8 +437,39 @@ unsigned int getFontHeight(unsigned int font) {
 
 unsigned int getTextWidth(unsigned int font, const std::string & t) {
   int w;
-  TTF_SizeUTF8(fonts[font], t.c_str(), &w, 0);
+  TTF_SizeUTF8(fonts[font], gettext(t.c_str()), &w, 0);
 
   return w;
 }
 
+unsigned int getTextHeight(const fontParams_s * par, const std::string & t) {
+
+  std::vector<std::string> words = split(gettext(t.c_str()), ' ');
+
+  unsigned int word = 0;
+  int height = 0;
+
+  while (word < words.size()) {
+
+    std::string curLine = words[word];
+    word++;
+
+    while (word < words.size())
+    {
+      int w;
+      TTF_SizeUTF8(fonts[par->font], (curLine+words[word]).c_str(), &w, 0);
+
+      if (w > par->box.w) break;
+
+      curLine = curLine + " " + words[word];
+      word++;
+    }
+
+    int h, w;
+    TTF_SizeUTF8(fonts[par->font], curLine.c_str(), &w, &h);
+
+    height += h;
+  }
+
+  return height;
+}

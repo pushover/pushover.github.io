@@ -69,16 +69,16 @@ static int positions[20] = {
 };
 
 static std::string texts[20] = {
-  "Standard",
-  "Blocker",
-  "Splitter",
-  "Exploder",
-  "Delay",
-  "Tumbler",
-  "Bridger",
-  "Vanish",
-  "Trigger",
-  "Ascender"
+  _("Standard"),
+  _("Blocker"),
+  _("Splitter"),
+  _("Exploder"),
+  _("Delay"),
+  _("Tumbler"),
+  _("Bridger"),
+  _("Vanish"),
+  _("Trigger"),
+  _("Ascender")
 };
 
 #define SX 135
@@ -117,7 +117,12 @@ helpWindow_c::helpWindow_c(const std::string text, surface_c & s, graphics_c & g
   par.box.x = 400-3*55;
   par.box.w = 6*55;
   par.box.y = 235;
-  par.box.h = 145;
+  par.box.h = 148;
+
+  if (getTextHeight(&par, text) > par.box.h) {
+    printf("%i  %i\n", getTextHeight(&par, text), par.box.h);
+    par.font = FNT_SMALL;
+  }
 
   s.renderText(&par, text);
 }
@@ -158,7 +163,7 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 1, 16,
   par.box.w = gr.blockX()*(W()-2);
   par.box.h = getFontHeight(FNT_BIG);
 
-  surf.renderText(&par, "Pushover - About");
+  surf.renderText(&par, _("Pushover - About"));
 
   int ypos = gr.blockY()*(Y()+1) + getFontHeight(FNT_BIG);
 
@@ -174,22 +179,22 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 1, 16,
   par.box.w = gr.blockX()*(W()-2)-30;
   par.box.h = lineH;
 
-  par.box.y += surf.renderText(&par, "Original Concept:")*lineH; par.box.x += 30;
+  par.box.y += surf.renderText(&par, _("Original Concept:"))*lineH; par.box.x += 30;
   par.box.y += surf.renderText(&par, "Chas Partington")*lineH; par.box.x -= 30;
 
-  par.box.y += surf.renderText(&par, "Original Programming:")*lineH; par.box.x += 30;
+  par.box.y += surf.renderText(&par, _("Original Programming:"))*lineH; par.box.x += 30;
   par.box.y += surf.renderText(&par, "Dave Elcock, Helen Elcock, Keith Watterson")*lineH; par.box.x -= 30;
 
-  par.box.y += surf.renderText(&par, "Original Graphics:")*lineH; par.box.x += 30;
+  par.box.y += surf.renderText(&par, _("Original Graphics:"))*lineH; par.box.x += 30;
   par.box.y += surf.renderText(&par, "Bryan King, Barry Armstrong")*lineH; par.box.x -= 30;
 
-  par.box.y += surf.renderText(&par, "Original Music & SFX:")*lineH; par.box.x += 30;
+  par.box.y += surf.renderText(&par, _("Original Music & SFX:"))*lineH; par.box.x += 30;
   par.box.y += surf.renderText(&par, "Keith Tinman, Dean Evans, Johnathan Dunn")*lineH; par.box.x -= 30;
 
-  par.box.y += surf.renderText(&par, "Original Levels:")*lineH; par.box.x += 30;
+  par.box.y += surf.renderText(&par, _("Original Levels:"))*lineH; par.box.x += 30;
   par.box.y += surf.renderText(&par, "Harry Nadler, Avril Rigby, Don Rigby, Chris Waterworth")*lineH; par.box.x -= 30;
 
-  par.box.y += surf.renderText(&par, "New Programming:")*lineH; par.box.x += 30;
+  par.box.y += surf.renderText(&par, _("New Programming:"))*lineH; par.box.x += 30;
   par.box.y += surf.renderText(&par, "Andreas Röver, Volker Grabsch")*lineH; par.box.x -= 30;
 }
 
@@ -340,13 +345,13 @@ listWindow_c * getMainWindow(surface_c & surf, graphics_c & gr) {
 
     if (!entries.size())
     {
-        entries.push_back("Play Levelset");
-        entries.push_back("Configuration");
-        entries.push_back("About");
-        entries.push_back("Quit");
+        entries.push_back(_("Play Levelset"));
+        entries.push_back(_("Configuration"));
+        entries.push_back(_("About"));
+        entries.push_back(_("Quit"));
     }
 
-    return new listWindow_c(4, 3, 12, 7, surf, gr, "Main menu", entries, false);
+    return new listWindow_c(4, 3, 12, 7, surf, gr, _("Main menu"), entries, false);
 }
 
 listWindow_c * getConfigWindow(surface_c & surf, graphics_c & gr) {
@@ -354,15 +359,15 @@ listWindow_c * getConfigWindow(surface_c & surf, graphics_c & gr) {
 
     if (!entries.size())
     {
-        entries.push_back("Toggle Fullscreen");
-        entries.push_back("Toggle Sound Effects");
+        entries.push_back(_("Toggle Fullscreen"));
+        entries.push_back(_("Toggle Sound Effects"));
     }
 
-    return new listWindow_c(3, 2, 14, 9, surf, gr, "Configuration", entries, true);
+    return new listWindow_c(3, 2, 14, 9, surf, gr, _("Configuration"), entries, true);
 }
 
 listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, graphics_c & gr) {
-    return new listWindow_c(4, 2, 12, 9, surf, gr, "Select Levelset", ls.getLevelsetNames(), true);
+    return new listWindow_c(4, 2, 12, 9, surf, gr, _("Select Levelset"), ls.getLevelsetNames(), true);
 }
 
 listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphics_c & gr) {
@@ -375,19 +380,19 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
         std::string e = ls.getLevelNames()[i];
 
         if (solv.solved(ls.getChecksum(e)))
-            e += " (solved)";
+            e =  std::string(gettext(e.c_str())) + " " + gettext(_("(done)"));
         else if (index == -1)
             index = i;
 
         entries.push_back(e);
     }
 
-    if (entries.size() == 0) throw std::runtime_error("No Level in Levelset");
+    if (entries.size() == 0) throw std::runtime_error(_("No Level in Levelset"));
 
     // when all levels have been solved, return to the first
     if (index == -1) index = 0;
 
-    return new listWindow_c(4, 0, 12, 12, surf, gr, "Select Level", entries, true, index);
+    return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Level"), entries, true, index);
 }
 
 listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr) {
@@ -395,16 +400,16 @@ listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr) {
 
     if (!entries.size())
     {
-        entries.push_back("Return to level");
-        entries.push_back("Restart level");
-        entries.push_back("Return to menu");
+        entries.push_back(_("Return to level"));
+        entries.push_back(_("Restart level"));
+        entries.push_back(_("Return to menu"));
     }
 
-    return new listWindow_c(4, 3, 12, 6, surf, gr, "Nu What?", entries, true);
+    return new listWindow_c(4, 3, 12, 6, surf, gr, _("Nu What?"), entries, true);
 }
 
 listWindow_c * getLevelWindow(levelset_c & ls, surface_c & surf, graphics_c & gr) {
-    return new listWindow_c(3, 2, 14, 9, surf, gr, "Select Level", ls.getLevelNames(), true);
+    return new listWindow_c(3, 2, 14, 9, surf, gr, _("Select Level"), ls.getLevelNames(), true);
 }
 
 window_c * getAboutWindow(surface_c & surf, graphics_c & gr) {
@@ -416,22 +421,30 @@ listWindow_c * getSolvedWindow(surface_c & surf, graphics_c & gr) {
 
     if (!entries.size())
     {
-        entries.push_back("Continue");
+        entries.push_back(_("Continue"));
     }
 
-    return new listWindow_c(2, 3, 16, 6, surf, gr, "Gratulation! You solved the level.", entries, false);
+    return new listWindow_c(2, 3, 16, 6, surf, gr, _("Gratulation! You solved the level."), entries, false);
 }
 
-listWindow_c * getFailedWindow(const std::string & reason, surface_c & surf, graphics_c & gr) {
+listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphics_c & gr) {
     static std::vector<std::string> entries;
 
     if (!entries.size())
     {
-        entries.push_back("Retry the level");
-        entries.push_back("Return to menu");
+        entries.push_back(_("Retry the level"));
+        entries.push_back(_("Return to menu"));
     }
 
-    std::string title = std::string("You failed: ") + reason;
+    std::string title;
+    switch (failReason) {
+      case 2: title = _("You failed: You've been too slow"); break;
+      case 3: title = _("You failed: Some dominoes crashed"); break;
+      case 4: title = _("You failed: Not all dominoes fell"); break;
+      case 5: title = _("You failed: You died"); break;
+      case 6: title = _("You failed: Trigger was not last to fall"); break;
+      case 7: title = _("You failed: Trigger not flat on the ground"); break;
+    }
 
     unsigned int w = (getTextWidth(FNT_BIG, title) + gr.blockX() - 1) / gr.blockX();
 

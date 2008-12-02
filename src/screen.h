@@ -42,6 +42,7 @@ void initText(std::string datadir);
 void deinitText(void);
 unsigned int getFontHeight(unsigned int font);
 unsigned int getTextWidth(unsigned int font, const std::string & t);
+unsigned int getTextHeight(const fontParams_s * par, const std::string & t);
 
 
 class surface_c {
@@ -126,6 +127,9 @@ class screen_c : public surface_c {
 
     void toggleFullscreen(void);
 };
+
+// used for internationalisation to mark strings to translate
+#define _(x) x
 
 #endif
 

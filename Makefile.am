@@ -1,7 +1,9 @@
+SUBDIRS = po
+
 bin_PROGRAMS = pushover
 
 pushover_LDFLAGS = $(LIBINTL) $(LUA_LIBS)
-pushover_CXXFLAGS = -Wall -DPKGDATADIR=\"$(pkgdatadir)\" $(LUA_CFLAGS)
+pushover_CXXFLAGS = $(LUA_CFLAGS) -Wall -DPKGDATADIR=\"$(pkgdatadir)\" -DLOCALEDIR=\"$(localedir)\"
 pushover_SOURCES = \
   src/ant.cpp src/ant.h \
   src/graphics.cpp src/graphics.h \
