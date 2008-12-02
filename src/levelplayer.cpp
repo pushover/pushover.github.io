@@ -300,13 +300,20 @@ void levelPlayer_c::DTA_B(int x, int y) {
 // function and mark some more blocks because we split left and
 // right and the normal function will only mark one side
 void levelPlayer_c::DTA_D(int x, int y) {
+
   markDirty(x+1, y-1);
   markDirty(x+1, y);
 
   DTA_4(x, y);
 
+  // mark the splitting stone, that now vanises as dirty
+  // the lower 2 lines are for splitting dust clouds
   if (getDominoState(x, y) == 5)
+  {
     markDirty(x, y-2);
+    markDirty(x-1, y-2);
+    markDirty(x+1, y-2);
+  }
 }
 
 // the final vansher state, remove the vanisher
