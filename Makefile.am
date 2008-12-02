@@ -117,18 +117,16 @@ dist_noinst_DATA = \
   levels/original/101.level \
   levels/original/091_snes.level \
   levels/av/index.level \
-  levels/av/easy_distance.level \
-  levels/av/hard_distance.level \
-  levels/av/index.level \
-  levels/av/missing_stopper_2.level \
-  levels/av/missing_stopper.level \
+  levels/av/too_easy.level \
+  levels/av/still_too_easy.level \
   levels/av/run.level \
   levels/av/run_n_bridge.level \
-  levels/av/still_too_easy.level \
-  levels/av/too_easy.level \
-  levels/av/wrong_direction.level
-
-
+  levels/av/wrong_direction.level \
+  levels/av/one_too_much.level \
+  levels/av/missing_stopper.level \
+  levels/av/missing_stopper_2.level \
+  levels/av/easy_distance.level \
+  levels/av/hard_distance.level
 
 
 install-data-local:
@@ -166,5 +164,4 @@ dist-win32: all
 	$(RM)   $(win32dir).zip
 	zip -r9 $(win32dir).zip $(win32dir)
 	$(RM) -r $(win32dir)
-
 
