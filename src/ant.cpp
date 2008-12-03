@@ -1214,6 +1214,8 @@ static void SaveLevelState(void) {
 
 bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
 
+  if (ofs < -1 || ofs > 1) return false;
+
   x += ofs;
 
   if (x < 0 && ofs == -1) return false;
