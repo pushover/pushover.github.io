@@ -26,6 +26,7 @@ soundSystem_c::soundSystem_c(void)
 {
   useSound = false;
   quiet = false;
+  music = 0;
 }
 
 soundSystem_c::~soundSystem_c(void)
@@ -126,5 +127,26 @@ void soundSystem_c::closeSound(void) {
 
   Mix_CloseAudio();
   SDL_QuitSubSystem(SDL_INIT_AUDIO);
+}
+
+void soundSystem_c::playMusic(const std::string & fname) {
+
+  std::cout << "trying to play: " << fname << std::endl;
+
+  if (music)
+  {
+    Mix_FadeOutMusic(100);
+    SDL_Delay(130);
+    Mix_HaltMusic();
+
+    Mix_FreeMusic(music);
+  }
+
+  music = Mix_LoadMUS(fname.c_str());
+
+  if (music)
+  {
+    Mix_PlayMusic(music, -1);
+  }
 }
 

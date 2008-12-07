@@ -49,6 +49,8 @@ class soundSystem_c {
     /* toggle quiet sound effects */
     void toggleOnOff(void) { quiet = !quiet; }
 
+    void playMusic(const std::string & fname);
+
   private:
 
     struct soundDat {
@@ -72,6 +74,8 @@ class soundSystem_c {
     std::vector<struct soundDat> sounds;
 
     static class soundSystem_c *inst;
+
+    Mix_Music * music;
 
 };
 
