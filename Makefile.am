@@ -138,7 +138,7 @@ install-data-local:
 	  chmod 644 "$(DESTDIR)$(pkgdatadir)/levels/$$p.gz"; \
 	done
 
-check: ${bin_PROGRAMS}
+check: $(bin_PROGRAMS)
 	./pushover -c recordings/finished/*
 	./pushover -y recordings/mustFail
 	./pushover -f recordings/mustCrash
