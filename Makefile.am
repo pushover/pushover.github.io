@@ -130,10 +130,12 @@ dist_noinst_DATA = \
   levels/av/easy_distance.level \
   levels/av/hard_distance.level
 
+                     # BSD make                         # GNU make
+LEVEL_INDEX_FILES := $(dist_noinst_DATA:M*/index.level) $(filter %/index.level,$(dist_noinst_DATA))
 
 install-data-local:
 	$(mkdir_p) "$(DESTDIR)$(pkgdatadir)/levels"
-	for p in $(patsubst levels/%/index.level,%,$(filter levels/%/index.level,$(dist_noinst_DATA))); do \
+	for p in $(LEVEL_INDEX_FILES:levels/%/index.level=%); do \
 	  cat $(srcdir)/levels/$$p/* | gzip -c -9 > "$(DESTDIR)$(pkgdatadir)/levels/$$p.gz"; \
 	  chmod 644 "$(DESTDIR)$(pkgdatadir)/levels/$$p.gz"; \
 	done
