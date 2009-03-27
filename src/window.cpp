@@ -9,6 +9,7 @@
 #include <SDL.h>
 
 #include <stdexcept>
+#include <libintl.h>
 
 
 

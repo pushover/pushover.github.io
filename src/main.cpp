@@ -21,6 +21,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <libintl.h>
 
 static void check_record(const std::string & rec_path, levelsetList_c & levelsetList,
                          unsigned int & count, unsigned int & failed,
