@@ -288,7 +288,7 @@ int main(int argc, char * argv[]) {
 
       levelsetList.getLevelset(selectedMission).loadLevel(l, levelName);
       a.initForLevel();
-      soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".xm");
+      soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
 
       nextState = ST_PREPLAY;
     }
@@ -330,7 +330,7 @@ int main(int argc, char * argv[]) {
   unsigned int failReason = 0;
   unsigned int failDelay = 0; // a counter to delay the fail window a bit after failing
 
-  soundSystem_c::instance()->playMusic(datadir+"/themes/option.xm");
+  soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
 
   try {
 
@@ -523,7 +523,7 @@ int main(int argc, char * argv[]) {
                 {
                   nextState = ST_PREPLAY;
                   ls.loadLevel(l, ls.getLevelNames()[sel]);
-                  soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".xm");
+                  soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
                   a.initForLevel();
                 }
               }
@@ -592,7 +592,7 @@ int main(int argc, char * argv[]) {
                 {
                   case 2:
                     nextState = ST_LEVEL;
-                    soundSystem_c::instance()->playMusic(datadir+"/themes/option.xm");
+                    soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
                     break;    // return to level list
                   case 1:
                           {       // restart level
@@ -624,7 +624,7 @@ int main(int argc, char * argv[]) {
                 {
                   case 0:
                     nextState = ST_LEVEL;
-                    soundSystem_c::instance()->playMusic(datadir+"/themes/option.xm");
+                    soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
                     break; // select next level to play
                 }
               }
@@ -670,7 +670,7 @@ int main(int argc, char * argv[]) {
                     break;
                   case 1:
                     nextState = ST_LEVEL;
-                    soundSystem_c::instance()->playMusic(datadir+"/themes/option.xm");
+                    soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
                     break;  // back to level list
                 }
               }
