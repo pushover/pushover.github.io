@@ -2230,7 +2230,7 @@ bool levelPlayer_c::levelCompleted(int & fail) {
           }
 
           if (   getDominoState(x, y) == 13
-              && getFg(x+1, y) != FgElementPlatformStep6
+              && getFg(x+1, y) != FgElementPlatformStep7
               && (   getDominoType(x+1, y) != DominoTypeStopper
                   || getDominoType(x-1, y) == DominoTypeEmpty
                   || (getDominoDir(x-1, y) != 1 && getDominoType(x-1, y) != DominoTypeSplitter))
