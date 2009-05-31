@@ -166,16 +166,16 @@ void ant_c::draw(void) {
   }
   else
   {
-    if (level.getFg(blockX, blockY) == levelData_c::FgElementPlatformLadderDown ||
-        level.getFg(blockX, blockY) == levelData_c::FgElementLadder)
+    if ((level.getFg(blockX, blockY) == levelData_c::FgElementPlatformLadderDown) ||
+        (level.getFg(blockX, blockY) == levelData_c::FgElementLadder))
     {
       vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX)*gr.blockX(), (blockY)*gr.blockY());
     }
   }
 
-  if (blockY > 0 &&
-      level.getFg(blockX, blockY-1) == levelData_c::FgElementPlatformLadderDown ||
-      level.getFg(blockX, blockY-1) == levelData_c::FgElementLadder)
+  if ((blockY > 0) &&
+      ((level.getFg(blockX, blockY-1) == levelData_c::FgElementPlatformLadderDown) ||
+       (level.getFg(blockX, blockY-1) == levelData_c::FgElementLadder)))
   {
     vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX)*gr.blockX(), (blockY-1)*gr.blockY());
   }
@@ -188,21 +188,21 @@ void ant_c::draw(void) {
     }
     else
     {
-      if (level.getFg(blockX-1, blockY) == levelData_c::FgElementPlatformLadderDown ||
-          level.getFg(blockX-1, blockY) == levelData_c::FgElementLadder)
+      if ((level.getFg(blockX-1, blockY) == levelData_c::FgElementPlatformLadderDown) ||
+          (level.getFg(blockX-1, blockY) == levelData_c::FgElementLadder))
       {
         vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX-1)*gr.blockX(), (blockY)*gr.blockY());
       }
     }
-    if (blockY > 0 &&
-        level.getFg(blockX-1, blockY-1) == levelData_c::FgElementPlatformLadderDown ||
-        level.getFg(blockX-1, blockY-1) == levelData_c::FgElementLadder)
+    if ((blockY > 0) &&
+        ((level.getFg(blockX-1, blockY-1) == levelData_c::FgElementPlatformLadderDown) ||
+         (level.getFg(blockX-1, blockY-1) == levelData_c::FgElementLadder)))
     {
       vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX-1)*gr.blockX(), (blockY-1)*gr.blockY());
     }
   }
 
-  if (blockX < 19 && vid.isDirty(blockX+1, blockY))
+  if ((blockX < 19) && vid.isDirty(blockX+1, blockY))
   {
     if (level.getFg(blockX+1, blockY) == levelData_c::FgElementPlatformLadderUp)
     {
@@ -210,15 +210,15 @@ void ant_c::draw(void) {
     }
     else
     {
-      if (level.getFg(blockX+1, blockY) == levelData_c::FgElementPlatformLadderDown ||
-          level.getFg(blockX+1, blockY) == levelData_c::FgElementLadder)
+      if ((level.getFg(blockX+1, blockY) == levelData_c::FgElementPlatformLadderDown) ||
+          (level.getFg(blockX+1, blockY) == levelData_c::FgElementLadder))
       {
         vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX+1)*gr.blockX(), (blockY)*gr.blockY());
       }
     }
-    if (blockY > 0 &&
-        level.getFg(blockX+1, blockY-1) == levelData_c::FgElementPlatformLadderDown ||
-        level.getFg(blockX+1, blockY-1) == levelData_c::FgElementLadder)
+    if ((blockY > 0) &&
+        ((level.getFg(blockX+1, blockY-1) == levelData_c::FgElementPlatformLadderDown) ||
+         (level.getFg(blockX+1, blockY-1) == levelData_c::FgElementLadder)))
     {
       vid.blitBlock(gr.getFgTile(levelData_c::FgElementLadder), (blockX+1)*gr.blockX(), (blockY-1)*gr.blockY());
     }
@@ -1107,17 +1107,17 @@ unsigned int ant_c::checkForNoKeyActions(void) {
         return ReturnAntState;
       }
     }
-    if (level.getFg(blockX, blockY-1) == 4 ||
-        level.getFg(blockX, blockY-1) == 5 &&
-        inactiveTimer > 0x0A0)
+    if ((level.getFg(blockX, blockY-1) == 4 ||
+         level.getFg(blockX, blockY-1) == 5) &&
+         inactiveTimer > 0x0A0)
     {
 
       animation = ReturnAntState = AntAnimLadder1;
       return ReturnAntState;
     }
-    if (level.getFg(blockX, blockY+1) == 5 ||
-        level.getFg(blockX, blockY+1) == 6 ||
-        level.getFg(blockX, blockY+1) == 4 &&
+    if ((level.getFg(blockX, blockY+1) == 5 ||
+         level.getFg(blockX, blockY+1) == 6 ||
+         level.getFg(blockX, blockY+1) == 4) &&
         level.getFg(blockX, blockY) == 5)
     {
       animation = ReturnAntState = AntAnimLadder3;
@@ -1290,8 +1290,8 @@ unsigned int ant_c::SFNextAction(void) {
   unsigned int returnState;
 
   // is true, when the ant is on a ladder
-  bool onLadder = animation >= AntAnimLadder1 && animation <= AntAnimLadder4 ||
-                  animation >= AntAnimCarryLadder1 && animation <= AntAnimCarryLadder4;
+  bool onLadder = (animation >= AntAnimLadder1 && animation <= AntAnimLadder4) ||
+                  (animation >= AntAnimCarryLadder1 && animation <= AntAnimCarryLadder4);
 
   // when we hav no ground below us and are not on a ladder we need
   // to fall down
@@ -1315,10 +1315,10 @@ unsigned int ant_c::SFNextAction(void) {
   if (animation == AntAnimPushLeft &&
       animationImage == 0)
   {
-    if (level.getDominoType(blockX, blockY) != 0 &&
-        level.getDominoState(blockX, blockY) < 8 ||
-        level.getDominoType(blockX-1, blockY) != 0 &&
-        level.getDominoState(blockX-1, blockY) > 8)
+    if ((level.getDominoType(blockX, blockY) != 0 &&
+         level.getDominoState(blockX, blockY) < 8) ||
+        (level.getDominoType(blockX-1, blockY) != 0 &&
+         level.getDominoState(blockX-1, blockY) > 8))
     {
       animation = returnState = AntAnimDominoDying;
       return returnState;
@@ -1327,10 +1327,10 @@ unsigned int ant_c::SFNextAction(void) {
   if (animation == AntAnimPushRight &&
       animationImage == 0)
   {
-    if (level.getDominoType(blockX, blockY) != 0 &&
-        level.getDominoState(blockX, blockY) > 8 ||
-        level.getDominoType(blockX+1, blockY) != 0 &&
-        level.getDominoState(blockX+1, blockY) < 8)
+    if ((level.getDominoType(blockX, blockY) != 0 &&
+         level.getDominoState(blockX, blockY) > 8) ||
+        (level.getDominoType(blockX+1, blockY) != 0 &&
+         level.getDominoState(blockX+1, blockY) < 8))
     {
       if (blockX < 19)
       {
@@ -1841,9 +1841,9 @@ unsigned int ant_c::SFNextAction(void) {
         animation = returnState = AntAnimLadder3;
         direction = 20;
       }
-    } else if (level.getFg(blockX, blockY+1) == 6 ||
-        level.getFg(blockX, blockY+1) == 4 &&
-        level.getFg(blockX, blockY) == 5)
+    } else if ((level.getFg(blockX, blockY+1) == 6 ||
+                level.getFg(blockX, blockY+1) == 4) &&
+               level.getFg(blockX, blockY) == 5)
     {
       animation = returnState = AntAnimLadder3;
       direction = 20;
