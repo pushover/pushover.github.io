@@ -197,6 +197,9 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 1, 16,
 
   par.box.y += surf.renderText(&par, _("New Programming:"))*lineH; par.box.x += 30;
   par.box.y += surf.renderText(&par, "Andreas Röver, Volker Grabsch")*lineH; par.box.x -= 30;
+
+  par.box.y += surf.renderText(&par, _("New Music:"))*lineH; par.box.x += 30;
+  par.box.y += surf.renderText(&par, "Roberto Lorenz")*lineH; par.box.x -= 30;
 }
 
 
