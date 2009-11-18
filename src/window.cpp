@@ -149,7 +149,7 @@ class aboutWindow_c : public window_c {
     bool handleEvent(const SDL_Event & event);
 };
 
-aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 1, 16, 10, s, g) {
+aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 0, 16, 12, s, g) {
 
   clearInside();
 
@@ -200,6 +200,9 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 1, 16,
 
   par.box.y += surf.renderText(&par, _("New Music:"))*lineH; par.box.x += 30;
   par.box.y += surf.renderText(&par, "Roberto Lorenz")*lineH; par.box.x -= 30;
+
+  par.box.y += surf.renderText(&par, _("New Graphics:"))*lineH; par.box.x += 30;
+  par.box.y += surf.renderText(&par, "Harald Radke")*lineH; par.box.x -= 30;
 }
 
 
