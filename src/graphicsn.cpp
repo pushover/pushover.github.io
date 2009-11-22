@@ -133,7 +133,6 @@ void graphicsN_c::loadGraphics(void) {
 
   {
     pngLoader_c png(dataPath+"/data/ant.png");
-    png.skipLines(15);
 
     // load images from first file
     for (unsigned int i = 0; i <= 27; i++)

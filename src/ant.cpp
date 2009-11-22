@@ -149,7 +149,7 @@ void ant_c::draw(void) {
 
   if (gr.getAnt(animation, animationImage))
   {
-    vid.blit(gr.getAnt(animation, animationImage), (blockX-2)*gr.blockX(), (blockY)*gr.blockY()+screenBlock+gr.antDisplace());
+    vid.blit(gr.getAnt(animation, animationImage), blockX*gr.blockX()-45, (blockY)*gr.blockY()+screenBlock+gr.antDisplace()+3);
   }
 
   /* what comes now, is to put the ladders back in front of the ant,
