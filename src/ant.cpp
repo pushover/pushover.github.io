@@ -354,6 +354,13 @@ unsigned int ant_c::callStateFunction(unsigned int state) {
 // when the animation is finished the function returns true
 bool ant_c::animateAnt(unsigned int delay) {
 
+  // to conform the the original, we should use
+  // animationTimer > 1 here, so the original
+  // game is a tiny bit faster for some animations
+  //
+  // but doing that would destroy a huge set of our
+  // recordings, so we don't and live with the tiny
+  // difference
   if (animationTimer > 0) {
     animationTimer--;
     return false;
@@ -682,7 +689,7 @@ unsigned int ant_c::SFLeaveLadderRight(void) {
     return animation;
 
   animation = AntAnimCarryRight;
-  return AntAnimNothing;
+  return animation;
 
 }
 
@@ -692,7 +699,7 @@ unsigned int ant_c::SFLeaveLadderLeft(void) {
     return animation;
 
   animation = AntAnimCarryLeft;
-  return AntAnimNothing;
+  return animation;
 }
 
 unsigned int ant_c::SFEnterLadder(void) {
@@ -1177,14 +1184,14 @@ unsigned int ant_c::checkForNoKeyActions(void) {
   }
 
   // tapping and yawning when nothing else is going on
-  if (((inactiveTimer & 0x20) == 0x20) && ((inactiveTimer & 0x1F) == 5))
+  if (((inactiveTimer & 0x20) == 0x20) && ((inactiveTimer & 0x1F) == 0))
   {
     soundSystem_c::instance()->startSound(soundSystem_c::SE_NU_WHAT);
     animation = AntAnimTapping;
     return AntAnimTapping;
   }
 
-  if (((inactiveTimer & 0x20) == 0x20) && ((inactiveTimer & 0x1F) <= 5))
+  if (((inactiveTimer & 0x20) == 0x20) && ((inactiveTimer & 0x1F) < 5))
   {
     animation = AntAnimTapping;
     return AntAnimTapping;
