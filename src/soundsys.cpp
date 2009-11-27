@@ -131,6 +131,8 @@ void soundSystem_c::closeSound(void) {
 
 void soundSystem_c::playMusic(const std::string & fname) {
 
+  if (!useSound) return;
+
   std::cout << "trying to play: " << fname << std::endl;
 
   if (music)
