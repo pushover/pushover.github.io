@@ -1,1 +1,9 @@
+Version 0.0.2
 
+- internationalisation with translation into German, and starting translations for russian and czech
+- replacement graphics for half of the themes, new composed music for half of the themes
+- some little fixes to level end recognition, and a proper message when things go wrong
+- make game mechanic match even closer to the original game
+- import the solutions recordings provided with the original levels, nearly all of them can be done
+- sound can now be toggled
+- hopefully fix an endian problem when loading graphic files
