@@ -731,9 +731,33 @@ void levelPlayer_c::DTA_E(int x, int y) {
   if (isTherePlatform(x, y))
   {
     // we still crash if there is a domino below us
-    if (getDominoType(x, y+1) != DominoTypeEmpty)
+    if (getDominoType(x, y+1) != DominoTypeEmpty &&
+        getDominoType(x, y+1) != DominoTypeAscender
+        )
     {
       DominoCrash(x, y+1, getDominoType(x, y), getDominoExtra(x, y));
+    }
+
+    if (getDominoType(x, y+1) == DominoTypeAscender)
+    {
+      if (getDominoState(x, y+1) == 1)
+      {
+        setDominoState(x-1, y+2, 14);
+        setDominoType(x-1, y+2, DominoTypeAscender);
+        setDominoDir(x-1, y+2, -1);
+        setDominoExtra(x-1, y+2, 0x00);
+        setDominoYOffset(x-1, y+2, getDominoYOffset(x, y+1)-16);
+        removeDomino(x, y+1);
+      }
+      if (getDominoState(x, y+1) == 15)
+      {
+        setDominoState(x+1, y+2, 2);
+        setDominoType(x+1, y+2, DominoTypeAscender);
+        setDominoDir(x+1, y+2, 1);
+        setDominoExtra(x+1, y+2, 0x00);
+        setDominoYOffset(x+1, y+2, getDominoYOffset(x, y+1)-16);
+        removeDomino(x, y+1);
+      }
     }
 
     // no more falling
