@@ -306,6 +306,7 @@ int main(int argc, char * argv[]) {
       textsections_c sections(file, true);
       l.load(sections);
       selectedMission = "Original";            // TODO we need to find out which levelset this file belongs to
+      soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
 
       nextState = ST_PREPLAY;
     }
@@ -330,7 +331,10 @@ int main(int argc, char * argv[]) {
   unsigned int failReason = 0;
   unsigned int failDelay = 0; // a counter to delay the fail window a bit after failing
 
-  soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
+  if (nextState == ST_MAIN)
+  {
+    soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
+  }
 
   try {
 

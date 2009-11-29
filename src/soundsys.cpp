@@ -135,8 +135,6 @@ void soundSystem_c::playMusic(const std::string & fname) {
 
   static std::string currentlyPlaying = "";
 
-  std::cout << "trying to play: " << fname << std::endl;
-
   if (fname == currentlyPlaying) return;
 
   if (music)
