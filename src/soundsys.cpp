@@ -133,7 +133,11 @@ void soundSystem_c::playMusic(const std::string & fname) {
 
   if (!useSound) return;
 
+  static std::string currentlyPlaying = "";
+
   std::cout << "trying to play: " << fname << std::endl;
+
+  if (fname == currentlyPlaying) return;
 
   if (music)
   {
@@ -149,6 +153,11 @@ void soundSystem_c::playMusic(const std::string & fname) {
   if (music)
   {
     Mix_PlayMusic(music, -1);
+    currentlyPlaying = fname;
+  }
+  else
+  {
+    currentlyPlaying = "";
   }
 }
 

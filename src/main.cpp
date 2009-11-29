@@ -624,7 +624,6 @@ int main(int argc, char * argv[]) {
                 {
                   case 0:
                     nextState = ST_LEVEL;
-                    soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
                     break; // select next level to play
                 }
               }
