@@ -182,7 +182,7 @@ msgstr "Gescheitert: Du bist tot"
 
 #: src/window.cpp:452
 msgid "You failed: Trigger was not last to fall"
-msgstr "Gescheitert: Der Auslöser war nicht der letzte Stein"
+msgstr "Gescheitert: Auslöser muß als letzter umfallen"
 
 #: src/window.cpp:453
 msgid "You failed: Trigger not flat on the ground"
