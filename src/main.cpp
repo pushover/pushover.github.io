@@ -269,6 +269,7 @@ int main(int argc, char * argv[]) {
       selectedMission = rec.getLevelsetName();
       levelsetList.getLevelset(selectedMission).loadLevel(l, rec.getLevelName());
       a.initForLevel();
+      soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
 
       nextState = ST_REPLAY;
     }
