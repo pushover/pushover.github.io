@@ -1421,9 +1421,6 @@ unsigned int ant_c::SFNextAction(void) {
           direction = -1;
         }
       }
-      else if (numPushsLeft == 0)
-      {
-      }
       else if (!PushableDomino(blockX+1, blockY, -1))
       {
       }
@@ -1534,9 +1531,6 @@ unsigned int ant_c::SFNextAction(void) {
           numPushsLeft--;
           direction = 1;
         }
-      }
-      else if (numPushsLeft == 0)
-      {
       }
       else if (!PushableDomino(blockX-1, blockY, 1))
       {
