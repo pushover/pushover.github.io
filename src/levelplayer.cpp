@@ -2114,11 +2114,19 @@ int levelPlayer_c::performDominos(ant_c & a) {
 
   timeTick();
 
+  int reason = 0;
+
+  if (finishCheckDone && !levelCompleted(reason))
+  {
+    // we failed after all
+    openExitDoor(false);
+
+    return reason;
+  }
+
   if (triggerIsFalln() && !finishCheckDone)
   {
     finishCheckDone = true;
-
-    int reason = 0;
 
     if (levelCompleted(reason) && !a.carrySomething() && a.isLiving())
     {
@@ -2180,7 +2188,7 @@ bool levelPlayer_c::levelCompleted(int & fail) {
         }
         else if (getDominoType(x, y) == DominoTypeTrigger)
         { // triggers must as least have started to fall
-          if (getDominoState(x, y) == 8)
+          if (getDominoState(x, y) == 8 && !triggerIsFalln())
           {
             fail = 6;
             return false;
