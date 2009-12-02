@@ -1178,21 +1178,45 @@ void levelPlayer_c::DTA_A(int x, int y) {
   {
     if (a == 1)
     {
-      setDominoExtra(x-1, y, 0x60);
-      setDominoType(x-1, y, DominoTypeAscender);
-      setDominoState(x-1, y, 14);
-      setDominoDir(x-1, y, -1);
-      setDominoYOffset(x-1, y, getDominoYOffset(x, y)-2);
+      if (getDominoType(x-1, y) == DominoTypeEmpty)
+      {
+        setDominoExtra(x-1, y, 0x60);
+        setDominoType(x-1, y, DominoTypeAscender);
+        setDominoState(x-1, y, 14);
+        setDominoDir(x-1, y, -1);
+        setDominoYOffset(x-1, y, getDominoYOffset(x, y)-2);
+      }
+      else
+      {
+        DominoCrash(x-1, y, getDominoType(x, y), getDominoExtra(x, y));
+
+        markDirty(x-2, y-2);
+        markDirty(x-1, y-2);
+        markDirty(x-2, y-1);
+        markDirty(x-1, y-1);
+      }
     }
     else
     {
       if (y > 0)
       {
-        setDominoExtra(x-1, y-1, 0x60);
-        setDominoType(x-1, y-1, DominoTypeAscender);
-        setDominoState(x-1, y-1, 14);
-        setDominoDir(x-1, y-1, -1);
-        setDominoYOffset(x-1, y-1, getDominoYOffset(x, y)+14);
+        if (getDominoType(x-1, y-1) == DominoTypeEmpty)
+        {
+          setDominoExtra(x-1, y-1, 0x60);
+          setDominoType(x-1, y-1, DominoTypeAscender);
+          setDominoState(x-1, y-1, 14);
+          setDominoDir(x-1, y-1, -1);
+          setDominoYOffset(x-1, y-1, getDominoYOffset(x, y)+14);
+        }
+        else
+        {
+          DominoCrash(x-1, y-1, getDominoType(x, y), getDominoExtra(x, y));
+
+          markDirty(x-2, y-3);
+          markDirty(x-1, y-3);
+          markDirty(x-2, y-2);
+          markDirty(x-1, y-2);
+        }
       }
     }
 
@@ -1210,27 +1234,51 @@ void levelPlayer_c::DTA_A(int x, int y) {
   {
     removeDomino(x, y);
 
-    setDominoExtra(x, y+1-a, 0x60);
-    setDominoType(x, y+1-a, DominoTypeAscender);
-    setDominoState(x, y+1-a, 8);
-    setDominoDir(x, y+1-a, -1);
-    setDominoYOffset(x, y+1-a, 0);
+    if (getDominoType(x, y+1-a) == DominoTypeEmpty)
+    {
+      setDominoExtra(x, y+1-a, 0x60);
+      setDominoType(x, y+1-a, DominoTypeAscender);
+      setDominoState(x, y+1-a, 8);
+      setDominoDir(x, y+1-a, -1);
+      setDominoYOffset(x, y+1-a, 0);
 
-    markDirty(x, y-a);
-    markDirty(x-1, y-a);
-    markDirty(x, y-a+1);
-    markDirty(x-1, y-a+1);
+      markDirty(x, y-a);
+      markDirty(x-1, y-a);
+      markDirty(x, y-a+1);
+      markDirty(x-1, y-a+1);
+    }
+    else
+    {
+      DominoCrash(x, y+1-a, getDominoType(x, y), getDominoExtra(x, y));
+
+      markDirty(x-1, y-1-a);
+      markDirty(x, y-1-a);
+      markDirty(x-1, y-a);
+      markDirty(x, y-a);
+    }
 
     return;
   }
 
   if (getDominoExtra(x, y) != 0x50)
   {
-    setDominoType(x, y-1, getDominoType(x, y));
-    setDominoState(x, y-1, getDominoState(x, y));
-    setDominoDir(x, y-1, getDominoDir(x, y));
-    setDominoYOffset(x, y-1, getDominoYOffset(x, y)+16);
-    setDominoExtra(x, y-1, 0x50);
+    if (getDominoType(x, y-1) == DominoTypeEmpty)
+    {
+      setDominoType(x, y-1, getDominoType(x, y));
+      setDominoState(x, y-1, getDominoState(x, y));
+      setDominoDir(x, y-1, getDominoDir(x, y));
+      setDominoYOffset(x, y-1, getDominoYOffset(x, y)+16);
+      setDominoExtra(x, y-1, 0x50);
+    }
+    else
+    {
+      DominoCrash(x, y-1, getDominoType(x, y), getDominoExtra(x, y));
+
+      markDirty(x-1, y-3);
+      markDirty(x, y-3);
+      markDirty(x-1, y-2);
+      markDirty(x, y-2);
+    }
 
     removeDomino(x, y);
   }
@@ -1271,6 +1319,11 @@ void levelPlayer_c::DTA_O(int x, int y) {
       else
       {
         DominoCrash(x+1, y, getDominoType(x, y), getDominoExtra(x, y));
+
+        markDirty(x, y-2);
+        markDirty(x+1, y-2);
+        markDirty(x, y-1);
+        markDirty(x+1, y-1);
       }
     }
     else
@@ -1288,6 +1341,11 @@ void levelPlayer_c::DTA_O(int x, int y) {
         else
         {
           DominoCrash(x+1, y-1, getDominoType(x, y), getDominoExtra(x, y));
+
+          markDirty(x, y-3);
+          markDirty(x+1, y-3);
+          markDirty(x, y-2);
+          markDirty(x+1, y-2);
         }
       }
     }
@@ -1317,6 +1375,11 @@ void levelPlayer_c::DTA_O(int x, int y) {
     else
     {
       DominoCrash(x, y+1-a, getDominoType(x, y), getDominoExtra(x, y));
+
+      markDirty(x-1, y-1-a);
+      markDirty(x, y-1-a);
+      markDirty(x-1, y-a);
+      markDirty(x, y-a);
     }
 
     markDirty(x, y-a);
@@ -1329,11 +1392,23 @@ void levelPlayer_c::DTA_O(int x, int y) {
 
   if (getDominoExtra(x, y) != 0x50)
   {
-    setDominoType(x, y-1, getDominoType(x, y));
-    setDominoState(x, y-1, getDominoState(x, y));
-    setDominoDir(x, y-1, getDominoDir(x, y));
-    setDominoYOffset(x, y-1, getDominoYOffset(x, y)+16);
-    setDominoExtra(x, y-1, 0x50);
+    if (getDominoType(x, y-1) == DominoTypeEmpty)
+    {
+      setDominoType(x, y-1, getDominoType(x, y));
+      setDominoState(x, y-1, getDominoState(x, y));
+      setDominoDir(x, y-1, getDominoDir(x, y));
+      setDominoYOffset(x, y-1, getDominoYOffset(x, y)+16);
+      setDominoExtra(x, y-1, 0x50);
+    }
+    else
+    {
+      DominoCrash(x, y-1, getDominoType(x, y), getDominoExtra(x, y));
+
+      markDirty(x-1, y-3);
+      markDirty(x, y-3);
+      markDirty(x-1, y-2);
+      markDirty(x, y-2);
+    }
 
     removeDomino(x, y);
   }
