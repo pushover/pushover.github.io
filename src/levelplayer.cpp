@@ -710,11 +710,21 @@ void levelPlayer_c::DTA_E(int x, int y) {
     // the domino into the next block below
     if (y < 12)
     {
-      setDominoType(x, y+1, getDominoType(x, y));
-      setDominoState(x, y+1, getDominoState(x, y));
-      setDominoDir(x, y+1, getDominoDir(x, y));
-      setDominoYOffset(x, y+1, 0);
-      setDominoExtra(x, y+1, 0x70);
+      if (getDominoType(x, y+1) == DominoTypeEmpty)
+      {
+        setDominoType(x, y+1, getDominoType(x, y));
+        setDominoState(x, y+1, getDominoState(x, y));
+        setDominoDir(x, y+1, getDominoDir(x, y));
+        setDominoYOffset(x, y+1, 0);
+        setDominoExtra(x, y+1, 0x70);
+      }
+      else
+      {
+        DominoCrash(x, y+1, getDominoType(x, y), getDominoExtra(x, y));
+        setDominoYOffset(x, y+1, 0);
+        markDirty(x, y);
+        markDirty(x, y+1);
+      }
     }
 
     // remove the old domino
@@ -778,7 +788,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
 
   // we can continue, if there is either no domino or no more
   // level below us
-  if (y >= 12 || getDominoType(x, y+1) == DominoTypeEmpty)
+  if (y >= 12 || getDominoType(x, y+1) == DominoTypeEmpty || getDominoYOffset(x, y+1) != 0)
   {
     setDominoYOffset(x, y, getDominoYOffset(x, y)+4);
     markDirty(x, y);
