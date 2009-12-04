@@ -15,7 +15,7 @@
 void levelPlayer_c::load(const textsections_c & sections) {
 
   openDoorEntry = openDoorExit = false;
-  triggerFalln = false;
+  resetTriggerFalln();
   finishCheckDone = false;
 
   levelDisplay_c::load(sections);
@@ -257,12 +257,12 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
 void levelPlayer_c::DTA_9(int x, int y) {
   DTA_1(x, y);
 
-  triggerFalln = true;
+  setTriggerFalln();
 }
 void levelPlayer_c::DTA_N(int x, int y) {
   DTA_K(x, y);
 
-  triggerFalln = true;
+  setTriggerFalln();
 }
 
 // this is for the stopper, splitter and exploder dominos, when they
@@ -2250,117 +2250,4 @@ int levelPlayer_c::performDominos(ant_c & a) {
   return 0;
 }
 
-bool levelPlayer_c::levelCompleted(int & fail) {
-
-  for (int y = 0; y < 13; y++)
-    for (int x = 0; x < 20; x++) {
-      if (getDominoType(x, y) >= DominoTypeCrash0 &&
-          getDominoType(x, y) <= DominoTypeCrash5)
-      {
-        fail = 3;
-        return false;
-      }
-
-      if (getDominoType(x, y) != DominoTypeEmpty && getDominoType(x, y) != DominoTypeStopper)
-      {
-        if (getDominoType(x, y) == DominoTypeSplitter)
-        { // for splitters is must have started to fall
-          if (getDominoState(x, y) > 2 && getDominoState(x, y) <= 8)
-          {
-            fail = 6;
-            return false;
-          }
-        }
-        else if (getDominoType(x, y) == DominoTypeTrigger)
-        { // triggers must as least have started to fall
-          if (getDominoState(x, y) == 8 && !triggerIsFalln())
-          {
-            fail = 6;
-            return false;
-          }
-        }
-        else if (getDominoType(x, y) == DominoTypeTumbler)
-        { // tumbler must lie on something or lean against a wall
-          // not falln far enough
-          if (getDominoState(x, y) > 3 && getDominoState(x, y) < 13) {
-            fail = 6;
-            return false;
-          }
-
-          // check if we lean against a step
-          if (getDominoState(x, y) == 3 &&
-              getFg(x-1, y) != FgElementPlatformStep4 &&
-              getFg(x-1, y) != FgElementPlatformStep7)
-          {
-            fail = 6;
-            return false;
-          }
-
-          if (getDominoState(x, y) == 13 &&
-              getFg(x+1, y) != FgElementPlatformStep4 &&
-              getFg(x+1, y) != FgElementPlatformStep7)
-          {
-            fail = 6;
-            return false;
-          }
-
-          // falln far enough but neighbor empty
-          if (   getDominoState(x, y) <= 2
-              && getDominoType(x-1, y) == DominoTypeEmpty
-              && (getDominoType(x-2, y) == DominoTypeEmpty || getDominoState(x-2, y) < 14))
-          {
-            fail = 6;
-            return false;
-          }
-          if (   getDominoState(x, y) >= 14
-              && getDominoType(x+1, y) == DominoTypeEmpty
-              && (getDominoType(x+2, y) == DominoTypeEmpty || getDominoState(x+2, y) > 2)) {
-            fail = 6;
-            return false;
-          }
-
-        }
-        else
-        {
-          if (getDominoState(x, y) == 8)
-          {
-            fail = 4;
-            return false;
-          }
-          if (getDominoState(x, y) > 3 && getDominoState(x, y) < 13)
-          {
-            // here we certainly fail
-            fail = 6;
-            return false;
-          }
-          // in this case we might still succeed, when we lean against a block
-          if (   getDominoState(x, y) == 3
-              && getFg(x-1, y) != FgElementPlatformStep4
-              && (   getDominoType(x-1, y) != DominoTypeStopper
-                  || getDominoType(x+1, y) == DominoTypeEmpty
-                  || (getDominoDir(x+1, y) != -1 && getDominoType(x+1, y) != DominoTypeSplitter))
-             )
-          {
-            // here we lean against a of a blocker and can't go back
-            fail = 6;
-            return false;
-          }
-
-          if (   getDominoState(x, y) == 13
-              && getFg(x+1, y) != FgElementPlatformStep7
-              && (   getDominoType(x+1, y) != DominoTypeStopper
-                  || getDominoType(x-1, y) == DominoTypeEmpty
-                  || (getDominoDir(x-1, y) != 1 && getDominoType(x-1, y) != DominoTypeSplitter))
-             )
-          {
-            // here we lean against a step
-            fail = 6;
-            return false;
-          }
-        }
-      }
-    }
-
-  return true;
-}
 

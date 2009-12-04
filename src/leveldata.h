@@ -46,6 +46,7 @@ class levelData_c {
     levelEntry level[13][20];
     unsigned char numBg;
 
+    bool triggerFalln;
 
 
   public:
@@ -156,6 +157,14 @@ class levelData_c {
     bool isTherePlatform(int x, int y);
 
     void print(void);
+
+    bool triggerIsFalln(void) const { return triggerFalln; }
+    void setTriggerFalln(void) { triggerFalln = true; }
+    void resetTriggerFalln(void) { triggerFalln = false; }
+
+    // check, if the level has been successfully solved
+    // if not the reason for failure is in fail
+    bool levelCompleted(int & fail) const;
 
 };
 

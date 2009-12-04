@@ -89,16 +89,20 @@ void check(int argn, char * argv[], std::string checker(const ant_c & a, const l
 }
 
 std::string checker1(const ant_c & a, const levelData_c & l) {
+
+    int i;
     // we succeeded, when the ant has vanished, then it went out of the door
-    if (a.isVisible() == false)
+    if (a.isVisible() == false && l.levelCompleted(i))
       return "";
     else
       return "Level not Finished";
 }
 
 std::string checker2(const ant_c & a, const levelData_c & l) {
+
+    int i;
     // we succeeded, when the ant has vanished, then it went out of the door
-    if (a.isVisible() == true)
+    if (a.isVisible() == true || !l.levelCompleted(i))
       return "";
     else
       return "Level not Failed";
@@ -735,6 +739,18 @@ int main(int argc, char * argv[]) {
             a.setKeyStates(keyMask);
           }
           failReason = playTick(l, a);
+
+          if (failReason == 1)
+          {
+            while (!l.levelInactive())
+            {
+              failReason = playTick(l, a);
+
+              if (failReason != 1 && failReason != 0)
+                break;
+            }
+          }
+
           switch (failReason) {
             case 1:
               rec.save("sol");

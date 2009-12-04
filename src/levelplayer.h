@@ -46,8 +46,6 @@ class levelPlayer_c : public levelDisplay_c {
     void DTA_O(int x, int y);
     void DTA_B(int x, int y);
 
-    bool triggerFalln;
-
     // a counter used to see, if nothing happens within the level
     int inactive;
 
@@ -71,11 +69,7 @@ class levelPlayer_c : public levelDisplay_c {
 
     bool pushDomino(int x, int y, int dir);
 
-    // check, if the level has been successfully solved
-    // if not the reason for failure is in fail
-    bool levelCompleted(int & fail);
-
-    bool triggerIsFalln(void) { return triggerFalln; }
+    bool levelInactive(void) { return inactive > 30; }
 };
 
 #endif
