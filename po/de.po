@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: roever@users.sf.net\n"
-"POT-Creation-Date: 2009-11-29 22:10+0100\n"
+"POT-Creation-Date: 2009-12-04 21:20+0100\n"
 "PO-Revision-Date: 2008-11-18 18:18+0100\n"
 "Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -188,7 +188,7 @@ msgstr "Gescheitert: Auslöser muß als letzter umfallen"
 msgid "You failed: Trigger not flat on the ground"
 msgstr "Gescheitert: Der Auslöser liegt nicht flach"
 
-#: src/main.cpp:394
+#: src/main.cpp:403
 msgid "Arrange dominos in a run so that trigger falls last. You have 1 push."
 msgstr ""
 "Dominos so anordnen, dass der Auslöser als letzter fällt. Du hast einen Stoß."
@@ -271,881 +271,889 @@ msgid "You can get dominoes in front of doors!"
 msgstr "Man kann Dominos vor Türen bringen!"
 
 #: po/leveltexts.txt:20
+msgid "Out of reach"
+msgstr "Außer Reichweite"
+
+#: po/leveltexts.txt:21
+msgid "Hit the Raiser on the head"
+msgstr "Schlag den Aufsteiger auf den Kopf"
+
+#: po/leveltexts.txt:22
 msgid "Run!"
 msgstr "Lauf!"
 
-#: po/leveltexts.txt:21
+#: po/leveltexts.txt:23
 msgid "Just run!"
 msgstr "Lauf einfach!"
 
-#: po/leveltexts.txt:22
+#: po/leveltexts.txt:24
 msgid "Run 'n' Bridge"
 msgstr "Lauf und Überbrücke!"
 
-#: po/leveltexts.txt:23
+#: po/leveltexts.txt:25
 msgid "Run and push the Bridger!"
 msgstr "Lauf und drücke den Überbrücker!"
 
-#: po/leveltexts.txt:24
+#: po/leveltexts.txt:26
 msgid "Still too easy"
 msgstr "Immer noch zu leicht"
 
-#: po/leveltexts.txt:25
+#: po/leveltexts.txt:27
 msgid "Hurry up, but don't be too fast!"
 msgstr "Schnell, aber nicht zu schnell!"
 
-#: po/leveltexts.txt:26
+#: po/leveltexts.txt:28
 msgid "Too easy"
 msgstr "Zu leicht"
 
-#: po/leveltexts.txt:27
+#: po/leveltexts.txt:29
 msgid "Push Trigger into left direction and hurry up!"
 msgstr "Drücke den Auslöser nach links und beeil dich!"
 
-#: po/leveltexts.txt:28
+#: po/leveltexts.txt:30
 msgid "Wrong direction"
 msgstr "Falsche Richtung"
 
-#: po/leveltexts.txt:29
+#: po/leveltexts.txt:31
 msgid "Mirror the level!"
 msgstr "Spiegel das Level!"
 
-#: po/leveltexts.txt:30
+#: po/leveltexts.txt:32
 msgid "001"
 msgstr "001"
 
-#: po/leveltexts.txt:31
+#: po/leveltexts.txt:33
 msgid "Move them close, then push!"
 msgstr "Dicht aneinander reihen und drücken!"
 
-#: po/leveltexts.txt:32
+#: po/leveltexts.txt:34
 msgid "002"
 msgstr "002"
 
-#: po/leveltexts.txt:33
+#: po/leveltexts.txt:35
 msgid "Move and push!"
 msgstr "Bewege und drücke!"
 
-#: po/leveltexts.txt:34
+#: po/leveltexts.txt:36
 msgid "003"
 msgstr "003"
 
-#: po/leveltexts.txt:35
+#: po/leveltexts.txt:37
 msgid "You need to tumble!"
 msgstr "Du musst rollen"
 
-#: po/leveltexts.txt:36
+#: po/leveltexts.txt:38
 msgid "004"
 msgstr "004"
 
-#: po/leveltexts.txt:37
+#: po/leveltexts.txt:39
 msgid "Which side?"
 msgstr "Welche Seite?"
 
-#: po/leveltexts.txt:38
+#: po/leveltexts.txt:40
 msgid "005"
 msgstr "005"
 
-#: po/leveltexts.txt:39
+#: po/leveltexts.txt:41
 msgid "Move the Bridger!"
 msgstr "Bewege den Überbrücker!"
 
-#: po/leveltexts.txt:40
+#: po/leveltexts.txt:42
 msgid "006"
 msgstr "006"
 
-#: po/leveltexts.txt:41
+#: po/leveltexts.txt:43
 msgid "Where to split?"
 msgstr "Wo spalten?"
 
-#: po/leveltexts.txt:42
+#: po/leveltexts.txt:44
 msgid "007"
 msgstr "007"
 
-#: po/leveltexts.txt:43
+#: po/leveltexts.txt:45
 msgid "Pop the floor!"
 msgstr "Durchlöchere den Boden!"
 
-#: po/leveltexts.txt:44
+#: po/leveltexts.txt:46
 msgid "008"
 msgstr "008"
 
-#: po/leveltexts.txt:45
+#: po/leveltexts.txt:47
 msgid "Should the Blocker be there?"
 msgstr "Sollte der Blocker da sein?"
 
-#: po/leveltexts.txt:46
+#: po/leveltexts.txt:48
 msgid "009"
 msgstr "009"
 
-#: po/leveltexts.txt:47
+#: po/leveltexts.txt:49
 msgid "Swap the blocks!"
 msgstr "Tausche die Blöcke!"
 
-#: po/leveltexts.txt:48
+#: po/leveltexts.txt:50
 msgid "010"
 msgstr "010"
 
-#: po/leveltexts.txt:49
+#: po/leveltexts.txt:51
 msgid "Tumbler up!"
 msgstr "Roller hoch!"
 
-#: po/leveltexts.txt:50
+#: po/leveltexts.txt:52
 msgid "011"
 msgstr "011"
 
-#: po/leveltexts.txt:51
+#: po/leveltexts.txt:53
 msgid "Watch the gap!"
 msgstr "Pass auf die Lücke auf!"
 
-#: po/leveltexts.txt:52
+#: po/leveltexts.txt:54
 msgid "012"
 msgstr "012"
 
-#: po/leveltexts.txt:53
+#: po/leveltexts.txt:55
 msgid "Float away!"
 msgstr "Fliege weg!"
 
-#: po/leveltexts.txt:54
+#: po/leveltexts.txt:56
 msgid "013"
 msgstr "013"
 
-#: po/leveltexts.txt:55
+#: po/leveltexts.txt:57
 msgid "Drop a Yellow, make the push!"
 msgstr "Lasse einen gelben fallen, dann drücken!"
 
-#: po/leveltexts.txt:56
+#: po/leveltexts.txt:58
 msgid "014"
 msgstr "014"
 
-#: po/leveltexts.txt:57
+#: po/leveltexts.txt:59
 msgid "Move a few and push!"
 msgstr "Bewege ein paar und drücke!"
 
-#: po/leveltexts.txt:58
+#: po/leveltexts.txt:60
 msgid "015"
 msgstr "015"
 
-#: po/leveltexts.txt:59
+#: po/leveltexts.txt:61
 msgid "To float is the key!"
 msgstr "Fliegen ist der Schlüssel!"
 
-#: po/leveltexts.txt:60
+#: po/leveltexts.txt:62
 msgid "016"
 msgstr "016"
 
-#: po/leveltexts.txt:61
+#: po/leveltexts.txt:63
 msgid "Place the Bridge, swap the Yellow, push the right side!"
 msgstr ""
 "Platziere die Brücke, tausche die gelben und drücke die richtige Seite!"
 
-#: po/leveltexts.txt:62
+#: po/leveltexts.txt:64
 msgid "017"
 msgstr "017"
 
-#: po/leveltexts.txt:63
+#: po/leveltexts.txt:65
 msgid "It's your problem!"
 msgstr "Das ist dein Problem!"
 
-#: po/leveltexts.txt:64
+#: po/leveltexts.txt:66
 msgid "018"
 msgstr "018"
 
-#: po/leveltexts.txt:65
+#: po/leveltexts.txt:67
 msgid "Move the Exploder, swap some Yellows, push from the top!"
 msgstr "Bewege den Explodierer, tausche einige gelbe, drücke von oben!"
 
-#: po/leveltexts.txt:66
+#: po/leveltexts.txt:68
 msgid "019"
 msgstr "019"
 
-#: po/leveltexts.txt:67
+#: po/leveltexts.txt:69
 msgid "Drop a Yellow, move Exploder, now it's up to you!"
 msgstr "Lasse gelben fallen, bewege Explodierer, nun liegt es an dir!"
 
-#: po/leveltexts.txt:68
+#: po/leveltexts.txt:70
 msgid "020"
 msgstr "020"
 
-#: po/leveltexts.txt:69
+#: po/leveltexts.txt:71
 msgid "Hide the Blocker behind the ladder!"
 msgstr "Verstecke den Blocker hinter der Leiter!"
 
-#: po/leveltexts.txt:70
+#: po/leveltexts.txt:72
 msgid "021"
 msgstr "021"
 
-#: po/leveltexts.txt:71
+#: po/leveltexts.txt:73
 msgid "It's easy!"
 msgstr "Das ist einfach!"
 
-#: po/leveltexts.txt:72
+#: po/leveltexts.txt:74
 msgid "022"
 msgstr "022"
 
-#: po/leveltexts.txt:73
+#: po/leveltexts.txt:75
 msgid "Bring them down!"
 msgstr "Bring sie runter!"
 
-#: po/leveltexts.txt:74
+#: po/leveltexts.txt:76
 msgid "023"
 msgstr "023"
 
-#: po/leveltexts.txt:75
+#: po/leveltexts.txt:77
 msgid "One block to move!"
 msgstr "Ein Block muss bewegt werden!"
 
-#: po/leveltexts.txt:76
+#: po/leveltexts.txt:78
 msgid "024"
 msgstr "024"
 
-#: po/leveltexts.txt:77
+#: po/leveltexts.txt:79
 msgid "You can drop a Yellow!"
 msgstr "Du kannst einen gelben fallen lassen!"
 
-#: po/leveltexts.txt:78
+#: po/leveltexts.txt:80
 msgid "025"
 msgstr "025"
 
-#: po/leveltexts.txt:79
+#: po/leveltexts.txt:81
 msgid "It's just a big Delay!"
 msgstr "Das ist nur eine große Verzögerung!"
 
-#: po/leveltexts.txt:80
+#: po/leveltexts.txt:82
 msgid "026"
 msgstr "026"
 
-#: po/leveltexts.txt:81
+#: po/leveltexts.txt:83
 msgid "Tumbler!"
 msgstr "Roller!"
 
-#: po/leveltexts.txt:82
+#: po/leveltexts.txt:84
 msgid "027"
 msgstr "027"
 
-#: po/leveltexts.txt:83
+#: po/leveltexts.txt:85
 msgid "Exploder to go!"
 msgstr "Explodierer muss gehen!"
 
-#: po/leveltexts.txt:84
+#: po/leveltexts.txt:86
 msgid "028"
 msgstr "028"
 
-#: po/leveltexts.txt:85
+#: po/leveltexts.txt:87
 msgid "Wrong way - wrong place!"
 msgstr "Falsche Richtung - falscher Platz!"
 
-#: po/leveltexts.txt:86
+#: po/leveltexts.txt:88
 msgid "029"
 msgstr "029"
 
-#: po/leveltexts.txt:87
+#: po/leveltexts.txt:89
 msgid "You need four in a line before you push!"
 msgstr "Du brauchst 4 in einer Reihe, bevor du drückst!"
 
-#: po/leveltexts.txt:88
+#: po/leveltexts.txt:90
 msgid "030"
 msgstr "030"
 
-#: po/leveltexts.txt:89
+#: po/leveltexts.txt:91
 msgid "Three blocks to move, the Tumbler is one!"
 msgstr "3 Blöcke sind zu bewegen. Der Roller ist einer davon!"
 
-#: po/leveltexts.txt:90
+#: po/leveltexts.txt:92
 msgid "031"
 msgstr "031"
 
-#: po/leveltexts.txt:91
+#: po/leveltexts.txt:93
 msgid "Swap the Floater with some block!"
 msgstr "Tausche den Aufsteiger mit einem Domino!"
 
-#: po/leveltexts.txt:92
+#: po/leveltexts.txt:94
 msgid "032"
 msgstr "032"
 
-#: po/leveltexts.txt:93
+#: po/leveltexts.txt:95
 msgid "You need to move Delays to the Trigger side!"
 msgstr "Du musst ein paar Verzögerer an die Seite des Auslösers stellen!"
 
-#: po/leveltexts.txt:94
+#: po/leveltexts.txt:96
 msgid "033"
 msgstr "033"
 
-#: po/leveltexts.txt:95
+#: po/leveltexts.txt:97
 msgid "Move with care!"
 msgstr "Bewege dich vorsichtig!"
 
-#: po/leveltexts.txt:96
+#: po/leveltexts.txt:98
 msgid "034"
 msgstr "034"
 
-#: po/leveltexts.txt:97
+#: po/leveltexts.txt:99
 msgid "Stop the move!"
 msgstr "Stopp die Bewegung!"
 
-#: po/leveltexts.txt:98
+#: po/leveltexts.txt:100
 msgid "035"
 msgstr "035"
 
-#: po/leveltexts.txt:99
+#: po/leveltexts.txt:101
 msgid "Move the Float and the Normal, but leave the Delay alone!"
 msgstr "Bewege den Aufsteiger und den normalen, lass den Verzögerer stehen!"
 
-#: po/leveltexts.txt:100
+#: po/leveltexts.txt:102
 msgid "036"
 msgstr "036"
 
-#: po/leveltexts.txt:101
+#: po/leveltexts.txt:103
 msgid "Get home in time!"
 msgstr "Kehre rechtzeitig heim!"
 
-#: po/leveltexts.txt:102
+#: po/leveltexts.txt:104
 msgid "037"
 msgstr "037"
 
-#: po/leveltexts.txt:103
+#: po/leveltexts.txt:105
 msgid "Start the run in the middle!"
 msgstr "Start die Reaktion in der Mitte!"
 
-#: po/leveltexts.txt:104
+#: po/leveltexts.txt:106
 msgid "038"
 msgstr "038"
 
-#: po/leveltexts.txt:105
+#: po/leveltexts.txt:107
 msgid "Place the Floater, swap the top!"
 msgstr "Platziere den Aufsteiger, tausche oben!"
 
-#: po/leveltexts.txt:106
+#: po/leveltexts.txt:108
 msgid "039"
 msgstr "039"
 
-#: po/leveltexts.txt:107
+#: po/leveltexts.txt:109
 msgid "Just move the Normal dominoes up and the Blocker across!"
 msgstr "Stelle die normalen Dominos hoch und den Blocker weg!"
 
-#: po/leveltexts.txt:108
+#: po/leveltexts.txt:110
 msgid "040"
 msgstr "040"
 
-#: po/leveltexts.txt:109
+#: po/leveltexts.txt:111
 msgid "Move the Delay!"
 msgstr "Verschiebe den Verzögerer!"
 
-#: po/leveltexts.txt:110
+#: po/leveltexts.txt:112
 msgid "041"
 msgstr "041"
 
-#: po/leveltexts.txt:111
+#: po/leveltexts.txt:113
 msgid "Build a bridge!"
 msgstr "Baue eine Brücke!"
 
-#: po/leveltexts.txt:112
+#: po/leveltexts.txt:114
 msgid "042"
 msgstr "042"
 
-#: po/leveltexts.txt:113
+#: po/leveltexts.txt:115
 msgid "Drop the block!"
 msgstr "Lasse den Block fallen!"
 
-#: po/leveltexts.txt:114
+#: po/leveltexts.txt:116
 msgid "043"
 msgstr "043"
 
-#: po/leveltexts.txt:115
+#: po/leveltexts.txt:117
 msgid "Just a Tumbler in the wrong place!"
 msgstr "Nur ein Roller am falschen Platz!"
 
-#: po/leveltexts.txt:116
+#: po/leveltexts.txt:118
 msgid "044"
 msgstr "044"
 
-#: po/leveltexts.txt:117
+#: po/leveltexts.txt:119
 msgid "Move the Floater, make the push!"
 msgstr "Bewege den Aufsteiger, dann drücken!"
 
-#: po/leveltexts.txt:118
+#: po/leveltexts.txt:120
 msgid "045"
 msgstr "045"
 
-#: po/leveltexts.txt:119
+#: po/leveltexts.txt:121
 msgid "Make a trap for the Tumbler until a bridge is made!"
 msgstr "Baue eine Falle für den Roller bis eine Brücke gebaut ist!"
 
-#: po/leveltexts.txt:120
+#: po/leveltexts.txt:122
 msgid "046"
 msgstr "046"
 
-#: po/leveltexts.txt:121
+#: po/leveltexts.txt:123
 msgid "Place the Floaters!"
 msgstr "Platziere die Aufsteiger!"
 
-#: po/leveltexts.txt:122
+#: po/leveltexts.txt:124
 msgid "047"
 msgstr "047"
 
-#: po/leveltexts.txt:123
+#: po/leveltexts.txt:125
 msgid "Move a Delay down and watch the Tumbler and Floater cross over!"
 msgstr ""
 "Bewege einen Verzögerer nach unten und beobachte wie Aufsteiger und Roller "
 "ihren Weg kreuzen!"
 
-#: po/leveltexts.txt:124
+#: po/leveltexts.txt:126
 msgid "048"
 msgstr "048"
 
-#: po/leveltexts.txt:125
+#: po/leveltexts.txt:127
 msgid "Time is tight!"
 msgstr "Die Zeit ist knapp!"
 
-#: po/leveltexts.txt:126
+#: po/leveltexts.txt:128
 msgid "049"
 msgstr "049"
 
-#: po/leveltexts.txt:127
+#: po/leveltexts.txt:129
 msgid "Make the push, grab the block and run for your life!"
 msgstr "Drücken, Domino schnappen, um's Leben laufen!"
 
-#: po/leveltexts.txt:128
+#: po/leveltexts.txt:130
 msgid "050"
 msgstr "050"
 
-#: po/leveltexts.txt:129
+#: po/leveltexts.txt:131
 msgid "Push and pick up and run!"
 msgstr "Drücken, aufnehmen und laufen!"
 
-#: po/leveltexts.txt:130
+#: po/leveltexts.txt:132
 msgid "051"
 msgstr "051"
 
-#: po/leveltexts.txt:131
+#: po/leveltexts.txt:133
 msgid "Drop the domino that's by the exit! Make the push later!"
 msgstr "Lasse den Domino beim Ausgang fallen und drücke später!"
 
-#: po/leveltexts.txt:132
+#: po/leveltexts.txt:134
 msgid "052"
 msgstr "052"
 
-#: po/leveltexts.txt:133
+#: po/leveltexts.txt:135
 msgid "Make the push, move your Floater! Stop the block! Go home!"
 msgstr "Drücke, verstelle den Aufsteiger! Stoppe den Domino! Gehe heim!"
 
-#: po/leveltexts.txt:134
+#: po/leveltexts.txt:136
 msgid "053"
 msgstr "053"
 
-#: po/leveltexts.txt:135
+#: po/leveltexts.txt:137
 msgid "Start the main run with a drop and push the others!"
 msgstr ""
 "Starte die Hauptreaktion mit einem fallenden Domino und drücke die anderen!"
 
-#: po/leveltexts.txt:136
+#: po/leveltexts.txt:138
 msgid "054"
 msgstr "054"
 
-#: po/leveltexts.txt:137
+#: po/leveltexts.txt:139
 msgid "Place Floaters under the holes!"
 msgstr "Platziere die Aufsteiger unter die Löcher!"
 
-#: po/leveltexts.txt:138
+#: po/leveltexts.txt:140
 msgid "055"
 msgstr "055"
 
-#: po/leveltexts.txt:139
+#: po/leveltexts.txt:141
 msgid "Push the Tumbler, run and move the Bridge! Then jump! Be quick!"
 msgstr ""
 "Drücke den Roller, lauf und bewege den Überbrücker! Dann spring und sei "
 "schnell!"
 
-#: po/leveltexts.txt:140
+#: po/leveltexts.txt:142
 msgid "056"
 msgstr "056"
 
-#: po/leveltexts.txt:141
+#: po/leveltexts.txt:143
 msgid "Use Blockers to turn the dominoes!"
 msgstr "Benutze Blocker um die Dominos zurück zu bewegen!"
 
-#: po/leveltexts.txt:142
+#: po/leveltexts.txt:144
 msgid "057"
 msgstr "057"
 
-#: po/leveltexts.txt:143
+#: po/leveltexts.txt:145
 msgid "Tumblers cross in the middle! Timing is critical!"
 msgstr "Roller kreuzen sich in der Mitte. Timing ist wichtig!"
 
-#: po/leveltexts.txt:144
+#: po/leveltexts.txt:146
 msgid "058"
 msgstr "058"
 
-#: po/leveltexts.txt:145
+#: po/leveltexts.txt:147
 msgid ""
 "Drop dominoes on Splitters to start the runs! Move domino in front of exit!"
 msgstr "Schmeiße Dominos auf Teiler! Nimm Domino vor dem Ausgang!"
 
-#: po/leveltexts.txt:146
+#: po/leveltexts.txt:148
 msgid "059"
 msgstr "059"
 
-#: po/leveltexts.txt:147
+#: po/leveltexts.txt:149
 msgid "Push, block, move and run!"
 msgstr "Drücken, blockieren, bewegen und laufen!"
 
-#: po/leveltexts.txt:148
+#: po/leveltexts.txt:150
 msgid "060"
 msgstr "060"
 
-#: po/leveltexts.txt:149
+#: po/leveltexts.txt:151
 msgid "Drop the first Floater and push the second!"
 msgstr "Lasse ersten Aufsteiger fallen und drücke den zweiten!"
 
-#: po/leveltexts.txt:150
+#: po/leveltexts.txt:152
 msgid "061"
 msgstr "061"
 
-#: po/leveltexts.txt:151
+#: po/leveltexts.txt:153
 msgid "Place the Standard!"
 msgstr "Platziere den Standard-Domino!"
 
-#: po/leveltexts.txt:152
+#: po/leveltexts.txt:154
 msgid "062"
 msgstr "062"
 
-#: po/leveltexts.txt:153
+#: po/leveltexts.txt:155
 msgid "Get home quickly!"
 msgstr "Schnell nach Hause!"
 
-#: po/leveltexts.txt:154
+#: po/leveltexts.txt:156
 msgid "063"
 msgstr "063"
 
-#: po/leveltexts.txt:155
+#: po/leveltexts.txt:157
 msgid "Arrange Delays down central column and push left hand Normal domino!"
 msgstr ""
 "Arrangiere die Verzögerer in der Mitte und drücke den linken normalen Domino!"
 
-#: po/leveltexts.txt:156
+#: po/leveltexts.txt:158
 msgid "064"
 msgstr "064"
 
-#: po/leveltexts.txt:157
+#: po/leveltexts.txt:159
 msgid "You have to move a Delay and a Bridge after the run starts!"
 msgstr ""
 "Du musst einen Verzögerer und einen Überbrücker verstellen nachdem die "
 "Reaktion startet!"
 
-#: po/leveltexts.txt:158
+#: po/leveltexts.txt:160
 msgid "065"
 msgstr "065"
 
-#: po/leveltexts.txt:159
+#: po/leveltexts.txt:161
 msgid ""
 "Move everything off the centre platform except the Tumbler and Exploder!"
 msgstr ""
 "Entferne alles von der zentralen Plattform außer den Roller und Explodierer!"
 
-#: po/leveltexts.txt:160
+#: po/leveltexts.txt:162
 msgid "066"
 msgstr "066"
 
-#: po/leveltexts.txt:161
+#: po/leveltexts.txt:163
 msgid "Make the push, move the Blocker!"
 msgstr "Drücke, bewege den Blocker!"
 
-#: po/leveltexts.txt:162
+#: po/leveltexts.txt:164
 msgid "067"
 msgstr "067"
 
-#: po/leveltexts.txt:163
+#: po/leveltexts.txt:165
 msgid "Trap Tumbler to move the Bridger on time!"
 msgstr "Fange Roller um den Überbrücker rechtzeitig zu bewegen!"
 
-#: po/leveltexts.txt:164
+#: po/leveltexts.txt:166
 msgid "068"
 msgstr "068"
 
-#: po/leveltexts.txt:165
+#: po/leveltexts.txt:167
 msgid "Make push, move Floater!"
 msgstr "Drücken, dann Aufsteiger bewegen!"
 
-#: po/leveltexts.txt:166
+#: po/leveltexts.txt:168
 msgid "069"
 msgstr "069"
 
-#: po/leveltexts.txt:167
+#: po/leveltexts.txt:169
 msgid "Push a Floater to start the run! Be careful with the Yellow one!"
 msgstr "Drücke Aufsteiger um Reaktion zu starten. Vorsicht mit dem gelben!"
 
-#: po/leveltexts.txt:168
+#: po/leveltexts.txt:170
 msgid "070"
 msgstr "070"
 
-#: po/leveltexts.txt:169
+#: po/leveltexts.txt:171
 msgid "Delay another way!"
 msgstr "Verzögere auf eine andere Weise!"
 
-#: po/leveltexts.txt:170
+#: po/leveltexts.txt:172
 msgid "071"
 msgstr "071"
 
-#: po/leveltexts.txt:171 po/leveltexts.txt:195
+#: po/leveltexts.txt:173 po/leveltexts.txt:197
 msgid "Tumbler timing is troublesome!"
 msgstr "Roller-Timing ist schwierig!"
 
-#: po/leveltexts.txt:172
+#: po/leveltexts.txt:174
 msgid "072"
 msgstr "072"
 
-#: po/leveltexts.txt:173
+#: po/leveltexts.txt:175
 msgid "Lefthand side finishes last! Use the Bridges!"
 msgstr "Links ist zuerst fertig! Benutze die Brücken!"
 
-#: po/leveltexts.txt:174
+#: po/leveltexts.txt:176
 msgid "073"
 msgstr "073"
 
-#: po/leveltexts.txt:175
+#: po/leveltexts.txt:177
 msgid "Push a Floater to start two runs!"
 msgstr "Benutze einen Aufsteiger um 2 Läufe zu starten!"
 
-#: po/leveltexts.txt:176
+#: po/leveltexts.txt:178
 msgid "074"
 msgstr "074"
 
-#: po/leveltexts.txt:177
+#: po/leveltexts.txt:179
 msgid "Use the Blocker to stop the Tumbler! Watch out for the Floater!"
 msgstr ""
 "Nutze Blocker um Roller zu stoppen. Halte Ausschau nach den Aufsteigern!"
 
-#: po/leveltexts.txt:178
+#: po/leveltexts.txt:180
 msgid "075"
 msgstr "075"
 
-#: po/leveltexts.txt:179
+#: po/leveltexts.txt:181
 msgid "Start the run and see what happens!"
 msgstr "Starte den Lauf und sieh was passiert!"
 
-#: po/leveltexts.txt:180
+#: po/leveltexts.txt:182
 msgid "076"
 msgstr "076"
 
-#: po/leveltexts.txt:181
+#: po/leveltexts.txt:183
 msgid "You'll have to put that Yellow in the run somewhere!"
 msgstr "Du musst den gelben in die Reaktion einbringen - irgendwo!"
 
-#: po/leveltexts.txt:182
+#: po/leveltexts.txt:184
 msgid "077"
 msgstr "077"
 
-#: po/leveltexts.txt:183
+#: po/leveltexts.txt:185
 msgid "Make the bridge, then it's all down to time!"
 msgstr "Baue Brücke. Dann ist es nur die Zeit!"
 
-#: po/leveltexts.txt:184
+#: po/leveltexts.txt:186
 msgid "078"
 msgstr "078"
 
-#: po/leveltexts.txt:185
+#: po/leveltexts.txt:187
 msgid "Push the Tumbler and then start hurrying!"
 msgstr "Drücke den Überschläger und dann fix!"
 
-#: po/leveltexts.txt:186
+#: po/leveltexts.txt:188
 msgid "079"
 msgstr "079"
 
-#: po/leveltexts.txt:187
+#: po/leveltexts.txt:189
 msgid "Be sure to place the Delays right! The Yellow is important!"
 msgstr ""
 "Stelle sicher, dass die Verzögerer richtig platziert sind! Der gelbe ist "
 "wichtig!"
 
-#: po/leveltexts.txt:188
+#: po/leveltexts.txt:190
 msgid "080"
 msgstr "080"
 
-#: po/leveltexts.txt:189
+#: po/leveltexts.txt:191
 msgid "Tumbler, Floater and Blocker?"
 msgstr "Roller, Aufsteiger und Blocker?"
 
-#: po/leveltexts.txt:190
+#: po/leveltexts.txt:192
 msgid "081"
 msgstr "081"
 
-#: po/leveltexts.txt:191
+#: po/leveltexts.txt:193
 msgid ""
 "Push a domino into a Splitter and wait for a trapped Tumbler and move up!"
 msgstr ""
 "Drücke Domino in Teiler und warte auf einen gefangenen Roller und hoch!"
 
-#: po/leveltexts.txt:192
+#: po/leveltexts.txt:194
 msgid "082"
 msgstr "082"
 
-#: po/leveltexts.txt:193
+#: po/leveltexts.txt:195
 msgid "Time is of the essence!"
 msgstr "Zeit ist wichtig!"
 
-#: po/leveltexts.txt:194
+#: po/leveltexts.txt:196
 msgid "083"
 msgstr "083"
 
-#: po/leveltexts.txt:196
+#: po/leveltexts.txt:198
 msgid "084"
 msgstr "084"
 
-#: po/leveltexts.txt:197
+#: po/leveltexts.txt:199
 msgid "Some dominoes have a split personality!"
 msgstr "Einige Dominos haben eine geteilte Persönlichkeit!"
 
-#: po/leveltexts.txt:198
+#: po/leveltexts.txt:200
 msgid "085"
 msgstr "085"
 
-#: po/leveltexts.txt:199
+#: po/leveltexts.txt:201
 msgid "Left hand side finishes last! Use the Bridgers!"
 msgstr "Linke Seite ist zuletzt fertig. Nutze die Überbrücker!"
 
-#: po/leveltexts.txt:200
+#: po/leveltexts.txt:202
 msgid "086"
 msgstr "086"
 
-#: po/leveltexts.txt:201
+#: po/leveltexts.txt:203
 msgid "Push the one next to the entrance door!"
 msgstr "Drücke den neben der Eingangstür!"
 
-#: po/leveltexts.txt:202
+#: po/leveltexts.txt:204
 msgid "087"
 msgstr "087"
 
-#: po/leveltexts.txt:203
+#: po/leveltexts.txt:205
 msgid "Do you really need that Bridger?"
 msgstr "Brauchst du wirklich den Überbrücker?"
 
-#: po/leveltexts.txt:204
+#: po/leveltexts.txt:206
 msgid "088"
 msgstr "088"
 
-#: po/leveltexts.txt:205
+#: po/leveltexts.txt:207
 msgid "Push the run and drop the other! This will keep you busy!"
 msgstr ""
 "Drücke den Lauf und lasse den anderen fallen. Das hält dich beschäftigt!"
 
-#: po/leveltexts.txt:206
+#: po/leveltexts.txt:208
 msgid "089"
 msgstr "089"
 
-#: po/leveltexts.txt:207
+#: po/leveltexts.txt:209
 msgid "Start the run and trap the Tumbler so you can complete the puzzle!"
 msgstr "Start den Lauf und fange den Roller um das Puzzle zu lösen!"
 
-#: po/leveltexts.txt:208
+#: po/leveltexts.txt:210
 msgid "090"
 msgstr "090"
 
-#: po/leveltexts.txt:209
+#: po/leveltexts.txt:211
 msgid "Be quick moving those Delays!"
 msgstr "Sei schnell und bewege die Verzögerer!"
 
-#: po/leveltexts.txt:210
+#: po/leveltexts.txt:212
 msgid "091"
 msgstr "091"
 
-#: po/leveltexts.txt:211 po/leveltexts.txt:213
+#: po/leveltexts.txt:213 po/leveltexts.txt:215
 msgid "Catch the Tumblers!"
 msgstr "Fange die Roller ein!"
 
-#: po/leveltexts.txt:212
+#: po/leveltexts.txt:214
 msgid "091 (SNES)"
 msgstr "091 (SNES)"
 
-#: po/leveltexts.txt:214
+#: po/leveltexts.txt:216
 msgid "092"
 msgstr "092"
 
-#: po/leveltexts.txt:215
+#: po/leveltexts.txt:217
 msgid "Push the Tumbler away from the Trigger domino and be busy!"
 msgstr "Drücke den Roller weg vom Auslöser und beschäftige dich!"
 
-#: po/leveltexts.txt:216
+#: po/leveltexts.txt:218
 msgid "093"
 msgstr "093"
 
-#: po/leveltexts.txt:217
+#: po/leveltexts.txt:219
 msgid "Put Floater in last! Insert Delay to stop Tumblers!"
 msgstr ""
 "Den Aufsteiger zuletzt einsortieren. Füge Verzögerer ein um die Roller zu "
 "stoppen!"
 
-#: po/leveltexts.txt:218
+#: po/leveltexts.txt:220
 msgid "094"
 msgstr "094"
 
-#: po/leveltexts.txt:219
+#: po/leveltexts.txt:221
 msgid "Drop the Floaters in position! Start one run with a drop!"
 msgstr ""
 "Lasse die Aufsteiger an die richtige Stelle fallen und starte den Lauf mit "
 "einem fallenden Domino!"
 
-#: po/leveltexts.txt:220
+#: po/leveltexts.txt:222
 msgid "095"
 msgstr "095"
 
-#: po/leveltexts.txt:221
+#: po/leveltexts.txt:223
 msgid "Symmetry - and don't forget to bridge after the Trigger!"
 msgstr "Symmetrie - und nicht vergessen nach dem Auslöser zu überbrücken!"
 
-#: po/leveltexts.txt:222
+#: po/leveltexts.txt:224
 msgid "096"
 msgstr "096"
 
-#: po/leveltexts.txt:223
+#: po/leveltexts.txt:225
 msgid "You must create a run of Tumblers that can fall off a platform!"
 msgstr "Du musst einen Lauf von Rollern bauen, die von der Plattform fallen."
 
-#: po/leveltexts.txt:224
+#: po/leveltexts.txt:226
 msgid "097"
 msgstr "097"
 
-#: po/leveltexts.txt:225
+#: po/leveltexts.txt:227
 msgid "You've got some running to do!"
 msgstr "Du musst viel herum rennen!"
 
-#: po/leveltexts.txt:226
+#: po/leveltexts.txt:228
 msgid "098"
 msgstr "098"
 
-#: po/leveltexts.txt:227
+#: po/leveltexts.txt:229
 msgid ""
 "Use a drop! There is a way to make it work with a push, but I can't find it!"
 msgstr ""
 "Nutze einen fallenden Domino. Es gibt einen Weg es mit drücken zu lösen, "
 "aber ich kann es nicht finden!"
 
-#: po/leveltexts.txt:228
+#: po/leveltexts.txt:230
 msgid "099"
 msgstr "099"
 
-#: po/leveltexts.txt:229
+#: po/leveltexts.txt:231
 msgid ""
 "Tumbler, Normal, Bridger, Tumbler, put remaining Tumbler in place and push!"
 msgstr ""
 "Roller, Standard, Überbrücker, Roller, platziere die übrigen Roller und "
 "drücke!"
 
-#: po/leveltexts.txt:230
+#: po/leveltexts.txt:232
 msgid "100"
 msgstr "100"
 
-#: po/leveltexts.txt:231
+#: po/leveltexts.txt:233
 msgid "You're in the dark!"
 msgstr "Du bist im dunklen!"
 
-#: po/leveltexts.txt:232
+#: po/leveltexts.txt:234
 msgid "101"
 msgstr "101"
 
-#: po/leveltexts.txt:233
+#: po/leveltexts.txt:235
 msgid "Don't waste time with the ringing bell!"
 msgstr "Verschwende keine Zeit mit Jubeln!"
 
-#: po/leveltexts.txt:234
+#: po/leveltexts.txt:236
 msgid "Original"
 msgstr "Originale Level"

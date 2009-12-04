@@ -128,7 +128,12 @@ dist_noinst_DATA = \
   levels/av/missing_stopper.level \
   levels/av/missing_stopper_2.level \
   levels/av/easy_distance.level \
-  levels/av/hard_distance.level
+  levels/av/hard_distance.level \
+  levels/av/crash.level \
+  levels/av/crashed_again.level \
+  levels/av/merger.level \
+  levels/av/one_last_crash.level \
+  levels/av/out_of_reach.level
 
                      # BSD make                         # GNU make
 LEVEL_INDEX_FILES := $(dist_noinst_DATA:M*/index.level) $(filter %/index.level,$(dist_noinst_DATA))
