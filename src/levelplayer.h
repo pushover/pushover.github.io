@@ -69,7 +69,7 @@ class levelPlayer_c : public levelDisplay_c {
 
     bool pushDomino(int x, int y, int dir);
 
-    bool levelInactive(void) { return inactive > 30; }
+    bool levelInactive(void) { return inactive > 3; }
 };
 
 #endif

@@ -166,7 +166,7 @@ int playTick(levelPlayer_c & l, ant_c & a)
   l.drawDominos();
   a.draw();
 
-  if (l.triggerIsFalln() && !a.isVisible() && l.isExitDoorClosed()) {
+  if (l.triggerIsFalln() && !a.isVisible() && l.isExitDoorClosed() && (res == 0)) {
 
     if (l.someTimeLeft())
     {
@@ -740,32 +740,24 @@ int main(int argc, char * argv[]) {
           }
           failReason = playTick(l, a);
 
-          if (failReason == 1)
+          if (l.levelInactive())
           {
-            while (!l.levelInactive())
-            {
-              failReason = playTick(l, a);
-
-              if (failReason != 1 && failReason != 0)
+            switch (failReason) {
+              case 1:
+                rec.save("sol");
+                solved.addLevel(l.getChecksum());
+                nextState = ST_SOLVED;
+                break;
+              case 0:
+                break;
+              case 2:
+                nextState = ST_FAILED;
+                break;
+              default:
+                failDelay = 36;
+                nextState = ST_FAILDELAY;
                 break;
             }
-          }
-
-          switch (failReason) {
-            case 1:
-              rec.save("sol");
-              solved.addLevel(l.getChecksum());
-              nextState = ST_SOLVED;
-              break;
-            case 0:
-              break;
-            case 2:
-              nextState = ST_FAILED;
-              break;
-            default:
-              failDelay = 36;
-              nextState = ST_FAILDELAY;
-              break;
           }
           break;
 
