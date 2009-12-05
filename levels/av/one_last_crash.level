@@ -10,25 +10,25 @@ Theme
 | space
 
 Time
-| 2:00
+| 7:00
 
 Hint
 | Use the Delays to synchronize!
 
 Level
 +---------------------
+|    .            .
 |
-|            .
-|
-|       ?I?I? .
-|          H
-|       IIIIII .
-|          H
-|       IIIIIII #
-|        2 H 1
-|       _IIIIIIA
-|
-|  _IIIYIII!_
+|  II ?: ????????? ?
+|           H
+|  ? IIO IIIIIIII I
+|    .      H   .
+|           H
+|  II ?: IIIIIII II
+|         2 H 1
+|  ? II= _II??IIA
+|     H
+|  _AIIIY?????????!_
 |
 +---------------------
 
