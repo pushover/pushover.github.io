@@ -54,14 +54,14 @@ nobase_dist_pkgdata_DATA = \
   \
   themes/tools.lua \
   themes/toxcity.lua  themes/toxcity.png \
-  themes/aztec.lua    themes/aztec.png \
-  themes/space.lua    themes/space.png \
+  themes/aztec.lua    themes/aztec.png    themes/aztec.ogg \
+  themes/space.lua    themes/space.png    themes/space.ogg \
   themes/electro.lua  themes/electro.png \
   themes/greek.lua    themes/greek.png \
-  themes/castle.lua   themes/castle.png \
+  themes/castle.lua   themes/castle.png   themes/castle.ogg \
   themes/mechanic.lua themes/mechanic.png \
-  themes/dungeon.lua  themes/dungeon.png \
-  themes/japanese.lua themes/japanese.png \
+  themes/dungeon.lua  themes/dungeon.png  themes/dungeon.ogg \
+  themes/japanese.lua themes/japanese.png themes/japanese.ogg \
   themes/cavern.lua   themes/cavern.png
 
 dist_noinst_DATA = \
