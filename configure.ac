@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.13)
-AC_INIT(pushover, 0.0.1)
+AC_INIT(pushover, 0.0.2)
 AC_CONFIG_AUX_DIR(config_aux)
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
