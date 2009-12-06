@@ -154,23 +154,18 @@ abs_builddir = @abs_builddir@
 win32dir = $(PACKAGE)-$(VERSION)-win32
 
 dist-win32: all
-	$(RM) -r $(win32dir)
-	$(INSTALL) -d                        $(win32dir)
-	$(INSTALL) -d                        $(win32dir)/levels
-	for p in $(patsubst levels/%/index.level,%,$(filter levels/%/index.level,$(dist_noinst_DATA))); do \
-	  cat $(srcdir)/levels/$$p/* | gzip -c -9 > "$(win32dir)/levels/$$p.gz"; \
-	  chmod 644 "$(win32dir)/levels/$$p.gz"; \
+	$(RM) -r   '$(abs_builddir)/$(win32dir)'
+	$(MAKE) \
+	    prefix='$(abs_builddir)/$(win32dir)' \
+	    bindir='$(abs_builddir)/$(win32dir)' \
+	    docdir='$(abs_builddir)/$(win32dir)' \
+	    pkgdatadir='$(abs_builddir)/$(win32dir)' \
+	    datarootdir='$(abs_builddir)/$(win32dir)' \
+	    install-strip
+	for p in $(bin_PROGRAMS); do \
+	    upx --brute '$(abs_builddir)/$(win32dir)'/$$p; \
 	done
-	$(INSTALL) -d                        $(win32dir)/data
-	$(INSTALL) -m644 data/*              $(win32dir)/data
-	$(INSTALL) -d                        $(win32dir)/themes
-	$(INSTALL) -m644 themes/*            $(win32dir)/themes
-	$(INSTALL) -d                        $(win32dir)/data
-	$(INSTALL) -m755 pushover.exe        $(win32dir)/
-	$(INSTALL) -m644 readme.txt          $(win32dir)/
-	$(STRIP) $(win32dir)/*.exe
-	upx --lzma $(win32dir)/*.exe
-	$(RM)   $(win32dir).zip
-	zip -r9 $(win32dir).zip $(win32dir)
-	$(RM) -r $(win32dir)
+	$(RM)      '$(abs_builddir)/$(win32dir).zip'
+	cd '$(abs_builddir)' && zip -r9 $(win32dir).zip $(win32dir)
+	$(RM) -r   '$(abs_builddir)/$(win32dir)'
 
