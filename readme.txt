@@ -2,7 +2,7 @@ PUSHOVER
 ==========
 
 Pushover is a faithful reimplementation of the game with the same name published
-in 1992 by Ocean. It contains the original levels the graphics and sound are
+in 1992 by Ocean. It contains the original levels. The graphics and sound are
 very similar when compared with the original game.
 
 
