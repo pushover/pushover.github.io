@@ -48,8 +48,9 @@ std::string getHome(void) {
 
 #endif
 
-  struct stat st;
-  if (stat(home.c_str(), &st) != 0)
+  DIR * dir = ::opendir(home.c_str());
+
+  if (!dir)
   {
     // create it
 #ifdef WIN32
