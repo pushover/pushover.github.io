@@ -163,7 +163,7 @@ dist-win32: all
 	    datarootdir='$(abs_builddir)/$(win32dir)' \
 	    install-strip
 	for p in $(bin_PROGRAMS); do \
-	    upx --brute '$(abs_builddir)/$(win32dir)'/$$p; \
+	    upx --lzma '$(abs_builddir)/$(win32dir)'/$$p; \
 	done
 	$(RM)      '$(abs_builddir)/$(win32dir).zip'
 	cd '$(abs_builddir)' && zip -r9 $(win32dir).zip $(win32dir)
