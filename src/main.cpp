@@ -188,8 +188,8 @@ int playTick(levelPlayer_c & l, ant_c & a)
 typedef enum {
   ST_INIT,     // inistal transition state
   ST_MAIN,     // main menu
+  ST_LEVELCONF,// config while playing
   ST_CONFIG,   // config menu
-  ST_CONFIGTOG,// config menu toggled something, repaint
   ST_LEVELSET, // level set selection
   ST_LEVEL,    // level selection
   ST_PREREPLAY,// prepare replay for running
@@ -363,6 +363,7 @@ int main(int argc, char * argv[]) {
             case ST_LEVELSET:
             case ST_LEVEL:
             case ST_CONFIG:
+            case ST_LEVELCONF:
             case ST_SOLVED:
             case ST_FAILED:
             case ST_ABOUT:
@@ -379,7 +380,6 @@ int main(int argc, char * argv[]) {
             case ST_PLAY:
             case ST_FAILDELAY:
             case ST_EXIT:
-            case ST_CONFIGTOG:
               break;
 
           }
@@ -391,6 +391,7 @@ int main(int argc, char * argv[]) {
             case ST_LEVELSET: window = getMissionWindow(levelsetList, screen, gr); break;
             case ST_LEVEL:    window = getLevelWindow(levelsetList.getLevelset(selectedMission), solved, screen, gr); break;
             case ST_QUIT:     window = getQuitWindow(screen, gr); break;
+            case ST_LEVELCONF:
             case ST_CONFIG:   window = getConfigWindow(screen, gr); break;
             case ST_SOLVED:   window = getSolvedWindow(screen, gr); break;
             case ST_ABOUT:    window = getAboutWindow(screen, gr); break;
@@ -423,7 +424,6 @@ int main(int argc, char * argv[]) {
             case ST_INIT:
             case ST_REPLAY:
             case ST_FAILDELAY:
-            case ST_CONFIGTOG:
                               break;
 
             case ST_EXIT:
@@ -463,6 +463,7 @@ int main(int argc, char * argv[]) {
             break;
 
           case ST_CONFIG:
+          case ST_LEVELCONF:
             if (!window) {
               std::cout << "Oops no window\n";
               nextState = ST_MAIN;
@@ -477,20 +478,26 @@ int main(int argc, char * argv[]) {
                   case 0:   // toggle full screen
                     screen.toggleFullscreen();
                     screen.markAllDirty();
-                    nextState = ST_CONFIGTOG;
+                    window->resetWindow();
                     break;
 
                   case 1:  // toggle sound effects
                     soundSystem_c::instance()->toggleSound();
-                    nextState = ST_CONFIGTOG;
+                    window->resetWindow();
                     break;
 
                   case 2:  // toggle music
                     soundSystem_c::instance()->toggleMusic();
-                    nextState = ST_CONFIGTOG;
+                    window->resetWindow();
                     break;
 
-                  default: nextState = ST_MAIN; break;  // back to main menu
+                  default:
+                    if (currentState == ST_CONFIG)
+                      nextState = ST_MAIN; // back to main menu
+                    else
+                      nextState = ST_QUIT; // back to level quit dialog
+
+                    break;
                 }
               }
             }
@@ -604,7 +611,7 @@ int main(int argc, char * argv[]) {
               {
                 switch(dynamic_cast<listWindow_c*>(window)->getSelection())
                 {
-                  case 2:
+                  case 3:
                     nextState = ST_LEVEL;
                     soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
                     break;    // return to level list
@@ -616,9 +623,13 @@ int main(int argc, char * argv[]) {
                             a.initForLevel();
                           }
                           break;
+                  case 2:  // configuration
+                    nextState = ST_LEVELCONF;
+                    break;
                   default:
                   case 0:
-                          nextState = ST_PLAY; break;    // return to play
+                    nextState = ST_PLAY;
+                    break;    // return to play
                 }
               }
             }
@@ -691,7 +702,6 @@ int main(int argc, char * argv[]) {
             break;
 
           case ST_INIT:
-          case ST_CONFIGTOG:
           case ST_FAILDELAY:
           case ST_EXIT:
             break;
@@ -766,13 +776,10 @@ int main(int argc, char * argv[]) {
           }
           break;
 
-        case ST_CONFIGTOG:
-          nextState = ST_CONFIG;
-          break;
-
         case ST_INIT:
         case ST_MAIN:
         case ST_CONFIG:
+        case ST_LEVELCONF:
         case ST_LEVELSET:
         case ST_LEVEL:
         case ST_SOLVED:

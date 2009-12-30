@@ -410,10 +410,11 @@ listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr) {
     {
         entries.push_back(_("Return to level"));
         entries.push_back(_("Restart level"));
+        entries.push_back(_("Configuration"));
         entries.push_back(_("Return to menu"));
     }
 
-    return new listWindow_c(4, 3, 12, 6, surf, gr, _("Nu What?"), entries, true);
+    return new listWindow_c(4, 3, 12, 7, surf, gr, _("Nu What?"), entries, true);
 }
 
 listWindow_c * getLevelWindow(levelset_c & ls, surface_c & surf, graphics_c & gr) {
