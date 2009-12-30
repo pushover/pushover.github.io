@@ -481,7 +481,12 @@ int main(int argc, char * argv[]) {
                     break;
 
                   case 1:  // toggle sound effects
-                    soundSystem_c::instance()->toggleOnOff();
+                    soundSystem_c::instance()->toggleSound();
+                    nextState = ST_CONFIGTOG;
+                    break;
+
+                  case 2:  // toggle music
+                    soundSystem_c::instance()->toggleMusic();
                     nextState = ST_CONFIGTOG;
                     break;
 

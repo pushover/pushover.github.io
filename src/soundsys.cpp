@@ -25,7 +25,8 @@
 soundSystem_c::soundSystem_c(void)
 {
   useSound = false;
-  quiet = false;
+  playSoundSwitch = true;
+  playMusicSwitch = true;
   music = 0;
 }
 
@@ -62,7 +63,7 @@ void soundSystem_c::addsound(const std::string & fname, int vol)
 void soundSystem_c::startSound(unsigned int snd)
 {
   if (!useSound) return;
-  if (quiet) return;
+  if (!playSoundSwitch) return;
 
   if (snd >= 0 && snd < sounds.size())
   {
@@ -144,18 +145,43 @@ void soundSystem_c::playMusic(const std::string & fname) {
     Mix_HaltMusic();
 
     Mix_FreeMusic(music);
+
+    music = 0;
   }
 
-  music = Mix_LoadMUS(fname.c_str());
-
-  if (music)
+  if (!playMusicSwitch)
   {
-    Mix_PlayMusic(music, -1);
     currentlyPlaying = fname;
+    return;
+  }
+
+  // when no name was given, set the name to the currently played music
+  if (fname == "")
+  {
+    music = Mix_LoadMUS(currentlyPlaying.c_str());
+
+    if (music)
+    {
+      Mix_PlayMusic(music, -1);
+    }
+    else
+    {
+      currentlyPlaying = "";
+    }
   }
   else
   {
-    currentlyPlaying = "";
+    music = Mix_LoadMUS(fname.c_str());
+
+    if (music)
+    {
+      Mix_PlayMusic(music, -1);
+      currentlyPlaying = fname;
+    }
+    else
+    {
+      currentlyPlaying = "";
+    }
   }
 }
 

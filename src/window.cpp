@@ -368,6 +368,7 @@ listWindow_c * getConfigWindow(surface_c & surf, graphics_c & gr) {
     {
         entries.push_back(_("Toggle Fullscreen"));
         entries.push_back(_("Toggle Sound Effects"));
+        entries.push_back(_("Toggle Background Music"));
     }
 
     return new listWindow_c(3, 2, 14, 9, surf, gr, _("Configuration"), entries, true);

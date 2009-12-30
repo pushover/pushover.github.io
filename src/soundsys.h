@@ -47,9 +47,14 @@ class soundSystem_c {
     static soundSystem_c * instance(void);
 
     /* toggle quiet sound effects */
-    void toggleOnOff(void) { quiet = !quiet; }
+    void toggleSound(void) { playSoundSwitch = !playSoundSwitch; }
 
     void playMusic(const std::string & fname);
+
+    void toggleMusic(void) {
+      playMusicSwitch = !playMusicSwitch;
+      playMusic("");
+    }
 
   private:
 
@@ -69,7 +74,8 @@ class soundSystem_c {
      */
     bool useSound;
 
-    bool quiet;  // used to toggle sound effects indepentently of sound
+    bool playSoundSwitch;  // used to toggle sound effects indepentently of sound
+    bool playMusicSwitch; // toggle music on and off
 
     std::vector<struct soundDat> sounds;
 
