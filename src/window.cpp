@@ -55,39 +55,25 @@ window_c::~window_c(void) {
       surf.markDirty(x+i, y+j);
 }
 
-static int positions[20] = {
-
-  0, 0,
-  1, 0,
-  2, 0,
-  3, 0,
-  0, 1,
-  3, 1,
-  0, 2,
-  1, 2,
-  2, 2,
-  3, 2
-};
-
 static std::string texts[20] = {
-  _("Standard"),
-  _("Blocker"),
-  _("Splitter"),
-  _("Exploder"),
-  _("Delay"),
-  _("Tumbler"),
-  _("Bridger"),
-  _("Vanish"),
-  _("Trigger"),
-  _("Ascender")
+  _("Standard: nothing special about this stone, it simply falls"),
+  _("Blocker: can not fall, may still stand at level end"),
+  _("Splitter: when something falls on its top it will split in two"),
+  _("Exploder: will blast a hole into the platform below it"),
+  _("Delay: falls not immediately but a few seconds after beeing pushed"),
+  _("Tumbler: will continue rolling until it hits an obstacle"),
+  _("Bridger: will bridge the platform if there is a one unit gap"),
+  _("Vanish: pushed the next domino but then vanishes"),
+  _("Trigger: this is the last domino that must fall and it must lie flat"),
+  _("Ascender: will raise as if filled with helium")
 };
 
-#define SX 135
-#define SY 125
-#define TX 175
-#define TY 155
+#define SX 310
+#define SY 85
+#define TX 100
+#define TY 50
 
-helpWindow_c::helpWindow_c(const std::string text, surface_c & s, graphics_c & g) : window_c(3, 2, 14, 9, s, g), help(text) {
+helpWindow_c::helpWindow_c(const std::string text, surface_c & s, graphics_c & g) : window_c(1, 0, 18, 12, s, g), help(text) {
 
   clearInside();
 
@@ -95,18 +81,22 @@ helpWindow_c::helpWindow_c(const std::string text, surface_c & s, graphics_c & g
 
   for (unsigned int d = 0; d < 10; d++)
   {
-    s.fillRect(SX*positions[2*d+0]+TX,   SY*positions[2*d+1]+TY,   50,   80, 0, 0, 0);
-    s.fillRect(SX*positions[2*d+0]+TX+2, SY*positions[2*d+1]+TY+2, 50-4, 80-4, 112, 39, 0);
-    s.blitBlock(g.getDomino(d, 7), SX*positions[2*d+0]+TX - 80, SY*positions[2*d+1]+TY + 5);
+    int x = d % 2;
+    int y = d / 2;
+
+    s.fillRect(SX*x+TX,   SY*y+TY,   50,   75, 0, 0, 0);
+    s.fillRect(SX*x+TX+2, SY*y+TY+2, 50-4, 75-4, 112, 39, 0);
+
+    s.blitBlock(g.getDomino(d, 7), SX*x+TX - 80, SY*y+TY + 4);
 
     par.font = FNT_SMALL;
-    par.alignment = ALN_CENTER;
+    par.alignment = ALN_TEXT;
     par.color.r = 112; par.color.g = 39; par.color.b = 0;
     par.shadow = false;
-    par.box.x = SX*positions[2*d+0]+TX-15;
-    par.box.w = 80;
-    par.box.y = SY*positions[2*d+1]+TY-25;
-    par.box.h = 20;
+    par.box.x = SX*x+TX+55;
+    par.box.w = SX-65;
+    par.box.y = SY*y+TY;
+    par.box.h = 80;
 
     s.renderText(&par, texts[d]);
   }
@@ -115,10 +105,10 @@ helpWindow_c::helpWindow_c(const std::string text, surface_c & s, graphics_c & g
   par.alignment = ALN_CENTER;
   par.color.r = par.color.g = 255; par.color.b = 0;
   par.shadow = false;
-  par.box.x = 400-3*55;
-  par.box.w = 6*55;
-  par.box.y = 235;
-  par.box.h = 148;
+  par.box.x = (800-16*40)/2;
+  par.box.w = 16*40;
+  par.box.y = TY+5*SY-10;
+  par.box.h = 12*48-TY-5*SY-10;
 
   if (getTextHeight(&par, text) > par.box.h) {
     printf("%i  %i\n", getTextHeight(&par, text), par.box.h);
