@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: roever@users.sf.net\n"
-"POT-Creation-Date: 2009-12-04 21:20+0100\n"
+"POT-Creation-Date: 2009-12-31 14:44+0100\n"
 "PO-Revision-Date: 2008-11-18 18:18+0100\n"
 "Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -16,179 +16,183 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: src/window.cpp:73
-msgid "Standard"
-msgstr "Standard"
+#: src/window.cpp:59
+msgid "Standard: nothing special about this stone, it simply falls"
+msgstr "Standard: es gibt nichts besonderes über diesen Stein, er fällt einfach um"
 
-#: src/window.cpp:74
-msgid "Blocker"
-msgstr "Blockierer"
+#: src/window.cpp:60
+msgid "Blocker: can not fall, may still stand at level end"
+msgstr "Blockierer: der Stein kann nicht umfallen und darf am Levelende noch stehen"
 
-#: src/window.cpp:75
-msgid "Splitter"
-msgstr "Teiler"
+#: src/window.cpp:61
+msgid "Splitter: when something falls on its top it will split in two"
+msgstr "Teiler: Wenn etwas auf ihn fällt teilt er sich in 2 Steine"
 
-#: src/window.cpp:76
-msgid "Exploder"
-msgstr "Explodierer"
+#: src/window.cpp:62
+msgid "Exploder: will blast a hole into the platform below it"
+msgstr "Explodierer: sprengt ein Loch in den Untergrund"
 
-#: src/window.cpp:77
-msgid "Delay"
-msgstr "Verzögerer"
+#: src/window.cpp:63
+msgid "Delay: falls not immediately but a few seconds after beeing pushed"
+msgstr "Verzögerer: fällt nicht sofort nach dem Anstoßen, sondern erst später"
 
-#: src/window.cpp:78
-msgid "Tumbler"
-msgstr "Roller"
+#: src/window.cpp:64
+msgid "Tumbler: will continue rolling until it hits an obstacle"
+msgstr "Roller: rollt immer weiter, bis er auf ein Hindernis stößt"
 
-#: src/window.cpp:79
-msgid "Bridger"
-msgstr "Überbrücker"
+#: src/window.cpp:65
+msgid "Bridger: will bridge the platform if there is a one unit gap"
+msgstr "Überbrücker: überbrückt eine eine Einheit große Lücke im Boden"
 
-#: src/window.cpp:80
-msgid "Vanish"
-msgstr "Verschwinder"
+#: src/window.cpp:66
+msgid "Vanish: pushed the next domino but then vanishes"
+msgstr "Verschwinder: stößten den nächsten Domino an und verschwindet"
 
-#: src/window.cpp:81
-msgid "Trigger"
-msgstr "Auslöser"
+#: src/window.cpp:67
+msgid "Trigger: this is the last domino that must fall and it must lie flat"
+msgstr "Auslöser: dieser Stein muss als letzter fallen und flach liegen"
 
-#: src/window.cpp:82
-msgid "Ascender"
-msgstr "Aufsteiger"
+#: src/window.cpp:68
+msgid "Ascender: will raise as if filled with helium"
+msgstr "Aufsteiger: steigt auf, als ob er mit Helium gefüllt wäre"
 
-#: src/window.cpp:167
+#: src/window.cpp:157
 msgid "Pushover - About"
 msgstr "Über Pushover"
 
-#: src/window.cpp:183
+#: src/window.cpp:173
 msgid "Original Concept:"
 msgstr "Original Konzept:"
 
-#: src/window.cpp:186
+#: src/window.cpp:176
 msgid "Original Programming:"
 msgstr "Original Programmierung:"
 
-#: src/window.cpp:189
+#: src/window.cpp:179
 msgid "Original Graphics:"
 msgstr "Original Grafiken:"
 
-#: src/window.cpp:192
+#: src/window.cpp:182
 msgid "Original Music & SFX:"
 msgstr "Original Musik:"
 
-#: src/window.cpp:195
+#: src/window.cpp:185
 msgid "Original Levels:"
 msgstr "Original Levels:"
 
-#: src/window.cpp:198
+#: src/window.cpp:188
 msgid "New Programming:"
 msgstr "Neue Programmierung:"
 
-#: src/window.cpp:201
+#: src/window.cpp:191
 msgid "New Music:"
 msgstr "Neue Musik:"
 
-#: src/window.cpp:204
+#: src/window.cpp:194
 msgid "New Graphics:"
 msgstr "Neue Grafiken:"
 
-#: src/window.cpp:355
+#: src/window.cpp:345
 msgid "Play Levelset"
 msgstr "Spiele Mission"
 
-#: src/window.cpp:356 src/window.cpp:373
+#: src/window.cpp:346 src/window.cpp:364 src/window.cpp:403
 msgid "Configuration"
 msgstr "Konfiguration"
 
-#: src/window.cpp:357
+#: src/window.cpp:347
 msgid "About"
 msgstr "Über"
 
-#: src/window.cpp:358
+#: src/window.cpp:348
 msgid "Quit"
 msgstr "Beenden"
 
-#: src/window.cpp:361
+#: src/window.cpp:351
 msgid "Main menu"
 msgstr "Hauptmenü"
 
-#: src/window.cpp:369
+#: src/window.cpp:359
 msgid "Toggle Fullscreen"
 msgstr "Vollbild an/aus"
 
-#: src/window.cpp:370
+#: src/window.cpp:360
 msgid "Toggle Sound Effects"
 msgstr "Sound Effekte an/aus"
 
-#: src/window.cpp:377
+#: src/window.cpp:361
+msgid "Toggle Background Music"
+msgstr "Hintergrundmusik an/aus"
+
+#: src/window.cpp:368
 msgid "Select Levelset"
 msgstr "Missionsauswahl"
 
-#: src/window.cpp:390
+#: src/window.cpp:381
 msgid "(done)"
 msgstr "(fertig)"
 
-#: src/window.cpp:397
+#: src/window.cpp:388
 msgid "No Level in Levelset"
 msgstr "Kein Level in der Mission"
 
-#: src/window.cpp:402 src/window.cpp:419
+#: src/window.cpp:393 src/window.cpp:411
 msgid "Select Level"
 msgstr "Levelauswahl"
 
-#: src/window.cpp:410
+#: src/window.cpp:401
 msgid "Return to level"
 msgstr "Zurück zum Level"
 
-#: src/window.cpp:411
+#: src/window.cpp:402
 msgid "Restart level"
 msgstr "Level neu starten"
 
-#: src/window.cpp:412 src/window.cpp:443
+#: src/window.cpp:404 src/window.cpp:435
 msgid "Return to menu"
 msgstr "Zurück zum Menü"
 
-#: src/window.cpp:415
+#: src/window.cpp:407
 msgid "Nu What?"
 msgstr "Was nun?"
 
-#: src/window.cpp:431
+#: src/window.cpp:423
 msgid "Continue"
 msgstr "Weiter"
 
-#: src/window.cpp:434
+#: src/window.cpp:426
 msgid "Gratulation! You solved the level."
 msgstr "Gratuliere! Du hast das Level gelöst."
 
-#: src/window.cpp:442
+#: src/window.cpp:434
 msgid "Retry the level"
 msgstr "Noch einmal probieren"
 
-#: src/window.cpp:448
+#: src/window.cpp:440
 msgid "You failed: You've been too slow"
 msgstr "Gescheitert: Du warst zu langsam"
 
-#: src/window.cpp:449
+#: src/window.cpp:441
 msgid "You failed: Some dominoes crashed"
 msgstr "Gescheitert: Einige Dominos sind zerstört"
 
-#: src/window.cpp:450
+#: src/window.cpp:442
 msgid "You failed: Not all dominoes fell"
 msgstr "Gescheitert: Nicht alle Dominos sind gefallen"
 
-#: src/window.cpp:451
+#: src/window.cpp:443
 msgid "You failed: You died"
 msgstr "Gescheitert: Du bist tot"
 
-#: src/window.cpp:452
+#: src/window.cpp:444
 msgid "You failed: Trigger was not last to fall"
 msgstr "Gescheitert: Auslöser muß als letzter umfallen"
 
-#: src/window.cpp:453
+#: src/window.cpp:445
 msgid "You failed: Trigger not flat on the ground"
 msgstr "Gescheitert: Der Auslöser liegt nicht flach"
 
-#: src/main.cpp:403
+#: src/main.cpp:404
 msgid "Arrange dominos in a run so that trigger falls last. You have 1 push."
 msgstr ""
 "Dominos so anordnen, dass der Auslöser als letzter fällt. Du hast einen Stoß."
