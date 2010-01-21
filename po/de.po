@@ -46,7 +46,7 @@ msgstr "Überbrücker: überbrückt eine eine Einheit große Lücke im Boden"
 
 #: src/window.cpp:66
 msgid "Vanish: pushed the next domino but then vanishes"
-msgstr "Verschwinder: stößten den nächsten Domino an und verschwindet"
+msgstr "Verschwinder: stößt den nächsten Domino an und verschwindet"
 
 #: src/window.cpp:67
 msgid "Trigger: this is the last domino that must fall and it must lie flat"
