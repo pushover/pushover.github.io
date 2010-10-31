@@ -357,10 +357,10 @@ void levelPlayer_c::DTA_2(int x, int y) {
   // if this is not the case or it is no splitter fall further
   if (x < 2 ||
       getDominoType(x-2, y) != DominoTypeSplitter ||
-      getDominoState(x-2, y) != 1 &&
-      getDominoState(x-2, y) != 10 &&
-      getDominoState(x-2, y) != 12 &&
-      getDominoState(x-2, y) != 13)
+      (getDominoState(x-2, y) != 1 &&
+       getDominoState(x-2, y) != 10 &&
+       getDominoState(x-2, y) != 12 &&
+       getDominoState(x-2, y) != 13))
   {
     DTA_4(x, y);
   }
@@ -396,10 +396,10 @@ void levelPlayer_c::DTA_J(int x, int y) {
   // if this is not the case or it is no splitter fall further
   if (x > 17 ||
       getDominoType(x+2, y) != DominoTypeSplitter ||
-      getDominoState(x+2, y) != 1 &&
-      getDominoState(x+2, y) != 9 &&
-      getDominoState(x+2, y) != 11 &&
-      getDominoState(x+2, y) != 14)
+      (getDominoState(x+2, y) != 1 &&
+       getDominoState(x+2, y) != 9 &&
+       getDominoState(x+2, y) != 11 &&
+       getDominoState(x+2, y) != 14))
   {
     DTA_4(x, y);
   }

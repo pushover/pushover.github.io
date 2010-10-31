@@ -117,7 +117,7 @@ void levelDisplay_c::drawDominos(void) {
       // paint the left neighbor domino, if it leans in our direction and is not painted on its own
       if (y < 12 && x > 0 && !target.isDirty(x-1, y+1) && getDominoType(x-1, y+1) != DominoTypeEmpty &&
           (getDominoState(x-1, y+1) > 8 ||
-           getDominoType(x-1, y+1) == DominoTypeSplitter && getDominoState(x-1, y+1) != 8 ||
+           (getDominoType(x-1, y+1) == DominoTypeSplitter && getDominoState(x-1, y+1) != 8) ||
            getDominoState(x-1, y+1) >= DominoTypeCrash0))
       {
         target.blit(gr.getDomino(getDominoType(x-1, y+1)-1, getDominoState(x-1, y+1)-1),
@@ -127,7 +127,7 @@ void levelDisplay_c::drawDominos(void) {
 
       if (x > 0 && !target.isDirty(x-1, y) && getDominoType(x-1, y) != DominoTypeEmpty &&
           (getDominoState(x-1, y) > 8 ||
-           getDominoType(x-1, y) == DominoTypeSplitter && getDominoState(x-1, y) != 8 ||
+           (getDominoType(x-1, y) == DominoTypeSplitter && getDominoState(x-1, y) != 8) ||
            getDominoType(x-1, y) >= DominoTypeCrash0))
       {
         target.blit(gr.getDomino(getDominoType(x-1, y)-1, getDominoState(x-1, y)-1),
@@ -187,7 +187,7 @@ void levelDisplay_c::drawDominos(void) {
       // paint the right neighor if it is leaning in our direction
       if (x < 19 && y < 12 && !target.isDirty(x+1, y+1) && getDominoType(x+1, y+1) != DominoTypeEmpty &&
           (getDominoState(x+1, y+1) < 8 ||
-           getDominoType(x+1, y+1) == DominoTypeSplitter && getDominoState(x+1, y+1) != 8 ||
+           (getDominoType(x+1, y+1) == DominoTypeSplitter && getDominoState(x+1, y+1) != 8) ||
            getDominoType(x+1, y+1) >= DominoTypeCrash0))
       {
         target.blit(gr.getDomino(getDominoType(x+1, y+1)-1, getDominoState(x+1, y+1)-1),
@@ -197,7 +197,7 @@ void levelDisplay_c::drawDominos(void) {
 
       if (x < 19 && !target.isDirty(x+1, y) && getDominoType(x+1, y) != DominoTypeEmpty &&
           (getDominoState(x+1, y) < 8 ||
-           getDominoType(x+1, y) == DominoTypeSplitter && getDominoState(x+1, y) != 8 ||
+           (getDominoType(x+1, y) == DominoTypeSplitter && getDominoState(x+1, y) != 8) ||
            getDominoType(x+1, y) >= DominoTypeCrash0))
       {
         target.blit(gr.getDomino(getDominoType(x+1, y)-1, getDominoState(x+1, y)-1),
