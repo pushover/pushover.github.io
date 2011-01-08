@@ -18,11 +18,13 @@ msgstr ""
 
 #: src/window.cpp:59
 msgid "Standard: nothing special about this stone, it simply falls"
-msgstr "Standard: es gibt nichts besonderes über diesen Stein, er fällt einfach um"
+msgstr ""
+"Standard: es gibt nichts besonderes über diesen Stein, er fällt einfach um"
 
 #: src/window.cpp:60
 msgid "Blocker: can not fall, may still stand at level end"
-msgstr "Blockierer: der Stein kann nicht umfallen und darf am Levelende noch stehen"
+msgstr ""
+"Blockierer: der Stein kann nicht umfallen und darf am Levelende noch stehen"
 
 #: src/window.cpp:61
 msgid "Splitter: when something falls on its top it will split in two"
