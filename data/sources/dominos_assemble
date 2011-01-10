@@ -1,0 +1,15 @@
+./assembler_compiler -DDOMINOS
+
+./assembler dominos.png 58 2 18 4 200 data/domino00?.png data/domino01?.png data/domino02?.png data/domino03?.png \
+   data/domino040.png data/domino041.png data/domino042.png data/domino043.png explosions/*.png \
+   data/domino044.png data/domino045.png data/domino046.png data/domino047.png data/domino048.png data/domino049.png \
+   data/domino05?.png data/domino06?.png data/domino07?.png data/domino08?.png data/domino09?.png data/domino10?.png \
+   data/domino11?.png \
+   data/domino120.png data/domino133.png data/domino132.png data/domino131.png data/domino130.png data/domino129.png \
+   data/domino128.png data/domino127.png data/domino126.png data/domino125.png data/domino124.png data/domino123.png \
+   data/domino122.png data/domino121.png data/domino134.png \
+   data/domino127.png data/domino127.png \
+   crashes/crash*.png \
+   data/domino120.png data/domino121.png data/domino123.png data/domino125.png data/domino129.png data/domino131.png data/domino133.png data/domino120.png
+
+

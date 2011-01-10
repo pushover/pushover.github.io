@@ -1,0 +1,12 @@
+./assembler_compiler -DCARRIED
+
+./assembler carried.png 55 0 10 4 200 \
+    data/carried00?.png data/carried01?.png \
+    data/carried00?.png data/carried01?.png \
+    data/carried00?.png data/carried01?.png \
+    data/carried02?.png \
+    data/carried03?.png \
+    data/carried04?.png \
+    data/carried05?.png \
+    data/carried06?.png
+
