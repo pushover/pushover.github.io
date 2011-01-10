@@ -55,7 +55,8 @@ window_c::~window_c(void) {
       surf.markDirty(x+i, y+j);
 }
 
-static std::string texts[20] = {
+#define NUM_DOMINOS 11
+static std::string texts[NUM_DOMINOS] = {
   _("Standard: nothing special about this stone, it simply falls"),
   _("Blocker: can not fall, may still stand at level end"),
   _("Splitter: when something falls on its top it will split in two"),
@@ -65,29 +66,35 @@ static std::string texts[20] = {
   _("Bridger: will bridge the platform if there is a one unit gap"),
   _("Vanish: pushed the next domino but then vanishes"),
   _("Trigger: this is the last domino that must fall and it must lie flat"),
-  _("Ascender: will raise as if filled with helium")
+  _("Ascender: will raise as if filled with helium"),
+  _("Entangled: all stones of this type will fall together as if quantum entangled"),
 };
 
 #define SX 310
 #define SY 85
 #define TX 100
-#define TY 50
+#define TY 100
 
-helpWindow_c::helpWindow_c(const std::string text, surface_c & s, graphics_c & g) : window_c(1, 0, 18, 12, s, g), help(text) {
+#define NUM_STONES_PER_PAGE 8
 
+void helpWindow_c::displayCurrentPage(void)
+{
   clearInside();
 
   fontParams_s par;
 
-  for (unsigned int d = 0; d < 10; d++)
+  for (unsigned int d = 0; d < NUM_STONES_PER_PAGE; d++)
   {
+    // out of dominos
+    if (NUM_STONES_PER_PAGE*page+d >= NUM_DOMINOS) break;
+
     int x = d % 2;
     int y = d / 2;
 
     s.fillRect(SX*x+TX,   SY*y+TY,   50,   75, 0, 0, 0);
     s.fillRect(SX*x+TX+2, SY*y+TY+2, 50-4, 75-4, 112, 39, 0);
 
-    s.blitBlock(g.getDomino(d, 7), SX*x+TX - 80, SY*y+TY + 4);
+    s.blitBlock(g.getDomino(NUM_STONES_PER_PAGE*page+d, 7), SX*x+TX - 80, SY*y+TY + 4);
 
     par.font = FNT_SMALL;
     par.alignment = ALN_TEXT;
@@ -98,7 +105,7 @@ helpWindow_c::helpWindow_c(const std::string text, surface_c & s, graphics_c & g
     par.box.y = SY*y+TY;
     par.box.h = 80;
 
-    s.renderText(&par, texts[d]);
+    s.renderText(&par, texts[NUM_STONES_PER_PAGE*page+d]);
   }
 
   par.font = FNT_NORMAL;
@@ -107,25 +114,68 @@ helpWindow_c::helpWindow_c(const std::string text, surface_c & s, graphics_c & g
   par.shadow = false;
   par.box.x = (800-16*40)/2;
   par.box.w = 16*40;
-  par.box.y = TY+5*SY-10;
-  par.box.h = 12*48-TY-5*SY-10;
+  par.box.y = TY+NUM_STONES_PER_PAGE*SY/2-10;
+  par.box.h = 12*48-TY-NUM_STONES_PER_PAGE*SY/2-10;
 
-  if (getTextHeight(&par, text) > par.box.h) {
-    printf("%i  %i\n", getTextHeight(&par, text), par.box.h);
+  if (getTextHeight(&par, help) > par.box.h) {
+    printf("%i  %i\n", getTextHeight(&par, help), par.box.h);
     par.font = FNT_SMALL;
   }
 
-  s.renderText(&par, text);
+  s.renderText(&par, help);
+
+  par.font = FNT_SMALL;
+  par.box.x = (800-15*40)/2;
+  par.box.w = 0;
+  par.box.y = TY+NUM_STONES_PER_PAGE*SY/2;
+  par.box.h = 0;
+  if (page > 0)
+  {
+    s.renderText(&par, "<<");
+  }
+
+  par.box.x = (800+15*40)/2;
+  if (NUM_STONES_PER_PAGE*(page+1) < NUM_DOMINOS)
+  {
+    s.renderText(&par, ">>");
+  }
+
+}
+
+helpWindow_c::helpWindow_c(const std::string & t, surface_c & su, graphics_c & gr) : window_c(1, 1, 18, 11, su, gr), help(t), page(0),
+  s(su), g(gr)
+{
+  displayCurrentPage();
 }
 
 bool helpWindow_c::handleEvent(const SDL_Event & event) {
-  if (event.type == SDL_KEYDOWN &&
-      (event.key.keysym.sym == SDLK_ESCAPE ||
-       event.key.keysym.sym == SDLK_RETURN)
-     )
+  if (event.type == SDL_KEYDOWN)
   {
-    done = true;
-    return true;
+    if (   event.key.keysym.sym == SDLK_ESCAPE
+        || event.key.keysym.sym == SDLK_RETURN
+       )
+    {
+      done = true;
+      return true;
+    }
+    if (event.key.keysym.sym == SDLK_LEFT)
+    {
+      if (page > 0)
+      {
+        page--;
+        displayCurrentPage();
+        return true;
+      }
+    }
+    if (event.key.keysym.sym == SDLK_RIGHT)
+    {
+      if (NUM_STONES_PER_PAGE*(page+1) < NUM_DOMINOS)
+      {
+        page++;
+        displayCurrentPage();
+        return true;
+      }
+    }
   }
 
   return false;

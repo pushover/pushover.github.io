@@ -116,7 +116,7 @@ void graphicsN_c::loadGraphics(void) {
   {
     pngLoader_c png(dataPath+"/data/dominos.png");
 
-    for (unsigned int i = 0; i < 17; i++)
+    for (unsigned int i = 0; i < 18; i++)
       for (unsigned int j = 0; j < numDominos[i]; j++) {
 
         SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 58, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
@@ -125,7 +125,6 @@ void graphicsN_c::loadGraphics(void) {
         png.getPart(v);
         setDomino(i, j, v);
         png.skipLines(2);
-
       }
   }
 
@@ -168,7 +167,7 @@ void graphicsN_c::loadGraphics(void) {
     pngLoader_c png(dataPath+"/data/carried.png");
 
     for (unsigned int i = 0; i < 7; i++) {
-      for (unsigned int j = 0; j < 10; j++) {
+      for (unsigned int j = 0; j < 11; j++) {
         SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 55, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
         SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
@@ -180,20 +179,20 @@ void graphicsN_c::loadGraphics(void) {
 
     // copy some surfaces surfaces
     for (unsigned int i = 7; i < 10; i++) {
-      for (unsigned int j = 0; j < 10; j++) {
+      for (unsigned int j = 0; j < 11; j++) {
         setCarriedDomino(i, j, SDL_DisplayFormatAlpha(getCarriedDomino(i-1, j)));
       }
     }
 
     for (unsigned int i = 10; i < 12; i++) {
-      for (unsigned int j = 0; j < 10; j++) {
+      for (unsigned int j = 0; j < 11; j++) {
         setCarriedDomino(i, j, SDL_DisplayFormatAlpha(getCarriedDomino(i & 1, j)));
       }
     }
 
     // load the final surfaces
     for (unsigned int i = 12; i < 16; i++) {
-      for (unsigned int j = 0; j < 10; j++) {
+      for (unsigned int j = 0; j < 11; j++) {
         SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 55, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
         SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 

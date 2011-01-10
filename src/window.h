@@ -51,10 +51,18 @@ class helpWindow_c : public window_c {
 
   private:
     std::string help;
+    uint32_t page;
+
+    surface_c & s;
+    graphics_c & g;
+
+  private:
+
+    void displayCurrentPage(void);
 
   public:
 
-    helpWindow_c(const std::string text, surface_c & s, graphics_c & g);
+    helpWindow_c(const std::string & text, surface_c & s, graphics_c & g);
     bool handleEvent(const SDL_Event & event);
 
 };

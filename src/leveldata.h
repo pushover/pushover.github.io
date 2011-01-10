@@ -104,6 +104,7 @@ class levelData_c {
       DominoTypeVanish,
       DominoTypeTrigger,
       DominoTypeAscender,
+      DominoTypeConnected,
       DominoTypeCrash0,         // all yello big pile
       DominoTypeCrash1,         // mixed big pile
       DominoTypeCrash2,         // all red big pile
@@ -111,7 +112,7 @@ class levelData_c {
       DominoTypeCrash4,         // mixed little pile
       DominoTypeCrash5,         // all red little pile
       DominoTypeRiserCont,
-      DominoTypeQuaver
+      DominoTypeQuaver,
     };
 
     unsigned char getNumBgLayer(void) const { return numBg; }

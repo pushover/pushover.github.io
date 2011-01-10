@@ -1,3 +1,3 @@
 pushd data
-povray ../carried.pov +w165 +h55 +R5 +a +UA -KFI0 -KFF109 -KI0 -KF109 -L.. +SF60 +EF69
+povray ../carried.pov +w165 +h55 +R5 +a +UA -KFI0 -KFF109 -KI0 -KF109 -L.. +SF0 +EF69
 popd
