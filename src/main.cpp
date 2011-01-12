@@ -418,6 +418,7 @@ int main(int argc, char * argv[]) {
                               break;
 
             case ST_PLAY:
+                              ticks = SDL_GetTicks();    // the flip might have taken some time too long
                               rec.setLevel(selectedMission, l.getName());
                               rec.reset();
                               break;
