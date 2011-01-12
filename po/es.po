@@ -7,188 +7,194 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pushover 0.0.2\n"
 "Report-Msgid-Bugs-To: roever@users.sf.net\n"
-"POT-Creation-Date: 2009-12-31 14:44+0100\n"
+"POT-Creation-Date: 2011-01-11 21:18+0100\n"
 "PO-Revision-Date: 2009-12-28 14:45+0100\n"
 "Last-Translator: Miguel de Dios <md@tomatesasesinos.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/window.cpp:59
+#: src/window.cpp:60
 msgid "Standard: nothing special about this stone, it simply falls"
 msgstr ""
 
-#: src/window.cpp:60
+#: src/window.cpp:61
 msgid "Blocker: can not fall, may still stand at level end"
 msgstr ""
 
-#: src/window.cpp:61
+#: src/window.cpp:62
 msgid "Splitter: when something falls on its top it will split in two"
 msgstr ""
 
-#: src/window.cpp:62
+#: src/window.cpp:63
 msgid "Exploder: will blast a hole into the platform below it"
 msgstr ""
 
-#: src/window.cpp:63
+#: src/window.cpp:64
 msgid "Delay: falls not immediately but a few seconds after beeing pushed"
 msgstr ""
 
-#: src/window.cpp:64
+#: src/window.cpp:65
 msgid "Tumbler: will continue rolling until it hits an obstacle"
 msgstr ""
 
-#: src/window.cpp:65
+#: src/window.cpp:66
 msgid "Bridger: will bridge the platform if there is a one unit gap"
 msgstr ""
 
-#: src/window.cpp:66
+#: src/window.cpp:67
 msgid "Vanish: pushed the next domino but then vanishes"
 msgstr ""
 
-#: src/window.cpp:67
+#: src/window.cpp:68
 msgid "Trigger: this is the last domino that must fall and it must lie flat"
 msgstr ""
 
-#: src/window.cpp:68
+#: src/window.cpp:69
 msgid "Ascender: will raise as if filled with helium"
 msgstr ""
 
-#: src/window.cpp:157
+#: src/window.cpp:70
+msgid ""
+"Entangled: all stones of this type will fall together as if quantum entangled"
+msgstr ""
+
+#: src/window.cpp:207
 msgid "Pushover - About"
 msgstr "Acerca de Pushover"
 
-#: src/window.cpp:173
+#: src/window.cpp:223
 msgid "Original Concept:"
 msgstr "Idea original:"
 
-#: src/window.cpp:176
+#: src/window.cpp:226
 msgid "Original Programming:"
 msgstr "Promación original:"
 
-#: src/window.cpp:179
+#: src/window.cpp:229
 msgid "Original Graphics:"
 msgstr "Gráficos originales:"
 
-#: src/window.cpp:182
+#: src/window.cpp:232
 msgid "Original Music & SFX:"
 msgstr "Música original y SFX:"
 
-#: src/window.cpp:185
+#: src/window.cpp:235
 msgid "Original Levels:"
 msgstr "Niveles originales:"
 
-#: src/window.cpp:188
+#: src/window.cpp:238
 msgid "New Programming:"
 msgstr "Nueva programación:"
 
-#: src/window.cpp:191
+#: src/window.cpp:241
 msgid "New Music:"
 msgstr "Nueva música:"
 
-#: src/window.cpp:194
+#: src/window.cpp:244
 msgid "New Graphics:"
 msgstr "Nuevos gráficos:"
 
-#: src/window.cpp:345
+#: src/window.cpp:395
 msgid "Play Levelset"
 msgstr "Jugar grupo de niveles"
 
-#: src/window.cpp:346 src/window.cpp:364 src/window.cpp:403
+#: src/window.cpp:396 src/window.cpp:414 src/window.cpp:453
 msgid "Configuration"
 msgstr "Configuración"
 
-#: src/window.cpp:347
+#: src/window.cpp:397
 msgid "About"
 msgstr "Acerca de"
 
-#: src/window.cpp:348
+#: src/window.cpp:398
 msgid "Quit"
 msgstr "Salir"
 
-#: src/window.cpp:351
+#: src/window.cpp:401
 msgid "Main menu"
 msgstr "Menú principal"
 
-#: src/window.cpp:359
+#: src/window.cpp:409
 msgid "Toggle Fullscreen"
 msgstr "Activa/Desactiva pantalla completa"
 
-#: src/window.cpp:360
+#: src/window.cpp:410
 msgid "Toggle Sound Effects"
 msgstr "Activa/Desactiva efectos sonoros"
 
-#: src/window.cpp:361
+#: src/window.cpp:411
 #, fuzzy
 msgid "Toggle Background Music"
 msgstr "Activa/Desactiva efectos sonoros"
 
-#: src/window.cpp:368
+#: src/window.cpp:418
 msgid "Select Levelset"
 msgstr "Elige grupo de niveles"
 
-#: src/window.cpp:381
+#: src/window.cpp:431
 msgid "(done)"
 msgstr "(completado)"
 
-#: src/window.cpp:388
+#: src/window.cpp:438
 msgid "No Level in Levelset"
 msgstr "Ningún nivel en este grupo"
 
-#: src/window.cpp:393 src/window.cpp:411
+#: src/window.cpp:443 src/window.cpp:461
 msgid "Select Level"
 msgstr "Elige nivel"
 
-#: src/window.cpp:401
+#: src/window.cpp:451
 msgid "Return to level"
 msgstr "Volver al nivel"
 
-#: src/window.cpp:402
+#: src/window.cpp:452
 msgid "Restart level"
 msgstr "Reiniciar el nivel"
 
-#: src/window.cpp:404 src/window.cpp:435
+#: src/window.cpp:454 src/window.cpp:485
 msgid "Return to menu"
 msgstr "Volver al menú"
 
-#: src/window.cpp:407
+#: src/window.cpp:457
 msgid "Nu What?"
 msgstr "¿Qué quieres hacer?"
 
-#: src/window.cpp:423
+#: src/window.cpp:473
 msgid "Continue"
 msgstr "Continuar"
 
-#: src/window.cpp:426
+#: src/window.cpp:476
 msgid "Gratulation! You solved the level."
 msgstr "¡Felicidades! Has completado el nivel"
 
-#: src/window.cpp:434
+#: src/window.cpp:484
 msgid "Retry the level"
 msgstr "Reintentar el nivel"
 
-#: src/window.cpp:440
+#: src/window.cpp:490
 msgid "You failed: You've been too slow"
 msgstr "Perdiste: has sido demasiado lento"
 
-#: src/window.cpp:441
+#: src/window.cpp:491
 msgid "You failed: Some dominoes crashed"
 msgstr "Perdiste: algunas fichas se han roto"
 
-#: src/window.cpp:442
+#: src/window.cpp:492
 msgid "You failed: Not all dominoes fell"
 msgstr "Perdiste: no han caido todas las fichas"
 
-#: src/window.cpp:443
+#: src/window.cpp:493
 msgid "You failed: You died"
 msgstr "Perdiste: estás muerto"
 
-#: src/window.cpp:444
+#: src/window.cpp:494
 msgid "You failed: Trigger was not last to fall"
 msgstr "Perdiste: la Ficha Final no fue la última en caer"
 
-#: src/window.cpp:445
+#: src/window.cpp:495
 msgid "You failed: Trigger not flat on the ground"
 msgstr "Perdiste: la Ficha Final no se tumbó"
 
