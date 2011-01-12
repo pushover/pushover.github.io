@@ -168,11 +168,11 @@ static int clip(int v) {
 }
 
 // a list of functions that return value between 0 and 255, depending on x and y
-static int f1(int x, int y, int a) { return clip(y*256/3 - 1024 + a*((1024+256)/32)); }
-static int f2(int x, int y, int a) { return clip(y*x*256/3/20 - 1024 + a*((1024+256)/32)); }
-static int f3(int x, int y, int a) { return clip(((2*y-12)*(2*y-12)+(2*x-19)*(2*x-19))*256/110 - 1024 + a*((1024+256)/32)); }
+static int f1(int x, int y, int a) { return clip(y*256/4+x*256/20 - 1024 + a*((1024+256)/64)); }
+static int f2(int x, int y, int a) { return clip(y*x*256/65 - 1024 + a*((1024+256)/64)); }
+static int f3(int x, int y, int a) { return clip(((2*y-12)*(2*y-12)+(2*x-19)*(2*x-19))*256/127 - 1024 + a*((1024+256)/64)); }
 
-static void u1(SDL_Surface * video, int x, int y, int f, int blx, int bly) {
+static void u1(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bly) {
   int by = bly*y;
   int bx = blx*x;
   int bw = f*blx/256;
@@ -182,7 +182,7 @@ static void u1(SDL_Surface * video, int x, int y, int f, int blx, int bly) {
     SDL_UpdateRect(video, bx, by, bw, bh);
 }
 
-static void u2(SDL_Surface * video, int x, int y, int f, int blx, int bly) {
+static void u2(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bly) {
   int by = bly*y;
   int bx = blx*x;
   int bw = blx;
@@ -194,7 +194,7 @@ static void u2(SDL_Surface * video, int x, int y, int f, int blx, int bly) {
     SDL_UpdateRect(video, bx, by, bw, bh);
 }
 
-static void u3(SDL_Surface * video, int x, int y, int f, int blx, int bly) {
+static void u3(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bly) {
   int by = bly*y + bly/2 - bly/2*f/256;
   int bx = blx*x + blx/2 - blx/2*f/256;
   int bw = blx;
@@ -207,10 +207,40 @@ static void u3(SDL_Surface * video, int x, int y, int f, int blx, int bly) {
     SDL_UpdateRect(video, bx, by, bw, bh);
 }
 
+static void u4(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bly) {
+
+  uint8_t rnd = 0;
+
+  f0 /= 4;
+  f /= 4;
+
+  if (f0 == f) return;
+
+  for (int i = 0; i <= f; i++)
+  {
+    if (i >= f0)
+    {
+      int xp = rnd % 8;
+      int yp = rnd / 8;
+
+      int by = bly*y+yp*bly/8;
+      int bx = blx*x+xp*blx/8;
+      int bw = blx/8;
+      int bh = (y == 12) ? bly/2 : bly;
+      bh = bh/8;
+
+      if (bh > 0)
+        SDL_UpdateRect(video, bx, by, bw, bh);
+    }
+
+    rnd = (21*rnd+11) % 64;
+  }
+}
+
 bool screen_c::flipAnimate(void)
 {
   static int (*f)(int, int, int);
-  static void (*u)(SDL_Surface *, int, int, int, int, int);
+  static void (*u)(SDL_Surface *, int, int, int, int, int, int);
 
   if (animationState == 0) {
     switch (rand()%3) {
@@ -219,10 +249,11 @@ bool screen_c::flipAnimate(void)
       case 2: f = f3; break;
       default: f = f3; break;
     }
-    switch (rand()%3) {
+    switch (rand()%4) {
       case 0: u = u1; break;
       case 1: u = u2; break;
       case 2: u = u3; break;
+      case 3: u = u4; break;
       default: u = u3; break;
     }
   }
@@ -240,13 +271,13 @@ bool screen_c::flipAnimate(void)
 
         if (valNew != valOld)
         {
-          u(video, x, y, valNew, gr.blockX(), gr.blockY());
+          u(video, x, y, valOld, valNew, gr.blockX(), gr.blockY());
         }
       }
     }
   }
 
-  if (animationState == 32)
+  if (animationState == 64)
   {
     animationState = 0;
     return true;
