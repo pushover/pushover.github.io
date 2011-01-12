@@ -34,7 +34,7 @@ typedef struct {
   SDL_Rect box;
   int alignment;
   SDL_Color color;
-  bool shadow;
+  uint8_t shadow;
 } fontParams_s;
 
 

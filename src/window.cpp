@@ -99,7 +99,7 @@ void helpWindow_c::displayCurrentPage(void)
     par.font = FNT_SMALL;
     par.alignment = ALN_TEXT;
     par.color.r = 112; par.color.g = 39; par.color.b = 0;
-    par.shadow = false;
+    par.shadow = 0;
     par.box.x = SX*x+TX+55;
     par.box.w = SX-65;
     par.box.y = SY*y+TY;
@@ -111,7 +111,7 @@ void helpWindow_c::displayCurrentPage(void)
   par.font = FNT_NORMAL;
   par.alignment = ALN_CENTER;
   par.color.r = par.color.g = 255; par.color.b = 0;
-  par.shadow = false;
+  par.shadow = 0;
   par.box.x = (800-16*40)/2;
   par.box.w = 16*40;
   par.box.y = TY+NUM_STONES_PER_PAGE*SY/2-10;
@@ -198,7 +198,7 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 0, 16,
   par.font = FNT_BIG;
   par.alignment = ALN_CENTER;
   par.color.r = 112; par.color.g = 39; par.color.b = 0;
-  par.shadow = false;
+  par.shadow = 2;
   par.box.x = gr.blockX()*(X()+1);
   par.box.y = gr.blockY()*(Y()+1);
   par.box.w = gr.blockX()*(W()-2);
@@ -208,6 +208,7 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 0, 16,
 
   int ypos = gr.blockY()*(Y()+1) + getFontHeight(FNT_BIG);
 
+  surf.fillRect(gr.blockX()*(X()+1)+1, ypos+1, gr.blockX()*(W()-2), 2, 0, 0, 0);
   surf.fillRect(gr.blockX()*(X()+1), ypos, gr.blockX()*(W()-2), 2, 112, 39, 0);
   ypos += 20;
 
@@ -220,29 +221,29 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 0, 16,
   par.box.w = gr.blockX()*(W()-2)-30;
   par.box.h = lineH;
 
-  par.box.y += surf.renderText(&par, _("Original Concept:"))*lineH; par.box.x += 30;
-  par.box.y += surf.renderText(&par, "Chas Partington")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Concept:"))*lineH; par.box.x += 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Chas Partington")*lineH; par.box.x -= 30;
 
-  par.box.y += surf.renderText(&par, _("Original Programming:"))*lineH; par.box.x += 30;
-  par.box.y += surf.renderText(&par, "Dave Elcock, Helen Elcock, Keith Watterson")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Programming:"))*lineH; par.box.x += 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Dave Elcock, Helen Elcock, Keith Watterson")*lineH; par.box.x -= 30;
 
-  par.box.y += surf.renderText(&par, _("Original Graphics:"))*lineH; par.box.x += 30;
-  par.box.y += surf.renderText(&par, "Bryan King, Barry Armstrong")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Graphics:"))*lineH; par.box.x += 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Bryan King, Barry Armstrong")*lineH; par.box.x -= 30;
 
-  par.box.y += surf.renderText(&par, _("Original Music & SFX:"))*lineH; par.box.x += 30;
-  par.box.y += surf.renderText(&par, "Keith Tinman, Dean Evans, Johnathan Dunn")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Music & SFX:"))*lineH; par.box.x += 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Keith Tinman, Dean Evans, Johnathan Dunn")*lineH; par.box.x -= 30;
 
-  par.box.y += surf.renderText(&par, _("Original Levels:"))*lineH; par.box.x += 30;
-  par.box.y += surf.renderText(&par, "Harry Nadler, Avril Rigby, Don Rigby, Chris Waterworth")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Levels:"))*lineH; par.box.x += 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Harry Nadler, Avril Rigby, Don Rigby, Chris Waterworth")*lineH; par.box.x -= 30;
 
-  par.box.y += surf.renderText(&par, _("New Programming:"))*lineH; par.box.x += 30;
-  par.box.y += surf.renderText(&par, "Andreas Röver, Volker Grabsch")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Programming:"))*lineH; par.box.x += 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Andreas Röver, Volker Grabsch")*lineH; par.box.x -= 30;
 
-  par.box.y += surf.renderText(&par, _("New Music:"))*lineH; par.box.x += 30;
-  par.box.y += surf.renderText(&par, "Roberto Lorenz")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Music:"))*lineH; par.box.x += 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Roberto Lorenz")*lineH; par.box.x -= 30;
 
-  par.box.y += surf.renderText(&par, _("New Graphics:"))*lineH; par.box.x += 30;
-  par.box.y += surf.renderText(&par, "Harald Radke")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Graphics:"))*lineH; par.box.x += 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Harald Radke")*lineH; par.box.x -= 30;
 }
 
 
@@ -266,7 +267,7 @@ void listWindow_c::redraw(void) {
   par.font = FNT_BIG;
   par.alignment = ALN_CENTER;
   par.color.r = 112; par.color.g = 39; par.color.b = 0;
-  par.shadow = false;
+  par.shadow = 2;
   par.box.x = gr.blockX()*(x+1);
   par.box.y = gr.blockY()*(y+1);
   par.box.w = gr.blockX()*(w-2);
@@ -276,6 +277,7 @@ void listWindow_c::redraw(void) {
 
   int ypos = gr.blockY()*(y+1) + getFontHeight(FNT_BIG);
 
+  surf.fillRect(gr.blockX()*(x+1)+1, ypos+1, gr.blockX()*(w-2), 2, 0, 0, 0);
   surf.fillRect(gr.blockX()*(x+1), ypos, gr.blockX()*(w-2), 2, 112, 39, 0);
   ypos += 20;
 
@@ -311,7 +313,7 @@ void listWindow_c::redraw(void) {
       par.color.r = 112; par.color.g = 39; par.color.b = 0;
     }
 
-    par.shadow = false;
+    par.shadow = 0;
     par.box.x = gr.blockX()*(x+1);
     par.box.y = ypos;
     par.box.w = gr.blockX()*(w-2);

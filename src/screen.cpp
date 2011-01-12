@@ -413,16 +413,27 @@ unsigned int surface_c::renderText(const fontParams_s * par, const std::string &
       r.h = vv->h;
       r.y = ypos;
 
-      if (par->shadow)
+      if (par->shadow == 1)
       {
         int sa = 1;
         if (par->font == FNT_BIG) sa = 2;
 
         r.x-=sa; r.y-=sa; SDL_BlitSurface(vb, 0, video, &r);
-        r.x+=2*sa;        SDL_BlitSurface(vb, 0, video, &r);
-        r.y+=2*sa;        SDL_BlitSurface(vb, 0, video, &r);
-        r.x-=2*sa;        SDL_BlitSurface(vb, 0, video, &r);
-        r.y-=sa; r.x+=sa;
+        r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+        r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+        r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+        r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+        r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+        r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+        r.y-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+        r.x+=sa;
+      }
+      else if (par->shadow == 2)
+      {
+        int sa = 1;
+
+        r.x+=sa; r.y+=sa; SDL_BlitSurface(vb, 0, video, &r);
+        r.x-=sa; r.y-=sa;
       }
       SDL_BlitSurface(vv, 0, video, &r);
     }
@@ -436,16 +447,27 @@ unsigned int surface_c::renderText(const fontParams_s * par, const std::string &
       r.w = vv->w;
       r.h = vv->h;
 
-      if (par->shadow)
+      if (par->shadow == 1)
       {
         int sa = 1;
         if (par->font == FNT_BIG) sa = 2;
 
         r.x-=sa; r.y-=sa; SDL_BlitSurface(vb, 0, video, &r);
-        r.x+=2*sa;        SDL_BlitSurface(vb, 0, video, &r);
-        r.y+=2*sa;        SDL_BlitSurface(vb, 0, video, &r);
-        r.x-=2*sa;        SDL_BlitSurface(vb, 0, video, &r);
-        r.y-=sa; r.x+=sa;
+        r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+        r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+        r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+        r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+        r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+        r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+        r.y-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+        r.x+=sa;
+      }
+      else if (par->shadow == 2)
+      {
+        int sa = 1;
+
+        r.x+=sa; r.y+=sa; SDL_BlitSurface(vb, 0, video, &r);
+        r.x-=sa; r.y-=sa;
       }
       SDL_BlitSurface(vv, 0, video, &r);
     }

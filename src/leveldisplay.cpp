@@ -309,7 +309,7 @@ void levelDisplay_c::drawDominos(void) {
     pars.box.y = gr.timeYPos();
     pars.box.w = 50;
     pars.box.h = 50;
-    pars.shadow = true;
+    pars.shadow = 1;
 
     target.renderText(&pars, time);
   }
