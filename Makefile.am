@@ -135,8 +135,8 @@ dist_noinst_DATA = \
   levels/av/one_last_crash.level \
   levels/av/out_of_reach.level
 
-                     # BSD make                         # GNU make
-LEVEL_INDEX_FILES := $(dist_noinst_DATA:M*/index.level) $(filter %/index.level,$(dist_noinst_DATA))
+                    # BSD make                         # GNU make
+LEVEL_INDEX_FILES = $(dist_noinst_DATA:M*/index.level) $(filter %/index.level,$(dist_noinst_DATA))
 
 install-data-local:
 	$(mkdir_p) "$(DESTDIR)$(pkgdatadir)/levels"
