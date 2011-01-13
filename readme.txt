@@ -154,18 +154,18 @@ levels included into the program
 - They need to be put under the GPL licence, or something compatible. Otherwise
   inclusion is legally not possible, copyright stays with you, of course.
 - Please only contribute complete sets and no single levels. They don't need to
-  be long 10 levels is enough but this way you can keep up a constant scheme and
+  be long, 10 levels is enough but this way you can keep up a constant scheme and
   theme logic of the levels.
 - You absolutely _must_ provide a recording of one possible solution to each
   level. That solution is not within the distribution, just within the source
   code repository. It is used to ensure that the solution of your level is still
   possible after we made changes to the program. This way we limit possible
   frustration.
-- Do only send non compressed level sets. We need those for the inclusion in the
+- Do only send non-compressed level sets. We need those for the inclusion in the
   source. And we need those for possible future updates.
-- Use the index file to resort levels, don't rename the files. This way
+- Use the index file to reorder levels, don't rename the files. This way
   inserting a level becomes very easy.
-- you must not have more than one animated tile per level background.
+- You must not have more than one animated tile per level background.
 
 
 Credits
