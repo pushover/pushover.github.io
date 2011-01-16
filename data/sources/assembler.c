@@ -64,7 +64,7 @@ int specialCases[] =
 
 #ifdef CARRIED
 
-#define DS(x, y) (11*(x)+(y))  // calculate domino number y out of set x
+#define DS(x, y) (12*(x)+(y))  // calculate domino number y out of set x
 
 #define DOM(x, sx, sy) \
     DS((x), 0), (sx), (sy), 54, \
@@ -77,7 +77,8 @@ int specialCases[] =
     DS((x), 7), (sx), (sy), 54, \
     DS((x), 8), (sx), (sy), 54, \
     DS((x), 9), (sx), (sy), 54, \
-    DS((x),10), (sx), (sy), 54,
+    DS((x),10), (sx), (sy), 54, \
+    DS((x),11), (sx), (sy), 54, 
 
 int specialCases[] =
     //Image number

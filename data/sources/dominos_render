@@ -1,5 +1,5 @@
 pushd data
-povray ../domino.pov +w165 +h55 +R5 +a +UA +KFI0 +KFF156 +KI0 +KF156 +L.. +SF0 +EF149
+povray ../domino.pov +w165 +h55 +R5 +a +UA +KFI0 +KFF156 +KI0 +KF156 +L.. +SF150 +EF164
 popd
 
 

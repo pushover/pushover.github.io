@@ -149,6 +149,8 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
     case DominoTypeEmpty:
     case DominoTypeStandard:
     case DominoTypeStopper:
+    case DominoTypeConnectedA:
+    case DominoTypeConnectedB:
       if (getDominoDir(x, y) == -dir)
       {
         DominoCrash(x, y, getDominoYOffset(x+dir, y), getDominoExtra(x+dir, y));
@@ -236,17 +238,50 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
       break;
 
       // here we must go over the complete level and start all connector stones
-    case DominoTypeConnected:
+    case DominoTypeConnectedA:
       {
         bool sound = false;
         for (int yp = 0; yp < 13; yp++)
           for (int xp = 0; xp < 20; xp++)
-            if (getDominoType(xp, yp) == DominoTypeConnected && getDominoState(xp, yp) == 8)
+          {
+            if (getDominoType(xp, yp) == DominoTypeConnectedA && getDominoState(xp, yp) == 8)
             {
               sound = true;
               setDominoDir(xp, yp, dir);
               setDominoState(xp, yp, getDominoState(xp, yp)+dir);
             }
+            if (getDominoType(xp, yp) == DominoTypeConnectedB && getDominoState(xp, yp) == 8)
+            {
+              sound = true;
+              setDominoDir(xp, yp, -dir);
+              setDominoState(xp, yp, getDominoState(xp, yp)-dir);
+            }
+          }
+        if (sound)
+        {
+          soundSystem_c::instance()->startSound(getDominoType(x, y)-1);
+        }
+      }
+      break;
+    case DominoTypeConnectedB:
+      {
+        bool sound = false;
+        for (int yp = 0; yp < 13; yp++)
+          for (int xp = 0; xp < 20; xp++)
+          {
+            if (getDominoType(xp, yp) == DominoTypeConnectedB && getDominoState(xp, yp) == 8)
+            {
+              sound = true;
+              setDominoDir(xp, yp, dir);
+              setDominoState(xp, yp, getDominoState(xp, yp)+dir);
+            }
+            if (getDominoType(xp, yp) == DominoTypeConnectedA && getDominoState(xp, yp) == 8)
+            {
+              sound = true;
+              setDominoDir(xp, yp, -dir);
+              setDominoState(xp, yp, getDominoState(xp, yp)-dir);
+            }
+          }
         if (sound)
         {
           soundSystem_c::instance()->startSound(getDominoType(x, y)-1);
@@ -2141,7 +2176,7 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y) {
     case 168: DTA_H(x, y); break;
     case 169: DTA_H(x, y); break;
 
-              // DominoTypeConnected
+              // DominoTypeConnectedA
     case 170: DTA_1(x, y); break;
     case 171: DTA_2(x, y); break;
     case 172: DTA_3(x, y); break;
@@ -2158,47 +2193,64 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y) {
     case 183: DTA_J(x, y); break;
     case 184: DTA_K(x, y); break;
 
-              // DominoTypeCrash0
-    case 187: DTA_B(x, y); break;
-    case 188: DTA_B(x, y); break;
-    case 189: DTA_B(x, y); break;
-    case 190: DTA_B(x, y); break;
-    case 191: DTA_B(x, y); break;
+              // DominoTypeConnectedA
+    case 187: DTA_1(x, y); break;
+    case 188: DTA_2(x, y); break;
+    case 189: DTA_3(x, y); break;
+    case 190: DTA_4(x, y); break;
+    case 191: DTA_4(x, y); break;
+    case 192: DTA_4(x, y); break;
+    case 193: DTA_4(x, y); break;
+    case 194: DTA_E(x, y); break;
+    case 195: DTA_4(x, y); break;
+    case 196: DTA_4(x, y); break;
+    case 197: DTA_4(x, y); break;
+    case 198: DTA_4(x, y); break;
+    case 199: DTA_I(x, y); break;
+    case 200: DTA_J(x, y); break;
+    case 201: DTA_K(x, y); break;
 
-              // DominoTypeCrash1
+              // DominoTypeCrash0
     case 204: DTA_B(x, y); break;
     case 205: DTA_B(x, y); break;
     case 206: DTA_B(x, y); break;
     case 207: DTA_B(x, y); break;
     case 208: DTA_B(x, y); break;
 
-              // DominoTypeCrash2
+              // DominoTypeCrash1
     case 221: DTA_B(x, y); break;
     case 222: DTA_B(x, y); break;
     case 223: DTA_B(x, y); break;
     case 224: DTA_B(x, y); break;
     case 225: DTA_B(x, y); break;
 
-              // DominoTypeCrash3
+              // DominoTypeCrash2
     case 238: DTA_B(x, y); break;
     case 239: DTA_B(x, y); break;
     case 240: DTA_B(x, y); break;
     case 241: DTA_B(x, y); break;
     case 242: DTA_B(x, y); break;
 
-              // DominoTypeCrash4
+              // DominoTypeCrash3
     case 255: DTA_B(x, y); break;
     case 256: DTA_B(x, y); break;
     case 257: DTA_B(x, y); break;
     case 258: DTA_B(x, y); break;
     case 259: DTA_B(x, y); break;
 
-              // DominoTypeCrash5
+              // DominoTypeCrash4
     case 272: DTA_B(x, y); break;
     case 273: DTA_B(x, y); break;
     case 274: DTA_B(x, y); break;
     case 275: DTA_B(x, y); break;
     case 276: DTA_B(x, y); break;
+
+              // DominoTypeCrash5
+    case 289: DTA_B(x, y); break;
+    case 290: DTA_B(x, y); break;
+    case 291: DTA_B(x, y); break;
+    case 292: DTA_B(x, y); break;
+    case 293: DTA_B(x, y); break;
               // DominoTypeRiserCont
               // DominoTypeQuaver
   }

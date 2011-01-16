@@ -104,7 +104,8 @@ class levelData_c {
       DominoTypeVanish,
       DominoTypeTrigger,
       DominoTypeAscender,
-      DominoTypeConnected,
+      DominoTypeConnectedA,
+      DominoTypeConnectedB,
       DominoTypeCrash0,         // all yello big pile
       DominoTypeCrash1,         // mixed big pile
       DominoTypeCrash2,         // all red big pile

@@ -94,7 +94,15 @@ void helpWindow_c::displayCurrentPage(void)
     s.fillRect(SX*x+TX,   SY*y+TY,   50,   75, 0, 0, 0);
     s.fillRect(SX*x+TX+2, SY*y+TY+2, 50-4, 75-4, 112, 39, 0);
 
-    s.blitBlock(g.getDomino(NUM_STONES_PER_PAGE*page+d, 7), SX*x+TX - 80, SY*y+TY + 4);
+    if (NUM_STONES_PER_PAGE*page+d == 10)
+    {
+      s.blitBlock(g.getDomino(10, 7), SX*x+TX - 80 - 9, SY*y+TY + 4);
+      s.blitBlock(g.getDomino(11, 7), SX*x+TX - 80 + 9, SY*y+TY + 4);
+    }
+    else
+    {
+      s.blitBlock(g.getDomino(NUM_STONES_PER_PAGE*page+d, 7), SX*x+TX - 80, SY*y+TY + 4);
+    }
 
     par.font = FNT_SMALL;
     par.alignment = ALN_TEXT;

@@ -125,6 +125,13 @@
       PlaceDominoStone(clock-7-9*15)
     }
     #break
+  #range(10*15-1,10*15+14)
+    // connector
+    object {
+      Domino11
+      PlaceDominoStone(clock-7-10*15)
+    }
+    #break
 #end
 
 camera {

@@ -65,7 +65,7 @@ class graphics_c {
     virtual void loadTheme(const std::string & name) = 0;
 
     static const unsigned char numDominoTypes;
-    static const unsigned char numDominos[19];
+    static const unsigned char numDominos[20];
 
     static const unsigned char numAntAnimations;
 

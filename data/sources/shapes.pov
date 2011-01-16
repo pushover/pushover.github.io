@@ -38,18 +38,21 @@
   plane {(-x-y-z)/sqrt(3), -Fase*1.7 translate -W/2*x }
 }
 
+// standard
 #declare Domino0 = intersection {
   box { <-W/2, 0, 0> <W/2, H, D> }
   object { Edges }
   texture { TxtY }
 }
 
+// blocker
 #declare Domino1 = intersection {
   box { <-W/2, 0, 0> <W/2, H, D> }
   object { Edges }
   texture { TxtR }
 }
 
+// splitter
 #declare Domino2 = union {
   intersection {
     box { <-W/2, 0, 0> <W/2, H/2, D> }
@@ -63,6 +66,7 @@
   }
 }
 
+// exploder
 #declare Domino3 = union {
   intersection {
     box { <-W/2, 0, 0> <W/2, H, D/2> }
@@ -76,6 +80,7 @@
   }
 }
 
+// delay
 #declare Domino4 = union {
   intersection {
     intersection {
@@ -97,6 +102,7 @@
   }
 }
 
+// tumbler
 #declare Domino5 = union {
   intersection {
     box { <-W/2, 0, 0> <W/2, 1*H/4, D> }
@@ -115,6 +121,7 @@
   }    
 }  
 
+// bridger
 #declare Domino6 = union {
   intersection {
     box { <-W/2, 0, 0> <W/2, 6*H/14, D> }
@@ -133,6 +140,7 @@
   }    
 }  
 
+// vanisher
 #declare Domino7 = union {
   intersection {
     box { <-W/2, 0, 0> <W/2, 4*H/14, D> }
@@ -161,6 +169,7 @@
   }    
 }  
 
+// trigger
 #declare Domino8 = union {
   intersection {
     box { <-W/2, 0, 0> <W/2, 2*H/14, D> }
@@ -199,6 +208,7 @@
   }    
 }  
 
+// raiser
 #declare Domino9 = union {
   intersection {
     box { <-W/2, 0, 0> <W/2, H, D/3> }
@@ -217,6 +227,7 @@
   }    
 }  
 
+// tangled 1
 #declare Domino10 = union {
   intersection {
     intersection {
@@ -257,6 +268,50 @@
     }
     object { Edges }
     texture { TxtR }
+  }
+}
+
+// tangled 2
+#declare Domino11 = union {
+  intersection {
+    intersection {
+      box { <-W/2, 0, 0> <W/2, 1, 1> }
+      plane { y+z, 0 translate y }
+      plane { y-z, 0 translate 0 }
+      scale <1, H, D>
+    }  
+    object { Edges }
+    texture { TxtY }
+  }
+  intersection {
+    intersection {
+      box { <-W/2, 0, 0> <W/2, 1, 1> }
+      plane { y+z, 0 translate y }
+      plane { -y+z, 0 translate 0 }
+      scale <1, H, D>
+    }  
+    object { Edges }
+    texture { TxtR }
+  }
+  intersection {
+    intersection {
+      box { <-W/2, 0, 0> <W/2, 1, 1> }
+      plane { -y-z, 0 translate y }
+      plane { y-z, 0 translate 0 }
+      scale <1, H, D>
+    }  
+    object { Edges }
+    texture { TxtR }
+  }
+  intersection {
+    intersection {
+      box { <-W/2, 0, 0> <W/2, 1, 1> }
+      plane { -y-z, 0 translate y }
+      plane { -y+z, 0 translate 0 }
+      scale <1, H, D>
+    }
+    object { Edges }
+    texture { TxtY }
   }
 }
 
