@@ -1483,6 +1483,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
 
   int riserDir = getDominoDir(x, y);
 
+  // raiser is raising
   if (getDominoExtra(x, y) == 0x60)
   {
     if (getDominoYOffset(x, y) == 4 && y > 1)
@@ -1572,6 +1573,8 @@ void levelPlayer_c::DTA_H(int x, int y) {
         setDominoState(x, y, 17);
       }
     }
+
+    // normally raise the domino by 2 units
     setDominoYOffset(x, y, getDominoYOffset(x, y)-2);
 
     markDirty(x, y);
@@ -1580,11 +1583,14 @@ void levelPlayer_c::DTA_H(int x, int y) {
     return;
   }
 
+  // if the raiser had been pushed, set it loose
   if (riserDir != 0)
   {
+    // first reset to middle position
     if (getDominoState(x, y) == 16)
       setDominoState(x, y, 8);
 
+    // then move it
     DTA_4(x, y);
   }
 }
