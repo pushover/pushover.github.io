@@ -228,6 +228,9 @@ int main(int argc, char * argv[]) {
     return 0;
   }
 
+  bool fullscreen = false;
+  if (argc >= 2 && strcmp(argv[1], "-z") == 0) fullscreen = true;
+
   // setup internationalisation
   setlocale(LC_MESSAGES, "");
   bindtextdomain("pushover", getLocaleDir().c_str());
@@ -244,6 +247,7 @@ int main(int argc, char * argv[]) {
   atexit(SDL_Quit);
   graphicsN_c gr(datadir);
   screen_c screen(gr);
+  if (fullscreen) screen.toggleFullscreen();
   gr.loadGraphics();
   initText(datadir);
   soundSystem_c::instance()->openSound(datadir);
