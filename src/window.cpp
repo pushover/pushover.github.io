@@ -391,6 +391,22 @@ bool listWindow_c::handleEvent(const SDL_Event & event) {
             redraw();
         }
     }
+    else if (event.key.keysym.sym == SDLK_HOME)
+    {
+        if (current > 0)
+        {
+            current = 0;
+            redraw();
+        }
+    }
+    else if (event.key.keysym.sym == SDLK_END)
+    {
+        if (current+1 < entries.size())
+        {
+            current = entries.size()-1;
+            redraw();
+        }
+    }
   }
 
   return false;
