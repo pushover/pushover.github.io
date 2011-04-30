@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <time.h>
 #include <unistd.h>
 #endif
 
@@ -16,6 +17,18 @@
 #include <dirent.h>
 
 #include <stdexcept>
+
+void srandFromTime(void) {
+
+#ifdef WIN32
+  FILETIME currentTime;
+  GetSystemTimeAsFileTime(&currentTime);
+  srand(currentTime.dwLowDateTime);
+#else
+  srand(time(0));
+#endif
+
+}
 
 std::string getHome(void) {
 

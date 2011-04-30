@@ -4,6 +4,10 @@
 #include <string>
 #include <vector>
 
+// initialize the random number generator from the current time
+// (implemented in a platform dependent way)
+void srandFromTime(void);
+
 // return the path to the home directory
 // (implemented in a platform dependent way)
 std::string getHome(void);

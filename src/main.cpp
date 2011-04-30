@@ -242,7 +242,7 @@ int main(int argc, char * argv[]) {
   std::string selectedMission;  // the mission that was selected in menu
 
   // initialize random number generator
-  srand(time(0));
+  srandFromTime();
 
   // initialize SDL, graphics, timer, video mode, and level data structure
   SDL_Init(SDL_INIT_TIMER);
