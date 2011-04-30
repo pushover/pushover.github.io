@@ -40,8 +40,6 @@ AM_PATH_SDL($SDL_VERSION,
 CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
 
-AC_C_BIGENDIAN
-
 AC_CHECK_LIB(SDL_mixer, main, ,
 	AC_MSG_WARN([Can't find SDL_mixer.]))
 
@@ -69,6 +67,7 @@ AC_CHECK_HEADERS([stdlib.h string.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
+AC_C_BIGENDIAN
 AC_C_CONST
 AC_TYPE_UID_T
 AC_TYPE_SIZE_T
