@@ -30,6 +30,7 @@ AC_PROG_LIBTOOL
 # Checks for i18n.
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.16.1)
+LIBS="$LIBS $LIBINTL"
 
 # Checks for libraries.
 SDL_VERSION=1.2.0
