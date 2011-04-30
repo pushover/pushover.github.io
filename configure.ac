@@ -26,6 +26,7 @@ AC_DEFINE_UNQUOTED([URL],      ["$URL"],      [Define to the URL of this package
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_LIBTOOL
+PKG_PROG_PKG_CONFIG
 
 # Checks for i18n.
 AM_GNU_GETTEXT([external])
