@@ -50,7 +50,11 @@ std::string getHome(void) {
 
   DIR * dir = ::opendir(home.c_str());
 
-  if (!dir)
+  if (dir)
+  {
+    closedir(dir);
+  }
+  else
   {
     // create it
 #ifdef WIN32
