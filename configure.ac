@@ -1,22 +1,22 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.13)
-AC_INIT(pushover, 0.0.2)
-AC_CONFIG_AUX_DIR(config_aux)
+AC_PREREQ([2.13])
+AC_INIT([pushover], [0.0.2])
+AC_CONFIG_AUX_DIR([config_aux])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR(src/main.cpp)
+AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 
 # General information.
-AC_SUBST(FULLNAME,"Pushover")
-AC_SUBST(URL,"http://pushover.sourceforge.net/")
-AC_DEFINE_UNQUOTED([FULLNAME],["$FULLNAME"],[Define to the full name of this package.])
-AC_DEFINE_UNQUOTED([URL],["$URL"],[Define to the URL of this package's homepage.])
+AC_SUBST([FULLNAME], ["Pushover"])
+AC_SUBST([URL],      ["http://pushover.sourceforge.net/"])
+AC_DEFINE_UNQUOTED([FULLNAME], ["$FULLNAME"], [Define to the full name of this package.])
+AC_DEFINE_UNQUOTED([URL],      ["$URL"],      [Define to the URL of this package's homepage.])
 
 # Compiler options.
 
@@ -29,7 +29,7 @@ AC_PROG_LIBTOOL
 
 # Checks for i18n.
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION(0.16.1)
+AM_GNU_GETTEXT_VERSION([0.16.1])
 LIBS="$LIBS $LIBINTL"
 
 # Checks for libraries.
