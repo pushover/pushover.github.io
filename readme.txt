@@ -92,7 +92,7 @@ The following files are saved:
 - solved.txt: This file contains checksums of all the levels that you have
   successfully solved. In the level selection dialogue those levels contain a
   mark. If you loose this file those marks are gone.
-- *.rec: These filed contain recordings of activities within a level. They are
+- *.rec: These files contain recordings of activities within a level. They are
   automatically created whenever you solve a level but you can also actively
   make a recording by pressing 'r' while you play a level. When you observe
   something strange while playing, make a recording and send it to me. Also when
@@ -152,7 +152,7 @@ But here are already some rules that you have to adhere to if you want your
 levels included into the program
 
 - They need to be put under the GPL licence, or something compatible. Otherwise
-  inclusion is legally not possible, copyright stays with you, of course.
+  inclusion is legally not possible. Copyright stays with you, of course.
 - Please only contribute complete sets and no single levels. They don't need to
   be long, 10 levels is enough but this way you can keep up a constant scheme and
   theme logic of the levels.
