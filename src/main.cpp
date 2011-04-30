@@ -222,14 +222,14 @@ int main(int argc, char * argv[]) {
     return 0;
   }
 
-  if (argc >= 3 && strcmp(argv[1], "-f") == 0)   // the must crash tests
+  if (argc >= 3 && strcmp(argv[1], "-x") == 0)   // the must crash tests
   {
     check(argc-2, argv+2, checker3);
     return 0;
   }
 
   bool fullscreen = false;
-  if (argc >= 2 && strcmp(argv[1], "-z") == 0) fullscreen = true;
+  if (argc >= 2 && strcmp(argv[1], "-f") == 0) fullscreen = true;
 
   // setup internationalisation
   setlocale(LC_MESSAGES, "");

@@ -148,7 +148,7 @@ install-data-local:
 check: $(bin_PROGRAMS)
 	./pushover -c recordings/finished/*
 	./pushover -y recordings/mustFail
-	./pushover -f recordings/mustCrash
+	./pushover -x recordings/mustCrash
 
 abs_builddir = @abs_builddir@
 win32dir = $(PACKAGE)-$(VERSION)-win32
