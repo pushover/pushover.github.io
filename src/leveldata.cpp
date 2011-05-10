@@ -495,15 +495,18 @@ bool levelData_c::levelCompleted(int & fail) const {
 
           // falln far enough but neighbor empty
           if (   getDominoState(x, y) <= 2
-              && getDominoType(x-1, y) == DominoTypeEmpty
-              && (getDominoType(x-2, y) == DominoTypeEmpty || getDominoState(x-2, y) < 14))
+              && ((x < 1) || (getDominoType(x-1, y) == DominoTypeEmpty))
+              && ((x < 2) || (getDominoType(x-2, y) == DominoTypeEmpty || getDominoState(x-2, y) < 14))
+             )
           {
             fail = 6;
             return false;
           }
           if (   getDominoState(x, y) >= 14
-              && getDominoType(x+1, y) == DominoTypeEmpty
-              && (getDominoType(x+2, y) == DominoTypeEmpty || getDominoState(x+2, y) > 2)) {
+              && ((x > 18) || (getDominoType(x+1, y) == DominoTypeEmpty))
+              && ((x > 17) || (getDominoType(x+2, y) == DominoTypeEmpty || getDominoState(x+2, y) > 2))
+             )
+          {
             fail = 6;
             return false;
           }
