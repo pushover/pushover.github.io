@@ -2,7 +2,12 @@ Version 0.0.3
 
 - New graphics for dungeon, toxcity and electronic theme, new graphics for menu boxes
 - French and Spanish translation
-- 2 New stones
+- 2 New stones and some new levels for them
+- cleanup in configuration script
+- fix crash in levle end check, when a domino reach the edge of the screen
+- fullscreen with command line parameter -f
+- cosmetic fixes to some themes, text output, better help window
+- icons for the game
 
 Version 0.0.2 Dec 2009
 
