@@ -99,6 +99,7 @@ void ant_c::initForLevel(void) {
   fallingHight = 0;
   direction = 1;
   pushDelay = 0;
+  downChecker = false;
 
   finalAnimationPlayed = levelFail = levelSuccess = false;
 }
