@@ -209,7 +209,7 @@ static void u3(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bl
 
 static void u4(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bly) {
 
-  uint8_t rnd = 0;
+  uint8_t rnd = (x+20*y) % 64;
 
   f0 /= 4;
   f /= 4;
