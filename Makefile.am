@@ -62,7 +62,9 @@ nobase_dist_pkgdata_DATA = \
   themes/mechanic.lua themes/mechanic.png \
   themes/dungeon.lua  themes/dungeon.png  themes/dungeon.ogg \
   themes/japanese.lua themes/japanese.png themes/japanese.ogg \
-  themes/cavern.lua   themes/cavern.png
+  themes/cavern.lua   themes/cavern.png \
+  \
+  pushover.ico
 
 dist_noinst_DATA = \
   levels/original/index.level \
