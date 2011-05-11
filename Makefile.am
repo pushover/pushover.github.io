@@ -135,7 +135,11 @@ dist_noinst_DATA = \
   levels/av/crashed_again.level \
   levels/av/merger.level \
   levels/av/one_last_crash.level \
-  levels/av/out_of_reach.level
+  levels/av/out_of_reach.level \
+  levels/av/missing_quantum.level \
+  levels/av/quantum_theory.level \
+  levels/av/quantum_theory_2.level \
+  levels/av/quantum_timing.level
 
                     # BSD make                         # GNU make
 LEVEL_INDEX_FILES = $(dist_noinst_DATA:M*/index.level) $(filter %/index.level,$(dist_noinst_DATA))
