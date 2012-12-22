@@ -53,13 +53,13 @@ nobase_dist_pkgdata_DATA = \
   data/FreeSans.ttf\
   \
   themes/tools.lua \
-  themes/toxcity.lua  themes/toxcity.png \
+  themes/toxcity.lua  themes/toxcity.png  themes/toxcity.ogg\
   themes/aztec.lua    themes/aztec.png    themes/aztec.ogg \
   themes/space.lua    themes/space.png    themes/space.ogg \
   themes/electro.lua  themes/electro.png \
-  themes/greek.lua    themes/greek.png \
+  themes/greek.lua    themes/greek.png    themes/greek.ogg \
   themes/castle.lua   themes/castle.png   themes/castle.ogg \
-  themes/mechanic.lua themes/mechanic.png \
+  themes/mechanic.lua themes/mechanic.png themes/mechanic.ogg\
   themes/dungeon.lua  themes/dungeon.png  themes/dungeon.ogg \
   themes/japanese.lua themes/japanese.png themes/japanese.ogg \
   themes/cavern.lua   themes/cavern.png \
