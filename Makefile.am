@@ -139,7 +139,9 @@ dist_noinst_DATA = \
   levels/av/missing_quantum.level \
   levels/av/quantum_theory.level \
   levels/av/quantum_theory_2.level \
-  levels/av/quantum_timing.level
+  levels/av/quantum_timing.level \
+  levels/av/dominik1.level levels/av/dominik2.level levels/av/dominik3.level levels/av/dominik4.level \
+  levels/av/dominik5.level levels/av/dominik6.level levels/av/dominik7.level
 
                     # BSD make                         # GNU make
 LEVEL_INDEX_FILES = $(dist_noinst_DATA:M*/index.level) $(filter %/index.level,$(dist_noinst_DATA))
