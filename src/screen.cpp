@@ -193,14 +193,22 @@ static int f1(int x, int y, int a) { return clip(y*256/4+x*256/20 - 1024 + a*((1
 static int f2(int x, int y, int a) { return clip(y*x*256/65 - 1024 + a*((1024+256)/64)); }
 static int f3(int x, int y, int a) { return clip(((2*y-12)*(2*y-12)+(2*x-19)*(2*x-19))*256/127 - 1024 + a*((1024+256)/64)); }
 
+static SDL_Rect rects[13*20*255];
+static int count;
+
 static void u1(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bly) {
   int by = bly*y;
   int bx = blx*x;
   int bw = f*blx/256;
   int bh = (y == 12) ? bly/2 : bly;
 
-  if (bw > 0)
-    SDL_UpdateRect(video, bx, by, bw, bh);
+  if (bw > 0){
+	rects[count].x=bx;
+	rects[count].y=by;
+	rects[count].w=bw;
+	rects[count].h=bh;
+	count++;
+  }
 }
 
 static void u2(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bly) {
@@ -211,8 +219,13 @@ static void u2(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bl
 
   bh = bh*f/256;
 
-  if (bh > 0)
-    SDL_UpdateRect(video, bx, by, bw, bh);
+  if (bh > 0) {
+	rects[count].x=bx;
+	rects[count].y=by;
+	rects[count].w=bw;
+	rects[count].h=bh;
+	count++;
+  }
 }
 
 static void u3(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bly) {
@@ -224,8 +237,13 @@ static void u3(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bl
   bh = bh*f/256;
   bw = bw*f/256;
 
-  if (bh > 0)
-    SDL_UpdateRect(video, bx, by, bw, bh);
+  if (bh > 0) {
+	rects[count].x=bx;
+	rects[count].y=by;
+	rects[count].w=bw;
+	rects[count].h=bh;
+	count++;
+  }
 }
 
 static void u4(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bly) {
@@ -244,14 +262,20 @@ static void u4(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bl
       int xp = rnd % 8;
       int yp = rnd / 8;
 
-      int by = bly*y+yp*bly/8;
+      int bh = (y == 12) ? bly/2 : bly;
+
+      int by = bly*y+yp*bh/8;
       int bx = blx*x+xp*blx/8;
       int bw = blx/8;
-      int bh = (y == 12) ? bly/2 : bly;
       bh = bh/8;
 
-      if (bh > 0)
-        SDL_UpdateRect(video, bx, by, bw, bh);
+      if (bh > 0) {
+	rects[count].x=bx;
+	rects[count].y=by;
+	rects[count].w=bw;
+	rects[count].h=bh;
+	count++;
+      }
     }
 
     rnd = (21*rnd+11) % 64;
@@ -279,7 +303,9 @@ bool screen_c::flipAnimate(void)
     }
   }
 
+
   animationState++;
+  count=0;
 
   for (int y = 0; y < 13; y++)
   {
@@ -297,6 +323,8 @@ bool screen_c::flipAnimate(void)
       }
     }
   }
+
+  SDL_UpdateRects(video, count, rects);
 
   if (animationState == 64)
   {
