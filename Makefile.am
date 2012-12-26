@@ -50,10 +50,10 @@ nobase_dist_pkgdata_DATA = \
   data/11_DoorOpen.ogg \
   data/13_Victory.ogg \
   \
-  data/FreeSans.ttf\
+  data/FreeSans.ttf \
   \
   themes/tools.lua \
-  themes/toxcity.lua  themes/toxcity.png  themes/toxcity.ogg\
+  themes/toxcity.lua  themes/toxcity.png  themes/toxcity.ogg \
   themes/aztec.lua    themes/aztec.png    themes/aztec.ogg \
   themes/space.lua    themes/space.png    themes/space.ogg \
   themes/electro.lua  themes/electro.png \
