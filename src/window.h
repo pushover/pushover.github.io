@@ -91,8 +91,17 @@ class helpWindow_c : public window_c {
 // a window that displays a list with selectable entries
 class listWindow_c : public window_c {
 
+  public:
+    typedef struct entry {
+        std::string text;
+        bool highlight;
+        bool line;
+
+        entry(std::string t) : text(t), highlight(false), line(false) {}
+    } entry;
+
   private:
-    std::vector<std::string> entries;
+    std::vector<entry> entries;
     std::string title;
 
     unsigned int current;
@@ -105,7 +114,7 @@ class listWindow_c : public window_c {
   public:
 
     listWindow_c(int x, int y, int w, int h, surface_c & s, graphics_c & gr,
-        const std::string & title, const std::vector<std::string> & entries, bool escape, int initial = 0);
+        const std::string & title, const std::vector<entry> & entries, bool escape, int initial = 0);
 
     // the the user has selected something
     unsigned int getSelection(void) { return current; } // which list entry was selected

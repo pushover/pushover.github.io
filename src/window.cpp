@@ -315,15 +315,48 @@ void listWindow_c::redraw(void) {
 
   unsigned int line = 0;
 
-  if (entries.size() > menuLines)
+  while (true)
   {
-      // choose line so that current is in the middle of the selected Lines
-      if (current > menuLines/2)
-          line = current - menuLines/2;
+    int ypos2 = ypos;
+    unsigned int line2 = line;
 
-      // make shure that the first line is shoosen so that the window is full
-      if (line + menuLines > entries.size())
-          line -= (line+menuLines-entries.size());
+    bool back = false;
+
+    while (ypos2 + lineH < gr.blockY()*(y+h-1)) {
+
+      if (line2 >= entries.size())
+      {
+        if (line2 > (unsigned int)current)
+          back = true;
+        else
+          printf("ooops\n");
+        break;
+      }
+
+      if (line2 == (unsigned int)current && ypos2 < gr.blockY()*(y+h/2))
+      {
+        back = true;
+        break;
+      }
+
+      if (entries[line2].line)
+      {
+        ypos2 += lineH;
+      }
+
+      line2++;
+      ypos2 += lineH;
+    }
+
+    if (back)
+    {
+      if (line > 0)
+        line--;
+
+      break;
+    }
+
+    line++;
   }
 
   while (ypos + lineH < gr.blockY()*(y+h-1)) {
@@ -337,6 +370,10 @@ void listWindow_c::redraw(void) {
     {
       par.color.r = par.color.g = par.color.b = 255;
     }
+    else if (entries[line].highlight)
+    {
+      par.color.r = (112+2*255)/3; par.color.g = (39+2*255)/3; par.color.b = 2*255/3;
+    }
     else
     {
       par.color.r = 112; par.color.g = 39; par.color.b = 0;
@@ -348,7 +385,22 @@ void listWindow_c::redraw(void) {
     par.box.w = gr.blockX()*(w-2);
     par.box.h = lineH;
 
-    surf.renderText(&par, entries[line]);
+    if (!entries[line].line)
+    {
+      surf.renderText(&par, entries[line].text);
+    }
+    else
+    {
+      // string contains formatting information at the end
+      surf.renderText(&par, entries[line].text);
+
+      if (entries[line].line)
+      {
+        surf.fillRect(gr.blockX()*(x+1)+30, ypos+lineH+lineH/2, gr.blockX()*(w-2)-60, 2, 120, 90, 60);
+        ypos += lineH;
+      }
+
+    }
 
     line++;
     ypos += lineH;
@@ -356,7 +408,7 @@ void listWindow_c::redraw(void) {
 }
 
 listWindow_c::listWindow_c(int x, int y, int w, int h, surface_c & s, graphics_c & gr,
-    const std::string & t, const std::vector<std::string> & e, bool esc, int initial)
+    const std::string & t, const std::vector<entry> & e, bool esc, int initial)
   : window_c(x, y, w, h, s, gr), entries(e), title(t), current(initial), escape(esc)
 {
 
@@ -435,38 +487,45 @@ bool listWindow_c::handleEvent(const SDL_Event & event) {
 
 
 listWindow_c * getMainWindow(surface_c & surf, graphics_c & gr) {
-    static std::vector<std::string> entries;
+    static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
     {
-        entries.push_back(_("Play Levelset"));
-        entries.push_back(_("Configuration"));
-        entries.push_back(_("About"));
-        entries.push_back(_("Quit"));
+        entries.push_back(listWindow_c::entry(_("Play Levelset")));
+        entries.push_back(listWindow_c::entry(_("Configuration")));
+        entries.push_back(listWindow_c::entry(_("About")));
+        entries.push_back(listWindow_c::entry(_("Quit")));
     }
 
     return new listWindow_c(4, 3, 12, 7, surf, gr, _("Main menu"), entries, false);
 }
 
 listWindow_c * getConfigWindow(surface_c & surf, graphics_c & gr) {
-    static std::vector<std::string> entries;
+    static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
     {
-        entries.push_back(_("Toggle Fullscreen"));
-        entries.push_back(_("Toggle Sound Effects"));
-        entries.push_back(_("Toggle Background Music"));
+        entries.push_back(listWindow_c::entry(_("Toggle Fullscreen")));
+        entries.push_back(listWindow_c::entry(_("Toggle Sound Effects")));
+        entries.push_back(listWindow_c::entry(_("Toggle Background Music")));
     }
 
     return new listWindow_c(3, 2, 14, 9, surf, gr, _("Configuration"), entries, true);
 }
 
 listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, graphics_c & gr) {
-    return new listWindow_c(4, 2, 12, 9, surf, gr, _("Select Levelset"), ls.getLevelsetNames(), true);
+    std::vector<listWindow_c::entry> entries;
+
+    for (unsigned int i = 0; i < ls.getLevelsetNames().size(); i++)
+    {
+      entries.push_back(listWindow_c::entry(ls.getLevelsetNames()[i]));
+    }
+
+    return new listWindow_c(4, 2, 12, 9, surf, gr, _("Select Levelset"), entries, true);
 }
 
 listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphics_c & gr) {
-    std::vector<std::string> entries;
+    std::vector<listWindow_c::entry> entries;
 
     int index = -1;
 
@@ -479,7 +538,7 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
         else if (index == -1)
             index = i;
 
-        entries.push_back(e);
+        entries.push_back(listWindow_c::entry(e));
     }
 
     if (entries.size() == 0) throw std::runtime_error(_("No Level in Levelset"));
@@ -491,14 +550,14 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
 }
 
 listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr) {
-    static std::vector<std::string> entries;
+    static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
     {
-        entries.push_back(_("Return to level"));
-        entries.push_back(_("Restart level"));
-        entries.push_back(_("Configuration"));
-        entries.push_back(_("Return to menu"));
+        entries.push_back(listWindow_c::entry(_("Return to level")));
+        entries.push_back(listWindow_c::entry(_("Restart level")));
+        entries.push_back(listWindow_c::entry(_("Configuration")));
+        entries.push_back(listWindow_c::entry(_("Return to menu")));
     }
 
     return new listWindow_c(4, 3, 12, 7, surf, gr, _("Nu What?"), entries, true);
@@ -509,23 +568,23 @@ window_c * getAboutWindow(surface_c & surf, graphics_c & gr) {
 }
 
 listWindow_c * getSolvedWindow(surface_c & surf, graphics_c & gr) {
-    static std::vector<std::string> entries;
+    static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
     {
-        entries.push_back(_("Continue"));
+        entries.push_back(listWindow_c::entry(_("Continue")));
     }
 
     return new listWindow_c(2, 3, 16, 6, surf, gr, _("Gratulation! You solved the level."), entries, false);
 }
 
 listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphics_c & gr) {
-    static std::vector<std::string> entries;
+    static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
     {
-        entries.push_back(_("Retry the level"));
-        entries.push_back(_("Return to menu"));
+        entries.push_back(listWindow_c::entry(_("Retry the level")));
+        entries.push_back(listWindow_c::entry(_("Return to menu")));
     }
 
     std::string title;
