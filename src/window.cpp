@@ -504,10 +504,6 @@ listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr) {
     return new listWindow_c(4, 3, 12, 7, surf, gr, _("Nu What?"), entries, true);
 }
 
-listWindow_c * getLevelWindow(levelset_c & ls, surface_c & surf, graphics_c & gr) {
-    return new listWindow_c(3, 2, 14, 9, surf, gr, _("Select Level"), ls.getLevelNames(), true);
-}
-
 window_c * getAboutWindow(surface_c & surf, graphics_c & gr) {
     return new aboutWindow_c(surf, gr);
 }
