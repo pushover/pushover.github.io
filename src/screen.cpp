@@ -143,6 +143,7 @@ void surface_c::gradient(int x, int y, int w, int h) {
 void screen_c::flipComplete(void)
 {
   SDL_Flip(video);
+  animationState = 0;
 }
 
 void screen_c::flipDirty(void)
@@ -178,6 +179,7 @@ void screen_c::flipDirty(void)
     }
   }
   SDL_UpdateRects(video, numrects, rects);
+  animationState = 0;
 }
 
 static int clip(int v) {
