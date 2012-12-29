@@ -26,6 +26,8 @@
 
 #include <string>
 
+#include "libintl.h"
+
 /* this is the display class, there is only one instance fo this class and it contains
  * the complete screen
  * the background is always a level.
@@ -150,7 +152,7 @@ class screen_c : public surface_c {
 };
 
 // used for internationalisation to mark strings to translate
-#define _(x) x
+#define _(x) gettext(x)
 
 #endif
 

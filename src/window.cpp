@@ -134,7 +134,7 @@ void helpWindow_c::displayCurrentPage(void)
     par.box.y = SY*y+TY;
     par.box.h = 80;
 
-    s.renderText(&par, texts[NUM_STONES_PER_PAGE*page+d]);
+    s.renderText(&par, _(texts[NUM_STONES_PER_PAGE*page+d].c_str()));
   }
 
   par.font = FNT_NORMAL;
@@ -151,7 +151,7 @@ void helpWindow_c::displayCurrentPage(void)
     par.font = FNT_SMALL;
   }
 
-  s.renderText(&par, help);
+  s.renderText(&par, _(help.c_str()));
 
   par.font = FNT_SMALL;
   par.box.x = (800-15*40)/2;

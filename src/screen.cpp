@@ -23,8 +23,6 @@
 
 #include "graphics.h"
 
-#include "libintl.h"
-
 #include <SDL/SDL_ttf.h>
 
 #include <iostream>
@@ -418,7 +416,7 @@ static std::vector<std::string> split(const std::string & text, char splitter)
 
 unsigned int surface_c::renderText(const fontParams_s * par, const std::string & t) {
 
-  std::vector<std::string> words = split(gettext(t.c_str()), ' ');
+  std::vector<std::string> words = split(t.c_str(), ' ');;
 
   int ypos = par->box.y;
 
@@ -546,7 +544,7 @@ unsigned int getTextWidth(unsigned int font, const std::string & t) {
 
 unsigned int getTextHeight(const fontParams_s * par, const std::string & t) {
 
-  std::vector<std::string> words = split(gettext(t.c_str()), ' ');
+  std::vector<std::string> words = split(t.c_str(), ' ');
 
   unsigned int word = 0;
   int height = 0;
