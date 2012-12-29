@@ -74,7 +74,7 @@ class levelData_c {
     levelData_c(void);
     virtual ~levelData_c(void) {}
 
-    virtual void load(const textsections_c & sections);
+    virtual void load(const textsections_c & sections, const std::string & userString);
     void save(std::ostream & stream) const;
     bool operator==(const levelData_c & other) const;
 

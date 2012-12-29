@@ -493,11 +493,35 @@ listWindow_c * getMainWindow(surface_c & surf, graphics_c & gr) {
     {
         entries.push_back(listWindow_c::entry(_("Play Levelset")));
         entries.push_back(listWindow_c::entry(_("Configuration")));
+        entries.push_back(listWindow_c::entry(_("Profile Selection")));
         entries.push_back(listWindow_c::entry(_("About")));
         entries.push_back(listWindow_c::entry(_("Quit")));
     }
 
-    return new listWindow_c(4, 3, 12, 7, surf, gr, _("Main menu"), entries, false);
+    return new listWindow_c(4, 2, 12, 8, surf, gr, _("Main menu"), entries, false);
+}
+
+InputWindow_c * getProfileInputWindow(surface_c & surf, graphics_c & gr)
+{
+  return new InputWindow_c(4,2,12,5, surf, gr, _("Enter new profile name"));
+}
+
+
+listWindow_c * getProfileWindow(const solvedMap_c & solve, surface_c & surf, graphics_c & gr)
+{
+  std::vector<listWindow_c::entry> entries;
+
+  for (size_t i = 0; i < solve.getNumberOfUsers(); i++)
+  {
+    entries.push_back(listWindow_c::entry(solve.getUserName(i)));
+    if (i == solve.getCurrentUser())
+      entries.rbegin()->highlight = true;
+  }
+  entries.rbegin()->line = true;
+  entries.push_back(listWindow_c::entry(_("Add new profile")));
+  entries.push_back(listWindow_c::entry(_("Delete selected profile")));
+
+  return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Profile"), entries, true, solve.getCurrentUser());
 }
 
 listWindow_c * getConfigWindow(surface_c & surf, graphics_c & gr) {

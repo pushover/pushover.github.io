@@ -33,13 +33,13 @@
 #include <sstream>
 #include <iomanip>
 
-void levelPlayer_c::load(const textsections_c & sections) {
+void levelPlayer_c::load(const textsections_c & sections, const std::string & userString) {
 
   openDoorEntry = openDoorExit = false;
   resetTriggerFalln();
   finishCheckDone = false;
 
-  levelDisplay_c::load(sections);
+  levelDisplay_c::load(sections, userString);
 }
 
 void levelPlayer_c::performDoors(void) {

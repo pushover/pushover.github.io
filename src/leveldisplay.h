@@ -51,7 +51,7 @@ class levelDisplay_c : public levelData_c {
     // the given surface
     levelDisplay_c(surface_c & target, graphics_c & gr);
 
-    void load(const textsections_c & sections);
+    void load(const textsections_c & sections, const std::string & userString);
 
     /* update the background where necessary */
     void updateBackground(void);

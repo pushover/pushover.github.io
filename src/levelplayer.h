@@ -74,7 +74,7 @@ class levelPlayer_c : public levelDisplay_c {
 
     levelPlayer_c(surface_c & screen, graphics_c & gr) : levelDisplay_c(screen, gr), inactive(0) {}
 
-    void load(const textsections_c & sections);
+    void load(const textsections_c & sections, const std::string & userString);
 
     /* opens and closes doors */
     void performDoors(void);

@@ -28,12 +28,43 @@
 
 #include <string>
 #include <set>
+#include <vector>
+
+#include <stdint.h>
+
+class userData_c {
+
+   private:
+       std::string name;
+       std::string userString;  // the userstring, contining the name and creationdate
+
+   public:
+
+       // create new user with given timestamp
+       userData_c(const std::string & n, uint64_t t);
+
+       // load a user from given string
+       userData_c(const std::string & n);
+
+       // create default user (no name, no time, no addition to
+       // level hash
+       userData_c(void) : name("(default)"), userString("") {}
+
+       // save the user into the given string
+       std::string getUserString(void) const { return userString; }
+       std::string getUserName(void) const { return name; }
+};
 
 class solvedMap_c {
 
     private:
 
         std::set<std::string> map;
+        std::vector<userData_c> users;
+
+        size_t currentUser;
+
+        void save(void);
 
     public:
 
@@ -46,6 +77,15 @@ class solvedMap_c {
         bool solved(const std::string & hash) const {
             return map.find(hash) != map.end();
         }
+
+        // adds a new user and selects it
+        void addUser(const std::string & name);
+        void deleteUser(size_t user);
+        size_t getNumberOfUsers(void) const { return users.size(); }
+        void selectUser(size_t user) { if (user < users.size()) currentUser = user; }
+        size_t getCurrentUser(void) const { return currentUser; }
+        const std::string getUserName(size_t user) const { return users[user].getUserName(); }
+        const std::string getUserString(void) const { return users[currentUser].getUserString(); }
 };
 
 #endif

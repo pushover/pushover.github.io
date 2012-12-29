@@ -41,13 +41,13 @@ class levelset_c {
 
   public:
 
-    levelset_c(const std::string & path);
+    levelset_c(const std::string & path, const std::string & userString);
     const std::string getName(void) const { return name; }
     const unsigned int getPriority(void) const { return priority; }
 
     const std::vector<std::string> & getLevelNames(void) const { return levelNames; }
     const std::string & getChecksum(const std::string & levelName) const;
-    void loadLevel(levelData_c & level, const std::string & levelName) const;
+    void loadLevel(levelData_c & level, const std::string & levelName, const std::string & userString) const;
 };
 
 class levelsetList_c {
@@ -61,7 +61,7 @@ class levelsetList_c {
   public:
 
     levelsetList_c() {};
-    void load(const std::string & path);
+    void load(const std::string & path, const std::string & userString);
     const std::vector<std::string> & getLevelsetNames(void) const { return levelsetNames; }
     const levelset_c & getLevelset(const std::string & levelsetName) const;
 };

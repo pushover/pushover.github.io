@@ -53,7 +53,7 @@ static void check_record(const std::string & rec_path, levelsetList_c & levelset
   graphicsN_c gr("");
   surface_c surf;
   levelPlayer_c l(surf, gr);
-  levelsetList.getLevelset(rec.getLevelsetName()).loadLevel(l, rec.getLevelName());
+  levelsetList.getLevelset(rec.getLevelsetName()).loadLevel(l, rec.getLevelName(), "");
   ant_c a(l, gr, surf);
 
   while (!rec.endOfRecord()) {
@@ -80,7 +80,7 @@ static void check_record(const std::string & rec_path, levelsetList_c & levelset
 
 void check(int argn, char * argv[], std::string checker(const ant_c & a, const levelData_c & l)) {
   levelsetList_c levelsetList;
-  levelsetList.load("levels");
+  levelsetList.load("levels", "");
 
   unsigned int count = 0;
   unsigned int failed = 0;
@@ -209,6 +209,9 @@ int playTick(levelPlayer_c & l, ant_c & a)
 typedef enum {
   ST_INIT,     // inistal transition state
   ST_MAIN,     // main menu
+  ST_PROFILE,  // state for profile selection
+  ST_PROFILE_INIT, // profile selection at startup
+  ST_PROFILE_IN, // profile name input
   ST_LEVELCONF,// config while playing
   ST_CONFIG,   // config menu
   ST_LEVELSET, // level set selection
@@ -225,6 +228,21 @@ typedef enum {
   ST_EXIT,     // exiting program
   ST_ABOUT,
 } states_e;
+
+static levelsetList_c * loadAllLevels(const std::string & datadir, const std::string & userString)
+{
+  levelsetList_c * levelsetList = new levelsetList_c();
+
+  levelsetList->load(datadir + "/levels", userString);
+  {
+    const std::string userleveldir(getHome() + "/.pushover/levels");
+    struct stat st;
+    if (stat(userleveldir.c_str(), &st) == 0)
+      levelsetList->load(userleveldir, userString);
+  }
+
+  return levelsetList;
+}
 
 
 int main(int argc, char * argv[]) {
@@ -282,14 +300,7 @@ int main(int argc, char * argv[]) {
   solvedMap_c solved;
 
   // prepare the list of levelsets
-  levelsetList_c levelsetList;
-  levelsetList.load(datadir + "/levels");
-  {
-    const std::string userleveldir(getHome() + "/.pushover/levels");
-    struct stat st;
-    if (stat(userleveldir.c_str(), &st) == 0)
-      levelsetList.load(userleveldir);
-  }
+  levelsetList_c * levelsetList = loadAllLevels(datadir, "");
 
   states_e currentState = ST_INIT, nextState = ST_INIT;
 
@@ -300,14 +311,14 @@ int main(int argc, char * argv[]) {
     try {
       rec.load(argv[2]);
       selectedMission = rec.getLevelsetName();
-      levelsetList.getLevelset(selectedMission).loadLevel(l, rec.getLevelName());
+      levelsetList->getLevelset(selectedMission).loadLevel(l, rec.getLevelName(), "");
       a.initForLevel();
       soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
 
       nextState = ST_REPLAY;
     }
     catch  (...) {
-      nextState = ST_MAIN;
+      nextState = ST_PROFILE_INIT;
     }
   }
   else if (argc == 3)
@@ -320,14 +331,14 @@ int main(int argc, char * argv[]) {
     // it fails fall back to main menu
     try {
 
-      levelsetList.getLevelset(selectedMission).loadLevel(l, levelName);
+      levelsetList->getLevelset(selectedMission).loadLevel(l, levelName, "");
       a.initForLevel();
       soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
 
       nextState = ST_PREPLAY;
     }
     catch (...) {
-      nextState = ST_MAIN;
+      nextState = ST_PROFILE_INIT;
     }
   }
   else if (argc == 2)
@@ -338,7 +349,7 @@ int main(int argc, char * argv[]) {
     if (file)
     {
       textsections_c sections(file, true);
-      l.load(sections);
+      l.load(sections, "");
       selectedMission = "Original";            // TODO we need to find out which levelset this file belongs to
       soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
 
@@ -346,13 +357,13 @@ int main(int argc, char * argv[]) {
     }
     else
     {
-      nextState = ST_MAIN;
+      nextState = ST_PROFILE_INIT;
       screen.markAllDirty();
     }
   }
   else
   {
-    nextState = ST_MAIN;
+    nextState = ST_PROFILE_INIT;
     screen.markAllDirty();
   }
 
@@ -396,6 +407,9 @@ int main(int argc, char * argv[]) {
             case ST_SOLVED:
             case ST_FAILED:
             case ST_ABOUT:
+            case ST_PROFILE:
+            case ST_PROFILE_INIT:
+            case ST_PROFILE_IN:
               delete window;
               window = 0;
               l.drawDominos();
@@ -417,8 +431,11 @@ int main(int argc, char * argv[]) {
           switch (nextState) {
 
             case ST_MAIN:     window = getMainWindow(screen, gr); break;
-            case ST_LEVELSET: window = getMissionWindow(levelsetList, screen, gr); break;
-            case ST_LEVEL:    window = getLevelWindow(levelsetList.getLevelset(selectedMission), solved, screen, gr); break;
+            case ST_PROFILE_INIT:
+            case ST_PROFILE:  window = getProfileWindow(solved, screen, gr); break;
+            case ST_PROFILE_IN: window = getProfileInputWindow(screen, gr); break;
+            case ST_LEVELSET: window = getMissionWindow(*levelsetList, screen, gr); break;
+            case ST_LEVEL:    window = getLevelWindow(levelsetList->getLevelset(selectedMission), solved, screen, gr); break;
             case ST_QUIT:     window = getQuitWindow(screen, gr); break;
             case ST_LEVELCONF:
             case ST_CONFIG:   window = getConfigWindow(screen, gr); break;
@@ -485,9 +502,84 @@ int main(int argc, char * argv[]) {
                 {
                   case 0: nextState = ST_LEVELSET; break;// select level set
                   case 1: nextState = ST_CONFIG; break;  // open config menu
-                  case 2: nextState = ST_ABOUT; break;   // about window
-                  case 3: nextState = ST_EXIT; break;    // exit program
+                  case 2: nextState = ST_PROFILE; break; // open profile selector
+                  case 3: nextState = ST_ABOUT; break;   // about window
+                  case 4: nextState = ST_EXIT; break;    // exit program
                 }
+              }
+            }
+            break;
+
+          case ST_PROFILE:
+          case ST_PROFILE_INIT:
+            if (!window) {
+              std::cout << "Oops no window\n";
+              nextState = ST_MAIN;
+            }
+            else
+            {
+              window->handleEvent(event);
+              if (window->isDone())
+              {
+                unsigned int sel = dynamic_cast<listWindow_c*>(window)->getSelection();
+                if (sel < solved.getNumberOfUsers())
+                {
+                  solved.selectUser(sel);
+                  delete levelsetList;
+                  levelsetList = loadAllLevels(datadir, solved.getUserString());
+
+                  if (currentState == ST_PROFILE)
+                  {
+                    delete window;
+                    window = getProfileWindow(solved, screen, gr);
+                  }
+                  else
+                  {
+                    nextState = ST_MAIN;
+                  }
+                }
+                else if (sel == solved.getNumberOfUsers())
+                {
+                  nextState = ST_PROFILE_IN;
+                }
+                else if (sel == solved.getNumberOfUsers()+1)
+                {
+                  size_t s = solved.getCurrentUser();
+                  if (s > 0)
+                  {
+                    solved.selectUser(0);
+                    solved.deleteUser(s);
+                    delete levelsetList;
+                    levelsetList = loadAllLevels(datadir, solved.getUserString());
+                    delete window;
+                    window = getProfileWindow(solved, screen, gr);
+                  }
+                }
+                else
+                {
+                  nextState = ST_MAIN;
+                }
+              }
+            }
+            break;
+
+          case ST_PROFILE_IN:
+            if (!window) {
+              std::cout << "Oops no window\n";
+              nextState = ST_MAIN;
+            }
+            else
+            {
+              window->handleEvent(event);
+              if (window->isDone())
+              {
+                if (!dynamic_cast<InputWindow_c*>(window)->hasEscaped())
+                {
+                  solved.addUser(dynamic_cast<InputWindow_c*>(window)->getText());
+                  delete levelsetList;
+                  levelsetList = loadAllLevels(datadir, solved.getUserString());
+                }
+                nextState = ST_PROFILE;
               }
             }
             break;
@@ -544,12 +636,12 @@ int main(int argc, char * argv[]) {
               if (window->isDone())
               {
                 unsigned int sel = dynamic_cast<listWindow_c*>(window)->getSelection();
-                if (sel >= levelsetList.getLevelsetNames().size())
+                if (sel >= levelsetList->getLevelsetNames().size())
                   nextState = ST_MAIN;
                 else
                 {
                   nextState = ST_LEVEL;
-                  selectedMission = levelsetList.getLevelsetNames()[sel];
+                  selectedMission = levelsetList->getLevelsetNames()[sel];
                 }
               }
             }
@@ -566,14 +658,14 @@ int main(int argc, char * argv[]) {
               if (window->isDone())
               {
                 unsigned int sel = dynamic_cast<listWindow_c*>(window)->getSelection();
-                levelset_c ls = levelsetList.getLevelset(selectedMission);
+                levelset_c ls = levelsetList->getLevelset(selectedMission);
 
                 if (sel >= ls.getLevelNames().size())
                   nextState = ST_LEVELSET;
                 else
                 {
                   nextState = ST_PREPLAY;
-                  ls.loadLevel(l, ls.getLevelNames()[sel]);
+                  ls.loadLevel(l, ls.getLevelNames()[sel], solved.getUserString());
                   soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
                   a.initForLevel();
                 }
@@ -648,8 +740,8 @@ int main(int argc, char * argv[]) {
                   case 1:
                           {       // restart level
                             nextState = ST_PREPLAY;
-                            levelset_c ls = levelsetList.getLevelset(selectedMission);
-                            ls.loadLevel(l, l.getName());
+                            levelset_c ls = levelsetList->getLevelset(selectedMission);
+                            ls.loadLevel(l, l.getName(), solved.getUserString());
                             a.initForLevel();
                           }
                           break;
@@ -701,7 +793,7 @@ int main(int argc, char * argv[]) {
                     {
                       nextState = ST_PREPLAY;
                       // find the current level
-                      levelset_c ls = levelsetList.getLevelset(selectedMission);
+                      levelset_c ls = levelsetList->getLevelset(selectedMission);
 
                       std::vector<std::string> levels = ls.getLevelNames();
 
@@ -711,7 +803,7 @@ int main(int argc, char * argv[]) {
                       {
                         if (levels[i] == l.getName())
                         {
-                          ls.loadLevel(l, levels[i]);
+                          ls.loadLevel(l, levels[i], solved.getUserString());
                           a.initForLevel();
                           foundLevel = true;
                           break;
@@ -808,6 +900,9 @@ int main(int argc, char * argv[]) {
 
         case ST_INIT:
         case ST_MAIN:
+        case ST_PROFILE:
+        case ST_PROFILE_INIT:
+        case ST_PROFILE_IN:
         case ST_CONFIG:
         case ST_LEVELCONF:
         case ST_LEVELSET:

@@ -33,9 +33,9 @@
 #include <sstream>
 #include <iomanip>
 
-void levelDisplay_c::load(const textsections_c & sections) {
+void levelDisplay_c::load(const textsections_c & sections, const std::string & userString) {
 
-  levelData_c::load(sections);
+  levelData_c::load(sections, userString);
 
   // attention don't use many levels on the same graphics object
   gr.setTheme(getTheme());

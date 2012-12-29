@@ -70,7 +70,7 @@ bool levelData_c::isDominoChar(char ch) {
   return dominoChars.find_first_of(ch) != std::string::npos;
 }
 
-void levelData_c::load(const textsections_c & sections) {
+void levelData_c::load(const textsections_c & sections, const std::string & userString) {
 
   memset(level, 0, sizeof(level));
 
@@ -266,6 +266,7 @@ void levelData_c::load(const textsections_c & sections) {
       timeLeftStream << timeLeft;
       sha1.update(timeLeftStream.str());
     }
+    sha1.update(userString);
     checksum = sha1.final();
   }
 }

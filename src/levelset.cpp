@@ -48,7 +48,7 @@ static std::string readCompressedFile(const std::string & path) {
   return result;
 }
 
-levelset_c::levelset_c(const std::string & path) {
+levelset_c::levelset_c(const std::string & path, const std::string & userString) {
 
   /* Load all files */
   struct stat st;
@@ -80,7 +80,7 @@ levelset_c::levelset_c(const std::string & path) {
     try {
 
       /* Load level */
-      test_level.load(sections);
+      test_level.load(sections, userString);
 
     } catch (format_error & level_e) {
 
@@ -153,15 +153,15 @@ const std::string & levelset_c::getChecksum(const std::string & levelName) const
   return checksums.find(levelName)->second;
 }
 
-void levelset_c::loadLevel(levelData_c & level, const std::string & levelName) const {
+void levelset_c::loadLevel(levelData_c & level, const std::string & levelName, const std::string & userString) const {
 
   const std::map<std::string, textsections_c>::const_iterator i = levels.find(levelName);
   if (i == levels.end())
     throw format_error("unknown level name: " + levelName);
-  level.load(i->second);
+  level.load(i->second, userString);
 }
 
-void levelsetList_c::load(const std::string & path) {
+void levelsetList_c::load(const std::string & path, const std::string & userString) {
 
   /* Load and add levelsets */
   const std::vector<std::string> entries = directoryEntries(path);
@@ -171,7 +171,7 @@ void levelsetList_c::load(const std::string & path) {
     if (entryname.size() <= 0 || entryname[0] == '.')
       continue;
 
-    levelset_c levelset(path + '/' + entryname);
+    levelset_c levelset(path + '/' + entryname, userString);
     const std::string & levelsetName = levelset.getName();
     if (!levelsets.insert(make_pair(levelsetName, levelset)).second)
       throw format_error("duplicate levelset name: " + levelsetName);
