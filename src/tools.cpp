@@ -39,16 +39,21 @@
 
 #include <stdexcept>
 
-void srandFromTime(void) {
-
+uint64_t getTime(void)
+{
 #ifdef WIN32
   FILETIME currentTime;
   GetSystemTimeAsFileTime(&currentTime);
-  srand(currentTime.dwLowDateTime);
+  return currentTime.dwLowDateTime;
 #else
-  srand(time(0));
+  return time(0);
 #endif
+}
 
+
+void srandFromTime(void) {
+
+  srand(getTime());
 }
 
 std::string getHome(void) {

@@ -24,6 +24,7 @@
 
 #include <string>
 #include <vector>
+#include <stdint.h>
 
 // initialize the random number generator from the current time
 // (implemented in a platform dependent way)
@@ -35,5 +36,8 @@ std::string getHome(void);
 
 // return all non-hidden directory entries
 std::vector<std::string> directoryEntries(const std::string & path);
+
+// return current system time
+uint64_t getTime(void);
 
 #endif
