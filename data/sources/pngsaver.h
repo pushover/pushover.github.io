@@ -70,30 +70,27 @@ int SavePNGImage(char * fname, SDL_Surface * surf)
 		    else
 			{
 			    png_init_io(png_ptr, fi);
-			    info_ptr->width = surf->w;
-			    info_ptr->height = surf->h;
-			    info_ptr->bit_depth = 8;
+                            png_set_IHDR(png_ptr, info_ptr,
+                                surf->w, surf->h,
+                                8,  // bit depth
+			       (surf->format->BytesPerPixel == 1) ? PNG_COLOR_TYPE_PALETTE : PNG_COLOR_TYPE_RGBA,
+                               PNG_INTERLACE_NONE,
+                               PNG_COMPRESSION_TYPE_DEFAULT,
+                               PNG_FILTER_TYPE_DEFAULT
+                               );
 
 			    if (surf->format->BytesPerPixel == 1) {
-				info_ptr->color_type = PNG_COLOR_TYPE_PALETTE;
-				info_ptr->num_palette = 256;
 
 				int t;
-				info_ptr->palette = (png_colorp)(malloc(sizeof(png_color) * 256));
+				png_colorp palette = (png_colorp)(malloc(sizeof(png_color) * 256));
 				for (t = 0; t < 256; t++) {
-				    info_ptr->palette[t].red = surf->format->palette->colors[t].r;
-				    info_ptr->palette[t].green = surf->format->palette->colors[t].g;
-				    info_ptr->palette[t].blue = surf->format->palette->colors[t].b;
-				    //            printf("r: %i g: %i b: %i\n", info_ptr->palette[t].red,
-				    //                   info_ptr->palette[t].green, info_ptr->palette[t].blue);
-
+				    palette[t].red = surf->format->palette->colors[t].r;
+				    palette[t].green = surf->format->palette->colors[t].g;
+				    palette[t].blue = surf->format->palette->colors[t].b;
 				}
-			    } else
-			      info_ptr->color_type = PNG_COLOR_TYPE_RGBA;
-			    info_ptr->interlace_type = 1;
-			    info_ptr->valid = 0;
-			    if (surf->format->BytesPerPixel == 1)
-			      info_ptr->valid |= PNG_INFO_PLTE;
+
+                                png_set_PLTE(png_ptr, info_ptr, palette, 256);
+                            }
 
 			    png_write_info(png_ptr, info_ptr);
 
