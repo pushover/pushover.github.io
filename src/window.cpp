@@ -613,3 +613,131 @@ listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphics_c & gr
 }
 
 
+InputWindow_c::InputWindow_c(int x, int y, int w, int h, surface_c & s, graphics_c & gr,
+        const std::string & ti) : window_c(x, y, w, h, s, gr)
+{
+  title = ti;
+  input = "";
+  cursorPosition = 0;
+  escape = false;
+  redraw();
+}
+
+bool InputWindow_c::handleEvent(const SDL_Event & event)
+{
+  if (window_c::handleEvent(event)) return true;
+
+  if (event.type == SDL_KEYDOWN)
+  {
+    if (event.key.keysym.sym == SDLK_ESCAPE)
+    {
+      escape = true;
+      done = true;
+      return true;
+    }
+    else if (event.key.keysym.sym == SDLK_RETURN)
+    {
+      done = true;
+      return true;
+    }
+    else if (event.key.keysym.sym == SDLK_LEFT)
+    {
+      if (cursorPosition > 0) {
+        cursorPosition--;
+        redraw();
+      }
+      return true;
+    }
+    else if (event.key.keysym.sym == SDLK_RIGHT)
+    {
+      if (cursorPosition+1 <= input.length()) {
+        cursorPosition++;
+        redraw();
+      }
+      return true;
+    }
+    else if (event.key.keysym.sym == SDLK_HOME)
+    {
+        if (cursorPosition > 0)
+        {
+          cursorPosition = 0;
+          redraw();
+        }
+    }
+    else if (event.key.keysym.sym == SDLK_END)
+    {
+        if (cursorPosition+1 < input.length())
+        {
+          cursorPosition = input.length();
+          redraw();
+        }
+    }
+    else if (event.key.keysym.sym == SDLK_BACKSPACE)
+    {
+      if (cursorPosition > 0)
+      {
+        input.erase(cursorPosition-1, 1);
+        cursorPosition--;
+        redraw();
+      }
+    }
+    else if (event.key.keysym.sym == SDLK_DELETE)
+    {
+      if (cursorPosition < input.length())
+      {
+        input.erase(cursorPosition, 1);
+        redraw();
+      }
+    }
+    else if (event.key.keysym.unicode >= 32 && event.key.keysym.unicode <= 127)
+      // sorry folks only latin characters
+    {
+      if (getTextWidth(FNT_NORMAL, input+(char)event.key.keysym.unicode) < gr.blockX()*(w-2))
+      {
+        input.insert(cursorPosition, 1, (char)event.key.keysym.unicode);
+        cursorPosition++;
+        redraw();
+      }
+    }
+    else
+    {
+    }
+  }
+
+  return false;
+}
+
+void InputWindow_c::redraw(void)
+{
+  clearInside();
+
+  fontParams_s par;
+
+  par.font = FNT_BIG;
+  par.alignment = ALN_CENTER;
+  par.color.r = 112; par.color.g = 39; par.color.b = 0;
+  par.shadow = 2;
+  par.box.x = gr.blockX()*(x+1);
+  par.box.y = gr.blockY()*(y+1);
+  par.box.w = gr.blockX()*(w-2);
+  par.box.h = getFontHeight(FNT_BIG);
+
+  surf.renderText(&par, title);
+
+  int ypos = gr.blockY()*(y+1) + getFontHeight(FNT_BIG);
+
+  surf.fillRect(gr.blockX()*(x+1)+1, ypos+1, gr.blockX()*(w-2), 2, 0, 0, 0);
+  surf.fillRect(gr.blockX()*(x+1), ypos, gr.blockX()*(w-2), 2, 112, 39, 0);
+
+  ypos += 20;
+
+  par.alignment = ALN_TEXT;
+  par.font = FNT_NORMAL;
+  par.shadow = 0;
+
+  surf.fillRect(gr.blockX()*(x+1)+getTextWidth(FNT_NORMAL, input.substr(0, cursorPosition)),
+      ypos, 4, getFontHeight(FNT_NORMAL), 0, 0, 0);
+
+  par.box.y = ypos;
+  surf.renderText(&par, input);
+}

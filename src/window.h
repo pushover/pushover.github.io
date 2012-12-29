@@ -122,6 +122,32 @@ class listWindow_c : public window_c {
     virtual bool handleEvent(const SDL_Event & event);
 };
 
+class InputWindow_c : public window_c {
+
+  private:
+    std::string input;
+
+    unsigned int cursorPosition;
+
+    std::string title;
+
+    void redraw(void);
+
+    bool escape;
+
+  public:
+
+    InputWindow_c(int x, int y, int w, int h, surface_c & s, graphics_c & gr,
+        const std::string & title);
+
+    // the the user has selected something
+    const std::string & getText(void) { return input; } // which list entry was selected
+
+    bool hasEscaped(void) const { return escape; }
+
+    virtual bool handleEvent(const SDL_Event & event);
+};
+
 class levelsetList_c;
 class levelset_c;
 class solvedMap_c;

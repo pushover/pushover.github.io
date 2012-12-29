@@ -268,6 +268,7 @@ int main(int argc, char * argv[]) {
   // initialize SDL, graphics, timer, video mode, and level data structure
   SDL_Init(SDL_INIT_TIMER);
   SDL_Init(SDL_INIT_VIDEO);
+  SDL_EnableUNICODE(1);
   atexit(SDL_Quit);
   graphicsN_c gr(datadir);
   screen_c screen(gr);
