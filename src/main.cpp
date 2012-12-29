@@ -486,6 +486,14 @@ int main(int argc, char * argv[]) {
         SDL_Event event;
         if (!SDL_PollEvent(&event)) break;
 
+        // check for quit-event
+        if (event.type == SDL_QUIT)
+        {
+          // exit program, wherever we are
+          nextState = ST_EXIT;
+          break;
+        }
+
         switch (currentState) {
 
           case ST_MAIN:
