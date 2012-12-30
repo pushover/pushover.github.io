@@ -493,24 +493,7 @@ bool levelData_c::levelCompleted(int & fail) const {
         else if (getDominoType(x, y) == DominoTypeTumbler)
         { // tumbler must lie on something or lean against a wall
           // not falln far enough
-          if (getDominoState(x, y) > 3 && getDominoState(x, y) < 13) {
-            fail = 6;
-            return false;
-          }
-
-          // check if we lean against a step
-          if (getDominoState(x, y) == 3 &&
-              getFg(x-1, y) != FgElementPlatformStep4 &&
-              getFg(x-1, y) != FgElementPlatformStep7)
-          {
-            fail = 6;
-            return false;
-          }
-
-          if (getDominoState(x, y) == 13 &&
-              getFg(x+1, y) != FgElementPlatformStep4 &&
-              getFg(x+1, y) != FgElementPlatformStep7)
-          {
+          if (getDominoState(x, y) >= 3 && getDominoState(x, y) <= 13) {
             fail = 6;
             return false;
           }
@@ -549,7 +532,6 @@ bool levelData_c::levelCompleted(int & fail) const {
           }
           // in this case we might still succeed, when we lean against a block
           if (   getDominoState(x, y) == 3
-              && getFg(x-1, y) != FgElementPlatformStep4
               && (   getDominoType(x-1, y) != DominoTypeStopper
                   || getDominoType(x+1, y) == DominoTypeEmpty
                   || (getDominoDir(x+1, y) != -1 && getDominoType(x+1, y) != DominoTypeSplitter))
@@ -561,7 +543,6 @@ bool levelData_c::levelCompleted(int & fail) const {
           }
 
           if (   getDominoState(x, y) == 13
-              && getFg(x+1, y) != FgElementPlatformStep7
               && (   getDominoType(x+1, y) != DominoTypeStopper
                   || getDominoType(x-1, y) == DominoTypeEmpty
                   || (getDominoDir(x-1, y) != 1 && getDominoType(x-1, y) != DominoTypeSplitter))
