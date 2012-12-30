@@ -40,7 +40,11 @@ luaClass_c::~luaClass_c(void) {
 
 unsigned int luaClass_c::getArraySize(const std::string & name) {
   lua_getglobal(L, name.c_str());
+#if LUA_VERSION_NUM > 501
+  return lua_rawlen(L, -1);
+#else
   return lua_objlen(L, -1);
+#endif
 }
 
 lua_Number luaClass_c::getNumberArray(const std::string & name, unsigned int idx) {
