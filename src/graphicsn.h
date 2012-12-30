@@ -43,7 +43,7 @@ class graphicsN_c : public graphics_c {
     virtual unsigned int resolutionX(void) const { return 800; }
     virtual unsigned int resolutionY(void) const { return 600; }
 
-    /* to get the blocksize of one block */
+    /* to get the block size of one block */
     virtual unsigned int blockX(void) const { return 40; }
     virtual unsigned int blockY(void) const { return 48; }
     virtual unsigned int halveBlockDisplace(void) const { return 8*3; }

@@ -207,7 +207,7 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
       }
       break;
 
-      // the exploder only explosed and does not fall in one direction
+      // the exploder only explodes and does not fall in one direction
       // so dir is always set to -1
       // we also need to delay the domino falling against this domino, so
       // return false
@@ -327,8 +327,8 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
 }
 
 
-// the 2 tigger falln functions. They just call the
-// normal domino falln function and additionally set the trigger bit
+// the 2 trigger fallen functions. They just call the
+// normal domino fallen function and additionally set the trigger bit
 void levelPlayer_c::DTA_9(int x, int y) {
   DTA_1(x, y);
 
@@ -341,7 +341,7 @@ void levelPlayer_c::DTA_N(int x, int y) {
 }
 
 // this is for the stopper, splitter and exploder dominos, when they
-// are falling after beeing lost when going over the edge
+// are falling after being lost when going over the edge
 // we check, if we are still falling and only handle the falling case
 void levelPlayer_c::DTA_F(int x, int y) {
   if (getDominoExtra(x, y) == 0x70)
@@ -381,7 +381,7 @@ void levelPlayer_c::DTA_D(int x, int y) {
 
   DTA_4(x, y);
 
-  // mark the splitting stone, that now vanises as dirty
+  // mark the splitting stone, that now vanishes as dirty
   // the lower 2 lines are for splitting dust clouds
   if (getDominoState(x, y) == 5)
   {
@@ -391,7 +391,7 @@ void levelPlayer_c::DTA_D(int x, int y) {
   }
 }
 
-// the final vansher state, remove the vanisher
+// the final vanisher state, remove the vanisher
 // from the level and mark things dirty
 void levelPlayer_c::DTA_8(int x, int y) {
   markDirty(x, y);
@@ -402,7 +402,7 @@ void levelPlayer_c::DTA_8(int x, int y) {
   removeDomino(x, y);
 }
 
-// this is the nearly falln down left case
+// this is the nearly fallen down left case
 void levelPlayer_c::DTA_2(int x, int y) {
 
   if (getDominoExtra(x, y) == 0x40 || getDominoExtra(x, y) == 0x70)
@@ -422,7 +422,7 @@ void levelPlayer_c::DTA_2(int x, int y) {
   if (getDominoType(x-1, y) != 0)
     return;
 
-  // if here is a domino 2 to the left of us and that domino has falln down
+  // if here is a domino 2 to the left of us and that domino has fallen down
   // far enough to the right, we can't fall farther
   if (x >= 2 && getDominoType(x-2, y) != 0 && getDominoState(x-2, y) > 13)
     return;
@@ -441,7 +441,7 @@ void levelPlayer_c::DTA_2(int x, int y) {
   }
 }
 
-// nearly falln down right
+// nearly fallen down right
 void levelPlayer_c::DTA_J(int x, int y) {
 
   if (getDominoExtra(x, y) == 0x40 || getDominoExtra(x, y) == 0x70)
@@ -450,7 +450,7 @@ void levelPlayer_c::DTA_J(int x, int y) {
     return;
   }
 
-  // if we fall in the other direction (tumbler) we simply contnue
+  // if we fall in the other direction (tumbler) we simply continue
   if (getDominoDir(x, y) == -1)
   {
     DTA_4(x, y);
@@ -461,7 +461,7 @@ void levelPlayer_c::DTA_J(int x, int y) {
   if (getDominoType(x+1, y) != 0)
     return;
 
-  // if the 2nd next right neighbor is not empty and far enough falln to the left
+  // if the 2nd next right neighbor is not empty and far enough fallen to the left
   // we stop
   if (x <= 17 && getDominoType(x+2, y) != 0 && getDominoState(x+2, y) < 3)
     return;
@@ -506,7 +506,7 @@ void levelPlayer_c::DTA_4(int x, int y) {
   markDirty(x, y);
   markDirty(x, y-1);
 
-  // add some dirty blocks depending on the direction we have falln
+  // add some dirty blocks depending on the direction we have fallen
   if (getDominoState(x, y) > 8)
   {
     markDirty(x+1, y);
@@ -576,7 +576,7 @@ void levelPlayer_c::DTA_3(int x, int y) {
   if (getDominoYOffset(x, y) == 8 && x > 0 && getFg(x-1, y) == FgElementPlatformStep1)
     return;
 
-  // if the next somino is empty, continue falling
+  // if the next domino is empty, continue falling
   if (getDominoType(x-1, y) == DominoTypeEmpty) {
     DTA_4(x, y);
     return;
@@ -592,7 +592,7 @@ void levelPlayer_c::DTA_3(int x, int y) {
     return;
   }
 
-  // if the next neibor is a delay we only continue falling, if
+  // if the next neighbor is a delay we only continue falling, if
   // it has started falling as well
   if (getDominoType(x-1, y) == DominoTypeDelay)
   {
@@ -602,7 +602,7 @@ void levelPlayer_c::DTA_3(int x, int y) {
     }
   }
 
-  // if the right neighbor is a splitter and the splitter is already falln
+  // if the right neighbor is a splitter and the splitter is already fallen
   // we try to continue falling
   if (getDominoType(x+1, y) == DominoTypeSplitter && getDominoState(x+1, y) != 8)
   {
@@ -611,7 +611,7 @@ void levelPlayer_c::DTA_3(int x, int y) {
     return;
   }
 
-  // if there is a domino to the right of us that has falln we try to continue
+  // if there is a domino to the right of us that has fallen we try to continue
   if (getDominoType(x+1, y) != DominoTypeEmpty && getDominoState(x+1, y) < 8)
   {
     if (pushDomino(x-1, y, -1))
@@ -694,7 +694,7 @@ void levelPlayer_c::DominoCrash(int x, int y, int type, int extra) {
 
 
 
-  // for all combinations for participants do whats shown in the table above
+  // for all combinations for participants do what's shown in the table above
 
   if (next == DominoTypeStandard)
   {
@@ -751,7 +751,7 @@ void levelPlayer_c::DominoCrash(int x, int y, int type, int extra) {
   soundSystem_c::instance()->startSound(soundSystem_c::SE_EXPLODER);
 }
 
-// vertial stone
+// vertical stone
 void levelPlayer_c::DTA_E(int x, int y) {
 
   if (getDominoExtra(x, y) == 0x40)
@@ -899,7 +899,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
 void levelPlayer_c::DTA_C(int x, int y) {
 
   // this table contains the positions of the 2 splitter halves
-  // for each splitter state, 8 = vertial, 1 = horizontal
+  // for each splitter state, 8 = vertical, 1 = horizontal
   static const int SplitterLookup[] = {
     0, 0,
     1, 1,
@@ -965,7 +965,7 @@ void levelPlayer_c::DTA_C(int x, int y) {
     b--;
   }
 
-  // now find the new state of the plitter domino
+  // now find the new state of the splitter domino
   for (int i = 0; i < 15; i++)
   {
     if (SplitterLookup[2*i+1] == a && SplitterLookup[2*i] == b)
@@ -1115,7 +1115,7 @@ void levelPlayer_c::DTA_7(int x, int y) {
   markDirtyBg(x  , y);
 }
 
-// Brider right same as DTA_7 but for other direction
+// Bridger right same as DTA_7 but for other direction
 void levelPlayer_c::DTA_M(int x, int y) {
 
   int fg2;
@@ -1499,7 +1499,7 @@ void levelPlayer_c::DTA_O(int x, int y) {
   }
 }
 
-// riser risign vertically
+// riser rising vertically
 void levelPlayer_c::DTA_H(int x, int y) {
 
   int riserDir = getDominoDir(x, y);
@@ -1616,7 +1616,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
   }
 }
 
-// Stone completely falln down right used for
+// Stone completely fallen down right used for
 // standard, Trigger, Delay, Bridger
 void levelPlayer_c::DTA_K(int x, int y) {
   int fg;
@@ -1722,7 +1722,7 @@ void levelPlayer_c::DTA_K(int x, int y) {
 
 }
 
-// Stone completely falln down left used for
+// Stone completely fallen down left used for
 // standard, Trigger, Delay, Bridger
 void levelPlayer_c::DTA_1(int x, int y) {
 
@@ -1831,7 +1831,7 @@ void levelPlayer_c::DTA_1(int x, int y) {
 
 }
 
-// Tumbler falln down left
+// Tumbler fallen down left
 void levelPlayer_c::DTA_6(int x, int y) {
 
   int fg;
@@ -1941,7 +1941,7 @@ void levelPlayer_c::DTA_6(int x, int y) {
   markDirty(x-1, y-1);
 }
 
-// Tumbler falln down right
+// Tumbler fallen down right
 void levelPlayer_c::DTA_L(int x, int y) {
 
   int fg;
@@ -2344,7 +2344,7 @@ int levelPlayer_c::performDominos(ant_c & a) {
     }
   }
 
-  // if level is inactive for a longer time and no ppushed are left
+  // if level is inactive for a longer time and no pushed are left
   if (a.getPushsLeft() == 0 && inactive > 36) {
     // search for a trigger
 

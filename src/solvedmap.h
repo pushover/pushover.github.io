@@ -36,7 +36,7 @@ class userData_c {
 
    private:
        std::string name;
-       std::string userString;  // the userstring, contining the name and creationdate
+       std::string userString;  // the userstring, containing the name and creation-date
 
    public:
 

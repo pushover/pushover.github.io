@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: roever@users.sf.net\n"
-"POT-Creation-Date: 2012-12-29 17:39+0100\n"
+"POT-Creation-Date: 2012-12-30 12:01+0100\n"
 "PO-Revision-Date: 2008-12-07 11:05+0200\n"
 "Last-Translator: Ondrej Caletka <oskar456@users.sf.net>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -34,7 +34,7 @@ msgid "Exploder: will blast a hole into the platform below it"
 msgstr ""
 
 #: src/window.cpp:85
-msgid "Delay: falls not immediately but a few seconds after beeing pushed"
+msgid "Delay: falls not immediately but a few seconds after being pushed"
 msgstr ""
 
 #: src/window.cpp:86
@@ -99,129 +99,130 @@ msgstr ""
 msgid "New Graphics:"
 msgstr "Původní grafika:"
 
-#: src/window.cpp:442
+#: src/window.cpp:493
 msgid "Play Levelset"
 msgstr "Spustit hru"
 
-#: src/window.cpp:443 src/window.cpp:487 src/window.cpp:526
+#: src/window.cpp:494 src/window.cpp:536 src/window.cpp:582
 msgid "Configuration"
 msgstr "Konfigurace"
 
-#: src/window.cpp:444
+#: src/window.cpp:495
 msgid "Profile Selection"
 msgstr ""
 
-#: src/window.cpp:445
+#: src/window.cpp:496
 msgid "About"
 msgstr "O hře"
 
-#: src/window.cpp:446
+#: src/window.cpp:497
 msgid "Quit"
 msgstr "Konec"
 
-#: src/window.cpp:449
+#: src/window.cpp:500
 msgid "Main menu"
 msgstr "Hlavní menu"
 
-#: src/window.cpp:454
+#: src/window.cpp:505
 msgid "Enter new profile name"
 msgstr ""
 
-#: src/window.cpp:471
+#: src/window.cpp:520
 msgid "Add new profile"
 msgstr ""
 
-#: src/window.cpp:472
+#: src/window.cpp:521
 msgid "Delete selected profile"
 msgstr ""
 
-#: src/window.cpp:474
+#: src/window.cpp:523
 #, fuzzy
 msgid "Select Profile"
 msgstr "Vyber sadu levelů"
 
-#: src/window.cpp:482
+#: src/window.cpp:531
 msgid "Toggle Fullscreen"
 msgstr "Přepnout na celou obrazovku"
 
-#: src/window.cpp:483
+#: src/window.cpp:532
 msgid "Toggle Sound Effects"
 msgstr "Přepnout zvukové efekty"
 
-#: src/window.cpp:484
+#: src/window.cpp:533
 #, fuzzy
 msgid "Toggle Background Music"
 msgstr "Přepnout zvukové efekty"
 
-#: src/window.cpp:491
+#: src/window.cpp:547
 msgid "Select Levelset"
 msgstr "Vyber sadu levelů"
 
-#: src/window.cpp:504
+#: src/window.cpp:560
 msgid "(done)"
 msgstr "(vyřešen)"
 
-#: src/window.cpp:511
+#: src/window.cpp:567
 msgid "No Level in Levelset"
 msgstr "V sadě není žádný level"
 
-#: src/window.cpp:516 src/window.cpp:534
+#: src/window.cpp:572
 msgid "Select Level"
 msgstr "Vyber level"
 
-#: src/window.cpp:524
+#: src/window.cpp:580
 msgid "Return to level"
 msgstr "Návrat ke hře"
 
-#: src/window.cpp:525
+#: src/window.cpp:581
 msgid "Restart level"
 msgstr "Restartovat level"
 
-#: src/window.cpp:527 src/window.cpp:558
+#: src/window.cpp:583 src/window.cpp:610
 msgid "Return to menu"
 msgstr "Návrat do menu"
 
-#: src/window.cpp:530
-msgid "Nu What?"
-msgstr "Co teď?"
+#: src/window.cpp:586
+msgid "And now?"
+msgstr ""
 
-#: src/window.cpp:546
+#: src/window.cpp:598
 msgid "Continue"
 msgstr "Pokračovat"
 
-#: src/window.cpp:549
-msgid "Gratulation! You solved the level."
+#: src/window.cpp:601
+#, fuzzy
+msgid "Congratulations! You solved the level."
 msgstr "Gratuluji! Vyřešil jsi level."
 
-#: src/window.cpp:557
+#: src/window.cpp:609
 msgid "Retry the level"
 msgstr "Zkusit level znovu"
 
-#: src/window.cpp:563
+#: src/window.cpp:615
 msgid "You failed: You've been too slow"
 msgstr "Prohrál jsi: Byl jsi přiliš pomalý"
 
-#: src/window.cpp:564
+#: src/window.cpp:616
 msgid "You failed: Some dominoes crashed"
 msgstr "Prohrál jsi: Některé kostky se srazily"
 
-#: src/window.cpp:565
+#: src/window.cpp:617
 msgid "You failed: Not all dominoes fell"
 msgstr "Prohrál jsi: Nespadaly všechny kostky"
 
-#: src/window.cpp:566
+#: src/window.cpp:618
 msgid "You failed: You died"
 msgstr "Prohrál jsi: Zemřel jsi"
 
-#: src/window.cpp:567
+#: src/window.cpp:619
 msgid "You failed: Trigger was not last to fall"
 msgstr "Prohrál jsi: Cílová kostka nespadla jako poslední"
 
-#: src/window.cpp:568
+#: src/window.cpp:620
 msgid "You failed: Trigger not flat on the ground"
 msgstr "Prohrál jsi: Cílová kostka neleží na rovné zemi"
 
-#: src/main.cpp:447
+#: src/main.cpp:450
 msgid "Arrange dominos in a run so that trigger falls last. You have 1 push."
 msgstr ""
 "Uspořádej kostky, aby cílová spadla nakonec. Můžeš strčit jen do jedné."
@@ -1254,6 +1255,9 @@ msgstr ""
 #: po/leveltexts.txt:268
 msgid "Original"
 msgstr ""
+
+#~ msgid "Nu What?"
+#~ msgstr "Co teď?"
 
 #~ msgid "Standard"
 #~ msgstr "Normální"

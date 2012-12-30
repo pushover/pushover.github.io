@@ -47,7 +47,7 @@ class levelDisplay_c : public levelData_c {
 
     ~levelDisplay_c(void);
 
-    // initializes a leve. From that moment on the level can only paint into
+    // initializes a level. From that moment on the level can only paint into
     // the given surface
     levelDisplay_c(surface_c & target, graphics_c & gr);
 

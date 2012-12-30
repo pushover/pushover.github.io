@@ -131,7 +131,7 @@ void graphicsN_c::loadGraphics(void) {
 
   /* the number of sprites for each domino type is fixed */
 
-  // all domino sprites are in a png image load the image and then copy
+  // all domino sprites are in a PNG image load the image and then copy
   // the information to the destination sprites
 
   {

@@ -117,7 +117,7 @@ void surface_c::copy(surface_c & s, int x, int y, int w, int h) {
 
 void surface_c::gradient(int x, int y, int w, int h) {
 
-  // make sure we only work with valid pixels and
+  // make sure we only work with valid pixels
   if (y+h >= video->h) h = video->h-y;
 
   for (int i = 0; i < h; i++)
@@ -203,11 +203,11 @@ static void u1(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bl
   int bh = (y == 12) ? bly/2 : bly;
 
   if (bw > 0){
-	rects[count].x=bx;
-	rects[count].y=by;
-	rects[count].w=bw;
-	rects[count].h=bh;
-	count++;
+    rects[count].x=bx;
+    rects[count].y=by;
+    rects[count].w=bw;
+    rects[count].h=bh;
+    count++;
   }
 }
 
@@ -220,11 +220,11 @@ static void u2(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bl
   bh = bh*f/256;
 
   if (bh > 0) {
-	rects[count].x=bx;
-	rects[count].y=by;
-	rects[count].w=bw;
-	rects[count].h=bh;
-	count++;
+    rects[count].x=bx;
+    rects[count].y=by;
+    rects[count].w=bw;
+    rects[count].h=bh;
+    count++;
   }
 }
 
@@ -238,11 +238,11 @@ static void u3(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bl
   bw = bw*f/256;
 
   if (bh > 0) {
-	rects[count].x=bx;
-	rects[count].y=by;
-	rects[count].w=bw;
-	rects[count].h=bh;
-	count++;
+    rects[count].x=bx;
+    rects[count].y=by;
+    rects[count].w=bw;
+    rects[count].h=bh;
+    count++;
   }
 }
 
@@ -270,11 +270,11 @@ static void u4(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bl
       bh = bh/8;
 
       if (bh > 0) {
-	rects[count].x=bx;
-	rects[count].y=by;
-	rects[count].w=bw;
-	rects[count].h=bh;
-	count++;
+        rects[count].x=bx;
+        rects[count].y=by;
+        rects[count].w=bw;
+        rects[count].h=bh;
+        count++;
       }
     }
 

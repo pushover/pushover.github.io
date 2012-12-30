@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pushover 0.0.1\n"
 "Report-Msgid-Bugs-To: roever@users.sf.net\n"
-"POT-Creation-Date: 2012-12-29 17:39+0100\n"
+"POT-Creation-Date: 2012-12-30 12:01+0100\n"
 "PO-Revision-Date: 2008-11-22 17:03+0300\n"
 "Last-Translator: Dmitry Marakasov <amdmi3@amdmi3.ru>\n"
 "Language-Team: Russian\n"
@@ -35,7 +35,7 @@ msgid "Exploder: will blast a hole into the platform below it"
 msgstr ""
 
 #: src/window.cpp:85
-msgid "Delay: falls not immediately but a few seconds after beeing pushed"
+msgid "Delay: falls not immediately but a few seconds after being pushed"
 msgstr ""
 
 #: src/window.cpp:86
@@ -100,130 +100,131 @@ msgstr ""
 msgid "New Graphics:"
 msgstr "Оригинальная графика:"
 
-#: src/window.cpp:442
+#: src/window.cpp:493
 msgid "Play Levelset"
 msgstr "Играть"
 
-#: src/window.cpp:443 src/window.cpp:487 src/window.cpp:526
+#: src/window.cpp:494 src/window.cpp:536 src/window.cpp:582
 msgid "Configuration"
 msgstr "Настройки"
 
-#: src/window.cpp:444
+#: src/window.cpp:495
 msgid "Profile Selection"
 msgstr ""
 
-#: src/window.cpp:445
+#: src/window.cpp:496
 msgid "About"
 msgstr "О программе"
 
-#: src/window.cpp:446
+#: src/window.cpp:497
 msgid "Quit"
 msgstr "Выход"
 
-#: src/window.cpp:449
+#: src/window.cpp:500
 msgid "Main menu"
 msgstr "Главное меню"
 
-#: src/window.cpp:454
+#: src/window.cpp:505
 msgid "Enter new profile name"
 msgstr ""
 
-#: src/window.cpp:471
+#: src/window.cpp:520
 msgid "Add new profile"
 msgstr ""
 
-#: src/window.cpp:472
+#: src/window.cpp:521
 msgid "Delete selected profile"
 msgstr ""
 
-#: src/window.cpp:474
+#: src/window.cpp:523
 #, fuzzy
 msgid "Select Profile"
 msgstr "Выберите набор уровней"
 
-#: src/window.cpp:482
+#: src/window.cpp:531
 msgid "Toggle Fullscreen"
 msgstr "Вкл./выкл. полный экран"
 
-#: src/window.cpp:483
+#: src/window.cpp:532
 msgid "Toggle Sound Effects"
 msgstr "Вкл./выкл. звуковые эффекты"
 
-#: src/window.cpp:484
+#: src/window.cpp:533
 #, fuzzy
 msgid "Toggle Background Music"
 msgstr "Вкл./выкл. звуковые эффекты"
 
-#: src/window.cpp:491
+#: src/window.cpp:547
 msgid "Select Levelset"
 msgstr "Выберите набор уровней"
 
-#: src/window.cpp:504
+#: src/window.cpp:560
 msgid "(done)"
 msgstr "(пройден)"
 
-#: src/window.cpp:511
+#: src/window.cpp:567
 msgid "No Level in Levelset"
 msgstr "В наборе нет токого уровня"
 
-#: src/window.cpp:516 src/window.cpp:534
+#: src/window.cpp:572
 msgid "Select Level"
 msgstr "Выбор уровня"
 
-#: src/window.cpp:524
+#: src/window.cpp:580
 msgid "Return to level"
 msgstr "Вернуться к игре"
 
-#: src/window.cpp:525
+#: src/window.cpp:581
 msgid "Restart level"
 msgstr "Начать уровень с начала"
 
-#: src/window.cpp:527 src/window.cpp:558
+#: src/window.cpp:583 src/window.cpp:610
 #, fuzzy
 msgid "Return to menu"
 msgstr "Вернуться в главное меню"
 
-#: src/window.cpp:530
-msgid "Nu What?"
-msgstr "Что?"
+#: src/window.cpp:586
+msgid "And now?"
+msgstr ""
 
-#: src/window.cpp:546
+#: src/window.cpp:598
 msgid "Continue"
 msgstr "Продолжить"
 
-#: src/window.cpp:549
-msgid "Gratulation! You solved the level."
+#: src/window.cpp:601
+#, fuzzy
+msgid "Congratulations! You solved the level."
 msgstr "Поздравления! Вы прошли уровень."
 
-#: src/window.cpp:557
+#: src/window.cpp:609
 msgid "Retry the level"
 msgstr "Начать уровень с начала"
 
-#: src/window.cpp:563
+#: src/window.cpp:615
 msgid "You failed: You've been too slow"
 msgstr "Вы проиграли: вы не успели"
 
-#: src/window.cpp:564
+#: src/window.cpp:616
 msgid "You failed: Some dominoes crashed"
 msgstr "Вы проиграли: некоторые домино разбились"
 
-#: src/window.cpp:565
+#: src/window.cpp:617
 msgid "You failed: Not all dominoes fell"
 msgstr "Вы проиграли: не все домино упали"
 
-#: src/window.cpp:566
+#: src/window.cpp:618
 msgid "You failed: You died"
 msgstr "Вы проиграли: вы умерли"
 
-#: src/window.cpp:567
+#: src/window.cpp:619
 msgid "You failed: Trigger was not last to fall"
 msgstr "Вы проиграли: триггер должен упасть последним"
 
-#: src/window.cpp:568
+#: src/window.cpp:620
 msgid "You failed: Trigger not flat on the ground"
 msgstr "Вы проиграли: триггер должен лежать на замле"
 
-#: src/main.cpp:447
+#: src/main.cpp:450
 msgid "Arrange dominos in a run so that trigger falls last. You have 1 push."
 msgstr ""
 "Выстройте домино так, чтобы триггер упал последним. Вы можете толкнуть "
@@ -1257,6 +1258,9 @@ msgstr ""
 #: po/leveltexts.txt:268
 msgid "Original"
 msgstr "Оригинальные"
+
+#~ msgid "Nu What?"
+#~ msgstr "Что?"
 
 #~ msgid "Standard"
 #~ msgstr "Стандартный"

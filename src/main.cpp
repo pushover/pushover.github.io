@@ -169,7 +169,7 @@ static unsigned int getKeyMask(void) {
 
 // make a play tick
 // return codes:
-// 0 nothing happend
+// 0 nothing happened
 // 1 success
 // 2 too slow
 // 3 crashes
@@ -207,13 +207,13 @@ int playTick(levelPlayer_c & l, ant_c & a)
 
 // the states of the program
 typedef enum {
-  ST_INIT,     // inistal transition state
+  ST_INIT,     // initial transition state
   ST_MAIN,     // main menu
   ST_PROFILE,  // state for profile selection
   ST_PROFILE_INIT, // profile selection at startup
   ST_PROFILE_IN, // profile name input
-  ST_LEVELCONF,// config while playing
-  ST_CONFIG,   // config menu
+  ST_LEVELCONF,// configure while playing
+  ST_CONFIG,   // configure menu
   ST_LEVELSET, // level set selection
   ST_LEVEL,    // level selection
   ST_PREREPLAY,// prepare replay for running
@@ -270,7 +270,7 @@ int main(int argc, char * argv[]) {
   bool fullscreen = false;
   if (argc >= 2 && strcmp(argv[1], "-f") == 0) fullscreen = true;
 
-  // setup internationalisation
+  // setup internationalization
   setlocale(LC_MESSAGES, "");
   bindtextdomain("pushover", getLocaleDir().c_str());
   bind_textdomain_codeset("pushover", "UTF-8");
@@ -368,7 +368,7 @@ int main(int argc, char * argv[]) {
   }
 
 
-  // not we have initialized, lets get playing in the main state mashine
+  // not we have initialized, lets get playing in the main state
   bool exitProgram = false;
   Uint32 ticks = SDL_GetTicks();
 

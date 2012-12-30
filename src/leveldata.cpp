@@ -492,13 +492,13 @@ bool levelData_c::levelCompleted(int & fail) const {
         }
         else if (getDominoType(x, y) == DominoTypeTumbler)
         { // tumbler must lie on something or lean against a wall
-          // not falln far enough
+          // not fallen far enough
           if (getDominoState(x, y) >= 3 && getDominoState(x, y) <= 13) {
             fail = 6;
             return false;
           }
 
-          // falln far enough but neighbor empty
+          // fallen far enough but neighbor empty
           if (   getDominoState(x, y) <= 2
               && ((x < 1) || (getDominoType(x-1, y) == DominoTypeEmpty))
               && ((x < 2) || (getDominoType(x-2, y) == DominoTypeEmpty || getDominoState(x-2, y) < 14))

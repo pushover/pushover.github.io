@@ -95,7 +95,7 @@ class soundSystem_c {
      */
     bool useSound;
 
-    bool playSoundSwitch;  // used to toggle sound effects indepentently of sound
+    bool playSoundSwitch;  // used to toggle sound effects independently of sound
     bool playMusicSwitch; // toggle music on and off
 
     std::vector<struct soundDat> sounds;

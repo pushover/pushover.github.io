@@ -28,7 +28,7 @@
 
 #include "libintl.h"
 
-/* this is the display class, there is only one instance fo this class and it contains
+/* this is the display class, there is only one instance for this class and it contains
  * the complete screen
  * the background is always a level.
  * In front of that can be stacked windows
@@ -36,7 +36,7 @@
 
 class graphics_c;
 
-/* the 3 vavailable fonts, they are a fixed size and are supposed to contain
+/* the 3 available fonts, they are a fixed size and are supposed to contain
  * all the required letters
  */
 enum {
@@ -119,7 +119,7 @@ class surface_c {
     // return value is the number of lines that were output
     unsigned int renderText(const fontParams_s * par, const std::string & t);
 
-    // apply the gradient within the givne area
+    // apply the gradient within the given area
     void gradient(int x, int y, int w, int h);
 };
 
@@ -127,7 +127,7 @@ class pixelSurface_c : public surface_c {
 
   public:
 
-    // creates a surface of ther same size and same format at the given surface
+    // creates a surface of the same size and same format at the given surface
     pixelSurface_c(const surface_c & pre);
 };
 
@@ -140,7 +140,7 @@ class screen_c : public surface_c {
 
   public:
 
-    // constructor, does nothing for the time beeing
+    // constructor, does nothing for the time being
     screen_c(const graphics_c & gr);
     ~screen_c(void);
 
@@ -151,7 +151,7 @@ class screen_c : public surface_c {
     void toggleFullscreen(void);
 };
 
-// used for internationalisation to mark strings to translate
+// used for internationalization to mark strings to translate
 #define _(x) gettext(x)
 
 #endif

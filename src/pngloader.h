@@ -49,9 +49,9 @@ class pngLoader_c {
     unsigned int getWidth(void);
     unsigned int getHeight(void);
 
-    /* fills this surface with a part of the png
+    /* fills this surface with a part of the PNG
      * the width of the surface MUST be the width of the
-     * image. The number of lines loaded is the hight
+     * image. The number of lines loaded is the height
      * of this surface
      */
     void getPart(SDL_Surface * v);

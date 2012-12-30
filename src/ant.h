@@ -67,7 +67,7 @@ class ant_c {
 
   public:
 
-    // init the ant state for level entering
+    // initialize the ant state for level entering
     // the level is saved and used later on for dirty block
     // marking, and level modification
     ant_c(levelPlayer_c & level, graphics_c & gr, surface_c & target);
@@ -125,7 +125,7 @@ class ant_c {
     unsigned int SFEnterLadder(void);
     unsigned int SFLooseRight(void);
     unsigned int SFLooseLeft(void);
-    unsigned int SFXXX7(void);   // TODO whats this state????
+    unsigned int SFXXX7(void);   // TODO what's this state????
     unsigned int SFEnterDominosLeft(void);
     unsigned int SFEnterDominosRight(void);
     unsigned int SFPushLeft(void);
@@ -138,7 +138,7 @@ class ant_c {
     unsigned int SFGhost2(void);
     unsigned int SFLandDying(void);
     unsigned int SFEnterDoor(void);
-    unsigned int SFXXX9(void);   // TODO whats this state????
+    unsigned int SFXXX9(void);   // TODO what's this state????
     unsigned int SFNoNo(void);
     unsigned int SFVictory(void);
     unsigned int SFShrugging(void);

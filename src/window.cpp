@@ -82,7 +82,7 @@ static std::string texts[NUM_DOMINOS] = {
   _("Blocker: can not fall, may still stand at level end"),
   _("Splitter: when something falls on its top it will split in two"),
   _("Exploder: will blast a hole into the platform below it"),
-  _("Delay: falls not immediately but a few seconds after beeing pushed"),
+  _("Delay: falls not immediately but a few seconds after being pushed"),
   _("Tumbler: will continue rolling until it hits an obstacle"),
   _("Bridger: will bridge the platform if there is a one unit gap"),
   _("Vanish: pushed the next domino but then vanishes"),
@@ -241,7 +241,7 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 0, 16,
   surf.fillRect(gr.blockX()*(X()+1), ypos, gr.blockX()*(W()-2), 2, 112, 39, 0);
   ypos += 20;
 
-  unsigned int lineH = getFontHeight(FNT_SMALL);  // hight of one entry line
+  unsigned int lineH = getFontHeight(FNT_SMALL);  // height of one entry line
 
   par.font = FNT_SMALL;
   par.alignment = ALN_TEXT;
@@ -310,8 +310,7 @@ void listWindow_c::redraw(void) {
   surf.fillRect(gr.blockX()*(x+1), ypos, gr.blockX()*(w-2), 2, 112, 39, 0);
   ypos += 20;
 
-  unsigned int lineH = getFontHeight(FNT_NORMAL);  // hight of one entry line
-  menuLines = (gr.blockY()*(y+h-1)-ypos) / lineH;  // number of entriy lines that fit
+  unsigned int lineH = getFontHeight(FNT_NORMAL);  // height of one entry line
 
   unsigned int line = 0;
 
@@ -423,7 +422,7 @@ bool listWindow_c::handleEvent(const SDL_Event & event) {
   {
     if (escape && event.key.keysym.sym == SDLK_ESCAPE)
     {
-      current = entries.size();  // make sure nothing valis is selected
+      current = entries.size();  // make sure nothing valid is selected
       done = true;
       return true;
     }
@@ -584,7 +583,7 @@ listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr) {
         entries.push_back(listWindow_c::entry(_("Return to menu")));
     }
 
-    return new listWindow_c(4, 3, 12, 7, surf, gr, _("Nu What?"), entries, true);
+    return new listWindow_c(4, 3, 12, 7, surf, gr, _("And now?"), entries, true);
 }
 
 window_c * getAboutWindow(surface_c & surf, graphics_c & gr) {
@@ -599,7 +598,7 @@ listWindow_c * getSolvedWindow(surface_c & surf, graphics_c & gr) {
         entries.push_back(listWindow_c::entry(_("Continue")));
     }
 
-    return new listWindow_c(2, 3, 16, 6, surf, gr, _("Gratulation! You solved the level."), entries, false);
+    return new listWindow_c(2, 3, 16, 6, surf, gr, _("Congratulations! You solved the level."), entries, false);
 }
 
 listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphics_c & gr) {
@@ -625,7 +624,7 @@ listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphics_c & gr
 
     // make sure minimum size is fulfilled
     if (w < 14) w = 14;
-    // try to accommodate the header in the withd
+    // try to accommodate the header in the width
     if (w > 18) w = 18;
     // make sure widow is centerable by having an even width
     if (w & 1) w++;

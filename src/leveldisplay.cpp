@@ -124,7 +124,7 @@ void levelDisplay_c::drawDominos(void) {
   // the idea behind this code is to repaint the dirty blocks. Dominos that are actually
   // within neighbor block must be repaint, too, when they might reach into the actual
   // block. But painting the neighbors is only necessary, when they are not drawn on
-  // their own anyway, so always check for !dirty of the "homeblock" of each domino
+  // their own anyway, so always check for !dirty of the "home-block" of each domino
 
   int SpriteYPos = gr.getDominoYStart();
 
@@ -206,7 +206,7 @@ void levelDisplay_c::drawDominos(void) {
             SpriteYPos+gr.convertDominoY(getDominoYOffset(x, y)));
       }
 
-      // paint the right neighor if it is leaning in our direction
+      // paint the right neighbor if it is leaning in our direction
       if (x < 19 && y < 12 && !target.isDirty(x+1, y+1) && getDominoType(x+1, y+1) != DominoTypeEmpty &&
           (getDominoState(x+1, y+1) < 8 ||
            (getDominoType(x+1, y+1) == DominoTypeSplitter && getDominoState(x+1, y+1) != 8) ||
@@ -305,16 +305,7 @@ void levelDisplay_c::drawDominos(void) {
   if (timeLeft < 60*60*18)
   { // output the time
     char time[6];
-
-    // care for the : between the minutes and seconds and
-    // make a string out of the time
-    // in the new font ':' and ' ' have different width, so keep it
-    // just a colon for now, we will make it blink later on again
-    // TODO
-//    if (timeLeft % 18 < 9)
-      snprintf(time, 6, "%02i:%02i", Min, Sec);
-//    else
-//      snprintf(time, 6, "%02i %02i", Min, Sec);
+    snprintf(time, 6, "%02i:%02i", Min, Sec);
 
     fontParams_s pars;
     if (timeLeft >= 0)

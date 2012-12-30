@@ -29,8 +29,8 @@ class ant_c;
 class levelPlayer_c : public levelDisplay_c {
 
   private:
-    // has the level been chacked for completion, that is
-    // only done once, once a trigger has falln
+    // has the level been checked for completion, that is
+    // only done once, once a trigger has fallen
     bool finishCheckDone;
 
     // requested states for the 2 doors

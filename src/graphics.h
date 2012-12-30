@@ -27,7 +27,7 @@
 #include <vector>
 #include <map>
 
-/* this class contains all the informationf or all graphics */
+/* this class contains all the information for all graphics */
 class graphics_c {
 
   public:
@@ -46,7 +46,7 @@ class graphics_c {
     virtual unsigned int resolutionX(void) const = 0;
     virtual unsigned int resolutionY(void) const = 0;
 
-    /* to get the blocksize of one block */
+    /* to get the block size of one block */
     virtual unsigned int blockX(void) const = 0;
     virtual unsigned int blockY(void) const = 0;
     virtual unsigned int halveBlockDisplace(void) const = 0;  // return and noffset to actually place the objects
@@ -113,7 +113,7 @@ class graphics_c {
 
     // add an image to a specific ant animation, the new image is added at the end
     // you must also provide an y-offset used when animating to displace the image
-    // if free is false it is assumed that the Suface is used elsewhere and not freed
+    // if free is false it is assumed that the surface is used elsewhere and not freed
     // on deletion of object
     void addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free = true);
 
