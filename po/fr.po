@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pushover 0.0.2\n"
 "Report-Msgid-Bugs-To: roever@users.sf.net\n"
-"POT-Creation-Date: 2012-12-30 12:01+0100\n"
+"POT-Creation-Date: 2012-12-30 12:12+0100\n"
 "PO-Revision-Date: 2009-12-20 15:44+0100\n"
 "Last-Translator: Guillaume Lemaître <guillaume.lemaitre@gmail.com>\n"
 "Language-Team: French\n"
@@ -191,7 +191,7 @@ msgstr "Continuer"
 
 #: src/window.cpp:601
 #, fuzzy
-msgid "Congratulations! You solved the level."
+msgid "Congratulations! You did it."
 msgstr "Bravo ! Vous avez résolu ce niveau."
 
 #: src/window.cpp:609

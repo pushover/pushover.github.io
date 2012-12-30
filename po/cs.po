@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: roever@users.sf.net\n"
-"POT-Creation-Date: 2012-12-30 12:01+0100\n"
+"POT-Creation-Date: 2012-12-30 12:12+0100\n"
 "PO-Revision-Date: 2008-12-07 11:05+0200\n"
 "Last-Translator: Ondrej Caletka <oskar456@users.sf.net>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -191,7 +191,7 @@ msgstr "Pokračovat"
 
 #: src/window.cpp:601
 #, fuzzy
-msgid "Congratulations! You solved the level."
+msgid "Congratulations! You did it."
 msgstr "Gratuluji! Vyřešil jsi level."
 
 #: src/window.cpp:609

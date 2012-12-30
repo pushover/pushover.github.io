@@ -598,7 +598,7 @@ listWindow_c * getSolvedWindow(surface_c & surf, graphics_c & gr) {
         entries.push_back(listWindow_c::entry(_("Continue")));
     }
 
-    return new listWindow_c(2, 3, 16, 6, surf, gr, _("Congratulations! You solved the level."), entries, false);
+    return new listWindow_c(2, 3, 16, 6, surf, gr, _("Congratulations! You did it."), entries, false);
 }
 
 listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphics_c & gr) {
