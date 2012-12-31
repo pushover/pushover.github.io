@@ -1,3 +1,17 @@
+Version 0.0.4
+
+- italien translation
+- 3 new music pieces
+- a few new levels
+- player profiles, so that multiple players can play the game
+- support lua 5.2
+- fixes to typos
+- expect for a proper level solution that dominos don't lean against a step
+  this makes level 38 harder, enforced level 38 to play again by removing a
+  useless ladder
+- pushover can now quit using the window close button on the window header
+- speedup the animation animation when a level is started
+
 Version 0.0.3
 
 - New graphics for dungeon, toxcity and electronic theme, new graphics for menu boxes
