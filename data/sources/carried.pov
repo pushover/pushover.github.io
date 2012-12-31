@@ -138,5 +138,5 @@ camera {
   normal { gradient 400*(x+y) scale 5 translate -2*x-y bump_size 5.3 }
 }
 
-light_source { <0, H+10*1000, -1*1000> color rgb <4, 4, 4> }  
+light_source { <0, H+10*1000, -1*1000> color rgb <4, 4, 4> }
 

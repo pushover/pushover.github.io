@@ -39,7 +39,7 @@
     #break
   #range(2*15,2*15+14-1)
     // splitter, has only 14 images, and the angles of the
-    // stones are given by an array 
+    // stones are given by an array
     // TODO the lower end overlaps outside of the other stone, which
     // looks ugly, therw we need to cut off the corners
     union {
@@ -110,7 +110,7 @@
     }
     #break
   #range(8*15-1,8*15+14)
-    // raiser the raiser will be resorted by the 
+    // raiser the raiser will be resorted by the
     // assembly script, it will also be cropped and what not
     // ...
     object {
@@ -146,5 +146,5 @@ camera {
   normal { gradient 400*(x+y) scale 5 translate -2*x-y bump_size 5.3 }
 }
 
-light_source { <0, H+10*1000, -1*1000> color rgb <4, 4, 4> }  
+light_source { <0, H+10*1000, -1*1000> color rgb <4, 4, 4> }
 

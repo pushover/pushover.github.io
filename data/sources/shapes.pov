@@ -27,7 +27,7 @@
   plane {(-x+z)/sqrt(2), -Fase translate -W/2*x+D*z }
   plane { (y+z)/sqrt(2), -Fase translate    H*y+D*z }
   plane {(-y+z)/sqrt(2), -Fase translate    D*z }
-  
+
   plane { (x+y+z)/sqrt(3), -Fase*1.7 translate  W/2*x+H*y+D*z }
   plane { (x+y-z)/sqrt(3), -Fase*1.7 translate  W/2*x+H*y }
   plane { (x-y+z)/sqrt(3), -Fase*1.7 translate  W/2*x+D*z }
@@ -108,18 +108,18 @@
     box { <-W/2, 0, 0> <W/2, 1*H/4, D> }
     object { Edges }
     texture { TxtY }
-  }    
+  }
   intersection {
     box { <-W/2, 1*H/4, 0> <W/2, 3*H/4, D> }
     object { Edges }
     texture { TxtR }
-  }    
+  }
   intersection {
     box { <-W/2, 3*H/4, 0> <W/2, H, D> }
     object { Edges }
     texture { TxtY }
-  }    
-}  
+  }
+}
 
 // bridger
 #declare Domino6 = union {
@@ -127,18 +127,18 @@
     box { <-W/2, 0, 0> <W/2, 6*H/14, D> }
     object { Edges }
     texture { TxtY }
-  }    
+  }
   intersection {
     box { <-W/2, 6*H/14, 0> <W/2, 8*H/14, D> }
     object { Edges }
     texture { TxtR }
-  }    
+  }
   intersection {
     box { <-W/2, 8*H/14, 0> <W/2, H, D> }
     object { Edges }
     texture { TxtY }
-  }    
-}  
+  }
+}
 
 // vanisher
 #declare Domino7 = union {
@@ -146,28 +146,28 @@
     box { <-W/2, 0, 0> <W/2, 4*H/14, D> }
     object { Edges }
     texture { TxtY }
-  }    
+  }
   intersection {
     box { <-W/2, 4*H/14, 0> <W/2, 6*H/14, D> }
     object { Edges }
     texture { TxtR }
-  }    
+  }
   intersection {
     box { <-W/2, 6*H/14, 0> <W/2, 8*H/14, D> }
     object { Edges }
     texture { TxtY }
-  }    
+  }
   intersection {
     box { <-W/2, 8*H/14, 0> <W/2, 10*H/14, D> }
     object { Edges }
     texture { TxtR }
-  }    
+  }
   intersection {
     box { <-W/2, 10*H/14, 0> <W/2, H, D> }
     object { Edges }
     texture { TxtY }
-  }    
-}  
+  }
+}
 
 // trigger
 #declare Domino8 = union {
@@ -175,38 +175,38 @@
     box { <-W/2, 0, 0> <W/2, 2*H/14, D> }
     object { Edges }
     texture { TxtY }
-  }    
+  }
   intersection {
     box { <-W/2, 2*H/14, 0> <W/2, 4*H/14, D> }
     object { Edges }
     texture { TxtR }
-  }    
+  }
   intersection {
     box { <-W/2, 4*H/14, 0> <W/2, 6*H/14, D> }
     object { Edges }
     texture { TxtY }
-  }    
+  }
   intersection {
     box { <-W/2, 6*H/14, 0> <W/2, 8*H/14, D> }
     object { Edges }
     texture { TxtR }
-  }    
+  }
   intersection {
     box { <-W/2, 8*H/14, 0> <W/2, 10*H/14, D> }
     object { Edges }
     texture { TxtY }
-  }    
+  }
   intersection {
     box { <-W/2, 10*H/14, 0> <W/2, 12*H/14, D> }
     object { Edges }
     texture { TxtR }
-  }    
+  }
   intersection {
     box { <-W/2, 12*H/14, 0> <W/2, H, D> }
     object { Edges }
     texture { TxtY }
-  }    
-}  
+  }
+}
 
 // raiser
 #declare Domino9 = union {
@@ -214,18 +214,18 @@
     box { <-W/2, 0, 0> <W/2, H, D/3> }
     object { Edges }
     texture { TxtY }
-  }    
+  }
   intersection {
     box { <-W/2, 0, D/3> <W/2, H, 2*D/3> }
     object { Edges }
     texture { TxtR }
-  }    
+  }
   intersection {
     box { <-W/2, 0, 2*D/3> <W/2, H, D> }
     object { Edges }
     texture { TxtY }
-  }    
-}  
+  }
+}
 
 // tangled 1
 #declare Domino10 = union {
@@ -235,7 +235,7 @@
       plane { y+z, 0 translate y }
       plane { y-z, 0 translate 0 }
       scale <1, H, D>
-    }  
+    }
     object { Edges }
     texture { TxtR }
   }
@@ -245,7 +245,7 @@
       plane { y+z, 0 translate y }
       plane { -y+z, 0 translate 0 }
       scale <1, H, D>
-    }  
+    }
     object { Edges }
     texture { TxtY }
   }
@@ -255,7 +255,7 @@
       plane { -y-z, 0 translate y }
       plane { y-z, 0 translate 0 }
       scale <1, H, D>
-    }  
+    }
     object { Edges }
     texture { TxtY }
   }
@@ -279,7 +279,7 @@
       plane { y+z, 0 translate y }
       plane { y-z, 0 translate 0 }
       scale <1, H, D>
-    }  
+    }
     object { Edges }
     texture { TxtY }
   }
@@ -289,7 +289,7 @@
       plane { y+z, 0 translate y }
       plane { -y+z, 0 translate 0 }
       scale <1, H, D>
-    }  
+    }
     object { Edges }
     texture { TxtR }
   }
@@ -299,7 +299,7 @@
       plane { -y-z, 0 translate y }
       plane { y-z, 0 translate 0 }
       scale <1, H, D>
-    }  
+    }
     object { Edges }
     texture { TxtR }
   }
