@@ -310,6 +310,26 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
       }
       break;
 
+    case DominoTypeCounter1:
+    case DominoTypeCounter2:
+    case DominoTypeCounter3:
+      {
+        if (getDominoState(x, y) == 8)
+        {
+          setDominoDir(x, y, dir);
+          if (CounterStopper(getDominoType(x, y)))
+          {
+            retVal = false;
+          }
+          else
+          {
+            setDominoState(x, y, getDominoState(x, y)+dir);
+            soundSystem_c::instance()->startSound(getDominoType(x, y)-1);
+          }
+        }
+      }
+      break;
+
       // for this types we always return false to stop dominos
       // falling against this block
     case DominoTypeStopper:
@@ -585,7 +605,11 @@ void levelPlayer_c::DTA_3(int x, int y) {
   // if the next domino is not a stopper and not a delay, we
   // simply push that domino and continue falling
   if (getDominoType(x-1, y) != DominoTypeStopper &&
-      getDominoType(x-1, y) != DominoTypeDelay)
+      getDominoType(x-1, y) != DominoTypeDelay &&
+      getDominoType(x-1, y) != DominoTypeCounter1 &&
+      getDominoType(x-1, y) != DominoTypeCounter2 &&
+      getDominoType(x-1, y) != DominoTypeCounter2
+      )
   {
     if (pushDomino(x-1, y, -1))
       DTA_4(x, y);
@@ -599,6 +623,21 @@ void levelPlayer_c::DTA_3(int x, int y) {
     if (getDominoState(x-1, y) != 8) {
       DTA_4(x, y);
       return;
+    }
+  }
+
+  if (getDominoType(x-1, y) == DominoTypeCounter1 ||
+      getDominoType(x-1, y) == DominoTypeCounter2 ||
+      getDominoType(x-1, y) == DominoTypeCounter3
+     )
+  {
+    if (!CounterStopper(getDominoType(x-1, y)))
+    {
+      if (pushDomino(x-1, y, -1))
+      {
+        DTA_4(x, y);
+        return;
+      }
     }
   }
 
@@ -641,7 +680,11 @@ void levelPlayer_c::DTA_I(int x, int y) {
   }
 
   if (getDominoType(x+1, y) != DominoTypeStopper &&
-      getDominoType(x+1, y) != DominoTypeDelay)
+      getDominoType(x+1, y) != DominoTypeDelay &&
+      getDominoType(x+1, y) != DominoTypeCounter1 &&
+      getDominoType(x+1, y) != DominoTypeCounter2 &&
+      getDominoType(x+1, y) != DominoTypeCounter3
+     )
   {
     if (pushDomino(x+1, y, 1))
       DTA_4(x, y);
@@ -654,6 +697,19 @@ void levelPlayer_c::DTA_I(int x, int y) {
       DTA_4(x, y);
       return;
     }
+  }
+
+  if (getDominoType(x+1, y) == DominoTypeCounter1 ||
+      getDominoType(x+1, y) == DominoTypeCounter2 ||
+      getDominoType(x+1, y) == DominoTypeCounter3
+     )
+  {
+    if (!CounterStopper(getDominoType(x+1, y)))
+      if (pushDomino(x+1, y, 1))
+      {
+        DTA_4(x, y);
+        return;
+      }
   }
 
   if (getDominoType(x-1, y) == DominoTypeSplitter && getDominoState(x-1, y) != 8)
@@ -2050,6 +2106,45 @@ void levelPlayer_c::DTA_L(int x, int y) {
   markDirty(x+1, y-1);
 }
 
+
+bool levelPlayer_c::CounterStopper(int num) {
+  for (int yp = 0; yp < 13; yp++)
+    for (int xp = 0; xp < 20; xp++)
+      if (  (getDominoType(xp, yp) > num)
+          &&(getDominoType(xp, yp) <= DominoTypeCounter3)
+          &&(getDominoState(xp, yp) == 8)
+          &&(getDominoDir(xp, yp) == 0)
+         )
+      {
+        return true;
+      }
+
+  return false;
+}
+
+
+// counter stone
+void levelPlayer_c::DTA_P(int x, int y) {
+
+  int dir = getDominoDir(x, y);
+
+  if (getDominoDir(x, y) != 0)
+  {
+    // The domino has been pushed, check if there is an other one with a higher priority, if so
+    // remove the direction temorarily so that it keeps standing
+
+    if (CounterStopper(getDominoType(x, y)))
+    {
+      setDominoDir(x, y, 0);
+    }
+  }
+
+  DTA_E(x, y);
+
+  setDominoDir(x, y, dir);
+
+}
+
 void levelPlayer_c::callStateFunction(int type, int state, int x, int y) {
 
   switch ((type-1)*17+state-1) {
@@ -2237,47 +2332,98 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y) {
     case 200: DTA_J(x, y); break;
     case 201: DTA_K(x, y); break;
 
+              // DominoTypeCounter1
+    case 204: DTA_1(x, y); break;
+    case 205: DTA_2(x, y); break;
+    case 206: DTA_3(x, y); break;
+    case 207: DTA_4(x, y); break;
+    case 208: DTA_4(x, y); break;
+    case 209: DTA_4(x, y); break;
+    case 210: DTA_4(x, y); break;
+    case 211: DTA_P(x, y); break;
+    case 212: DTA_4(x, y); break;
+    case 213: DTA_4(x, y); break;
+    case 214: DTA_4(x, y); break;
+    case 215: DTA_4(x, y); break;
+    case 216: DTA_I(x, y); break;
+    case 217: DTA_J(x, y); break;
+    case 218: DTA_K(x, y); break;
+
+              // DominoTypeCounter2
+    case 221: DTA_1(x, y); break;
+    case 222: DTA_2(x, y); break;
+    case 223: DTA_3(x, y); break;
+    case 224: DTA_4(x, y); break;
+    case 225: DTA_4(x, y); break;
+    case 226: DTA_4(x, y); break;
+    case 227: DTA_4(x, y); break;
+    case 228: DTA_P(x, y); break;
+    case 229: DTA_4(x, y); break;
+    case 230: DTA_4(x, y); break;
+    case 231: DTA_4(x, y); break;
+    case 232: DTA_4(x, y); break;
+    case 233: DTA_I(x, y); break;
+    case 234: DTA_J(x, y); break;
+    case 235: DTA_K(x, y); break;
+
+              // DominoTypeCounter3
+    case 238: DTA_1(x, y); break;
+    case 239: DTA_2(x, y); break;
+    case 240: DTA_3(x, y); break;
+    case 241: DTA_4(x, y); break;
+    case 242: DTA_4(x, y); break;
+    case 243: DTA_4(x, y); break;
+    case 244: DTA_4(x, y); break;
+    case 245: DTA_P(x, y); break;
+    case 246: DTA_4(x, y); break;
+    case 247: DTA_4(x, y); break;
+    case 248: DTA_4(x, y); break;
+    case 249: DTA_4(x, y); break;
+    case 250: DTA_I(x, y); break;
+    case 251: DTA_J(x, y); break;
+    case 252: DTA_K(x, y); break;
+
               // DominoTypeCrash0
-    case 204: DTA_B(x, y); break;
-    case 205: DTA_B(x, y); break;
-    case 206: DTA_B(x, y); break;
-    case 207: DTA_B(x, y); break;
-    case 208: DTA_B(x, y); break;
-
-              // DominoTypeCrash1
-    case 221: DTA_B(x, y); break;
-    case 222: DTA_B(x, y); break;
-    case 223: DTA_B(x, y); break;
-    case 224: DTA_B(x, y); break;
-    case 225: DTA_B(x, y); break;
-
-              // DominoTypeCrash2
-    case 238: DTA_B(x, y); break;
-    case 239: DTA_B(x, y); break;
-    case 240: DTA_B(x, y); break;
-    case 241: DTA_B(x, y); break;
-    case 242: DTA_B(x, y); break;
-
-              // DominoTypeCrash3
     case 255: DTA_B(x, y); break;
     case 256: DTA_B(x, y); break;
     case 257: DTA_B(x, y); break;
     case 258: DTA_B(x, y); break;
     case 259: DTA_B(x, y); break;
 
-              // DominoTypeCrash4
+              // DominoTypeCrash1
     case 272: DTA_B(x, y); break;
     case 273: DTA_B(x, y); break;
     case 274: DTA_B(x, y); break;
     case 275: DTA_B(x, y); break;
     case 276: DTA_B(x, y); break;
 
-              // DominoTypeCrash5
+              // DominoTypeCrash2
     case 289: DTA_B(x, y); break;
     case 290: DTA_B(x, y); break;
     case 291: DTA_B(x, y); break;
     case 292: DTA_B(x, y); break;
     case 293: DTA_B(x, y); break;
+
+              // DominoTypeCrash3
+    case 306: DTA_B(x, y); break;
+    case 307: DTA_B(x, y); break;
+    case 308: DTA_B(x, y); break;
+    case 309: DTA_B(x, y); break;
+    case 310: DTA_B(x, y); break;
+
+              // DominoTypeCrash4
+    case 323: DTA_B(x, y); break;
+    case 324: DTA_B(x, y); break;
+    case 325: DTA_B(x, y); break;
+    case 326: DTA_B(x, y); break;
+    case 327: DTA_B(x, y); break;
+
+              // DominoTypeCrash5
+    case 340: DTA_B(x, y); break;
+    case 341: DTA_B(x, y); break;
+    case 342: DTA_B(x, y); break;
+    case 343: DTA_B(x, y); break;
+    case 344: DTA_B(x, y); break;
               // DominoTypeRiserCont
               // DominoTypeQuaver
   }

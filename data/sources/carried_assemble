@@ -1,19 +1,15 @@
 ./assembler_compiler -DCARRIED
 
-GROUP="data/carried0?.png data/carried1?.png data/carried20.png data/carried21.png data/carried22.png data/carried23.png"
+GROUP="data/carried00?.png data/carried01?.png data/carried02?.png"
 
 ./assembler carried.png 55 0 10 4 200 \
     $GROUP $GROUP $GROUP \
-    data/carried24.png \
-    data/carried25.png \
-    data/carried26.png \
-    data/carried27.png \
-    data/carried28.png \
-    data/carried29.png \
-    data/carried3?.png \
-    data/carried4?.png \
-    data/carried5?.png \
-    data/carried6?.png \
-    data/carried7?.png \
-    data/carried8?.png
+    data/carried03?.png \
+    data/carried04?.png \
+    data/carried05?.png \
+    data/carried06?.png \
+    data/carried07?.png \
+    data/carried08?.png \
+    data/carried09?.png \
+    data/carried10?.png \
 

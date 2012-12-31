@@ -37,6 +37,10 @@ class levelPlayer_c : public levelDisplay_c {
     bool openDoorExit;
     bool openDoorEntry;
 
+    // returns true, if there are still counter stoppers
+    // of num or bigger (num = DominoTypeCounter1, 2 or 3) that are not falling
+    bool CounterStopper(int num);
+
     // calls the different states of the dominos
     void callStateFunction(int type, int state, int x, int y);
 
@@ -59,6 +63,7 @@ class levelPlayer_c : public levelDisplay_c {
     void DTA_L(int x, int y);
     void DTA_7(int x, int y);
     void DTA_M(int x, int y);
+    void DTA_P(int x, int y);
     void DTA_8(int x, int y);
     void DTA_9(int x, int y);
     void DTA_N(int x, int y);

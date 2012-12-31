@@ -27,6 +27,9 @@ SDL_Surface *inp;
 // this array defines those positions first entry is the image number, then a relative x and y shift, relative to the normal position
 
 #ifdef DOMINOS
+
+#define SPECIALSTART 172
+
 int specialCases[] =
     //Image number
         // X-Shift
@@ -50,21 +53,21 @@ int specialCases[] =
     142,   0,   0, 36,
     143,   0,   0, 42,
 
-    180,   1,   0, 54,
-    181,  -4,   0, 54,
-    182, -19,   0, 54,
-    183,   3,   0, 54,
-    184,   1,   0, 54,
-    185,   9,   1, 54,
-    186, -11,   0, 54,
-    187,  16,   0, 54,
+    SPECIALSTART+53,   1,   0, 54,
+    SPECIALSTART+54,  -4,   0, 54,
+    SPECIALSTART+55, -19,   0, 54,
+    SPECIALSTART+56,   3,   0, 54,
+    SPECIALSTART+57,   1,   0, 54,
+    SPECIALSTART+58,   9,   1, 54,
+    SPECIALSTART+59, -11,   0, 54,
+    SPECIALSTART+60,  16,   0, 54,
       -1 // this is the end, keep it there
   };
 #endif
 
 #ifdef CARRIED
 
-#define DS(x, y) (12*(x)+(y))  // calculate domino number y out of set x
+#define DS(x, y) (15*(x)+(y))  // calculate domino number y out of set x
 
 #define DOM(x, sx, sy) \
     DS((x), 0), (sx), (sy), 54, \
@@ -78,7 +81,7 @@ int specialCases[] =
     DS((x), 8), (sx), (sy), 54, \
     DS((x), 9), (sx), (sy), 54, \
     DS((x),10), (sx), (sy), 54, \
-    DS((x),11), (sx), (sy), 54, 
+    DS((x),11), (sx), (sy), 54,
 
 int specialCases[] =
     //Image number

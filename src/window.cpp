@@ -76,7 +76,7 @@ window_c::~window_c(void) {
       surf.markDirty(x+i, y+j);
 }
 
-#define NUM_DOMINOS 11
+#define NUM_DOMINOS 12
 static std::string texts[NUM_DOMINOS] = {
   _("Standard: nothing special about this stone, it simply falls"),
   _("Blocker: can not fall, may still stand at level end"),
@@ -89,6 +89,7 @@ static std::string texts[NUM_DOMINOS] = {
   _("Trigger: this is the last domino that must fall and it must lie flat, can not be moved"),
   _("Ascender: will raise to ceiling when pushed and then flip"),
   _("Entangled: all stones of this type will fall together as if quantum entangled"),
+  _("Semiblocker: these block as long as there is a blocker with more lines standing"),
 };
 
 #define SX 310
@@ -112,13 +113,26 @@ void helpWindow_c::displayCurrentPage(void)
     int x = d % 2;
     int y = d / 2;
 
-    s.fillRect(SX*x+TX,   SY*y+TY,   50,   75, 0, 0, 0);
-    s.fillRect(SX*x+TX+2, SY*y+TY+2, 50-4, 75-4, 112, 39, 0);
+    int displaywidth = 50;
+
+    if (NUM_STONES_PER_PAGE*page+d == 11)
+    {
+      displaywidth = 60;
+    }
+
+    s.fillRect(SX*x+TX,   SY*y+TY,   displaywidth,   75, 0, 0, 0);
+    s.fillRect(SX*x+TX+2, SY*y+TY+2, displaywidth-4, 75-4, 112, 39, 0);
 
     if (NUM_STONES_PER_PAGE*page+d == 10)
     {
       s.blitBlock(g.getDomino(10, 7), SX*x+TX - 80 - 9, SY*y+TY + 4);
       s.blitBlock(g.getDomino(11, 7), SX*x+TX - 80 + 9, SY*y+TY + 4);
+    }
+    else if (NUM_STONES_PER_PAGE*page+d == 11)
+    {
+      s.blitBlock(g.getDomino(12, 7), SX*x+TX - 75 - 15, SY*y+TY + 4);
+      s.blitBlock(g.getDomino(13, 7), SX*x+TX - 75 + 0,  SY*y+TY + 4);
+      s.blitBlock(g.getDomino(14, 7), SX*x+TX - 75 + 15, SY*y+TY + 4);
     }
     else
     {
@@ -129,8 +143,8 @@ void helpWindow_c::displayCurrentPage(void)
     par.alignment = ALN_TEXT;
     par.color.r = 112; par.color.g = 39; par.color.b = 0;
     par.shadow = 0;
-    par.box.x = SX*x+TX+55;
-    par.box.w = SX-65;
+    par.box.x = SX*x+TX+displaywidth+5;
+    par.box.w = SX-displaywidth-15;
     par.box.y = SY*y+TY;
     par.box.h = 80;
 

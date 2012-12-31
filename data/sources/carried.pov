@@ -1,6 +1,6 @@
 
-#declare domino = mod(clock, 12);
-#declare position = div(clock, 12);
+#declare domino = mod(clock, 15);
+#declare position = div(clock, 15);
 
 #switch(position)
   #range (0, 1)
@@ -64,6 +64,15 @@
       #break;
     #case (11)
       Domino11
+      #break;
+    #case (12)
+      Domino12
+      #break;
+    #case (13)
+      Domino13
+      #break;
+    #case (14)
+      Domino14
       #break;
   #end
 #end

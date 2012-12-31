@@ -127,6 +127,9 @@ class levelData_c {
       DominoTypeAscender,
       DominoTypeConnectedA,
       DominoTypeConnectedB,
+      DominoTypeCounter1,
+      DominoTypeCounter2,
+      DominoTypeCounter3,
       DominoTypeCrash0,         // all yellow big pile
       DominoTypeCrash1,         // mixed big pile
       DominoTypeCrash2,         // all red big pile

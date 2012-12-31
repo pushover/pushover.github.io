@@ -554,6 +554,9 @@ unsigned int ant_c::SFPushLeft(void) {
 
         switch(level.getDominoType(blockX-1, blockY)) {
           case levelData_c::DominoTypeStopper:
+          case levelData_c::DominoTypeCounter1:
+          case levelData_c::DominoTypeCounter2:
+          case levelData_c::DominoTypeCounter3:
             pushDelay = 5;
             pushAnimation = AntAnimPushStopperLeft;
             break;
@@ -599,6 +602,9 @@ unsigned int ant_c::SFPushRight(void) {
 
         switch(level.getDominoType(blockX+1, blockY)) {
           case levelData_c::DominoTypeStopper:
+          case levelData_c::DominoTypeCounter1:
+          case levelData_c::DominoTypeCounter2:
+          case levelData_c::DominoTypeCounter3:
             pushDelay = 5;
             pushAnimation = AntAnimPushStopperRight;
             break;

@@ -132,6 +132,49 @@
       PlaceDominoStone(clock-7-10*15)
     }
     #break
+
+  #range(11*15-1,11*15+14)
+    // connector
+    object {
+      Domino12
+      PlaceDominoStone(clock-7-11*15)
+    }
+    #break
+  #range(12*15-1,12*15+14)
+    // connector
+    object {
+      Domino13
+      PlaceDominoStone(clock-7-12*15)
+    }
+    #break
+  #range(13*15-1,13*15+14)
+    // connector
+    object {
+      Domino14
+      PlaceDominoStone(clock-7-13*15)
+    }
+    #break
+  #range(14*15-1,14*15+14)
+    // connector
+    object {
+      Domino15
+      PlaceDominoStone(clock-7-14*15)
+    }
+    #break
+  #range(15*15-1,15*15+14)
+    // connector
+    object {
+      Domino16
+      PlaceDominoStone(clock-7-15*15)
+    }
+    #break
+  #range(16*15-1,16*15+14)
+    // connector
+    object {
+      Domino17
+      PlaceDominoStone(clock-7-16*15)
+    }
+    #break
 #end
 
 camera {

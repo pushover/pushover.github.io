@@ -64,6 +64,9 @@ const std::string levelData_c::dominoChars =
   "A" /* DominoTypeAscender */
   "X" /* DominoTypeConnectedA */
   "x" /* DominoTypeConnectedA */
+  "a" /* DominoTypeCounter1 */
+  "b" /* DominoTypeCounter1 */
+  "c" /* DominoTypeCounter1 */
   ;
 
 bool levelData_c::isDominoChar(char ch) {
