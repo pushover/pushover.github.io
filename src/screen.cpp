@@ -360,7 +360,7 @@ void initText(std::string dir) {
 
   TTF_Font * ft;
 
-  ft = TTF_OpenFont(fname.c_str(), 20);
+  ft = TTF_OpenFont(fname.c_str(), 18);
   if (!ft) {
     std::cout << "Can't open Font file: " << fname << std::endl;
     exit(1);

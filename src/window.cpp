@@ -85,9 +85,9 @@ static std::string texts[NUM_DOMINOS] = {
   _("Delay: falls not immediately but a few seconds after being pushed"),
   _("Tumbler: will continue rolling until it hits an obstacle"),
   _("Bridger: will bridge the platform if there is a one unit gap"),
-  _("Vanish: pushed the next domino but then vanishes"),
-  _("Trigger: this is the last domino that must fall and it must lie flat"),
-  _("Ascender: will raise as if filled with helium"),
+  _("Vanish: pushes next block but then vanishes, only stone you may place in front of doors"),
+  _("Trigger: this is the last domino that must fall and it must lie flat, can not be moved"),
+  _("Ascender: will raise to ceiling when pushed and then flip"),
   _("Entangled: all stones of this type will fall together as if quantum entangled"),
 };
 
@@ -273,6 +273,9 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 0, 16,
 
   par.shadow = 2; par.box.y += surf.renderText(&par, _("New Graphics:"))*lineH; par.box.x += 30;
   par.shadow = 0; par.box.y += surf.renderText(&par, "Harald Radke")*lineH; par.box.x -= 30;
+
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Levels:"))*lineH; par.box.x += 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Volker Grabsch, Andreas Röver, Dominik")*lineH; par.box.x -= 30;
 }
 
 
