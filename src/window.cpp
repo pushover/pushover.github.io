@@ -329,6 +329,8 @@ void listWindow_c::redraw(void) {
 
   unsigned int lineH = getFontHeight(FNT_NORMAL);  // height of one entry line
 
+  menuLines = (gr.blockY()*(y+h-1)-ypos) / lineH;
+
   unsigned int line = 0;
 
   while (true)
