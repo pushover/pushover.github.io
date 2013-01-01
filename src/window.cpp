@@ -289,7 +289,7 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 0, 16,
   par.shadow = 0; par.box.y += surf.renderText(&par, "Harald Radke")*lineH; par.box.x -= 30;
 
   par.shadow = 2; par.box.y += surf.renderText(&par, _("New Levels:"))*lineH; par.box.x += 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Volker Grabsch, Andreas Röver, Dominik")*lineH; par.box.x -= 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, " A&V: Volker Grabsch, Andreas Röver, Dominik Pöhlker")*lineH; par.box.x -= 30;
 }
 
 
