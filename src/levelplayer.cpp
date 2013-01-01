@@ -2447,7 +2447,8 @@ int levelPlayer_c::performDominos(ant_c & a) {
         callStateFunction(getDominoType(x, y), getDominoState(x, y), x, y);
 
         if (oldState != getDominoState(x, y) || oldExtra != getDominoExtra(x, y) || oldYpos != getDominoYOffset(x, y))
-          inactive = 0;
+          if (getDominoType(x, y) != DominoTypeTumbler)
+            inactive = 0;
 
         if (getDominoType(x, y) == DominoTypeAscender)
         {
