@@ -321,7 +321,7 @@ void listWindow_c::redraw(void) {
 
   surf.renderText(&par, title);
 
-  int ypos = gr.blockY()*(y+1) + getFontHeight(FNT_BIG);
+  int ypos = gr.blockY()*(y+1) + getTextHeight(&par, title);
 
   surf.fillRect(gr.blockX()*(x+1)+1, ypos+1, gr.blockX()*(w-2), 2, 0, 0, 0);
   surf.fillRect(gr.blockX()*(x+1), ypos, gr.blockX()*(w-2), 2, 112, 39, 0);
