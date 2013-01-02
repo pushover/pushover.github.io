@@ -590,7 +590,7 @@ int main(int argc, char * argv[]) {
                   delete levelsetList;
                   levelsetList = loadAllLevels(datadir, solved.getUserString());
                 }
-                nextState = ST_PROFILE;
+                nextState = ST_MAIN;
               }
             }
             break;
