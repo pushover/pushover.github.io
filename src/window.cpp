@@ -347,7 +347,9 @@ void listWindow_c::redraw(void) {
         if (line2 > (unsigned int)current)
           back = true;
         else
-          printf("ooops\n");
+        {
+          //list is empty
+        }
         break;
       }
 
@@ -537,9 +539,19 @@ listWindow_c * getProfileWindow(const solvedMap_c & solve, surface_c & surf, gra
   }
   entries.rbegin()->line = true;
   entries.push_back(listWindow_c::entry(_("Add new profile")));
-  entries.push_back(listWindow_c::entry(_("Delete selected profile")));
+  entries.push_back(listWindow_c::entry(_("Delete a profile")));
 
-  return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Profile"), entries, true, solve.getCurrentUser());
+  return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Your Profile"), entries, true, solve.getCurrentUser());
+}
+
+listWindow_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, graphics_c & gr)
+{
+  std::vector<listWindow_c::entry> entries;
+
+  for (size_t i = 1; i < solve.getNumberOfUsers(); i++)
+    entries.push_back(listWindow_c::entry(solve.getUserName(i)));
+
+  return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Profile to delete"), entries, true, 0);
 }
 
 listWindow_c * getConfigWindow(surface_c & surf, graphics_c & gr) {

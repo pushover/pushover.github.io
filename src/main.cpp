@@ -212,6 +212,7 @@ typedef enum {
   ST_PROFILE,  // state for profile selection
   ST_PROFILE_INIT, // profile selection at startup
   ST_PROFILE_IN, // profile name input
+  ST_PROFILE_DEL, // select profile to delete
   ST_LEVELCONF,// configure while playing
   ST_CONFIG,   // configure menu
   ST_LEVELSET, // level set selection
@@ -411,6 +412,7 @@ int main(int argc, char * argv[]) {
             case ST_PROFILE:
             case ST_PROFILE_INIT:
             case ST_PROFILE_IN:
+            case ST_PROFILE_DEL:
             case ST_TIMEOUT:
               delete window;
               window = 0;
@@ -436,6 +438,7 @@ int main(int argc, char * argv[]) {
             case ST_PROFILE_INIT:
             case ST_PROFILE:  window = getProfileWindow(solved, screen, gr); break;
             case ST_PROFILE_IN: window = getProfileInputWindow(screen, gr); break;
+            case ST_PROFILE_DEL: window = getProfileSelector(solved, screen, gr); break;
             case ST_LEVELSET: window = getMissionWindow(*levelsetList, screen, gr); break;
             case ST_LEVEL:    window = getLevelWindow(levelsetList->getLevelset(selectedMission), solved, screen, gr); break;
             case ST_QUIT:     window = getQuitWindow(screen, gr); break;
@@ -539,15 +542,7 @@ int main(int argc, char * argv[]) {
                   delete levelsetList;
                   levelsetList = loadAllLevels(datadir, solved.getUserString());
 
-                  if (currentState == ST_PROFILE)
-                  {
-                    delete window;
-                    window = getProfileWindow(solved, screen, gr);
-                  }
-                  else
-                  {
-                    nextState = ST_MAIN;
-                  }
+                  nextState = ST_MAIN;
                 }
                 else if (sel == solved.getNumberOfUsers())
                 {
@@ -555,21 +550,44 @@ int main(int argc, char * argv[]) {
                 }
                 else if (sel == solved.getNumberOfUsers()+1)
                 {
-                  size_t s = solved.getCurrentUser();
-                  if (s > 0)
-                  {
-                    solved.selectUser(0);
-                    solved.deleteUser(s);
-                    delete levelsetList;
-                    levelsetList = loadAllLevels(datadir, solved.getUserString());
-                    delete window;
-                    window = getProfileWindow(solved, screen, gr);
-                  }
+                  nextState = ST_PROFILE_DEL;
                 }
                 else
                 {
                   nextState = ST_MAIN;
                 }
+              }
+            }
+            break;
+
+          case ST_PROFILE_DEL:
+            if (!window) {
+              std::cout << "Oops no window\n";
+              nextState = ST_MAIN;
+            }
+            else
+            {
+              window->handleEvent(event);
+              if (window->isDone())
+              {
+                size_t s = dynamic_cast<listWindow_c*>(window)->getSelection();
+
+                if (s+1 < solved.getNumberOfUsers())
+                {
+                  // valid selection available
+
+                  // if the currently selected profile is deleted, go to default
+                  if (s+1 == solved.getCurrentUser())
+                  {
+                    solved.selectUser(0);
+                    delete levelsetList;
+                    levelsetList = loadAllLevels(datadir, solved.getUserString());
+                  }
+
+                  solved.deleteUser(s+1);
+                }
+
+                nextState = ST_PROFILE;
               }
             }
             break;
@@ -961,6 +979,7 @@ int main(int argc, char * argv[]) {
         case ST_PROFILE:
         case ST_PROFILE_INIT:
         case ST_PROFILE_IN:
+        case ST_PROFILE_DEL:
         case ST_CONFIG:
         case ST_LEVELCONF:
         case ST_LEVELSET:
