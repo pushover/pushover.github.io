@@ -577,6 +577,8 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
 
         if (solv.solved(ls.getChecksum(e)))
             e =  std::string(gettext(e.c_str())) + " " + gettext(_("(done)"));
+        else if (solv.solved(ls.getChecksumNoTime(e)))
+            e =  std::string(gettext(e.c_str())) + " " + gettext(_("(timeout)"));
         else if (index == -1)
             index = i;
 
@@ -631,13 +633,41 @@ listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphics_c & gr
 
     std::string title;
     switch (failReason) {
-      case 2: title = _("You failed: You've been too slow"); break;
       case 3: title = _("You failed: Some dominoes crashed"); break;
       case 4: title = _("You failed: Not all dominoes fell"); break;
       case 5: title = _("You failed: You died"); break;
       case 6: title = _("You failed: Trigger was not last to fall"); break;
       case 7: title = _("You failed: Trigger not flat on the ground"); break;
+      default: title = _("You failed... but I don't know why ...?"); break;
     }
+
+    unsigned int w = (getTextWidth(FNT_BIG, title) + gr.blockX() - 1) / gr.blockX();
+
+    // make sure minimum size is fulfilled
+    if (w < 14) w = 14;
+    // try to accommodate the header in the width
+    if (w > 18) w = 18;
+    // make sure widow is centerable by having an even width
+    if (w & 1) w++;
+
+    // add the border
+    w += 2;
+
+    return new listWindow_c((20-w)/2, 3, w, 6, surf, gr, title, entries, false);
+}
+
+
+listWindow_c * getTimeoutWindow(surface_c & surf, graphics_c & gr) {
+    static std::vector<listWindow_c::entry> entries;
+
+    if (!entries.size())
+    {
+        entries.push_back(listWindow_c::entry(_("Retry the level")));
+        entries.push_back(listWindow_c::entry(_("Select next level")));
+    }
+
+    std::string title;
+    title = _("Not quite, you were not fast enough, but you may continue if you want");
 
     unsigned int w = (getTextWidth(FNT_BIG, title) + gr.blockX() - 1) / gr.blockX();
 

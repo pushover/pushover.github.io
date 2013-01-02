@@ -272,6 +272,14 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
     sha1.update(userString);
     checksum = sha1.final();
   }
+  {
+    SHA1 sha1;
+    for (unsigned int y = 0; y < 13; y++) {
+      sha1.update(levelRows[y]);
+    }
+    sha1.update(userString);
+    checksumNoTime = sha1.final();
+  }
 }
 
 void levelData_c::save(std::ostream & stream) const {

@@ -159,6 +159,7 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
 listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr);
 listWindow_c * getSolvedWindow(surface_c & surf, graphics_c & gr);
 listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphics_c & gr);
+listWindow_c * getTimeoutWindow(surface_c & surf, graphics_c & gr);
 window_c * getAboutWindow(surface_c & surf, graphics_c & gr);
 listWindow_c * getProfileWindow(const solvedMap_c & solved, surface_c & surf, graphics_c & gr);
 InputWindow_c * getProfileInputWindow(surface_c & surf, graphics_c & gr);

@@ -222,6 +222,7 @@ typedef enum {
   ST_PLAY,     // currently playing
   ST_FAILDELAY,// play a second more after failing
   ST_SOLVED,   // current level solved
+  ST_TIMEOUT,  // took longer than level time
   ST_FAILED,   // current level failed (reason in failreason)
   ST_HELP,     // help dialog showing
   ST_QUIT,     // play exit dialog showing
@@ -410,6 +411,7 @@ int main(int argc, char * argv[]) {
             case ST_PROFILE:
             case ST_PROFILE_INIT:
             case ST_PROFILE_IN:
+            case ST_TIMEOUT:
               delete window;
               window = 0;
               l.drawDominos();
@@ -442,6 +444,7 @@ int main(int argc, char * argv[]) {
             case ST_SOLVED:   window = getSolvedWindow(screen, gr); break;
             case ST_ABOUT:    window = getAboutWindow(screen, gr); break;
             case ST_FAILED:   window = getFailedWindow(failReason, screen, gr); break;
+            case ST_TIMEOUT:  window = getTimeoutWindow(screen, gr); break;
 
             case ST_HELP:
                               {
@@ -831,6 +834,51 @@ int main(int argc, char * argv[]) {
             }
             break;
 
+          case ST_TIMEOUT:
+            if (!window) {
+              std::cout << "Oops no window\n";
+              nextState = ST_MAIN;
+            }
+            else
+            {
+              window->handleEvent(event);
+              if (window->isDone())
+              {
+                switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                {
+                  case 0:                            // try again
+                    {
+                      nextState = ST_PREPLAY;
+                      // find the current level
+                      levelset_c ls = levelsetList->getLevelset(selectedMission);
+
+                      std::vector<std::string> levels = ls.getLevelNames();
+
+                      bool foundLevel = false;
+
+                      for (unsigned int i = 0; i < levels.size(); i++)
+                      {
+                        if (levels[i] == l.getName())
+                        {
+                          ls.loadLevel(l, levels[i], solved.getUserString());
+                          a.initForLevel();
+                          foundLevel = true;
+                          break;
+                        }
+                      }
+
+                      if (!foundLevel) nextState = ST_MAIN;
+                      else nextState = ST_PREPLAY;
+                    }
+                    break;
+                  case 1:                            // continue to next level
+                    nextState = ST_LEVEL;
+                    break; // select next level to play
+                }
+              }
+            }
+            break;
+
           case ST_INIT:
           case ST_FAILDELAY:
           case ST_EXIT:
@@ -896,7 +944,9 @@ int main(int argc, char * argv[]) {
               case 0:
                 break;
               case 2:
-                nextState = ST_FAILED;
+                rec.save("time");
+                solved.addLevel(l.getChecksumNoTime());
+                nextState = ST_TIMEOUT;
                 break;
               default:
                 failDelay = 36;
@@ -917,6 +967,7 @@ int main(int argc, char * argv[]) {
         case ST_LEVEL:
         case ST_SOLVED:
         case ST_FAILED:
+        case ST_TIMEOUT:
         case ST_HELP:
         case ST_QUIT:
         case ST_EXIT:

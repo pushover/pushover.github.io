@@ -41,6 +41,7 @@ class levelData_c {
     std::string hint;
 
     std::string checksum;
+    std::string checksumNoTime;
 
     // the number of 1/18 seconds that are left for solving the level
     int timeLeft;
@@ -87,6 +88,7 @@ class levelData_c {
     bool someTimeLeft(void) { return timeLeft > 0; }
 
     const std::string getChecksum(void) const { return checksum; }
+    const std::string getChecksumNoTime(void) const { return checksumNoTime; }
     /* Foreground elements */
     enum {
       FgElementEmpty,              // 0

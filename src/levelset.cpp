@@ -127,6 +127,7 @@ levelset_c::levelset_c(const std::string & path, const std::string & userString)
     if (!levels.insert(make_pair(levelName, sections)).second)
       throw format_error("duplicate level name: " + levelName);
     checksums.insert(make_pair(levelName, test_level.getChecksum()));
+    checksumsNoTime.insert(make_pair(levelName, test_level.getChecksumNoTime()));
   }
 
   /* Check for consistency and completeness */
@@ -151,6 +152,12 @@ const std::string & levelset_c::getChecksum(const std::string & levelName) const
   if (checksums.find(levelName) == checksums.end())
     throw std::exception();
   return checksums.find(levelName)->second;
+}
+
+const std::string & levelset_c::getChecksumNoTime(const std::string & levelName) const {
+  if (checksumsNoTime.find(levelName) == checksumsNoTime.end())
+    throw std::exception();
+  return checksumsNoTime.find(levelName)->second;
 }
 
 void levelset_c::loadLevel(levelData_c & level, const std::string & levelName, const std::string & userString) const {
