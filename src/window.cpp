@@ -394,6 +394,14 @@ void listWindow_c::redraw(void) {
     {
       par.color.r = (112+2*255)/3; par.color.g = (39+2*255)/3; par.color.b = 2*255/3;
     }
+    else if (entries[line].sol == 2)
+    {
+      par.color.r = (112+0)/2; par.color.g = (39+255)/2; par.color.b = 0;
+    }
+    else if (entries[line].sol == 1)
+    {
+      par.color.r = (112+255)/2; par.color.g = (39+255)/2; par.color.b = 0;
+    }
     else
     {
       par.color.r = 112; par.color.g = 39; par.color.b = 0;
@@ -587,14 +595,15 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
     {
         std::string e = ls.getLevelNames()[i];
 
+        entries.push_back(listWindow_c::entry(e));
+
         if (solv.solved(ls.getChecksum(e)))
-            e =  std::string(gettext(e.c_str())) + " " + gettext(_("(done)"));
+            entries.rbegin()->sol = 2;
         else if (solv.solved(ls.getChecksumNoTime(e)))
-            e =  std::string(gettext(e.c_str())) + " " + gettext(_("(timeout)"));
+            entries.rbegin()->sol = 1;
         else if (index == -1)
             index = i;
 
-        entries.push_back(listWindow_c::entry(e));
     }
 
     if (entries.size() == 0) throw std::runtime_error(_("No Level in Levelset"));

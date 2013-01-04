@@ -95,9 +95,10 @@ class listWindow_c : public window_c {
     typedef struct entry {
         std::string text;
         bool highlight;
+        int sol;  // 0 no normal color, 1 bit, yellow, 2 complete green
         bool line;
 
-        entry(std::string t) : text(t), highlight(false), line(false) {}
+        entry(std::string t) : text(t), highlight(false), sol(0), line(false) {}
     } entry;
 
   private:
