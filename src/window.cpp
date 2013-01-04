@@ -38,6 +38,13 @@ window_c::window_c(unsigned char x_, unsigned char y_, unsigned char w_, unsigne
 
   if (w < 2 || h < 2) return;
 
+  clearInside();
+
+  done = false;
+}
+
+void window_c::clearInside(void) {
+
   for (unsigned int i = 0; i < w; i++)
     for (unsigned int j = 0; j < h; j++) {
 
@@ -50,23 +57,8 @@ window_c::window_c(unsigned char x_, unsigned char y_, unsigned char w_, unsigne
       if (j == 0) yp = 0;
       if (j+1 == h) yp = 2;
 
-      if (xp == 1 && yp == 1) continue;
-
       surf.blitBlock(gr.getBoxBlock(yp*3+xp), (x+i)*gr.blockX(), (y+j)*gr.blockY());
       surf.markDirty(x+i, y+j);
-    }
-
-  done = false;
-
-}
-
-void window_c::clearInside(void) {
-
-  for (int i = 0; i < w-2; i++)
-    for (int j = 0; j < h-2; j++) {
-
-      surf.blitBlock(gr.getBoxBlock(4), (1+x+i)*gr.blockX(), (1+y+j)*gr.blockY());
-      surf.markDirty(1+x+i, 1+y+j);
     }
 }
 
