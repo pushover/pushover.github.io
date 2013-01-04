@@ -72,7 +72,8 @@ class helpWindow_c : public window_c {
 
   private:
     std::string help;
-    uint32_t page;
+    std::vector<uint32_t> pages;
+    uint32_t nextPage;
 
     surface_c & s;
     graphics_c & g;

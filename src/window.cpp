@@ -26,6 +26,7 @@
 #include "levelset.h"
 #include "textsections.h"
 #include "solvedmap.h"
+#include "leveldata.h"
 
 #include <SDL.h>
 
@@ -69,19 +70,28 @@ window_c::~window_c(void) {
 }
 
 #define NUM_DOMINOS 12
-static std::string texts[NUM_DOMINOS] = {
-  _("Standard: nothing special about this stone, it simply falls"),
-  _("Blocker: can not fall, may still stand at level end"),
-  _("Splitter: when something falls on its top it will split in two"),
-  _("Exploder: will blast a hole into the platform below it"),
-  _("Delay: falls not immediately but a few seconds after being pushed"),
-  _("Tumbler: will continue rolling until it hits an obstacle"),
-  _("Bridger: will bridge the platform if there is a one unit gap"),
-  _("Vanish: pushes next block but then vanishes, only stone you may place in front of doors"),
-  _("Trigger: this is the last domino that must fall and it must lie flat, can not be moved"),
-  _("Ascender: will raise to ceiling when pushed and then flip"),
-  _("Entangled: all stones of this type will fall together as if quantum entangled"),
-  _("Semiblocker: these block as long as there is a blocker with more lines standing"),
+static struct {
+  uint16_t numDominos;
+  uint16_t dominos[3];
+  uint16_t boxWidth;
+  uint16_t spacing;
+  std::string text;
+} dominoHelp[NUM_DOMINOS] = {
+  { 1, {levelData_c::DominoTypeStandard},   50,  0, _("Standard: nothing special about this stone, it simply falls") },
+  { 1, {levelData_c::DominoTypeStopper},    50,  0, _("Blocker: can not fall, only stone allowed to stand at level end") },
+  { 1, {levelData_c::DominoTypeSplitter},   50,  0, _("Splitter: when something falls on its top it will split in two") },
+  { 1, {levelData_c::DominoTypeExploder},   50,  0, _("Exploder: will blast a hole into the platform below it") },
+  { 1, {levelData_c::DominoTypeDelay},      50,  0, _("Delay: falls not immediately but a while after being pushed") },
+  { 1, {levelData_c::DominoTypeTumbler},    50,  0, _("Tumbler: will continue rolling until it hits an obstacle") },
+  { 1, {levelData_c::DominoTypeBridger},    50,  0, _("Bridger: will connect the platform if there is a gap of one unit") },
+  { 1, {levelData_c::DominoTypeVanish},     50,  0, _("Vanish: pushes next block but then vanishes, only stone you may place in front of doors") },
+  { 1, {levelData_c::DominoTypeTrigger},    50,  0, _("Trigger: the last domino that must fall and it must lie flat, can not be moved") },
+  { 1, {levelData_c::DominoTypeAscender},   50,  0, _("Ascender: will raise to ceiling when pushed and then flip up there") },
+  { 2, {levelData_c::DominoTypeConnectedA,
+        levelData_c::DominoTypeConnectedB}, 50, 18, _("Entangled: all stones of this type will fall together as if quantum entangled") },
+  { 3, {levelData_c::DominoTypeCounter1,
+        levelData_c::DominoTypeCounter2,
+        levelData_c::DominoTypeCounter3}, 60, 15, _("Semiblocker: these behave like blocker as long as there is a stone still standing that has more lines") },
 };
 
 #define SX 310
@@ -89,97 +99,112 @@ static std::string texts[NUM_DOMINOS] = {
 #define TX 100
 #define TY 100
 
-#define NUM_STONES_PER_PAGE 8
-
 void helpWindow_c::displayCurrentPage(void)
 {
   clearInside();
 
   fontParams_s par;
 
-  for (unsigned int d = 0; d < NUM_STONES_PER_PAGE; d++)
+  uint32_t page = *(pages.rbegin());
+  uint32_t ypos = (Y()+1)*gr.blockY();
+
+  if (page == 0)
   {
-    // out of dominos
-    if (NUM_STONES_PER_PAGE*page+d >= NUM_DOMINOS) break;
+    par.font = FNT_NORMAL;
+    par.alignment = ALN_TEXT_CENTER;
+    par.color.r = par.color.g = 255; par.color.b = 0;
+    par.shadow = 0;
+    par.box.x = (800-16*40)/2;
+    par.box.w = 16*40;
+    par.box.y = ypos;
+    par.box.h = (H()-2)/3*gr.blockY();
 
-    int x = d % 2;
-    int y = d / 2;
-
-    int displaywidth = 50;
-
-    if (NUM_STONES_PER_PAGE*page+d == 11)
-    {
-      displaywidth = 60;
+    if (getTextHeight(&par, _(help.c_str())) > par.box.h) {
+      par.font = FNT_SMALL;
     }
 
-    s.fillRect(SX*x+TX,   SY*y+TY,   displaywidth,   75, 0, 0, 0);
-    s.fillRect(SX*x+TX+2, SY*y+TY+2, displaywidth-4, 75-4, 112, 39, 0);
+    s.renderText(&par, _(help.c_str()));
 
-    if (NUM_STONES_PER_PAGE*page+d == 10)
-    {
-      s.blitBlock(g.getDomino(10, 7), SX*x+TX - 80 - 9, SY*y+TY + 4);
-      s.blitBlock(g.getDomino(11, 7), SX*x+TX - 80 + 9, SY*y+TY + 4);
-    }
-    else if (NUM_STONES_PER_PAGE*page+d == 11)
-    {
-      s.blitBlock(g.getDomino(12, 7), SX*x+TX - 75 - 15, SY*y+TY + 4);
-      s.blitBlock(g.getDomino(13, 7), SX*x+TX - 75 + 0,  SY*y+TY + 4);
-      s.blitBlock(g.getDomino(14, 7), SX*x+TX - 75 + 15, SY*y+TY + 4);
-    }
-    else
-    {
-      s.blitBlock(g.getDomino(NUM_STONES_PER_PAGE*page+d, 7), SX*x+TX - 80, SY*y+TY + 4);
-    }
+    ypos += getTextHeight(&par, _(help.c_str())) + 20;
+  }
+
+  nextPage = 0;
+
+  uint32_t column = 0;
+  uint32_t linehight = SY;
+
+  while (page < NUM_DOMINOS)
+  {
+
+    int displaywidth = dominoHelp[page].boxWidth;
 
     par.font = FNT_SMALL;
     par.alignment = ALN_TEXT;
     par.color.r = 112; par.color.g = 39; par.color.b = 0;
     par.shadow = 0;
-    par.box.x = SX*x+TX+displaywidth+5;
+    par.box.x = SX*column+TX+displaywidth+5;
     par.box.w = SX-displaywidth-15;
-    par.box.y = SY*y+TY;
+    par.box.y = ypos;
     par.box.h = 80;
 
-    s.renderText(&par, _(texts[NUM_STONES_PER_PAGE*page+d].c_str()));
+    if (  (ypos + getTextHeight(&par, _(dominoHelp[page].text.c_str())) > (Y()+H()-1)*gr.blockY())
+        ||(ypos + 75                                                    > (Y()+H()-1)*gr.blockY())
+       )
+    {
+      nextPage = page;
+      break;
+    }
+
+    s.renderText(&par, _(dominoHelp[page].text.c_str()));
+
+    {
+      uint32_t h = getTextHeight(&par, _(dominoHelp[page].text.c_str()));
+      h += 10;
+      if (h > linehight)
+        linehight = h;
+    }
+
+    s.fillRect(SX*column+TX,   ypos,   displaywidth,   75, 0, 0, 0);
+    s.fillRect(SX*column+TX+2, ypos+2, displaywidth-4, 75-4, 112, 39, 0);
+
+    for (int i = 0; i < dominoHelp[page].numDominos; i++)
+      s.blitBlock(g.getDomino(dominoHelp[page].dominos[i]-1, 7),
+          SX*column+TX-105+displaywidth/2+int(dominoHelp[page].spacing*(1.0*i-(dominoHelp[page].numDominos-1)*0.5)), ypos + 4);
+
+    page++;
+    column++;
+    if (column == 2)
+    {
+      ypos += linehight;
+      column = 0;
+      linehight = SY;
+    }
   }
-
-  par.font = FNT_NORMAL;
-  par.alignment = ALN_CENTER;
-  par.color.r = par.color.g = 255; par.color.b = 0;
-  par.shadow = 0;
-  par.box.x = (800-16*40)/2;
-  par.box.w = 16*40;
-  par.box.y = TY+NUM_STONES_PER_PAGE*SY/2-10;
-  par.box.h = 12*48-TY-NUM_STONES_PER_PAGE*SY/2-10;
-
-  if (getTextHeight(&par, help) > par.box.h) {
-    printf("%i  %i\n", getTextHeight(&par, help), par.box.h);
-    par.font = FNT_SMALL;
-  }
-
-  s.renderText(&par, _(help.c_str()));
 
   par.font = FNT_SMALL;
-  par.box.x = (800-15*40)/2;
+  par.box.x = (800-14*40)/2;
   par.box.w = 0;
-  par.box.y = TY+NUM_STONES_PER_PAGE*SY/2;
+  par.box.y = (Y()+H()-1)*gr.blockY();
   par.box.h = 0;
-  if (page > 0)
+  par.color.r = par.color.g = 255; par.color.b = 0;
+
+  if (*(pages.rbegin()) > 0)
   {
     s.renderText(&par, "<<");
   }
 
-  par.box.x = (800+15*40)/2;
-  if (NUM_STONES_PER_PAGE*(page+1) < NUM_DOMINOS)
+  par.box.x = (800+14*40)/2;
+
+  if (nextPage > 0)
   {
     s.renderText(&par, ">>");
   }
-
 }
 
-helpWindow_c::helpWindow_c(const std::string & t, surface_c & su, graphics_c & gr) : window_c(1, 1, 18, 11, su, gr), help(t), page(0),
+helpWindow_c::helpWindow_c(const std::string & t, surface_c & su, graphics_c & gr) : window_c(1, 1, 18, 11, su, gr), help(t),
   s(su), g(gr)
 {
+  pages.push_back(0);
   displayCurrentPage();
 }
 
@@ -195,18 +220,19 @@ bool helpWindow_c::handleEvent(const SDL_Event & event) {
     }
     if (event.key.keysym.sym == SDLK_LEFT)
     {
-      if (page > 0)
+      if (pages.size() > 1)
       {
-        page--;
+        pages.pop_back();
         displayCurrentPage();
         return true;
       }
     }
     if (event.key.keysym.sym == SDLK_RIGHT)
     {
-      if (NUM_STONES_PER_PAGE*(page+1) < NUM_DOMINOS)
+
+      if (nextPage > 0)
       {
-        page++;
+        pages.push_back(nextPage);
         displayCurrentPage();
         return true;
       }
