@@ -457,8 +457,8 @@ listWindow_c::listWindow_c(int x, int y, int w, int h, surface_c & s, graphics_c
     const std::string & t, const std::vector<entry> & e, bool esc, int initial)
   : window_c(x, y, w, h, s, gr), entries(e), title(t), current(initial), escape(esc)
 {
-
   redraw();
+
 }
 
 bool listWindow_c::handleEvent(const SDL_Event & event) {
@@ -604,6 +604,55 @@ listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, gra
     return new listWindow_c(4, 2, 12, 9, surf, gr, _("Select Levelset"), entries, true);
 }
 
+class levelWindow_c : public listWindow_c
+{
+
+  public:
+
+    levelWindow_c(int x, int y, int w, int h, surface_c & s, graphics_c & gr,
+        const std::string & t, const std::vector<entry> & e, bool esc, int initial) :
+      listWindow_c(x, y, w, h, s, gr, t, e, esc, initial)
+    {
+      redraw();
+    }
+
+    void redraw(void)
+    {
+      listWindow_c::redraw();
+
+      fontParams_s par;
+
+      par.font = FNT_SMALL;
+      par.alignment = ALN_TEXT;
+      par.box.y = (Y()+H()-1)*gr.blockY();
+      par.box.w = gr.blockX()*(W()-2)-30;
+      par.box.h = 10;
+
+      std::string text[3] = {
+        //TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
+        _("unsolved"),
+        //TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
+        _("solved but not in time"),
+        //TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
+        _("solved")
+      };
+
+      par.box.x = gr.blockX()*(X()+1 + X()+W()-1)/2 -
+          (getTextWidth(FNT_SMALL, text[0]) + getTextWidth(FNT_SMALL, text[1]) + getTextWidth(FNT_SMALL, text[2]) + 30)/2;
+
+      par.color.r = 112; par.color.g = 39; par.color.b = 0;
+      surf.renderText(&par, text[0]);
+      par.box.x += getTextWidth(FNT_SMALL, text[0])+15;
+
+      par.color.r = (112+255)/2; par.color.g = (39+255)/2; par.color.b = 0;
+      surf.renderText(&par, text[1]);
+      par.box.x += getTextWidth(FNT_SMALL, text[1])+15;
+
+      par.color.r = (112+0)/2; par.color.g = (39+255)/2; par.color.b = 0;
+      surf.renderText(&par, text[2]);
+    }
+};
+
 listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphics_c & gr) {
     std::vector<listWindow_c::entry> entries;
 
@@ -629,7 +678,7 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
     // when all levels have been solved, return to the first
     if (index == -1) index = 0;
 
-    return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Level"), entries, true, index);
+    return new levelWindow_c(4, 0, 12, 12, surf, gr, _("Select Level"), entries, true, index);
 }
 
 listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr) {

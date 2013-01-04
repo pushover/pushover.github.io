@@ -109,7 +109,6 @@ class listWindow_c : public window_c {
     unsigned int current;
     bool escape;  // escape works
 
-    void redraw(void);
 
     unsigned int menuLines;
 
@@ -122,6 +121,8 @@ class listWindow_c : public window_c {
     unsigned int getSelection(void) { return current; } // which list entry was selected
 
     virtual bool handleEvent(const SDL_Event & event);
+
+    virtual void redraw(void);
 };
 
 class InputWindow_c : public window_c {
