@@ -416,7 +416,23 @@ static std::vector<std::string> split(const std::string & text, char splitter)
   return res;
 }
 
-unsigned int surface_c::renderText(const fontParams_s * par, const std::string & t) {
+unsigned int surface_c::renderText(const fontParams_s * par, const std::string & t)
+{
+  // make some safety checks, empty strings are not output
+  bool onlySpace = true;
+  for (size_t i = 0; i < t.length(); i++)
+    if (t[i] != ' ')
+    {
+      onlySpace = false;
+      break;
+    }
+
+  if (   (t.length() == 0)
+      || (onlySpace)
+     )
+  {
+    return 1;
+  }
 
   std::vector<std::string> words = split(t.c_str(), ' ');;
 
