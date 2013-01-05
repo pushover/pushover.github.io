@@ -33,7 +33,40 @@
 #include <stdexcept>
 #include <libintl.h>
 
+// Colour for normal text
+#define TXT_COL_R 112
+#define TXT_COL_G 39
+#define TXT_COL_B 0
 
+// Colour for selected text in list windows
+#define SEL_COL_R 255
+#define SEL_COL_G 255
+#define SEL_COL_B 255
+
+// Colour for highlighted text in list windows
+#define HIL_COL_R ((TXT_COL_R+2*255)/3)
+#define HIL_COL_G ((TXT_COL_G+2*255)/3)
+#define HIL_COL_B ((TXT_COL_B+2*255)/3)
+
+// colour for partially solved levels
+#define SO1_COL_R 221
+#define SO1_COL_G 179
+#define SO1_COL_B 0
+
+// colour for solved levels
+#define SOL_COL_R ((TXT_COL_R+ 70)/2)
+#define SOL_COL_G ((TXT_COL_G+200)/2)
+#define SOL_COL_B ((TXT_COL_B+ 70)/2)
+
+// the colour for the help text and the arrows in the help window
+#define HLP_COL_R 221
+#define HLP_COL_G 179
+#define HLP_COL_B 0
+
+// colour for separator in list window
+#define SEP_COL_R 120
+#define SEP_COL_G 90
+#define SEP_COL_B 60
 
 window_c::window_c(unsigned char x_, unsigned char y_, unsigned char w_, unsigned char h_, surface_c & s, graphics_c & g) : x(x_), y(y_), w(w_), h(h_), surf(s), gr(g) {
 
@@ -112,7 +145,7 @@ void helpWindow_c::displayCurrentPage(void)
   {
     par.font = FNT_NORMAL;
     par.alignment = ALN_TEXT_CENTER;
-    par.color.r = par.color.g = 255; par.color.b = 0;
+    par.color.r = HLP_COL_R; par.color.g = HLP_COL_G; par.color.b = HLP_COL_B;
     par.shadow = 0;
     par.box.x = (800-16*40)/2;
     par.box.w = 16*40;
@@ -140,7 +173,7 @@ void helpWindow_c::displayCurrentPage(void)
 
     par.font = FNT_SMALL;
     par.alignment = ALN_TEXT;
-    par.color.r = 112; par.color.g = 39; par.color.b = 0;
+    par.color.r = TXT_COL_R; par.color.g = TXT_COL_G; par.color.b = TXT_COL_B;
     par.shadow = 0;
     par.box.x = SX*column+TX+displaywidth+5;
     par.box.w = SX-displaywidth-15;
@@ -165,7 +198,7 @@ void helpWindow_c::displayCurrentPage(void)
     }
 
     s.fillRect(SX*column+TX,   ypos,   displaywidth,   75, 0, 0, 0);
-    s.fillRect(SX*column+TX+2, ypos+2, displaywidth-4, 75-4, 112, 39, 0);
+    s.fillRect(SX*column+TX+2, ypos+2, displaywidth-4, 75-4, TXT_COL_R, TXT_COL_G, TXT_COL_B);
 
     for (int i = 0; i < dominoHelp[page].numDominos; i++)
       s.blitBlock(g.getDomino(dominoHelp[page].dominos[i]-1, 7),
@@ -186,7 +219,7 @@ void helpWindow_c::displayCurrentPage(void)
   par.box.w = 0;
   par.box.y = (Y()+H()-1)*gr.blockY();
   par.box.h = 0;
-  par.color.r = par.color.g = 255; par.color.b = 0;
+  par.color.r = HLP_COL_R; par.color.g = HLP_COL_G; par.color.b = HLP_COL_B;
 
   if (*(pages.rbegin()) > 0)
   {
@@ -258,7 +291,7 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 0, 16,
 
   par.font = FNT_BIG;
   par.alignment = ALN_CENTER;
-  par.color.r = 112; par.color.g = 39; par.color.b = 0;
+  par.color.r = TXT_COL_R; par.color.g = TXT_COL_G; par.color.b = TXT_COL_B;
   par.shadow = 2;
   par.box.x = gr.blockX()*(X()+1);
   par.box.y = gr.blockY()*(Y()+1);
@@ -270,7 +303,7 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 0, 16,
   int ypos = gr.blockY()*(Y()+1) + getFontHeight(FNT_BIG);
 
   surf.fillRect(gr.blockX()*(X()+1)+1, ypos+1, gr.blockX()*(W()-2), 2, 0, 0, 0);
-  surf.fillRect(gr.blockX()*(X()+1), ypos, gr.blockX()*(W()-2), 2, 112, 39, 0);
+  surf.fillRect(gr.blockX()*(X()+1), ypos, gr.blockX()*(W()-2), 2, TXT_COL_R, TXT_COL_G, TXT_COL_B);
   ypos += 20;
 
   unsigned int lineH = getFontHeight(FNT_SMALL);  // height of one entry line
@@ -330,7 +363,7 @@ void listWindow_c::redraw(void) {
 
   par.font = FNT_BIG;
   par.alignment = ALN_CENTER;
-  par.color.r = 112; par.color.g = 39; par.color.b = 0;
+  par.color.r = TXT_COL_R; par.color.g = TXT_COL_G; par.color.b = TXT_COL_B;
   par.shadow = 2;
   par.box.x = gr.blockX()*(x+1);
   par.box.y = gr.blockY()*(y+1);
@@ -342,7 +375,7 @@ void listWindow_c::redraw(void) {
   int ypos = gr.blockY()*(y+1) + getTextHeight(&par, title);
 
   surf.fillRect(gr.blockX()*(x+1)+1, ypos+1, gr.blockX()*(w-2), 2, 0, 0, 0);
-  surf.fillRect(gr.blockX()*(x+1), ypos, gr.blockX()*(w-2), 2, 112, 39, 0);
+  surf.fillRect(gr.blockX()*(x+1), ypos, gr.blockX()*(w-2), 2, TXT_COL_R, TXT_COL_G, TXT_COL_G);
   ypos += 20;
 
   unsigned int lineH = getFontHeight(FNT_NORMAL);  // height of one entry line
@@ -406,23 +439,23 @@ void listWindow_c::redraw(void) {
 
     if (line == current)
     {
-      par.color.r = par.color.g = par.color.b = 255;
+      par.color.r = SEL_COL_R; par.color.g = SEL_COL_G; par.color.b = SEL_COL_B;
     }
     else if (entries[line].highlight)
     {
-      par.color.r = (112+2*255)/3; par.color.g = (39+2*255)/3; par.color.b = 2*255/3;
+      par.color.r = HIL_COL_R; par.color.g = HIL_COL_G; par.color.b = HIL_COL_B;
     }
     else if (entries[line].sol == 2)
     {
-      par.color.r = (112+0)/2; par.color.g = (39+255)/2; par.color.b = 0;
+      par.color.r = SOL_COL_R; par.color.g = SOL_COL_G; par.color.b = SOL_COL_B;
     }
     else if (entries[line].sol == 1)
     {
-      par.color.r = (112+255)/2; par.color.g = (39+255)/2; par.color.b = 0;
+      par.color.r = SO1_COL_R; par.color.g = SO1_COL_G; par.color.b = SO1_COL_B;
     }
     else
     {
-      par.color.r = 112; par.color.g = 39; par.color.b = 0;
+      par.color.r = TXT_COL_R; par.color.g = TXT_COL_G; par.color.b = TXT_COL_B;
     }
 
     par.shadow = 0;
@@ -437,12 +470,11 @@ void listWindow_c::redraw(void) {
     }
     else
     {
-      // string contains formatting information at the end
       surf.renderText(&par, entries[line].text);
 
       if (entries[line].line)
       {
-        surf.fillRect(gr.blockX()*(x+1)+30, ypos+lineH+lineH/2, gr.blockX()*(w-2)-60, 2, 120, 90, 60);
+        surf.fillRect(gr.blockX()*(x+1)+30, ypos+lineH+lineH/2, gr.blockX()*(w-2)-60, 2, SEP_COL_R, SEP_COL_G, SEP_COL_B);
         ypos += lineH;
       }
 
@@ -640,15 +672,15 @@ class levelWindow_c : public listWindow_c
       par.box.x = gr.blockX()*(X()+1 + X()+W()-1)/2 -
           (getTextWidth(FNT_SMALL, text[0]) + getTextWidth(FNT_SMALL, text[1]) + getTextWidth(FNT_SMALL, text[2]) + 30)/2;
 
-      par.color.r = 112; par.color.g = 39; par.color.b = 0;
+      par.color.r = TXT_COL_R; par.color.g = TXT_COL_G; par.color.b = TXT_COL_B;
       surf.renderText(&par, text[0]);
       par.box.x += getTextWidth(FNT_SMALL, text[0])+15;
 
-      par.color.r = (112+255)/2; par.color.g = (39+255)/2; par.color.b = 0;
+      par.color.r = SO1_COL_R; par.color.g = SO1_COL_G; par.color.b = SO1_COL_B;
       surf.renderText(&par, text[1]);
       par.box.x += getTextWidth(FNT_SMALL, text[1])+15;
 
-      par.color.r = (112+0)/2; par.color.g = (39+255)/2; par.color.b = 0;
+      par.color.r = SOL_COL_R; par.color.g = SOL_COL_G; par.color.b = SOL_COL_B;
       surf.renderText(&par, text[2]);
     }
 };
@@ -875,7 +907,7 @@ void InputWindow_c::redraw(void)
 
   par.font = FNT_BIG;
   par.alignment = ALN_CENTER;
-  par.color.r = 112; par.color.g = 39; par.color.b = 0;
+  par.color.r = TXT_COL_R; par.color.g = TXT_COL_G; par.color.b = TXT_COL_B;
   par.shadow = 2;
   par.box.x = gr.blockX()*(x+1);
   par.box.y = gr.blockY()*(y+1);
@@ -887,7 +919,7 @@ void InputWindow_c::redraw(void)
   int ypos = gr.blockY()*(y+1) + getFontHeight(FNT_BIG);
 
   surf.fillRect(gr.blockX()*(x+1)+1, ypos+1, gr.blockX()*(w-2), 2, 0, 0, 0);
-  surf.fillRect(gr.blockX()*(x+1), ypos, gr.blockX()*(w-2), 2, 112, 39, 0);
+  surf.fillRect(gr.blockX()*(x+1), ypos, gr.blockX()*(w-2), 2, TXT_COL_R, TXT_COL_G, TXT_COL_B);
 
   ypos += 20;
 
