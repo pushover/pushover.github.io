@@ -30,11 +30,10 @@ class levelData_c {
 
   private:
 
-    static const unsigned int version = 1;
+    static const unsigned int version = 2;
     static const std::string dominoChars;
     static bool isDominoChar(char ch);
     static const unsigned char maxBg = 8;
-
 
     std::string name;
     std::string theme;
@@ -47,11 +46,16 @@ class levelData_c {
     int timeLeft;
 
     // the positions of the 2 doors
+    // y position is the _lower_ block of the door, so the door
+    // extends one block above that number
     unsigned char doorEntryX, doorEntryY, doorExitX, doorExitY;
+    // open and close animation for door
+    unsigned char doorEntryState, doorExitState;
 
     typedef struct levelEntry {
       unsigned short bg[maxBg];
-      unsigned char fg;
+      bool platform;
+      bool ladder;
       unsigned char dominoType;
       unsigned char dominoState;
       char dominoDir;
@@ -65,7 +69,7 @@ class levelData_c {
         // 0x70 falling domino, pile of rubbish...
     } levelEntry;
 
-    levelEntry level[13][20];
+    levelEntry level[27][20];  //TODO eigentlich nur 25 ebenen, die 26 nur fuer einfacheren Code...
     unsigned char numBg;
 
     bool triggerFalln;
@@ -89,6 +93,13 @@ class levelData_c {
 
     const std::string getChecksum(void) const { return checksum; }
     const std::string getChecksumNoTime(void) const { return checksumNoTime; }
+
+    unsigned char getNumBgLayer(void) const { return numBg; }
+    void setNumBgLayer(unsigned char n) { numBg = n; }
+
+
+    // OLD INTERFACE, Deprecated
+
     /* Foreground elements */
     enum {
       FgElementEmpty,              // 0
@@ -142,43 +153,41 @@ class levelData_c {
       DominoTypeQuaver,
     };
 
-    unsigned char getNumBgLayer(void) const { return numBg; }
-    void setNumBgLayer(unsigned char n) { numBg = n; }
+    unsigned short getBg(unsigned int x, unsigned int y, int layer) const;
+    unsigned char getFg(unsigned int x, unsigned int y) const;
 
-    unsigned short getBg(unsigned int x, unsigned int y, int layer) const { return level[y][x].bg[layer]; }
-    unsigned char getFg(unsigned int x, unsigned int y) const { return level[y][x].fg; }
-    unsigned char getDominoType(unsigned int x, unsigned int y) const { return level[y][x].dominoType; }
-    unsigned char getDominoState(unsigned int x, unsigned int y) const { return level[y][x].dominoState; }
-    signed char   getDominoDir(unsigned int x, unsigned int y) const { return level[y][x].dominoDir; }
-    unsigned char getDominoExtra(unsigned int x, unsigned int y) const { return level[y][x].dominoExtra; }
-    signed char getDominoYOffset(unsigned int x, unsigned int y) const { return level[y][x].dominoYOffset; }
+    unsigned char getDominoType(unsigned int x, unsigned int y) const { return level[2*y][x].dominoType; }
+    unsigned char getDominoState(unsigned int x, unsigned int y) const { return level[2*y][x].dominoState; }
+    signed char   getDominoDir(unsigned int x, unsigned int y) const { return level[2*y][x].dominoDir; }
+    unsigned char getDominoExtra(unsigned int x, unsigned int y) const { return level[2*y][x].dominoExtra; }
+    signed char getDominoYOffset(unsigned int x, unsigned int y) const { return level[2*y][x].dominoYOffset; }
 
-    void setBg(unsigned int x, unsigned int y, int layer, int val) { level[y][x].bg[layer] = val; }
-    void setFg(unsigned int x, unsigned int y, int val) { level[y][x].fg = val; }
-    void setDominoType(unsigned int x, unsigned int y, int val) { level[y][x].dominoType = val; }
-    void setDominoState(unsigned int x, unsigned int y, int val) { level[y][x].dominoState = val; }
-    void setDominoDir(unsigned int x, unsigned int y, int val) { level[y][x].dominoDir = val; }
-    void setDominoExtra(unsigned int x, unsigned int y, int val) { level[y][x].dominoExtra = val; }
-    void setDominoYOffset(unsigned int x, unsigned int y, int val) { level[y][x].dominoYOffset = val; }
+    void setBg(unsigned int x, unsigned int y, int layer, int val);
+    void setFg(unsigned int x, unsigned int y, int val);
+    void setDominoType(unsigned int x, unsigned int y, int val) { level[2*y][x].dominoType = val; }
+    void setDominoState(unsigned int x, unsigned int y, int val) { level[2*y][x].dominoState = val; }
+    void setDominoDir(unsigned int x, unsigned int y, int val) { level[2*y][x].dominoDir = val; }
+    void setDominoExtra(unsigned int x, unsigned int y, int val) { level[2*y][x].dominoExtra = val; }
+    void setDominoYOffset(unsigned int x, unsigned int y, int val) { level[2*y][x].dominoYOffset = val; }
 
     void removeDomino(int x, int y);
-    void clearDominoExtra(int x, int y) { level[y][x].dominoExtra = 0; }
+    void clearDominoExtra(int x, int y) { level[2*y][x].dominoExtra = 0; }
 
-    unsigned char getEntryDoor(void) const { return getFg(doorEntryX, doorEntryY); }
-    unsigned char getExitDoor(void) const { return getFg(doorExitX, doorExitY); }
-    void openEntryDoorStep(void) { level[doorEntryY][doorEntryX].fg++; }
-    void closeEntryDoorStep(void) { level[doorEntryY][doorEntryX].fg--; }
-    void openExitDoorStep(void) { level[doorExitY][doorExitX].fg++; }
-    void closeExitDoorStep(void) { level[doorExitY][doorExitX].fg--; }
+    unsigned char getEntryDoor(void) const { return FgElementDoor0+doorEntryState; }
+    unsigned char getExitDoor(void) const { return FgElementDoor0+doorExitState; }
+    void openEntryDoorStep(void) { doorEntryState++; }
+    void closeEntryDoorStep(void) { doorEntryState--; }
+    void openExitDoorStep(void) { doorExitState++; }
+    void closeExitDoorStep(void) { doorExitState--; }
 
     unsigned char getEntryX(void) const { return doorEntryX; }
-    unsigned char getEntryY(void) const { return doorEntryY; }
+    unsigned char getEntryY(void) const { return (doorEntryY-1)/2; }
     unsigned char getExitX(void) const { return doorExitX; }
-    unsigned char getExitY(void) const { return doorExitY; }
+    unsigned char getExitY(void) const { return (doorExitY-1)/2; }
 
-    bool isEntryDoorOpen(void) { return getFg(doorEntryX, doorEntryY) == FgElementDoor3; }
-    bool isExitDoorOpen(void) { return getFg(doorExitX, doorExitY) == FgElementDoor3; }
-    bool isExitDoorClosed(void) { return getFg(doorExitX, doorExitY) == FgElementDoor0; }
+    bool isEntryDoorOpen(void) { return doorEntryState == 3; }
+    bool isExitDoorOpen(void) { return doorExitState == 3; }
+    bool isExitDoorClosed(void) { return doorExitState == 0; }
 
     // query level information of certain places
     bool noGround(int x, int y, bool onLadder);  // returns true, if the ant can't stand
@@ -193,6 +202,8 @@ class levelData_c {
     // check, if the level has been successfully solved
     // if not the reason for failure is in fail
     bool levelCompleted(int & fail) const;
+
+    // NEW INTERFACE please use this only
 
 };
 

@@ -33,12 +33,15 @@
 #include <sstream>
 #include <iomanip>
 
+#include <assert.h>
+
 levelData_c::levelData_c(void) {
-  for (unsigned int y = 0; y < 13; y++)
+  for (unsigned int y = 0; y < 27; y++)
     for (unsigned int x = 0; x < 20; x++) {
       for (unsigned int i = 0; i < maxBg; i++)
         level[y][x].bg[i] = 0;
-      level[y][x].fg = 0;
+      level[y][x].ladder = false;
+      level[y][x].platform = false;
       level[y][x].dominoType = DominoTypeEmpty;
       level[y][x].dominoState = 8;
       level[y][x].dominoDir = 0;
@@ -130,11 +133,11 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
   for (unsigned int y = 0; y < 13; y++) {
     for (unsigned int x = 0; x < 20; x++) {
 
-      level[y][x].dominoType = DominoTypeEmpty;
-      level[y][x].dominoState = 8;
-      level[y][x].dominoDir = 0;
-      level[y][x].dominoYOffset = 0;
-      level[y][x].dominoExtra = 0;
+      level[2*y][x].dominoType = DominoTypeEmpty;
+      level[2*y][x].dominoState = 8;
+      level[2*y][x].dominoDir = 0;
+      level[2*y][x].dominoYOffset = 0;
+      level[2*y][x].dominoExtra = 0;
 
       switch (levelRows[y].c_str()[x]) {
 
@@ -143,8 +146,9 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
             throw format_error("duplicate entry door");
           doorEntryDefined = true;
           doorEntryX = x;
-          doorEntryY = y;
-          level[y][x].fg = FgElementDoor0;
+          doorEntryY = 2*y+1;
+          doorEntryState = 0;
+          setFg(x, y, FgElementEmpty);
           break;
 
         case '2':
@@ -152,55 +156,56 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
             throw format_error("duplicate exit door");
           doorExitDefined = true;
           doorExitX = x;
-          doorExitY = y;
-          level[y][x].fg = FgElementDoor0;
+          doorExitY = 2*y+1;
+          doorExitState = 0;
+          setFg(x, y, FgElementEmpty);
           break;
 
         case ' ':
         case '^':
           if (x > 0 && levelRows[y].c_str()[x-1] == '/')
-            level[y][x].fg = FgElementPlatformStep8;
+              setFg(x, y, FgElementPlatformStep8);
           else
-            level[y][x].fg = FgElementEmpty;
+              setFg(x, y, FgElementEmpty);
           break;
 
         case '$':
-          level[y][x].fg = FgElementEmpty;
-          level[y][x].dominoType = DominoTypeStandard;
-          level[y][x].dominoExtra = 0x70;
+          setFg(x, y, FgElementEmpty);
+          level[2*y][x].dominoType = DominoTypeStandard;
+          level[2*y][x].dominoExtra = 0x70;
           break;
 
         case '\\':
           if (y <= 0 || x <= 0)
             throw format_error("platform step '\\' has an invalid position");
-          level[y-1][x-1].fg = FgElementPlatformStep1;
-          level[y-1][x  ].fg = FgElementPlatformStep2;
-          level[y  ][x-1].fg = FgElementPlatformStep3;
-          level[y  ][x  ].fg = FgElementPlatformStep4;
+          setFg(x-1, y-1, FgElementPlatformStep1);
+          setFg(x,   y-1, FgElementPlatformStep2);
+          setFg(x-1, y,   FgElementPlatformStep3);
+          setFg(x,   y,   FgElementPlatformStep4);
           break;
 
         case '/':
           if (y <= 0 || x+1 >= 20)
             throw format_error("platform step '/' has an invalid position");
-          level[y-1][x  ].fg = FgElementPlatformStep5;
-          level[y-1][x+1].fg = FgElementPlatformStep6;
-          level[y  ][x  ].fg = FgElementPlatformStep7;
+          setFg(x,   y-1, FgElementPlatformStep5);
+          setFg(x+1, y-1, FgElementPlatformStep6);
+          setFg(x,   y,   FgElementPlatformStep7);
           break;
 
         case 'H':
         case 'V':
-          level[y][x].fg = FgElementLadder;
+          setFg(x, y, FgElementLadder);
           break;
 
         case '.':
-          level[y][x].fg = FgElementPlatformStrip;
+          setFg(x, y, FgElementPlatformStrip);
           break;
 
         default:
           std::string::size_type dt = dominoChars.find_first_of(levelRows[y].c_str()[x]);
           if (dt == std::string::npos)
             throw format_error("invalid domino type");
-          level[y][x].dominoType = dt;
+          level[2*y][x].dominoType = dt;
 
           bool ladderAbove   = y > 0
                                && levelRows[y-1].c_str()[x] == 'H';
@@ -215,17 +220,17 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
                                || isDominoChar(levelRows[y].c_str()[x+1])
                                || levelRows[y].c_str()[x+1] == '/';
           if (ladderBelow)
-            level[y][x].fg = FgElementPlatformLadderDown;
+            setFg(x, y, FgElementPlatformLadderDown);
           else if (ladderAbove)
-            level[y][x].fg = FgElementPlatformLadderUp;
+            setFg(x, y, FgElementPlatformLadderUp);
           else if (!platformLeft && !platformRight)
-            level[y][x].fg = FgElementPlatformStrip;
+            setFg(x, y, FgElementPlatformStrip);
           else if (!platformLeft)
-            level[y][x].fg = FgElementPlatformStart;
+            setFg(x, y, FgElementPlatformStart);
           else if (!platformRight)
-            level[y][x].fg = FgElementPlatformEnd;
+            setFg(x, y, FgElementPlatformEnd);
           else
-            level[y][x].fg = FgElementPlatformMiddle;
+            setFg(x, y, FgElementPlatformMiddle);
       }
     }
   }
@@ -249,7 +254,10 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
     for (unsigned int y = 0; y < 13; y++) {
       std::istringstream line(bgSections[b][y]);
       for (unsigned int x = 0; x < 20; x++) {
-        line >> level[y][x].bg[b];
+        line >> level[2*y][x].bg[b];
+        level[2*y][x].bg[b] *= 2;
+        level[2*y+1][x].bg[b] = level[2*y][x].bg[b]+1;
+
         if (!line)
           throw format_error("not enough background tiles in a row");
       }
@@ -316,7 +324,7 @@ void levelData_c::save(std::ostream & stream) const {
         line += '1';
       else if (x == doorExitX && y == doorExitY)
         line += '2';
-      else switch (level[y][x].fg) {
+      else switch (getFg(x, y)) {
         case FgElementEmpty:
         case FgElementPlatformStep2:
         case FgElementPlatformStep3:
@@ -326,9 +334,9 @@ void levelData_c::save(std::ostream & stream) const {
         case FgElementDoor1:
         case FgElementDoor2:
         case FgElementDoor3:
-          if (y > 0 && level[y-1][x].fg == FgElementPlatformLadderDown)
+          if (y > 0 && getFg(x, y-1) == FgElementPlatformLadderDown)
             line += '^';
-          else if (level[y][x].dominoType != DominoTypeEmpty)
+          else if (getDominoType(x, y) != DominoTypeEmpty)
             line += '$';
           else
             line += ' ';
@@ -341,17 +349,17 @@ void levelData_c::save(std::ostream & stream) const {
           break;
         case FgElementLadder:
           if (y+1 >= 13
-              || level[y+1][x].fg == FgElementPlatformLadderDown
-              || level[y+1][x].fg == FgElementLadder
-              || level[y+1][x].fg == FgElementPlatformLadderUp)
+              || getFg(x, y+1) == FgElementPlatformLadderDown
+              || getFg(x, y+1) == FgElementLadder
+              || getFg(x, y+1) == FgElementPlatformLadderUp)
             line += 'H';
           else
             line += 'V';
           break;
         default:
-          unsigned char dt = level[y][x].dominoType;
+          unsigned char dt = getDominoType(x, y);
           if (dt == DominoTypeEmpty
-              && level[y][x].fg == FgElementPlatformStrip)
+              && getFg(x, y) == FgElementPlatformStrip)
             line += '.';
           else if (dt < dominoChars.size())
             line += dominoChars[dt];
@@ -370,7 +378,7 @@ void levelData_c::save(std::ostream & stream) const {
     for (unsigned int y = 0; y < 13; y++) {
       stream << '|';
       for (unsigned int x = 0; x < 20; x++)
-        stream << ' ' << std::setfill(' ') << std::setw(3) << level[y][x].bg[b];
+        stream << ' ' << std::setfill(' ') << std::setw(3) << getBg(x, y, b);
       stream << '\n';
     }
     stream << '+' << std::string((3+1)*20, '-') << '\n';
@@ -378,11 +386,11 @@ void levelData_c::save(std::ostream & stream) const {
 }
 
 void levelData_c::removeDomino(int x, int y) {
-  level[y][x].dominoType = DominoTypeEmpty;
-  level[y][x].dominoState = 0;
-  level[y][x].dominoDir = 0;
-  level[y][x].dominoYOffset = 0;
-  level[y][x].dominoExtra = 0;
+  level[2*y][x].dominoType = DominoTypeEmpty;
+  level[2*y][x].dominoState = 0;
+  level[2*y][x].dominoDir = 0;
+  level[2*y][x].dominoYOffset = 0;
+  level[2*y][x].dominoExtra = 0;
 }
 
 
@@ -404,7 +412,19 @@ void levelData_c::print(void) {
 
   char directions[] = "<0>";
 
-  for (unsigned int y = 0; y < 13; y++) {
+  printf("------------\n");
+
+  for (unsigned int y = 0; y < 25; y++) {
+    for (unsigned int x = 0; x < 20; x++)
+      if (level[y][x].platform)
+        printf("-");
+      else
+        printf(" ");
+    printf("\n");
+  }
+  printf("------------\n");
+
+  for (unsigned int y = 0; y < 25; y++) {
     for (unsigned int x = 0; x < 20; x++)
       printf("%x", level[y][x].dominoType);
     printf("  ");
@@ -444,7 +464,7 @@ bool levelData_c::noGround(int x, int y, bool onLadder) {
 // return true, if there is a platform at the given position
 bool levelData_c::isTherePlatform(int x, int y) {
 
-  switch (level[y][x].fg)
+  switch (getFg(x, y))
   {
     case FgElementEmpty:              return false;
     case FgElementPlatformStart:      return true;
@@ -569,4 +589,226 @@ bool levelData_c::levelCompleted(int & fail) const {
 
   return true;
 }
+
+unsigned short levelData_c::getBg(unsigned int x, unsigned int y, int layer) const {
+    assert(level[2*y][x].bg[layer]+1 == level[2*y+1][x].bg[layer]);
+    assert((level[2*y][x].bg[layer] & 1) == 0);
+    return level[2*y][x].bg[layer] / 2;
+}
+unsigned char levelData_c::getFg(unsigned int x, unsigned int y) const
+{
+    // check special case for doors
+    if (x == doorEntryX && 2*y+1 == doorEntryY)
+        return FgElementDoor0 + doorEntryState;
+
+    if (x == doorExitX && 2*y+1 == doorExitY)
+        return FgElementDoor0 + doorExitState;
+
+    // create Bitmask of upper layer, lower layer and upper layer below with each 3 neighbors
+    uint16_t platformBits = 0;
+    if (x > 0  && level[2*y+0][x-1].platform) platformBits |= 0x100;
+    if (          level[2*y+0][x+0].platform) platformBits |= 0x080;
+    if (x < 20 && level[2*y+0][x+1].platform) platformBits |= 0x040;
+
+    if (x > 0  && level[2*y+1][x-1].platform) platformBits |= 0x020;
+    if (          level[2*y+1][x+0].platform) platformBits |= 0x010;
+    if (x < 20 && level[2*y+1][x+1].platform) platformBits |= 0x008;
+
+    if (x > 0  && level[2*y+2][x-1].platform) platformBits |= 0x004;
+    if (          level[2*y+2][x+0].platform) platformBits |= 0x002;
+    if (x < 20 && level[2*y+2][x+1].platform) platformBits |= 0x001;
+
+    uint16_t ladderBits = 0;
+    if (level[2*y+0][x].ladder) ladderBits |= 0x02;
+    if (level[2*y+1][x].ladder) ladderBits |= 0x01;
+
+    switch (platformBits)
+    {
+        case 0x000:
+        case 0x001:
+        case 0x004:
+        case 0x008:
+        case 0x020:
+        case 0x028:
+        case 0x40:
+        case 0x100:
+        case 0x140:
+        case 0x108:
+            switch (ladderBits)
+            {
+                case 0: return FgElementEmpty;
+                case 2: return FgElementLadderMiddle;
+                case 3: return FgElementLadder;
+                default:
+                        printf("ladder %i\n", ladderBits);
+                        assert(false); break;
+            }
+            break;
+
+        case 0x010:
+            assert(ladderBits == 0);
+            return FgElementPlatformStrip;
+
+        case 0x038:
+        case 0x138: //
+        case 0x03C: //
+        case 0x078: //
+        case 0x07C: //
+        case 0x039: //
+        case 0x03D: //
+            switch (ladderBits)
+            {
+                case 0: return FgElementPlatformMiddle;
+                case 3: return FgElementPlatformLadderDown;
+                case 2: return FgElementPlatformLadderUp;
+                default:
+                        printf("ladder %i\n", ladderBits);
+                        assert(false); break;
+            }
+            break;
+
+        case 0x018:
+        case 0x019:
+        case 0x058:
+        case 0x118:
+            // assert(ladderBits == 0); in level 99 this is required...
+            return  FgElementPlatformStart;
+
+        case 0x030:
+        case 0x034:
+        case 0x130:
+            // assert(ladderBits == 0); in level 28 required
+            return FgElementPlatformEnd;
+
+        case 0x133: //
+        case 0x033: //
+            assert(ladderBits == 0);
+            return FgElementPlatformStep1; // 7
+
+        case 0x026: //
+            assert(ladderBits == 0);
+            return FgElementPlatformStep2; // 8
+
+        case 0x0C8: //
+            assert(ladderBits == 0);
+            return FgElementPlatformStep3; // 9
+
+        case 0x199: //
+        case 0x198: //
+            assert(ladderBits == 0);
+            return FgElementPlatformStep4; // 10
+
+        case 0x00b: //
+            assert(ladderBits == 0);
+            return FgElementPlatformStep5; // 11
+
+        case 0x01E: //
+        case 0x05E: //
+            assert(ladderBits == 0);
+            return FgElementPlatformStep6; // 12
+
+        case 0x0F0: //
+        case 0x0F4: //
+            assert(ladderBits == 0);
+            return FgElementPlatformStep7; // 13
+
+        case 0x1A0: //
+        case 0x080:
+            assert(ladderBits == 0);
+            return FgElementPlatformStep8; // 14
+
+        default:
+            printf("unknown platform bitmask pos %i %i  =  %x\n", x, y, platformBits);
+            return FgElementDoor3;
+            assert(false); break;
+    }
+
+    assert(false);
+
+}
+
+void levelData_c::setBg(unsigned int x, unsigned int y, int layer, int val) {
+    level[2*y  ][x].bg[layer] = 2*val;
+    level[2*y+1][x].bg[layer] = 2*val+1;
+}
+void levelData_c::setFg(unsigned int x, unsigned int y, int val)
+{
+    switch(val)
+    {
+        case FgElementEmpty             :  // 0
+        case FgElementDoor0             :  // 18
+        case FgElementDoor1             :  // 19
+        case FgElementDoor2             :  // 20
+        case FgElementDoor3             :  // 21
+        case FgElementPlatformStep2     :  // 8
+        case FgElementPlatformStep5     :  // 11
+            level[y*2  ][x].platform = false;
+            level[y*2+1][x].platform = false;
+            level[y*2  ][x].ladder   = false;
+            level[y*2+1][x].ladder   = false;
+            break;
+
+        case FgElementPlatformStart     :  // 1
+        case FgElementPlatformMiddle    :  // 2
+        case FgElementPlatformEnd       :  // 3
+        case FgElementPlatformStrip     :  // 16
+        case FgElementPlatformStep1     :  // 7
+        case FgElementPlatformStep6     :  // 12
+            level[y*2  ][x].platform = false;
+            level[y*2+1][x].platform = true;
+            level[y*2  ][x].ladder   = false;
+            level[y*2+1][x].ladder   = false;
+            break;
+
+        case FgElementPlatformLadderDown:  // 4
+            level[y*2  ][x].platform = false;
+            level[y*2+1][x].platform = true;
+            level[y*2  ][x].ladder   = true;
+            level[y*2+1][x].ladder   = true;
+            break;
+
+        case FgElementLadder            :  // 5
+        case FgElementLadder2           :  // 17
+            level[y*2  ][x].platform = false;
+            level[y*2+1][x].platform = false;
+            level[y*2  ][x].ladder   = true;
+            level[y*2+1][x].ladder   = true;
+            break;
+
+        case FgElementPlatformLadderUp  :  // 6
+            level[y*2  ][x].platform = false;
+            level[y*2+1][x].platform = true;
+            level[y*2  ][x].ladder   = true;
+            level[y*2+1][x].ladder   = false;
+            break;
+
+        case FgElementLadderMiddle      :  // 15
+            level[y*2  ][x].platform = false;
+            level[y*2+1][x].platform = false;
+            level[y*2  ][x].ladder   = true;
+            level[y*2+1][x].ladder   = false;
+            break;
+
+        case FgElementPlatformStep3     :  // 9
+        case FgElementPlatformStep8     :  // 14
+            level[y*2  ][x].platform = true;
+            level[y*2+1][x].platform = false;
+            level[y*2  ][x].ladder   = false;
+            level[y*2+1][x].ladder   = false;
+            break;
+
+        case FgElementPlatformStep4     :  // 10
+        case FgElementPlatformStep7     :  // 13
+            level[y*2  ][x].platform = true;
+            level[y*2+1][x].platform = true;
+            level[y*2  ][x].ladder   = false;
+            level[y*2+1][x].ladder   = false;
+            break;
+
+        default:
+            assert(false);
+    }
+}
+
+
 
