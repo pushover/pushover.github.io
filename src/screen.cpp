@@ -554,8 +554,8 @@ unsigned int getFontHeight(unsigned int font) {
 }
 
 unsigned int getTextWidth(unsigned int font, const std::string & t) {
-  int w;
-  TTF_SizeUTF8(fonts[font], gettext(t.c_str()), &w, 0);
+  int w = 0;
+  TTF_SizeUTF8(fonts[font], t.c_str(), &w, 0);
 
   return w;
 }
