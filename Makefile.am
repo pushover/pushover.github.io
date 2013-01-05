@@ -25,7 +25,11 @@ pushover_SOURCES = \
   src/window.cpp src/window.h
 
 dist_doc_DATA = \
-  readme.txt
+  README \
+  AUTHORS \
+  COPYING \
+  NEWS \
+  ChangeLog
 
 nobase_dist_pkgdata_DATA = \
   data/ant.png \
@@ -174,6 +178,10 @@ dist-win32: all
 	for p in $(bin_PROGRAMS); do \
 	    upx --lzma '$(abs_builddir)/$(win32dir)'/$$p; \
 	done
+	cd $(srcdir) && for FILE in $(dist_doc_DATA); do \
+	    sed 's,$$,\r,' < $$FILE > $(abs_builddir)/$(win32dir)/$$FILE.txt; \
+	    rm $$FILE; \
+	    done
 	$(RM)      '$(abs_builddir)/$(win32dir).zip'
 	cd '$(abs_builddir)' && zip -r9 $(win32dir).zip $(win32dir)
 	$(RM) -r   '$(abs_builddir)/$(win32dir)'
