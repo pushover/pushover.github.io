@@ -1,5 +1,9 @@
 Version 0.0.4
 
+- profiles so that more than one player can play the game on the same computer
+  using the same account
+- 2 solve states. When a level is solved not meeting the time constraint it
+  still gets marked as solved, but with a different marker
 - italien translation
 - 3 new music pieces
 - a few new levels
@@ -11,8 +15,11 @@ Version 0.0.4
   useless ladder
 - pushover can now quit using the window close button on the window header
 - speedup the animation animation when a level is started
+- new type of domino: counter blocker, but with no levels using it, yet
+- improved help window, better suited for translation and a bit more text
+- a few new levels in A&V
 
-Version 0.0.3
+Version 0.0.3 May 2011
 
 - New graphics for dungeon, toxcity and electronic theme, new graphics for menu boxes
 - French and Spanish translation
