@@ -35,6 +35,8 @@ class graphics_c {
     graphics_c(void);
     virtual ~graphics_c(void);
 
+    // needs to be overloaded with a function loading
+    // dominos, ant images and the box images
     virtual void loadGraphics(void) = 0;
 
     /* load a new theme, and activate it, maybe that very theme is already
@@ -49,9 +51,11 @@ class graphics_c {
     /* to get the block size of one block */
     virtual unsigned int blockX(void) const = 0;
     virtual unsigned int blockY(void) const = 0;
+
     virtual unsigned int halveBlockDisplace(void) const = 0;  // return and noffset to actually place the objects
     virtual unsigned int antDisplace(void) const = 0;  // return and noffset to actually place the objects
 
+    // get tile for currenly active theme
     SDL_Surface * getBgTile(unsigned int num) {
       if (num < bgTiles[curTheme].size())
         return bgTiles[curTheme][num];
@@ -66,11 +70,19 @@ class graphics_c {
     }
 
 
+    // get domino animation image
     SDL_Surface * getDomino(unsigned int domino, unsigned int image) { return dominos[domino][image]; }
+    // get ant animation image
     SDL_Surface * getAnt(unsigned int animation, unsigned int step) { return ant[animation][step].v; }
+
+    // y offset to use when drawing the ant for a given animation
     int getAntOffset(unsigned int animation, unsigned int step) { return step<ant[animation].size()?ant[animation][step].ofs:0; }
+
+    // return numbers of images for a given ant animation
     unsigned int getAntImages(unsigned int animation) { return ant[animation].size(); }
-    SDL_Surface * getCarriedDomino(unsigned int domino, unsigned int image) { return carriedDominos[domino][image]; }
+
+    // get image for a dmino carried by the ant
+    SDL_Surface * getCarriedDomino(unsigned int image, unsigned int domino) { return carriedDominos[image][domino]; }
 
     SDL_Surface * getBoxBlock(unsigned int num) { return boxBlocks[num]; }
 
@@ -79,10 +91,17 @@ class graphics_c {
     virtual signed int getCarryOffsetX(unsigned int animation, unsigned int image) const = 0;
     virtual signed int getCarryOffsetY(unsigned int animation, unsigned int image) const = 0;
 
+    // get the relative position of the domino, when the ant is pullling it out or pushing it in
     virtual signed int getMoveOffsetX(unsigned int animation, unsigned int image) const = 0;
     virtual signed int getMoveOffsetY(unsigned int animation, unsigned int image) const = 0;
+
+    // which domino image to use, when value is smaller than 32 the number represents
+    // a number for the normal domino images
+    // when a number >= 32 ist used the number represents a number for the carried
+    // domino images
     virtual signed int getMoveImage(unsigned int animation, unsigned int image) const = 0;
 
+    // needs to be overloaded containing the loading function for a theme
     virtual void loadTheme(const std::string & name) = 0;
 
     static const unsigned char numDominoTypes;
@@ -109,7 +128,7 @@ class graphics_c {
 
     // sets a specific domino for a specific domino type and animation state
     void setDomino(unsigned int type, unsigned int num, SDL_Surface * v);
-    void setCarriedDomino(unsigned int type, unsigned int num, SDL_Surface * v);
+    void setCarriedDomino(unsigned int image, unsigned int domino, SDL_Surface * v);
 
     // add an image to a specific ant animation, the new image is added at the end
     // you must also provide an y-offset used when animating to displace the image

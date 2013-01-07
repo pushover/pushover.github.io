@@ -24,11 +24,72 @@
 const unsigned char graphics_c::numAntAnimations = 66;
 const unsigned char numAntAnimationsImages[graphics_c::numAntAnimations] = {
 
- 6, 6, 6, 6, 4, 4, 8, 8, 8, 8, 6, 6, 6, 6, 6,
- 6, 8, 8, 8, 8, 1, 1, 15, 15, 16, 16, 2, 2, 2,
- 2, 13, 17, 0, 1, 2, 6, 7, 7, 12, 12, 8, 8, 4,
- 4, 8, 8, 6, 6, 4, 3, 1, 15, 2, 4, 7, 3, 7, 4,
- 11, 11, 8, 8, 8, 1, 1, 13
+ 6,        // AntAnimWalkLeft,
+ 6,        // AntAnimWalkRight,
+ 6,        // AntAnimJunpUpLeft,
+ 6,        // AntAnimJunpUpRight,
+ 4,        // AntAnimJunpDownLeft,
+ 4,        // AntAnimJunpDownRight,
+ 8,        // AntAnimLadder1,
+ 8,        // AntAnimLadder2,
+ 8,        // AntAnimLadder3,
+ 8,        // AntAnimLadder4,
+ 6,        // AntAnimCarryLeft,
+ 6,        // AntAnimCarryRight,
+ 6,        // AntAnimCarryUpLeft,
+ 6,        // AntAnimCarryUpRight,
+ 6,        // AntAnimCarryDownLeft,
+ 6,        // AntAnimCarryDownRight,
+ 8,        // AntAnimCarryLadder1,
+ 8,        // AntAnimCarryLadder2,
+ 8,        // AntAnimCarryLadder3,
+ 8,        // AntAnimCarryLadder4,
+ 1,        // AntAnimCarryStopLeft,
+ 1,        // AntAnimCarryStopRight,
+ 15,       // AntAnimPullOutLeft,
+ 15,       // AntAnimPullOutRight,
+ 16,       // AntAnimPushInLeft,
+ 16,       // AntAnimPushInRight,
+ 2,        // AntAnimXXX1,
+ 2,        // AntAnimXXX2,
+ 2,        // AntAnimXXX3,
+ 2,        // AntAnimXXX4,
+ 13,       // AntAnimLoosingDominoRight,
+ 17,       // AntAnimLoosingDominoLeft,
+ 0,        // AntAnimXXX7,
+ 1,        // AntAnimStop,
+ 2,        // AntAnimTapping,
+ 6,        // AntAnimYawning,
+ 7,        // AntAnimEnterLeft,
+ 7,        // AntAnimEnterRight,
+ 12,       // AntAnimPushLeft,
+ 12,       // AntAnimPushRight,
+ 8,        // AntAnimPushStopperLeft,
+ 8,        // AntAnimPushStopperRight,
+ 4,        // AntAnimPushRiserLeft,
+ 4,        // AntAnimPushRiserRight,
+ 8,        // AntAnimPushDelayLeft,
+ 8,        // AntAnimPushDelayRight,
+ 6,        // AntAnimSuddenFallRight,
+ 6,        // AntAnimSuddenFallLeft,
+ 4,        // AntAnimFalling,
+ 3,        // AntAnimInFrontOfExploder,
+ 1,        // AntAnimInFrontOfExploderWait,
+ 15,       // AntAnimLanding,
+ 2,        // AntAnimGhost1,
+ 4,        // AntAnimGhost2,
+ 7,        // AntAnimLeaveDoorEnterLevel,
+ 3,        // AntAnimStepAsideAfterEnter,
+ 7,        // AntAnimEnterDoor,
+ 4,        // AntAnimXXX9,
+ 11,       // AntAnimStruggingAgainsFallLeft,
+ 11,       // AntAnimStruggingAgainsFallRight,
+ 8,        // AntAnimVictory,
+ 8,        // AntAnimShrugging,
+ 8,        // AntAnimNoNo,
+ 1,        // AntAnimXXXA,
+ 1,        // AntAnimDominoDying,
+ 13        // AntAnimLandDying,
 
 };
 
@@ -94,8 +155,8 @@ void graphics_c::setDomino(unsigned int type, unsigned int num, SDL_Surface * v)
   dominos[type][num] = v;
 }
 
-void graphics_c::setCarriedDomino(unsigned int type, unsigned int num, SDL_Surface * v) {
-  carriedDominos[type][num] = v;
+void graphics_c::setCarriedDomino(unsigned int image, unsigned int domino, SDL_Surface * v) {
+  carriedDominos[image][domino] = v;
 }
 
 void graphics_c::addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free) {
@@ -110,8 +171,29 @@ void graphics_c::addAnt(unsigned int anim, unsigned int img, signed char yOffset
 
 const unsigned char graphics_c::numDominoTypes = 23;
 const unsigned char graphics_c::numDominos[numDominoTypes] = {
-  15, 15, 14, 8, 15, 15, 15, 15, 15, 17, 15, 15, 15, 15, 15,
-  6, 6, 6, 6, 6, 6, 8, 1
+  15,   // DominoTypeStandard,
+  15,   // DominoTypeStopper,
+  14,   // DominoTypeSplitter,
+  8,    // DominoTypeExploder,
+  15,   // DominoTypeDelay,
+  15,   // DominoTypeTumbler,
+  15,   // DominoTypeBridger,
+  15,   // DominoTypeVanish,
+  15,   // DominoTypeTrigger,
+  17,   // DominoTypeAscender,
+  15,   // DominoTypeConnectedA,
+  15,   // DominoTypeConnectedB,
+  15,   // DominoTypeCounter1,
+  15,   // DominoTypeCounter2,
+  15,   // DominoTypeCounter3,
+  6,    // DominoTypeCrash0,
+  6,    // DominoTypeCrash1,
+  6,    // DominoTypeCrash2,
+  6,    // DominoTypeCrash3,
+  6,    // DominoTypeCrash4,
+  6,    // DominoTypeCrash5,
+  8,    // DominoTypeRiserCont,
+  1     // DominoTypeQuaver,
 };
 
 
