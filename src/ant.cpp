@@ -145,7 +145,9 @@ void ant_c::draw(void) {
 
       if (img < 32)
       {
-        if (img != 7 && (carriedDomino == 2 || carriedDomino == 3 || carriedDomino == 4 || carriedDomino == 10))
+        // the ant normaly toppled the domino slightly over then lifting it up, but those
+        // images don't exist with some dominos, so we stay with the vertical image
+        if (img != 7 && (carriedDomino == levelData_c::DominoTypeSplitter || carriedDomino == levelData_c::DominoTypeExploder || carriedDomino == levelData_c::DominoTypeAscender))
         {
           img = 7;
         }
