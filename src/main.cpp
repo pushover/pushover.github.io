@@ -307,6 +307,8 @@ int main(int argc, char * argv[]) {
 
   states_e currentState = ST_INIT, nextState = ST_INIT;
 
+  bool exitAfterReplay = false;
+
   if (argc == 3 && strcmp(argv[1], "-r") == 0)
   {
     // try to load the record and the level that belongs to it
@@ -319,6 +321,24 @@ int main(int argc, char * argv[]) {
       soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
 
       nextState = ST_REPLAY;
+    }
+    catch  (...) {
+      nextState = ST_PROFILE_INIT;
+    }
+  }
+  if (argc == 3 && strcmp(argv[1], "-R") == 0)
+  {
+    // try to load the record and the level that belongs to it
+    // if it fails, fall back to main menu
+    try {
+      rec.load(argv[2]);
+      selectedMission = rec.getLevelsetName();
+      levelsetList->getLevelset(selectedMission).loadLevel(l, rec.getLevelName(), "");
+      a.initForLevel();
+      soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
+
+      nextState = ST_REPLAY;
+      exitAfterReplay = true;
     }
     catch  (...) {
       nextState = ST_PROFILE_INIT;
@@ -389,9 +409,12 @@ int main(int argc, char * argv[]) {
     while (!exitProgram) {
 
       // wait for the right amount of time for the next frame
-      ticks += 1000/18;
-      if (SDL_GetTicks() < ticks)
-        SDL_Delay(ticks-SDL_GetTicks());
+      if (!exitAfterReplay)
+      {
+        ticks += 1000/18;
+        if (SDL_GetTicks() < ticks)
+          SDL_Delay(ticks-SDL_GetTicks());
+      }
 
       while (true) {
 
@@ -952,12 +975,26 @@ int main(int argc, char * argv[]) {
 
         case ST_REPLAY:
           if (rec.endOfRecord())
-            nextState = ST_PLAY;
+          {
+            if (exitAfterReplay)
+              nextState = ST_EXIT;
+            else
+              nextState = ST_PLAY;
+          }
           else
           {
             a.setKeyStates(rec.getEvent());
             if (playTick(l, a))
-              nextState = ST_MAIN;
+            {
+              if (exitAfterReplay)
+              {
+                nextState = ST_EXIT;
+              }
+              else
+              {
+                nextState = ST_MAIN;
+              }
+            }
             break;
           }
           // intentionally fall through to ST_PLAY when
