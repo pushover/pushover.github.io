@@ -152,17 +152,11 @@ void ant_c::draw(void) {
           img = 7;
         }
 
-        if (carriedDomino > gr.numDominoTypes)
-          vid.blit(gr.getDomino(0, img), x, y);
-        else
-          vid.blit(gr.getDomino(carriedDomino-1, img), x, y);
+        vid.blit(gr.getDomino(carriedDomino-1, img), x, y);
       }
       else
       {
-        if (carriedDomino > gr.numDominoTypes)
-          vid.blit(gr.getCarriedDomino(img-32, 0), x, y);
-        else
-          vid.blit(gr.getCarriedDomino(img-32, carriedDomino-1), x, y);
+        vid.blit(gr.getCarriedDomino(img-32, carriedDomino-1), x, y);
       }
     }
     if (animation >= AntAnimCarryLeft && animation <= AntAnimCarryStopRight)
