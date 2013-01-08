@@ -1249,10 +1249,6 @@ unsigned int ant_c::checkForNoKeyActions(void) {
   return ReturnAntState;
 }
 
-static void SaveLevelState(void) {
-  // TODO: we need to fill this function
-}
-
 bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
 
   if (ofs < -1 || ofs > 1) return false;
@@ -1430,7 +1426,6 @@ unsigned int ant_c::SFNextAction(void) {
       }
       else
       {
-        SaveLevelState();
         numPushsLeft--;
         returnState = AntAnimPushLeft;
         direction = -1;
@@ -1441,7 +1436,6 @@ unsigned int ant_c::SFNextAction(void) {
       downChecker = true;
       if (numPushsLeft && keyMask & KEY_ACTION)
       {
-        SaveLevelState();
         blockX++;
         animation = returnState = AntAnimPushLeft;
         if (!PushableDomino(blockX, blockY, -1))
@@ -1541,7 +1535,6 @@ unsigned int ant_c::SFNextAction(void) {
       }
       else
       {
-        SaveLevelState();
         numPushsLeft--;
         returnState = AntAnimPushRight;
         direction = 1;
@@ -1552,7 +1545,6 @@ unsigned int ant_c::SFNextAction(void) {
       downChecker = true;
       if (numPushsLeft != 0 && keyMask & KEY_ACTION)
       {
-        SaveLevelState();
         blockX--;
         animation = returnState = AntAnimPushRight;
         if (!PushableDomino(blockX, blockY, 1))
