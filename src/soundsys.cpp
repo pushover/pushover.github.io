@@ -91,7 +91,7 @@ void soundSystem_c::openSound(const std::string & base) {
     return;
   }
 
-  if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
+  if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
     SDL_QuitSubSystem(SDL_INIT_AUDIO);
     return;
   }
