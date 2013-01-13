@@ -123,14 +123,6 @@ class surface_c {
     void gradient(int x, int y, int w, int h);
 };
 
-class pixelSurface_c : public surface_c {
-
-  public:
-
-    // creates a surface of the same size and same format at the given surface
-    pixelSurface_c(const surface_c & pre);
-};
-
 class screen_c : public surface_c {
 
   private:

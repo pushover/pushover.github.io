@@ -343,9 +343,6 @@ SDL_Surface * surface_c::getIdentical(void) const {
     return SDL_CreateRGBSurface(0, video->w, video->h, 32, video->format->Rmask, video->format->Gmask, video->format->Bmask, 0);
 }
 
-
-pixelSurface_c::pixelSurface_c(const surface_c & pre) : surface_c(pre.getIdentical()) { }
-
 static std::vector<TTF_Font * > fonts;
 
 

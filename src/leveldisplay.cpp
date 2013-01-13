@@ -45,7 +45,7 @@ void levelDisplay_c::load(const textsections_c & sections, const std::string & u
   Min = Sec = -1;
 }
 
-levelDisplay_c::levelDisplay_c(surface_c & t, graphics_c & g) : background(t), target(t), gr(g) {
+levelDisplay_c::levelDisplay_c(surface_c & t, graphics_c & g) : background(t.getIdentical()), target(t), gr(g) {
   Min = Sec = -1;
 }
 

@@ -38,7 +38,7 @@ class levelDisplay_c : public levelData_c {
     /* this surface contains the background. It is only updated when necessary
      * the content it used to restore stuff behind the sprites
      */
-    pixelSurface_c background;
+    surface_c background;
 
     surface_c & target;
     graphics_c & gr;
