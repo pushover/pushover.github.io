@@ -79,7 +79,7 @@ class bitfield_c {
   public:
 
     void markDirty(int x, int y) { if (x >= 0 && x < 20 && y >= 0 && y < 13) dynamicDirty[y] |= (1 << x); }
-    bool isDirty(int x, int y) {
+    bool isDirty(int x, int y) const {
       if (x >= 0 && x < 20 && y >= 0 && y < 13)
         return (dynamicDirty[y] & (1 << x)) != 0;
       else
@@ -95,10 +95,6 @@ class surface_c {
 
     SDL_Surface * video;
 
-  private:
-
-    bitfield_c dirty;
-
   public:
 
     SDL_Surface * getIdentical(void) const;
@@ -106,11 +102,6 @@ class surface_c {
     surface_c(void) : video(0) {}
     surface_c(SDL_Surface * c) : video(c) {}
     ~surface_c(void);
-
-    void markDirty(int x, int y) { dirty.markDirty(x, y); }
-    bool isDirty(int x, int y) { return dirty.isDirty(x, y); }
-    void clearDirty(void) { dirty.clearDirty(); }
-    void markAllDirty(void) { dirty.markAllDirty(); }
 
     // blit the complete surface s so that the lower left corner of x is at x, y
     void blit(SDL_Surface * s, int x, int y);
@@ -152,7 +143,7 @@ class screen_c : public surface_c {
     ~screen_c(void);
 
     void flipComplete(void);  // flips the complete screen, not looking at the dirty blocks
-    void flipDirty(void);     // updates only the dirty blocks
+    void flipDirty(const bitfield_c & dirty);     // updates only the dirty blocks
     bool flipAnimate(void);   // updates only the dirty blocks, but does that step by step resultin in an blending effetc return true, when done
 
     void toggleFullscreen(void);

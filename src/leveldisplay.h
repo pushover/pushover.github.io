@@ -39,8 +39,10 @@ class levelDisplay_c : public levelData_c {
      * the content it used to restore stuff behind the sprites
      */
     surface_c background;
-
     surface_c & target;
+
+    bitfield_c dirty, dirtybg;
+
     graphics_c & gr;
 
   public:
@@ -59,9 +61,13 @@ class levelDisplay_c : public levelData_c {
     /* draw the changed stuff into the target surface */
     void drawDominos(void);
 
-    void markDirty(int x, int y) { target.markDirty(x, y); }
-    void markDirtyBg(int x, int y) { background.markDirty(x, y); target.markDirty(x, y); }
-    bool isDirty(int x, int y) { return target.isDirty(x, y); }
+    void markDirty(int x, int y) { dirty.markDirty(x, y); }
+    void markDirtyBg(int x, int y) { dirtybg.markDirty(x, y); dirty.markDirty(x, y); }
+    bool isDirty(int x, int y) { return dirty.isDirty(x, y); }
+    void markAllDirty(void) { dirty.markAllDirty(); }
+    void clearDirty(void) { dirty.clearDirty(); }
+
+    const bitfield_c & getDirty(void) const { return dirty; }
 };
 
 

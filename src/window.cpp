@@ -93,14 +93,10 @@ void window_c::clearInside(void) {
       if (j+1 == h) yp = 2;
 
       surf.blitBlock(gr.getBoxBlock(yp*3+xp), (x+i)*gr.blockX(), (y+j)*gr.blockY());
-      surf.markDirty(x+i, y+j);
     }
 }
 
 window_c::~window_c(void) {
-  for (unsigned int i = 0; i < w; i++)
-    for (unsigned int j = 0; j < h; j++)
-      surf.markDirty(x+i, y+j);
 }
 
 #define NUM_DOMINOS 12

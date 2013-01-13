@@ -146,7 +146,7 @@ void screen_c::flipComplete(void)
   animationState = 0;
 }
 
-void screen_c::flipDirty(void)
+void screen_c::flipDirty(const bitfield_c & dirty)
 {
   SDL_Rect rects[10*13];
   int numrects = 0;
@@ -157,7 +157,7 @@ void screen_c::flipDirty(void)
 
     for (int x = 0; x < 21; x++)
     {
-      if (isDirty(x, y) && (x < 20))
+      if (dirty.isDirty(x, y) && (x < 20))
       {
         if (rowStart == -1)
           rowStart = x;
