@@ -630,7 +630,7 @@ listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, gra
 
     for (unsigned int i = 0; i < ls.getLevelsetNames().size(); i++)
     {
-      entries.push_back(listWindow_c::entry(ls.getLevelsetNames()[i]));
+      entries.push_back(listWindow_c::entry(_(ls.getLevelsetNames()[i].c_str())));
     }
 
     return new listWindow_c(4, 2, 12, 9, surf, gr, _("Select Levelset"), entries, true);
@@ -694,7 +694,7 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
     {
         std::string e = ls.getLevelNames()[i];
 
-        entries.push_back(listWindow_c::entry(e));
+        entries.push_back(listWindow_c::entry(_(e.c_str())));
 
         if (solv.solved(ls.getChecksum(e)))
             entries.rbegin()->sol = 2;
