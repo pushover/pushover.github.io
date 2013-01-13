@@ -63,7 +63,7 @@ class levelDisplay_c : public levelData_c {
 
     void markDirty(int x, int y) { dirty.markDirty(x, y); }
     void markDirtyBg(int x, int y) { dirtybg.markDirty(x, y); dirty.markDirty(x, y); }
-    bool isDirty(int x, int y) { return dirty.isDirty(x, y); }
+    bool isDirty(int x, int y) const { return dirty.isDirty(x, y); }
     void markAllDirty(void) { dirty.markAllDirty(); }
     void clearDirty(void) { dirty.clearDirty(); }
 

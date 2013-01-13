@@ -47,13 +47,6 @@ class graphicsN_c : public graphics_c {
     virtual unsigned int blockX(void) const { return 40; }
     virtual unsigned int blockY(void) const { return 48; }
     virtual unsigned int halveBlockDisplace(void) const { return 8*3; }
-    virtual unsigned int antDisplace(void) const { return 6*3; }
-
-    virtual signed int getCarryOffsetX(unsigned int animation, unsigned int image) const;
-    virtual signed int getCarryOffsetY(unsigned int animation, unsigned int image) const ;
-    virtual signed int getMoveOffsetX(unsigned int animation, unsigned int image) const;
-    virtual signed int getMoveOffsetY(unsigned int animation, unsigned int image) const;
-    virtual signed int getMoveImage(unsigned int animation, unsigned int image) const;
 
     virtual int timeXPos(void) const { return 5*18/2; }
     virtual int timeYPos(void) const { return 3*186; }
@@ -62,11 +55,21 @@ class graphicsN_c : public graphics_c {
     virtual int convertDominoY(int y) const { return 3*y; }
     virtual int splitterY(void) const { return 3*12; }
 
+    virtual void drawAnt(const ant_c & ant, const levelDisplay_c & level, surface_c & vid);
+
   private:
 
     std::string dataPath;
 
     void getAnimation(int anim, pngLoader_c * png);
+
+    signed int getCarryOffsetX(unsigned int animation, unsigned int image) const;
+    signed int getCarryOffsetY(unsigned int animation, unsigned int image) const ;
+    signed int getMoveOffsetX(unsigned int animation, unsigned int image) const;
+    signed int getMoveOffsetY(unsigned int animation, unsigned int image) const;
+    signed int getMoveImage(unsigned int animation, unsigned int image) const;
+
+    unsigned int antDisplace(void) const { return 6*3; }
 
 };
 

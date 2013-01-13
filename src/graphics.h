@@ -27,6 +27,10 @@
 #include <vector>
 #include <map>
 
+class ant_c;
+class surface_c;
+class levelDisplay_c;
+
 /* this class contains all the information for all graphics */
 class graphics_c {
 
@@ -53,7 +57,6 @@ class graphics_c {
     virtual unsigned int blockY(void) const = 0;
 
     virtual unsigned int halveBlockDisplace(void) const = 0;  // return and noffset to actually place the objects
-    virtual unsigned int antDisplace(void) const = 0;  // return and noffset to actually place the objects
 
     // get tile for currenly active theme
     SDL_Surface * getBgTile(unsigned int num) {
@@ -72,8 +75,6 @@ class graphics_c {
 
     // get domino animation image
     SDL_Surface * getDomino(unsigned int domino, unsigned int image) { return dominos[domino][image]; }
-    // get ant animation image
-    SDL_Surface * getAnt(unsigned int animation, unsigned int step) { return ant[animation][step].v; }
 
     // y offset to use when drawing the ant for a given animation
     int getAntOffset(unsigned int animation, unsigned int step) { return step<ant[animation].size()?ant[animation][step].ofs:0; }
@@ -85,21 +86,6 @@ class graphics_c {
     SDL_Surface * getCarriedDomino(unsigned int image, unsigned int domino) { return carriedDominos[image][domino]; }
 
     SDL_Surface * getBoxBlock(unsigned int num) { return boxBlocks[num]; }
-
-    // these are offsets that are used together with carried domino to displace
-    // that domino
-    virtual signed int getCarryOffsetX(unsigned int animation, unsigned int image) const = 0;
-    virtual signed int getCarryOffsetY(unsigned int animation, unsigned int image) const = 0;
-
-    // get the relative position of the domino, when the ant is pullling it out or pushing it in
-    virtual signed int getMoveOffsetX(unsigned int animation, unsigned int image) const = 0;
-    virtual signed int getMoveOffsetY(unsigned int animation, unsigned int image) const = 0;
-
-    // which domino image to use, when value is smaller than 32 the number represents
-    // a number for the normal domino images
-    // when a number >= 32 ist used the number represents a number for the carried
-    // domino images
-    virtual signed int getMoveImage(unsigned int animation, unsigned int image) const = 0;
 
     // needs to be overloaded containing the loading function for a theme
     virtual void loadTheme(const std::string & name) = 0;
@@ -117,6 +103,8 @@ class graphics_c {
     virtual int convertDominoX(int x) const = 0;
     virtual int convertDominoY(int y) const = 0;
     virtual int splitterY(void) const = 0;
+
+    virtual void drawAnt(const ant_c & ant, const levelDisplay_c & level, surface_c & vid) = 0;
 
   protected:
 
@@ -140,6 +128,9 @@ class graphics_c {
     // block for the filling, add the blocks as if you had painted a 3x3 box, upper left corner
     // upper edge, upper right corner, left edge, ...., lower right corner
     void addBoxBlock(SDL_Surface * v);
+
+    // get ant animation image
+    SDL_Surface * getAnt(unsigned int animation, unsigned int step) { return ant[animation][step].v; }
 
   private:
 

@@ -178,14 +178,14 @@ static unsigned int getKeyMask(void) {
 // 6 trigger not last to fall
 // 7 trigger not flat on the ground
 //
-int playTick(levelPlayer_c & l, ant_c & a)
+int playTick(levelPlayer_c & l, ant_c & a, surface_c & screen, graphics_c & gr)
 {
   l.performDoors();
   int res = l.performDominos(a);
 
   l.updateBackground();
   l.drawDominos();
-  a.draw();
+  gr.drawAnt(a, l, screen);
 
   if (l.triggerIsFalln() && !a.isVisible() && l.isExitDoorClosed() && (res == 0)) {
 
@@ -441,7 +441,7 @@ int main(int argc, char * argv[]) {
               delete window;
               window = 0;
               l.drawDominos();
-              a.draw();
+              gr.drawAnt(a, l, screen);
               break;
 
             case ST_PREREPLAY:
@@ -494,7 +494,7 @@ int main(int argc, char * argv[]) {
             case ST_PREPLAY:
                               l.updateBackground();
                               l.drawDominos();
-                              a.draw();
+                              gr.drawAnt(a, l, screen);
                               ticks = SDL_GetTicks();    // this might have taken some time so reinit the ticks
                               break;
 
@@ -978,7 +978,7 @@ int main(int argc, char * argv[]) {
           {
             failDelay--;
             a.setKeyStates(0);
-            playTick(l, a);
+            playTick(l, a, screen, gr);
           }
           else
           {
@@ -997,7 +997,7 @@ int main(int argc, char * argv[]) {
           else
           {
             a.setKeyStates(rec.getEvent());
-            if (playTick(l, a))
+            if (playTick(l, a, screen, gr))
             {
               if (exitAfterReplay)
               {
@@ -1020,7 +1020,7 @@ int main(int argc, char * argv[]) {
             rec.addEvent(keyMask);
             a.setKeyStates(keyMask);
           }
-          failReason = playTick(l, a);
+          failReason = playTick(l, a, screen, gr);
 
           if (l.levelInactive())
           {

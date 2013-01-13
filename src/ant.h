@@ -36,6 +36,79 @@ class surface_c;
 #define KEY_DOWN 8
 #define KEY_ACTION 16
 
+
+typedef enum {
+  AntAnimWalkLeft,
+  AntAnimWalkRight,
+  AntAnimJunpUpLeft,
+  AntAnimJunpUpRight,
+  AntAnimJunpDownLeft,
+  AntAnimJunpDownRight,
+  AntAnimLadder1,
+  AntAnimLadder2,
+  AntAnimLadder3,
+  AntAnimLadder4,
+  AntAnimCarryLeft,
+  AntAnimCarryRight,
+  AntAnimCarryUpLeft,
+  AntAnimCarryUpRight,
+  AntAnimCarryDownLeft,
+  AntAnimCarryDownRight,
+  AntAnimCarryLadder1,
+  AntAnimCarryLadder2,
+  AntAnimCarryLadder3,
+  AntAnimCarryLadder4,
+  AntAnimCarryStopLeft,
+  AntAnimCarryStopRight,
+  AntAnimPullOutLeft,
+  AntAnimPullOutRight,
+  AntAnimPushInLeft,
+  AntAnimPushInRight,
+  AntAnimXXX1,
+  AntAnimXXX2,
+  AntAnimXXX3,
+  AntAnimXXX4,
+  AntAnimLoosingDominoRight,
+  AntAnimLoosingDominoLeft,
+  AntAnimXXX7,
+  AntAnimStop,
+  AntAnimTapping,
+  AntAnimYawning,
+  AntAnimEnterLeft,
+  AntAnimEnterRight,
+  AntAnimPushLeft,
+  AntAnimPushRight,
+  AntAnimPushStopperLeft,
+  AntAnimPushStopperRight,
+  AntAnimPushRiserLeft,
+  AntAnimPushRiserRight,
+  AntAnimPushDelayLeft,
+  AntAnimPushDelayRight,
+  AntAnimSuddenFallRight,
+  AntAnimSuddenFallLeft,
+  AntAnimFalling,
+  AntAnimInFrontOfExploder,
+  AntAnimInFrontOfExploderWait,
+  AntAnimLanding,
+  AntAnimGhost1,
+  AntAnimGhost2,
+  AntAnimLeaveDoorEnterLevel,
+  AntAnimStepAsideAfterEnter,
+  AntAnimEnterDoor,
+  AntAnimXXX9,
+  AntAnimStruggingAgainsFallLeft,
+  AntAnimStruggingAgainsFallRight,
+  AntAnimVictory,
+  AntAnimShrugging,
+  AntAnimNoNo,
+  AntAnimXXXA,
+  AntAnimDominoDying,
+  AntAnimLandDying,
+  AntAnimNothing
+
+} AntAnimationState;
+
+
 class ant_c {
 
   private:
@@ -77,8 +150,6 @@ class ant_c {
     // do one animation step for the ant
     void performAnimation(void);
 
-    void draw(void);
-
     void setKeyStates(unsigned int keyMask);
 
     bool carrySomething(void) { return carriedDomino != 0; }
@@ -90,6 +161,13 @@ class ant_c {
     bool isVisible(void) const { return blockX >= 0 && blockX < 20 && blockY >= 0 && blockY < 13; }
 
     int getPushsLeft(void) const { return numPushsLeft; }
+
+    int getBlockX(void) const { return blockX; }
+    int getBlockY(void) const { return blockY; }
+    unsigned int getCarriedDomino(void) const { return carriedDomino; }
+    unsigned int getAnimation(void) const { return animation; }
+    unsigned int getAnimationImage(void) const { return animationImage; }
+    int getScreenBlock(void) const { return screenBlock; }
 
   private:
 

@@ -24,6 +24,10 @@
 #include "pngloader.h"
 #include "luaclass.h"
 
+#include "ant.h"
+#include "leveldisplay.h"
+#include "screen.h"
+
 #include <SDL.h>
 #include <string.h>
 #include <iostream>
@@ -456,4 +460,130 @@ static signed int moveOffsets[10][64] = {
 signed int graphicsN_c::getMoveOffsetX(unsigned int animation, unsigned int image) const { return 5*moveOffsets[animation][4*image+0]/2; }
 signed int graphicsN_c::getMoveOffsetY(unsigned int animation, unsigned int image) const { return 3*moveOffsets[animation][4*image+1]; }
 signed int graphicsN_c::getMoveImage(unsigned int animation, unsigned int image) const { return moveOffsets[animation][4*image+2]; }
+
+
+void graphicsN_c::drawAnt(const ant_c & ant, const levelDisplay_c & level, surface_c & vid) {
+
+  if (!ant.isVisible()) return;
+
+  if (ant.getCarriedDomino() != 0)
+  {
+    if (ant.getAnimation() >= AntAnimPullOutLeft && ant.getAnimation() <= AntAnimLoosingDominoLeft)
+    {
+      int a = ant.getAnimation() - AntAnimPullOutLeft;
+
+      int x = (ant.getBlockX()-2)*blockX();
+      int y = (ant.getBlockY())*blockY()+ant.getScreenBlock()+antDisplace();
+
+      y += getMoveOffsetY(a, ant.getAnimationImage());
+      x += getMoveOffsetX(a, ant.getAnimationImage());
+
+      int img = getMoveImage(a, ant.getAnimationImage());
+
+      if (img < 32)
+      {
+        // the ant normaly toppled the domino slightly over then lifting it up, but those
+        // images don't exist with some dominos, so we stay with the vertical image
+        if (img != 7 && (ant.getCarriedDomino() == levelData_c::DominoTypeSplitter || ant.getCarriedDomino() == levelData_c::DominoTypeExploder || ant.getCarriedDomino() == levelData_c::DominoTypeAscender))
+        {
+          img = 7;
+        }
+
+        vid.blit(getDomino(ant.getCarriedDomino()-1, img), x, y);
+      }
+      else
+      {
+        vid.blit(getCarriedDomino(img-32, ant.getCarriedDomino()-1), x, y);
+      }
+    }
+    if (ant.getAnimation() >= AntAnimCarryLeft && ant.getAnimation() <= AntAnimCarryStopRight)
+    {
+      /* put the domino image of the carried domino */
+      int a = ant.getAnimation() - AntAnimCarryLeft;
+
+      vid.blit(getCarriedDomino(a, ant.getCarriedDomino()-1),
+          (ant.getBlockX()-2)*blockX()+getCarryOffsetX(a, ant.getAnimationImage()),
+          (ant.getBlockY())*blockY()+ant.getScreenBlock()+antDisplace()+getCarryOffsetY(a, ant.getAnimationImage()));
+
+    }
+  }
+
+  if (getAnt(ant.getAnimation(), ant.getAnimationImage()))
+  {
+    vid.blit(getAnt(ant.getAnimation(), ant.getAnimationImage()), ant.getBlockX()*blockX()-45, (ant.getBlockY())*blockY()+ant.getScreenBlock()+antDisplace()+3);
+  }
+
+  /* what comes now, is to put the ladders back in front of the ant,
+   * we don't need to do that, if the ant is on the ladder
+   */
+
+  if (ant.getAnimation() >= AntAnimLadder1 && ant.getAnimation() <= AntAnimLadder4) return;
+  if (ant.getAnimation() >= AntAnimCarryLadder1 && ant.getAnimation() <= AntAnimCarryLadder4) return;
+  if (ant.getAnimation() >= AntAnimXXX1 && ant.getAnimation() <= AntAnimXXX4) return;
+
+  if (level.getFg(ant.getBlockX(), ant.getBlockY()) == levelData_c::FgElementPlatformLadderUp)
+  {
+    vid.blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant.getBlockX())*blockX(), (ant.getBlockY())*blockY());
+  }
+  else
+  {
+    if ((level.getFg(ant.getBlockX(), ant.getBlockY()) == levelData_c::FgElementPlatformLadderDown) ||
+        (level.getFg(ant.getBlockX(), ant.getBlockY()) == levelData_c::FgElementLadder))
+    {
+      vid.blitBlock(getFgTile(levelData_c::FgElementLadder), (ant.getBlockX())*blockX(), (ant.getBlockY())*blockY());
+    }
+  }
+
+  if ((ant.getBlockY() > 0) &&
+      ((level.getFg(ant.getBlockX(), ant.getBlockY()-1) == levelData_c::FgElementPlatformLadderDown) ||
+       (level.getFg(ant.getBlockX(), ant.getBlockY()-1) == levelData_c::FgElementLadder)))
+  {
+    vid.blitBlock(getFgTile(levelData_c::FgElementLadder), (ant.getBlockX())*blockX(), (ant.getBlockY()-1)*blockY());
+  }
+
+  if (ant.getBlockX() > 0 && level.isDirty(ant.getBlockX()-1, ant.getBlockY()))
+  {
+    if (level.getFg(ant.getBlockX()-1, ant.getBlockY()) == levelData_c::FgElementPlatformLadderUp)
+    {
+      vid.blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant.getBlockX()-1)*blockX(), (ant.getBlockY())*blockY());
+    }
+    else
+    {
+      if ((level.getFg(ant.getBlockX()-1, ant.getBlockY()) == levelData_c::FgElementPlatformLadderDown) ||
+          (level.getFg(ant.getBlockX()-1, ant.getBlockY()) == levelData_c::FgElementLadder))
+      {
+        vid.blitBlock(getFgTile(levelData_c::FgElementLadder), (ant.getBlockX()-1)*blockX(), (ant.getBlockY())*blockY());
+      }
+    }
+    if ((ant.getBlockY() > 0) &&
+        ((level.getFg(ant.getBlockX()-1, ant.getBlockY()-1) == levelData_c::FgElementPlatformLadderDown) ||
+         (level.getFg(ant.getBlockX()-1, ant.getBlockY()-1) == levelData_c::FgElementLadder)))
+    {
+      vid.blitBlock(getFgTile(levelData_c::FgElementLadder), (ant.getBlockX()-1)*blockX(), (ant.getBlockY()-1)*blockY());
+    }
+  }
+
+  if ((ant.getBlockX() < 19) && level.isDirty(ant.getBlockX()+1, ant.getBlockY()))
+  {
+    if (level.getFg(ant.getBlockX()+1, ant.getBlockY()) == levelData_c::FgElementPlatformLadderUp)
+    {
+      vid.blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant.getBlockX()+1)*blockX(), (ant.getBlockY())*blockY());
+    }
+    else
+    {
+      if ((level.getFg(ant.getBlockX()+1, ant.getBlockY()) == levelData_c::FgElementPlatformLadderDown) ||
+          (level.getFg(ant.getBlockX()+1, ant.getBlockY()) == levelData_c::FgElementLadder))
+      {
+        vid.blitBlock(getFgTile(levelData_c::FgElementLadder), (ant.getBlockX()+1)*blockX(), (ant.getBlockY())*blockY());
+      }
+    }
+    if ((ant.getBlockY() > 0) &&
+        ((level.getFg(ant.getBlockX()+1, ant.getBlockY()-1) == levelData_c::FgElementPlatformLadderDown) ||
+         (level.getFg(ant.getBlockX()+1, ant.getBlockY()-1) == levelData_c::FgElementLadder)))
+    {
+      vid.blitBlock(getFgTile(levelData_c::FgElementLadder), (ant.getBlockX()+1)*blockX(), (ant.getBlockY()-1)*blockY());
+    }
+  }
+}
+
 
