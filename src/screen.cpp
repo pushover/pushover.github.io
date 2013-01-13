@@ -311,15 +311,12 @@ bool screen_c::flipAnimate(void)
   {
     for (int x = 0; x < 20; x++)
     {
-      if (isDirty(x, y))
-      {
-        int valNew = f(x, y, animationState);
-        int valOld = f(x, y, animationState-1);
+      int valNew = f(x, y, animationState);
+      int valOld = f(x, y, animationState-1);
 
-        if (valNew != valOld)
-        {
-          u(video, x, y, valOld, valNew, blockX, blockY);
-        }
+      if (valNew != valOld)
+      {
+        u(video, x, y, valOld, valNew, blockX, blockY);
       }
     }
   }
