@@ -68,11 +68,8 @@ unsigned int getTextWidth(unsigned int font, const std::string & t);
 unsigned int getTextHeight(const fontParams_s * par, const std::string & t);
 
 
-class surface_c {
-
-  protected:
-
-    SDL_Surface * video;
+// 2dimensional bitfield of 20x13 bits
+class bitfield_c {
 
   private:
 
@@ -80,12 +77,6 @@ class surface_c {
     uint32_t dynamicDirty[13];
 
   public:
-
-    SDL_Surface * getIdentical(void) const;
-
-    surface_c(void) : video(0) {}
-    surface_c(SDL_Surface * c) : video(c) {}
-    ~surface_c(void);
 
     void markDirty(int x, int y) { if (x >= 0 && x < 20 && y >= 0 && y < 13) dynamicDirty[y] |= (1 << x); }
     bool isDirty(int x, int y) {
@@ -96,6 +87,30 @@ class surface_c {
     }
     void clearDirty(void);
     void markAllDirty(void);
+};
+
+class surface_c {
+
+  protected:
+
+    SDL_Surface * video;
+
+  private:
+
+    bitfield_c dirty;
+
+  public:
+
+    SDL_Surface * getIdentical(void) const;
+
+    surface_c(void) : video(0) {}
+    surface_c(SDL_Surface * c) : video(c) {}
+    ~surface_c(void);
+
+    void markDirty(int x, int y) { dirty.markDirty(x, y); }
+    bool isDirty(int x, int y) { return dirty.isDirty(x, y); }
+    void clearDirty(void) { dirty.clearDirty(); }
+    void markAllDirty(void) { dirty.markAllDirty(); }
 
     // blit the complete surface s so that the lower left corner of x is at x, y
     void blit(SDL_Surface * s, int x, int y);

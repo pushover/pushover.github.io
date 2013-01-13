@@ -48,13 +48,13 @@ void screen_c::toggleFullscreen(void)
   SDL_WM_ToggleFullScreen(video);
 }
 
-void surface_c::clearDirty(void)
+void bitfield_c::clearDirty(void)
 {
   for (unsigned int y = 0; y < 13; y++)
     dynamicDirty[y] = 0;
 }
 
-void surface_c::markAllDirty(void)
+void bitfield_c::markAllDirty(void)
 {
   for (unsigned int y = 0; y < 13; y++)
     dynamicDirty[y] = 0xFFFFFFFF;
