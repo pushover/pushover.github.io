@@ -29,9 +29,9 @@
 #include <vector>
 
 screen_c::screen_c(const graphics_c & g) :
-  gr(g), animationState(0)
+  animationState(0), blockX(g.blockX()), blockY(g.blockY())
 {
-  video = SDL_SetVideoMode(gr.resolutionX(), gr.resolutionY(), 24, 0);
+  video = SDL_SetVideoMode(g.resolutionX(), g.resolutionY(), 24, 0);
   SDL_WM_SetCaption("Pushover", "Pushover");
 }
 
@@ -164,15 +164,15 @@ void screen_c::flipDirty(void)
       }
       else if (rowStart != -1)
       {
-        rects[numrects].y = gr.blockY()*y;
-        rects[numrects].x = gr.blockX()*rowStart;
+        rects[numrects].y = blockY*y;
+        rects[numrects].x = blockX*rowStart;
 
         if (y == 12)
-          rects[numrects].h = gr.blockY()/2;
+          rects[numrects].h = blockY/2;
         else
-          rects[numrects].h = gr.blockY();
+          rects[numrects].h = blockY;
 
-        rects[numrects].w = gr.blockX()*(x-rowStart);
+        rects[numrects].w = blockX*(x-rowStart);
         numrects++;
         rowStart = -1;
       }
@@ -318,7 +318,7 @@ bool screen_c::flipAnimate(void)
 
         if (valNew != valOld)
         {
-          u(video, x, y, valOld, valNew, gr.blockX(), gr.blockY());
+          u(video, x, y, valOld, valNew, blockX, blockY);
         }
       }
     }

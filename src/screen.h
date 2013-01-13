@@ -127,8 +127,8 @@ class screen_c : public surface_c {
 
   private:
 
-    const graphics_c & gr;
     int animationState;
+    uint16_t blockX, blockY;
 
   public:
 
