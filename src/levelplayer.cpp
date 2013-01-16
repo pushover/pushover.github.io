@@ -21,6 +21,7 @@
 
 #include "levelplayer.h"
 
+#include "leveldata.h"
 #include "textsections.h"
 #include "sha1.h"
 #include "graphics.h"
@@ -33,13 +34,20 @@
 #include <sstream>
 #include <iomanip>
 
+// TODO
+#define markDirty(x,y)
+#define markDirtyBg(x,y)
+#define isDirty(x,y) false
+
+
+
 void levelPlayer_c::load(const textsections_c & sections, const std::string & userString) {
 
   openDoorEntry = openDoorExit = false;
   resetTriggerFalln();
   finishCheckDone = false;
 
-  levelDisplay_c::load(sections, userString);
+  levelData_c::load(sections, userString);
 }
 
 void levelPlayer_c::performDoors(void) {

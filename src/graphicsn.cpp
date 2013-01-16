@@ -25,7 +25,7 @@
 #include "luaclass.h"
 
 #include "ant.h"
-#include "leveldisplay.h"
+#include "leveldata.h"
 #include "screen.h"
 
 #include <SDL.h>
@@ -95,9 +95,201 @@ static int antOffsets[] = {
   -24, -12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
+void graphicsN_c::addBoxBlock(SDL_Surface * v) {
+  boxBlocks.push_back(v);
+}
+
+const unsigned char graphicsN_c::numAntAnimations = 66;
+const unsigned char numAntAnimationsImages[graphicsN_c::numAntAnimations] = {
+
+ 6,        // AntAnimWalkLeft,
+ 6,        // AntAnimWalkRight,
+ 6,        // AntAnimJunpUpLeft,
+ 6,        // AntAnimJunpUpRight,
+ 4,        // AntAnimJunpDownLeft,
+ 4,        // AntAnimJunpDownRight,
+ 8,        // AntAnimLadder1,
+ 8,        // AntAnimLadder2,
+ 8,        // AntAnimLadder3,
+ 8,        // AntAnimLadder4,
+ 6,        // AntAnimCarryLeft,
+ 6,        // AntAnimCarryRight,
+ 6,        // AntAnimCarryUpLeft,
+ 6,        // AntAnimCarryUpRight,
+ 6,        // AntAnimCarryDownLeft,
+ 6,        // AntAnimCarryDownRight,
+ 8,        // AntAnimCarryLadder1,
+ 8,        // AntAnimCarryLadder2,
+ 8,        // AntAnimCarryLadder3,
+ 8,        // AntAnimCarryLadder4,
+ 1,        // AntAnimCarryStopLeft,
+ 1,        // AntAnimCarryStopRight,
+ 15,       // AntAnimPullOutLeft,
+ 15,       // AntAnimPullOutRight,
+ 16,       // AntAnimPushInLeft,
+ 16,       // AntAnimPushInRight,
+ 2,        // AntAnimXXX1,
+ 2,        // AntAnimXXX2,
+ 2,        // AntAnimXXX3,
+ 2,        // AntAnimXXX4,
+ 13,       // AntAnimLoosingDominoRight,
+ 17,       // AntAnimLoosingDominoLeft,
+ 0,        // AntAnimXXX7,
+ 1,        // AntAnimStop,
+ 2,        // AntAnimTapping,
+ 6,        // AntAnimYawning,
+ 7,        // AntAnimEnterLeft,
+ 7,        // AntAnimEnterRight,
+ 12,       // AntAnimPushLeft,
+ 12,       // AntAnimPushRight,
+ 8,        // AntAnimPushStopperLeft,
+ 8,        // AntAnimPushStopperRight,
+ 4,        // AntAnimPushRiserLeft,
+ 4,        // AntAnimPushRiserRight,
+ 8,        // AntAnimPushDelayLeft,
+ 8,        // AntAnimPushDelayRight,
+ 6,        // AntAnimSuddenFallRight,
+ 6,        // AntAnimSuddenFallLeft,
+ 4,        // AntAnimFalling,
+ 3,        // AntAnimInFrontOfExploder,
+ 1,        // AntAnimInFrontOfExploderWait,
+ 15,       // AntAnimLanding,
+ 2,        // AntAnimGhost1,
+ 4,        // AntAnimGhost2,
+ 7,        // AntAnimLeaveDoorEnterLevel,
+ 3,        // AntAnimStepAsideAfterEnter,
+ 7,        // AntAnimEnterDoor,
+ 4,        // AntAnimXXX9,
+ 11,       // AntAnimStruggingAgainsFallLeft,
+ 11,       // AntAnimStruggingAgainsFallRight,
+ 8,        // AntAnimVictory,
+ 8,        // AntAnimShrugging,
+ 8,        // AntAnimNoNo,
+ 1,        // AntAnimXXXA,
+ 1,        // AntAnimDominoDying,
+ 13        // AntAnimLandDying,
+
+};
+
+const unsigned char graphicsN_c::numDominoTypes = 23;
+const unsigned char graphicsN_c::numDominos[numDominoTypes] = {
+  15,   // DominoTypeStandard,
+  15,   // DominoTypeStopper,
+  14,   // DominoTypeSplitter,
+  8,    // DominoTypeExploder,
+  15,   // DominoTypeDelay,
+  15,   // DominoTypeTumbler,
+  15,   // DominoTypeBridger,
+  15,   // DominoTypeVanish,
+  15,   // DominoTypeTrigger,
+  17,   // DominoTypeAscender,
+  15,   // DominoTypeConnectedA,
+  15,   // DominoTypeConnectedB,
+  15,   // DominoTypeCounter1,
+  15,   // DominoTypeCounter2,
+  15,   // DominoTypeCounter3,
+  6,    // DominoTypeCrash0,
+  6,    // DominoTypeCrash1,
+  6,    // DominoTypeCrash2,
+  6,    // DominoTypeCrash3,
+  6,    // DominoTypeCrash4,
+  6,    // DominoTypeCrash5,
+  8,    // DominoTypeRiserCont,
+  1     // DominoTypeQuaver,
+};
+
 
 
 graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
+  background = 0;
+  ant = 0;
+  level = 0;
+
+  dominos.resize(numDominoTypes);
+  carriedDominos.resize(numDominoTypes);
+
+  for (unsigned int i = 0; i < numDominoTypes; i++) {
+    dominos[i].resize(numDominos[i]);
+    carriedDominos[i].resize(15);
+  }
+
+  antImages.resize(numAntAnimations);
+
+  for (unsigned int i = 0; i < numAntAnimations; i++) {
+    antImages[i].resize(numAntAnimationsImages[i]);
+  }
+
+}
+
+
+graphicsN_c::~graphicsN_c(void) {
+
+  for (unsigned int i = 0; i < bgTiles.size(); i++)
+    for (unsigned int j = 0; j < bgTiles[i].size(); j++)
+      SDL_FreeSurface(bgTiles[i][j]);
+
+  for (unsigned int i = 0; i < fgTiles.size(); i++)
+    for (unsigned int j = 0; j < fgTiles[i].size(); j++)
+      SDL_FreeSurface(fgTiles[i][j]);
+
+  for (unsigned int i = 0; i < dominos.size(); i++)
+    for (unsigned int j = 0; j < dominos[i].size(); j++)
+      if (dominos[i][j])
+        SDL_FreeSurface(dominos[i][j]);
+
+  for (unsigned int i = 0; i < antImages.size(); i++)
+    for (unsigned int j = 0; j < antImages[i].size(); j++)
+      if (antImages[i][j].free)
+        SDL_FreeSurface(antImages[i][j].v);
+
+  for (unsigned int i = 0; i < carriedDominos.size(); i++)
+    for (unsigned int j = 0; j < carriedDominos[i].size(); j++)
+      if (carriedDominos[i][j])
+        SDL_FreeSurface(carriedDominos[i][j]);
+
+  for (unsigned int j = 0; j < boxBlocks.size(); j++)
+    SDL_FreeSurface(boxBlocks[j]);
+}
+
+
+void graphicsN_c::addBgTile(SDL_Surface * v) {
+  bgTiles[curTheme].push_back(v);
+}
+
+void graphicsN_c::addFgTile(SDL_Surface * v) {
+  fgTiles[curTheme].push_back(v);
+}
+
+void graphicsN_c::addBgTile(unsigned int idx, SDL_Surface * v) {
+  if (idx >= bgTiles[curTheme].size())
+    bgTiles[curTheme].resize(idx+1);
+
+  bgTiles[curTheme][idx] = v;
+}
+
+void graphicsN_c::addFgTile(unsigned int idx, SDL_Surface * v) {
+  if (idx >= fgTiles[curTheme].size())
+    fgTiles[curTheme].resize(idx+1);
+
+  fgTiles[curTheme][idx] = v;
+}
+
+void graphicsN_c::setDomino(unsigned int type, unsigned int num, SDL_Surface * v) {
+  dominos[type][num] = v;
+}
+
+void graphicsN_c::setCarriedDomino(unsigned int image, unsigned int domino, SDL_Surface * v) {
+  carriedDominos[image][domino] = v;
+}
+
+void graphicsN_c::addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free) {
+
+  antSprite s;
+  s.v = v;
+  s.ofs = yOffset;
+  s.free = free;
+
+  antImages[anim][img] = s;
 }
 
 void graphicsN_c::getAnimation(int anim, pngLoader_c * png) {
@@ -462,128 +654,451 @@ signed int graphicsN_c::getMoveOffsetY(unsigned int animation, unsigned int imag
 signed int graphicsN_c::getMoveImage(unsigned int animation, unsigned int image) const { return moveOffsets[animation][4*image+2]; }
 
 
-void graphicsN_c::drawAnt(const ant_c & ant, const levelDisplay_c & level, surface_c & vid) {
+void graphicsN_c::drawAnt(void)
+{
 
-  if (!ant.isVisible()) return;
+  if (!ant->isVisible()) return;
 
-  if (ant.getCarriedDomino() != 0)
+  if (ant->getCarriedDomino() != 0)
   {
-    if (ant.getAnimation() >= AntAnimPullOutLeft && ant.getAnimation() <= AntAnimLoosingDominoLeft)
+    if (ant->getAnimation() >= AntAnimPullOutLeft && ant->getAnimation() <= AntAnimLoosingDominoLeft)
     {
-      int a = ant.getAnimation() - AntAnimPullOutLeft;
+      int a = ant->getAnimation() - AntAnimPullOutLeft;
 
-      int x = (ant.getBlockX()-2)*blockX();
-      int y = (ant.getBlockY())*blockY()+ant.getScreenBlock()+antDisplace();
+      int x = (ant->getBlockX()-2)*blockX();
+      int y = (ant->getBlockY())*blockY()+ant->getScreenBlock()+antDisplace();
 
-      y += getMoveOffsetY(a, ant.getAnimationImage());
-      x += getMoveOffsetX(a, ant.getAnimationImage());
+      y += getMoveOffsetY(a, ant->getAnimationImage());
+      x += getMoveOffsetX(a, ant->getAnimationImage());
 
-      int img = getMoveImage(a, ant.getAnimationImage());
+      int img = getMoveImage(a, ant->getAnimationImage());
 
       if (img < 32)
       {
         // the ant normaly toppled the domino slightly over then lifting it up, but those
         // images don't exist with some dominos, so we stay with the vertical image
-        if (img != 7 && (ant.getCarriedDomino() == levelData_c::DominoTypeSplitter || ant.getCarriedDomino() == levelData_c::DominoTypeExploder || ant.getCarriedDomino() == levelData_c::DominoTypeAscender))
+        if (img != 7 && (ant->getCarriedDomino() == levelData_c::DominoTypeSplitter || ant->getCarriedDomino() == levelData_c::DominoTypeExploder || ant->getCarriedDomino() == levelData_c::DominoTypeAscender))
         {
           img = 7;
         }
 
-        vid.blit(getDomino(ant.getCarriedDomino()-1, img), x, y);
+        target->blit(getDomino(ant->getCarriedDomino()-1, img), x, y);
       }
       else
       {
-        vid.blit(getCarriedDomino(img-32, ant.getCarriedDomino()-1), x, y);
+        target->blit(getCarriedDomino(img-32, ant->getCarriedDomino()-1), x, y);
       }
     }
-    if (ant.getAnimation() >= AntAnimCarryLeft && ant.getAnimation() <= AntAnimCarryStopRight)
+    if (ant->getAnimation() >= AntAnimCarryLeft && ant->getAnimation() <= AntAnimCarryStopRight)
     {
       /* put the domino image of the carried domino */
-      int a = ant.getAnimation() - AntAnimCarryLeft;
+      int a = ant->getAnimation() - AntAnimCarryLeft;
 
-      vid.blit(getCarriedDomino(a, ant.getCarriedDomino()-1),
-          (ant.getBlockX()-2)*blockX()+getCarryOffsetX(a, ant.getAnimationImage()),
-          (ant.getBlockY())*blockY()+ant.getScreenBlock()+antDisplace()+getCarryOffsetY(a, ant.getAnimationImage()));
+      target->blit(getCarriedDomino(a, ant->getCarriedDomino()-1),
+          (ant->getBlockX()-2)*blockX()+getCarryOffsetX(a, ant->getAnimationImage()),
+          (ant->getBlockY())*blockY()+ant->getScreenBlock()+antDisplace()+getCarryOffsetY(a, ant->getAnimationImage()));
 
     }
   }
 
-  if (getAnt(ant.getAnimation(), ant.getAnimationImage()))
+  if (getAnt(ant->getAnimation(), ant->getAnimationImage()))
   {
-    vid.blit(getAnt(ant.getAnimation(), ant.getAnimationImage()), ant.getBlockX()*blockX()-45, (ant.getBlockY())*blockY()+ant.getScreenBlock()+antDisplace()+3);
+    target->blit(getAnt(ant->getAnimation(), ant->getAnimationImage()), ant->getBlockX()*blockX()-45, (ant->getBlockY())*blockY()+ant->getScreenBlock()+antDisplace()+3);
   }
 
   /* what comes now, is to put the ladders back in front of the ant,
    * we don't need to do that, if the ant is on the ladder
    */
 
-  if (ant.getAnimation() >= AntAnimLadder1 && ant.getAnimation() <= AntAnimLadder4) return;
-  if (ant.getAnimation() >= AntAnimCarryLadder1 && ant.getAnimation() <= AntAnimCarryLadder4) return;
-  if (ant.getAnimation() >= AntAnimXXX1 && ant.getAnimation() <= AntAnimXXX4) return;
+  if (ant->getAnimation() >= AntAnimLadder1 && ant->getAnimation() <= AntAnimLadder4) return;
+  if (ant->getAnimation() >= AntAnimCarryLadder1 && ant->getAnimation() <= AntAnimCarryLadder4) return;
+  if (ant->getAnimation() >= AntAnimXXX1 && ant->getAnimation() <= AntAnimXXX4) return;
 
-  if (level.getFg(ant.getBlockX(), ant.getBlockY()) == levelData_c::FgElementPlatformLadderUp)
+  if (level->getFg(ant->getBlockX(), ant->getBlockY()) == levelData_c::FgElementPlatformLadderUp)
   {
-    vid.blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant.getBlockX())*blockX(), (ant.getBlockY())*blockY());
+    target->blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant->getBlockX())*blockX(), (ant->getBlockY())*blockY());
   }
   else
   {
-    if ((level.getFg(ant.getBlockX(), ant.getBlockY()) == levelData_c::FgElementPlatformLadderDown) ||
-        (level.getFg(ant.getBlockX(), ant.getBlockY()) == levelData_c::FgElementLadder))
+    if ((level->getFg(ant->getBlockX(), ant->getBlockY()) == levelData_c::FgElementPlatformLadderDown) ||
+        (level->getFg(ant->getBlockX(), ant->getBlockY()) == levelData_c::FgElementLadder))
     {
-      vid.blitBlock(getFgTile(levelData_c::FgElementLadder), (ant.getBlockX())*blockX(), (ant.getBlockY())*blockY());
+      target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX())*blockX(), (ant->getBlockY())*blockY());
     }
   }
 
-  if ((ant.getBlockY() > 0) &&
-      ((level.getFg(ant.getBlockX(), ant.getBlockY()-1) == levelData_c::FgElementPlatformLadderDown) ||
-       (level.getFg(ant.getBlockX(), ant.getBlockY()-1) == levelData_c::FgElementLadder)))
+  if ((ant->getBlockY() > 0) &&
+      ((level->getFg(ant->getBlockX(), ant->getBlockY()-1) == levelData_c::FgElementPlatformLadderDown) ||
+       (level->getFg(ant->getBlockX(), ant->getBlockY()-1) == levelData_c::FgElementLadder)))
   {
-    vid.blitBlock(getFgTile(levelData_c::FgElementLadder), (ant.getBlockX())*blockX(), (ant.getBlockY()-1)*blockY());
+    target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX())*blockX(), (ant->getBlockY()-1)*blockY());
   }
 
-  if (ant.getBlockX() > 0 && level.isDirty(ant.getBlockX()-1, ant.getBlockY()))
+  if (ant->getBlockX() > 0 && isDirty(ant->getBlockX()-1, ant->getBlockY()))
   {
-    if (level.getFg(ant.getBlockX()-1, ant.getBlockY()) == levelData_c::FgElementPlatformLadderUp)
+    if (level->getFg(ant->getBlockX()-1, ant->getBlockY()) == levelData_c::FgElementPlatformLadderUp)
     {
-      vid.blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant.getBlockX()-1)*blockX(), (ant.getBlockY())*blockY());
+      target->blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant->getBlockX()-1)*blockX(), (ant->getBlockY())*blockY());
     }
     else
     {
-      if ((level.getFg(ant.getBlockX()-1, ant.getBlockY()) == levelData_c::FgElementPlatformLadderDown) ||
-          (level.getFg(ant.getBlockX()-1, ant.getBlockY()) == levelData_c::FgElementLadder))
+      if ((level->getFg(ant->getBlockX()-1, ant->getBlockY()) == levelData_c::FgElementPlatformLadderDown) ||
+          (level->getFg(ant->getBlockX()-1, ant->getBlockY()) == levelData_c::FgElementLadder))
       {
-        vid.blitBlock(getFgTile(levelData_c::FgElementLadder), (ant.getBlockX()-1)*blockX(), (ant.getBlockY())*blockY());
+        target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()-1)*blockX(), (ant->getBlockY())*blockY());
       }
     }
-    if ((ant.getBlockY() > 0) &&
-        ((level.getFg(ant.getBlockX()-1, ant.getBlockY()-1) == levelData_c::FgElementPlatformLadderDown) ||
-         (level.getFg(ant.getBlockX()-1, ant.getBlockY()-1) == levelData_c::FgElementLadder)))
+    if ((ant->getBlockY() > 0) &&
+        ((level->getFg(ant->getBlockX()-1, ant->getBlockY()-1) == levelData_c::FgElementPlatformLadderDown) ||
+         (level->getFg(ant->getBlockX()-1, ant->getBlockY()-1) == levelData_c::FgElementLadder)))
     {
-      vid.blitBlock(getFgTile(levelData_c::FgElementLadder), (ant.getBlockX()-1)*blockX(), (ant.getBlockY()-1)*blockY());
+      target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()-1)*blockX(), (ant->getBlockY()-1)*blockY());
     }
   }
 
-  if ((ant.getBlockX() < 19) && level.isDirty(ant.getBlockX()+1, ant.getBlockY()))
+  if ((ant->getBlockX() < 19) && isDirty(ant->getBlockX()+1, ant->getBlockY()))
   {
-    if (level.getFg(ant.getBlockX()+1, ant.getBlockY()) == levelData_c::FgElementPlatformLadderUp)
+    if (level->getFg(ant->getBlockX()+1, ant->getBlockY()) == levelData_c::FgElementPlatformLadderUp)
     {
-      vid.blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant.getBlockX()+1)*blockX(), (ant.getBlockY())*blockY());
+      target->blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant->getBlockX()+1)*blockX(), (ant->getBlockY())*blockY());
     }
     else
     {
-      if ((level.getFg(ant.getBlockX()+1, ant.getBlockY()) == levelData_c::FgElementPlatformLadderDown) ||
-          (level.getFg(ant.getBlockX()+1, ant.getBlockY()) == levelData_c::FgElementLadder))
+      if ((level->getFg(ant->getBlockX()+1, ant->getBlockY()) == levelData_c::FgElementPlatformLadderDown) ||
+          (level->getFg(ant->getBlockX()+1, ant->getBlockY()) == levelData_c::FgElementLadder))
       {
-        vid.blitBlock(getFgTile(levelData_c::FgElementLadder), (ant.getBlockX()+1)*blockX(), (ant.getBlockY())*blockY());
+        target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()+1)*blockX(), (ant->getBlockY())*blockY());
       }
     }
-    if ((ant.getBlockY() > 0) &&
-        ((level.getFg(ant.getBlockX()+1, ant.getBlockY()-1) == levelData_c::FgElementPlatformLadderDown) ||
-         (level.getFg(ant.getBlockX()+1, ant.getBlockY()-1) == levelData_c::FgElementLadder)))
+    if ((ant->getBlockY() > 0) &&
+        ((level->getFg(ant->getBlockX()+1, ant->getBlockY()-1) == levelData_c::FgElementPlatformLadderDown) ||
+         (level->getFg(ant->getBlockX()+1, ant->getBlockY()-1) == levelData_c::FgElementLadder)))
     {
-      vid.blitBlock(getFgTile(levelData_c::FgElementLadder), (ant.getBlockX()+1)*blockX(), (ant.getBlockY()-1)*blockY());
+      target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()+1)*blockX(), (ant->getBlockY()-1)*blockY());
     }
   }
 }
+
+void graphicsN_c::setTheme(const std::string & name) {
+
+  for (unsigned int th = 0; th < themeNames.size(); th++) {
+    if (themeNames[th] == name) {
+      curTheme = th;
+      return;
+    }
+  }
+
+  themeNames.push_back(std::string(name));
+  curTheme = themeNames.size()-1;
+
+  bgTiles.resize(bgTiles.size()+1);
+  fgTiles.resize(fgTiles.size()+1);
+
+  loadTheme(name);
+
+}
+
+void graphicsN_c::setPaintData(const levelData_c * l, const ant_c * a, surface_c * t)
+{
+  level = l;
+  ant = a;
+  target = t;
+
+  setTheme(level->getTheme());
+
+  dirtybg.markAllDirty();
+  dirty.markAllDirty();
+
+  Min = Sec = -1;
+
+  if (!background) background = new surface_c(t->getIdentical());
+}
+
+void graphicsN_c::drawDominos(void)
+{
+
+  // update background
+  for (unsigned int y = 0; y < 13; y++)
+  {
+    for (unsigned int x = 0; x < 20; x++)
+    {
+      // when the current block is dirty, recreate it
+      if (dirtybg.isDirty(x, y))
+      {
+        for (unsigned char b = 0; b < level->getNumBgLayer(); b++)
+          background->blitBlock(getBgTile(level->getBg(x, y, b)), x*blockX(), y*blockY());
+        background->blitBlock(getFgTile(level->getFg(x, y)), x*blockX(), y*blockY());
+
+        background->gradient(blockX()*x, blockY()*y, blockX(), blockY());
+      }
+    }
+
+  }
+  dirtybg.clearDirty();
+
+  int timeLeft = level->getTimeLeft();
+
+  // the dirty marks for the clock
+  {
+
+    // calculate the second left
+    int tm = timeLeft/18;
+
+    // if negative make positive again
+    if (timeLeft < 0)
+      tm = -tm+1;
+
+    int newSec = tm%60;
+    int newMin = tm/60;
+
+    if (newSec != Sec || timeLeft == -1)
+    {
+      dirty.markDirty(3, 11);
+      dirty.markDirty(3, 12);
+    }
+
+    if (newSec != Sec || newMin != Min || timeLeft % 18 == 17 || timeLeft % 18 == 8 || timeLeft == -1)
+    {
+      dirty.markDirty(2, 11);
+      dirty.markDirty(2, 12);
+    }
+
+    if (newMin != Min || timeLeft == -1)
+    {
+      dirty.markDirty(1, 11);
+      dirty.markDirty(1, 12);
+    }
+
+    Min = newMin;
+    Sec = newSec;
+  }
+
+  // copy background, where necessary
+  for (unsigned int y = 0; y < 13; y++)
+    for (unsigned int x = 0; x < 20; x++)
+      if (dirty.isDirty(x, y))
+        target->copy(*background, x*blockX(), y*blockY(), blockX(), blockY());
+
+  static int XposOffset[] = {-16, -16,  0,-16,  0,  0, 0, 0, 0,  0, 0, 16,  0, 16, 16, 0};
+  static int YposOffset[] = { -8,  -6,  0, -4,  0, -2, 0, 0, 0, -2, 0, -4,  0, -6, -8, 0};
+  static int StoneImageOffset[] = {  7, 6, 0, 5, 0, 4, 0, 0, 0, 3, 0, 2, 0, 1, 0, 0};
+
+  // the idea behind this code is to repaint the dirty blocks. Dominos that are actually
+  // within neighbor block must be repaint, too, when they might reach into the actual
+  // block. But painting the neighbors is only necessary, when they are not drawn on
+  // their own anyway, so always check for !dirty of the "home-block" of each domino
+
+  int SpriteYPos = getDominoYStart();
+
+  for (int y = 0; y < 13; y++, SpriteYPos += blockY()) {
+
+    int SpriteXPos = -2*blockX();
+
+    for (int x = 0; x < 20; x++, SpriteXPos += blockX()) {
+
+      if (!dirty.isDirty(x, y)) continue;
+
+      // paint the left neighbor domino, if it leans in our direction and is not painted on its own
+      if (y < 12 && x > 0 && !dirty.isDirty(x-1, y+1) && level->getDominoType(x-1, y+1) != levelData_c::DominoTypeEmpty &&
+          (level->getDominoState(x-1, y+1) > 8 ||
+           (level->getDominoType(x-1, y+1) == levelData_c::DominoTypeSplitter && level->getDominoState(x-1, y+1) != 8) ||
+           level->getDominoState(x-1, y+1) >= levelData_c::DominoTypeCrash0))
+      {
+        target->blit(getDomino(level->getDominoType(x-1, y+1)-1, level->getDominoState(x-1, y+1)-1),
+            SpriteXPos-blockX(),
+            SpriteYPos+convertDominoY(level->getDominoYOffset(x-1, y+1))+blockY());
+      }
+
+      if (x > 0 && !dirty.isDirty(x-1, y) && level->getDominoType(x-1, y) != levelData_c::DominoTypeEmpty &&
+          (level->getDominoState(x-1, y) > 8 ||
+           (level->getDominoType(x-1, y) == levelData_c::DominoTypeSplitter && level->getDominoState(x-1, y) != 8) ||
+           level->getDominoType(x-1, y) >= levelData_c::DominoTypeCrash0))
+      {
+        target->blit(getDomino(level->getDominoType(x-1, y)-1, level->getDominoState(x-1, y)-1),
+            SpriteXPos-blockX(),
+            SpriteYPos+convertDominoY(level->getDominoYOffset(x-1, y)));
+      }
+
+      if (y < 12 && !dirty.isDirty(x, y+1) && level->getDominoType(x, y+1) != levelData_c::DominoTypeEmpty)
+      {
+        target->blit(getDomino(level->getDominoType(x, y+1)-1, level->getDominoState(x, y+1)-1),
+            SpriteXPos,
+            SpriteYPos+convertDominoY(level->getDominoYOffset(x, y+1))+blockY());
+      }
+
+      // paint the splitting domino for the splitter
+      if (level->getDominoType(x, y) == levelData_c::DominoTypeSplitter &&
+          level->getDominoState(x, y) == 6 &&
+          level->getDominoExtra(x, y) != 0)
+      {
+        target->blit(getDomino(level->getDominoExtra(x, y)-1, level->getDominoExtra(x, y)>=levelData_c::DominoTypeCrash0?0:7),
+            SpriteXPos,
+            SpriteYPos-splitterY());
+// TODO        clearDominoExtra(x, y);
+      }
+
+      // paint the actual domino but take care of the special cases of the ascender domino
+      if (level->getDominoType(x, y) == levelData_c::DominoTypeAscender && level->getDominoExtra(x, y) == 0x60 &&
+          level->getDominoState(x, y) < 16 && level->getDominoState(x, y) != 8)
+      {
+        target->blit(getDomino(levelData_c::DominoTypeRiserCont-1, StoneImageOffset[level->getDominoState(x, y)-1]),
+            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]),
+            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
+      }
+      else if (level->getDominoType(x, y) == levelData_c::DominoTypeAscender && level->getDominoState(x, y) == 1 && level->getDominoExtra(x, y) == 0 &&
+          level->getFg(x-1, y-2) == levelData_c::FgElementEmpty)
+      { // this is the case of the ascender domino completely horizontal and with the plank it is below not existing
+        // so we see the above face of the domino. Normally there is a wall above us so we only see
+        // the front face of the domino
+        target->blit(getDomino(levelData_c::DominoTypeRiserCont-1, StoneImageOffset[level->getDominoState(x, y)-1]),
+            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]+6),
+            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
+      }
+      else if (level->getDominoType(x, y) == levelData_c::DominoTypeAscender && level->getDominoState(x, y) == 15 && level->getDominoExtra(x, y) == 0 &&
+          level->getFg(x+1, y-2) == levelData_c::FgElementEmpty)
+      {
+        target->blit(getDomino(levelData_c::DominoTypeRiserCont-1, StoneImageOffset[level->getDominoState(x, y)-1]),
+            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]-2),
+            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
+      }
+      else if (level->getDominoType(x, y) != levelData_c::DominoTypeEmpty)
+      {
+        target->blit(getDomino(level->getDominoType(x, y)-1, level->getDominoState(x, y)-1),
+            SpriteXPos,
+            SpriteYPos+convertDominoY(level->getDominoYOffset(x, y)));
+      }
+
+      // paint the right neighbor if it is leaning in our direction
+      if (x < 19 && y < 12 && !dirty.isDirty(x+1, y+1) && level->getDominoType(x+1, y+1) != levelData_c::DominoTypeEmpty &&
+          (level->getDominoState(x+1, y+1) < 8 ||
+           (level->getDominoType(x+1, y+1) == levelData_c::DominoTypeSplitter && level->getDominoState(x+1, y+1) != 8) ||
+           level->getDominoType(x+1, y+1) >= levelData_c::DominoTypeCrash0))
+      {
+        target->blit(getDomino(level->getDominoType(x+1, y+1)-1, level->getDominoState(x+1, y+1)-1),
+            SpriteXPos+blockX(),
+            SpriteYPos+convertDominoY(level->getDominoYOffset(x+1, y+1))+blockY());
+      }
+
+      if (x < 19 && !dirty.isDirty(x+1, y) && level->getDominoType(x+1, y) != levelData_c::DominoTypeEmpty &&
+          (level->getDominoState(x+1, y) < 8 ||
+           (level->getDominoType(x+1, y) == levelData_c::DominoTypeSplitter && level->getDominoState(x+1, y) != 8) ||
+           level->getDominoType(x+1, y) >= levelData_c::DominoTypeCrash0))
+      {
+        target->blit(getDomino(level->getDominoType(x+1, y)-1, level->getDominoState(x+1, y)-1),
+            SpriteXPos+blockX(),
+            SpriteYPos+convertDominoY(level->getDominoYOffset(x+1, y)));
+      }
+
+      if (y >= 11) continue;
+
+      if (!dirty.isDirty(x, y+2) && level->getDominoType(x, y+2) == levelData_c::DominoTypeAscender)
+      {
+        target->blit(getDomino(level->getDominoType(x, y+2)-1, level->getDominoState(x, y+2)-1),
+            SpriteXPos,
+            SpriteYPos+convertDominoY(level->getDominoYOffset(x, y+2))+2*blockY());
+      }
+
+      if (x > 0 && !dirty.isDirty(x-1, y+2) && level->getDominoType(x-1, y+2) == levelData_c::DominoTypeAscender)
+      {
+        target->blit(getDomino(level->getDominoType(x-1, y+2)-1, level->getDominoState(x-1, y+2)-1),
+            SpriteXPos-blockX(),
+            SpriteYPos+convertDominoY(level->getDominoYOffset(x-1, y+2))+2*blockY());
+      }
+
+      if (x < 19 && !dirty.isDirty(x+1, y+2) && level->getDominoType(x+1, y+2) == levelData_c::DominoTypeAscender)
+      {
+        target->blit(getDomino(level->getDominoType(x+1, y+2)-1, level->getDominoState(x+1, y+2)-1),
+            SpriteXPos+blockX(),
+            SpriteYPos+convertDominoY(level->getDominoYOffset(x+1, y+2))+2*blockY());
+      }
+
+      if (level->getDominoType(x, y) != levelData_c::DominoTypeAscender) continue;
+
+      if (!dirty.isDirty(x, y+2) && level->getDominoType(x, y+2) != levelData_c::DominoTypeEmpty)
+      {
+        target->blit(getDomino(level->getDominoType(x, y+2)-1, level->getDominoState(x, y+2)-1),
+            SpriteXPos,
+            SpriteYPos+convertDominoY(level->getDominoYOffset(x, y+2))+2*blockY());
+      }
+
+      if (x > 0 && !dirty.isDirty(x-1, y+2) && level->getDominoType(x-1, y+2) != levelData_c::DominoTypeEmpty)
+      {
+        target->blit(getDomino(level->getDominoType(x-1, y+2)-1, level->getDominoState(x-1, y+2)-1),
+            SpriteXPos-blockX(),
+            SpriteYPos+convertDominoY(level->getDominoYOffset(x-1, y+2))+2*blockY());
+      }
+
+      if (x >= 19) continue;
+
+      if (!dirty.isDirty(x+1, y+2)) continue;
+
+      if (level->getDominoType(x+1, y+2) == levelData_c::DominoTypeEmpty) continue;
+
+      target->blit(getDomino(level->getDominoType(x+1, y+2)-1, level->getDominoState(x+1, y+2)-1),
+          SpriteXPos+blockX(),
+          SpriteYPos+convertDominoY(level->getDominoYOffset(x+1, y+2))+2*blockY());
+    }
+  }
+
+  // repaint the ladders in front of dominos
+  for (unsigned int y = 0; y < 13; y++)
+    for (unsigned int x = 0; x < 20; x++) {
+      if (dirty.isDirty(x, y)) {
+        if (level->getFg(x, y) == levelData_c::FgElementPlatformLadderDown || level->getFg(x, y) == levelData_c::FgElementLadder) {
+          SDL_Rect dst;
+          dst.x = x*blockX();
+          dst.y = y*blockY();
+          dst.w = blockX();
+          dst.h = blockY();
+          target->blitBlock(getFgTile(levelData_c::FgElementLadder2), dst.x, dst.y);
+        }
+        else if (level->getFg(x, y) == levelData_c::FgElementPlatformLadderUp)
+        {
+          SDL_Rect dst;
+          dst.x = x*blockX();
+          dst.y = y*blockY();
+          dst.w = blockX();
+          dst.h = blockY();
+          target->blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), dst.x, dst.y);
+        }
+      }
+    }
+
+  if (timeLeft < 60*60*18)
+  { // output the time
+    char time[6];
+    snprintf(time, 6, "%02i:%02i", Min, Sec);
+
+    fontParams_s pars;
+    if (timeLeft >= 0)
+    {
+      pars.color.r = pars.color.g = 255; pars.color.b = 0;
+    }
+    else
+    {
+      pars.color.r = 255; pars.color.g = pars.color.b = 0;
+    }
+    pars.font = FNT_BIG;
+    pars.alignment = ALN_TEXT;
+    pars.box.x = timeXPos();
+    pars.box.y = timeYPos();
+    pars.box.w = 50;
+    pars.box.h = 50;
+    pars.shadow = 1;
+
+    target->renderText(&pars, time);
+  }
+}
+
+void graphicsN_c::drawLevel(void) {
+
+  if (!level || !ant || !target) return;
+
+  markAllDirty();
+
+  drawDominos();
+  drawAnt();
+}
+
 
 

@@ -26,7 +26,7 @@
 
 
 class levelPlayer_c;
-class graphics_c;
+class graphicsN_c;
 class surface_c;
 
 // the following defines are used for the keymask
@@ -123,7 +123,7 @@ class ant_c {
     int subBlock, screenBlock;
 
     levelPlayer_c & level;
-    graphics_c & gr;
+    graphicsN_c & gr;
     surface_c & vid;
 
     unsigned int keyMask;
@@ -143,7 +143,7 @@ class ant_c {
     // initialize the ant state for level entering
     // the level is saved and used later on for dirty block
     // marking, and level modification
-    ant_c(levelPlayer_c & level, graphics_c & gr, surface_c & target);
+    ant_c(levelPlayer_c & level, graphicsN_c & gr, surface_c & target);
 
     void initForLevel(void);
 

@@ -22,11 +22,13 @@
 #ifndef __LEVEL_PLAYER_H__
 #define __LEVEL_PLAYER_H__
 
-#include "leveldisplay.h"
+#include "leveldata.h"
 
 class ant_c;
+class surface_c;
+class graphics_c;
 
-class levelPlayer_c : public levelDisplay_c {
+class levelPlayer_c : public levelData_c {
 
   private:
     // has the level been checked for completion, that is
@@ -77,7 +79,7 @@ class levelPlayer_c : public levelDisplay_c {
 
   public:
 
-    levelPlayer_c(surface_c & screen, graphics_c & gr) : levelDisplay_c(screen, gr), inactive(0) {}
+    levelPlayer_c(surface_c & screen, graphics_c & gr) : inactive(0) {}
 
     void load(const textsections_c & sections, const std::string & userString);
 

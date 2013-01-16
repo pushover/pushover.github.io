@@ -183,9 +183,7 @@ int playTick(levelPlayer_c & l, ant_c & a, surface_c & screen, graphics_c & gr)
   l.performDoors();
   int res = l.performDominos(a);
 
-  l.updateBackground();
-  l.drawDominos();
-  gr.drawAnt(a, l, screen);
+  gr.drawLevel();
 
   if (l.triggerIsFalln() && !a.isVisible() && l.isExitDoorClosed() && (res == 0)) {
 
@@ -381,13 +379,11 @@ int main(int argc, char * argv[]) {
     else
     {
       nextState = ST_PROFILE_INIT;
-      l.markAllDirty();
     }
   }
   else
   {
     nextState = ST_PROFILE_INIT;
-    l.markAllDirty();
   }
 
 
@@ -440,8 +436,7 @@ int main(int argc, char * argv[]) {
             case ST_TIMEOUT:
               delete window;
               window = 0;
-              l.drawDominos();
-              gr.drawAnt(a, l, screen);
+              gr.drawLevel();
               break;
 
             case ST_PREREPLAY:
@@ -492,9 +487,7 @@ int main(int argc, char * argv[]) {
 
             case ST_PREREPLAY:
             case ST_PREPLAY:
-                              l.updateBackground();
-                              l.drawDominos();
-                              gr.drawAnt(a, l, screen);
+                              gr.drawLevel();
                               ticks = SDL_GetTicks();    // this might have taken some time so reinit the ticks
                               break;
 
@@ -539,7 +532,7 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              l.markAllDirty();
+              gr.markAllDirty();
               if (window->isDone())
               {
                 switch(dynamic_cast<listWindow_c*>(window)->getSelection())
@@ -563,7 +556,7 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              l.markAllDirty();
+              gr.markAllDirty();
               if (window->isDone())
               {
                 unsigned int sel = dynamic_cast<listWindow_c*>(window)->getSelection();
@@ -599,7 +592,7 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              l.markAllDirty();
+              gr.markAllDirty();
               if (window->isDone())
               {
                 size_t s = dynamic_cast<listWindow_c*>(window)->getSelection();
@@ -632,7 +625,7 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              l.markAllDirty();
+              gr.markAllDirty();
               if (window->isDone())
               {
                 if (!dynamic_cast<InputWindow_c*>(window)->hasEscaped())
@@ -655,14 +648,14 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              l.markAllDirty();
+              gr.markAllDirty();
               if (window->isDone())
               {
                 switch(dynamic_cast<listWindow_c*>(window)->getSelection())
                 {
                   case 0:   // toggle full screen
                     screen.toggleFullscreen();
-                    l.markAllDirty();
+                    gr.markAllDirty();
                     window->resetWindow();
                     break;
 
@@ -696,7 +689,7 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              l.markAllDirty();
+              gr.markAllDirty();
               if (window->isDone())
               {
                 unsigned int sel = dynamic_cast<listWindow_c*>(window)->getSelection();
@@ -720,7 +713,7 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              l.markAllDirty();
+              gr.markAllDirty();
               if (window->isDone())
               {
                 unsigned int sel = dynamic_cast<listWindow_c*>(window)->getSelection();
@@ -732,6 +725,7 @@ int main(int argc, char * argv[]) {
                 {
                   nextState = ST_PREPLAY;
                   ls.loadLevel(l, ls.getLevelNames()[sel], solved.getUserString());
+                  gr.setPaintData(&l, &a, &screen);
                   soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
                   a.initForLevel();
                 }
@@ -769,7 +763,7 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              l.markAllDirty();
+              gr.markAllDirty();
               if (window->isDone())
                 nextState = ST_PLAY;
             }
@@ -783,7 +777,7 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              l.markAllDirty();
+              gr.markAllDirty();
               if (window->isDone())
                 nextState = ST_MAIN;
             }
@@ -797,7 +791,7 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              l.markAllDirty();
+              gr.markAllDirty();
               if (window->isDone())
               {
                 switch(dynamic_cast<listWindow_c*>(window)->getSelection())
@@ -835,7 +829,7 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              l.markAllDirty();
+              gr.markAllDirty();
               if (window->isDone())
               {
                 switch(dynamic_cast<listWindow_c*>(window)->getSelection())
@@ -857,7 +851,7 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              l.markAllDirty();
+              gr.markAllDirty();
               if (window->isDone())
               {
                 switch(dynamic_cast<listWindow_c*>(window)->getSelection())
@@ -910,7 +904,7 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              l.markAllDirty();
+              gr.markAllDirty();
               if (window->isDone())
               {
                 switch(dynamic_cast<listWindow_c*>(window)->getSelection())
@@ -1068,8 +1062,8 @@ int main(int argc, char * argv[]) {
       // flip the screen, but not when in the preplaymodes
       if (currentState != ST_PREPLAY && currentState != ST_PREREPLAY)
       {
-        screen.flipDirty(l.getDirty());
-        l.clearDirty();
+        screen.flipDirty(gr.getDirty());
+        gr.clearDirty();
       }
     }
   }

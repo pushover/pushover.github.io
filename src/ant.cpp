@@ -20,7 +20,7 @@
  */
 
 #include "ant.h"
-#include "graphics.h"
+#include "graphicsn.h"
 #include "levelplayer.h"
 #include "soundsys.h"
 #include "screen.h"
@@ -31,7 +31,7 @@
 // initialize the ant state for level entering
 // the level is saved and used later on for dirty block
 // marking, and level modification
-ant_c::ant_c(levelPlayer_c & level, graphics_c & gr, surface_c & target): level(level), gr(gr), vid(target) {
+ant_c::ant_c(levelPlayer_c & level, graphicsN_c & gr, surface_c & target): level(level), gr(gr), vid(target) {
 
   initForLevel();
 }
@@ -75,24 +75,24 @@ void ant_c::performAnimation(void) {
 
   if (oldAnimation != animation || oldImage != animationImage)
   {
-    level.markDirty(blockX, blockY-1);
-    level.markDirty(blockX-1, blockY-1);
-    level.markDirty(blockX+1, blockY-1);
-
-    level.markDirty(blockX, blockY);
-    level.markDirty(blockX, blockY-2);
-
-    level.markDirty(blockX-1, blockY-2);
-    level.markDirty(blockX-1, blockY);
-    level.markDirty(blockX-2, blockY-1);
-    level.markDirty(blockX-2, blockY);
-    level.markDirty(blockX+1, blockY-2);
-    level.markDirty(blockX+1, blockY);
-    level.markDirty(blockX+2, blockY-1);
-    level.markDirty(blockX+2, blockY);
-
-    level.markDirty(blockX+1, blockY+1);
-    level.markDirty(blockX-1, blockY+1);
+// TODO    level.markDirty(blockX, blockY-1);
+// TODO    level.markDirty(blockX-1, blockY-1);
+// TODO    level.markDirty(blockX+1, blockY-1);
+// TODO
+// TODO    level.markDirty(blockX, blockY);
+// TODO    level.markDirty(blockX, blockY-2);
+// TODO
+// TODO    level.markDirty(blockX-1, blockY-2);
+// TODO    level.markDirty(blockX-1, blockY);
+// TODO    level.markDirty(blockX-2, blockY-1);
+// TODO    level.markDirty(blockX-2, blockY);
+// TODO    level.markDirty(blockX+1, blockY-2);
+// TODO    level.markDirty(blockX+1, blockY);
+// TODO    level.markDirty(blockX+2, blockY-1);
+// TODO    level.markDirty(blockX+2, blockY);
+// TODO
+// TODO    level.markDirty(blockX+1, blockY+1);
+// TODO    level.markDirty(blockX-1, blockY+1);
   }
 }
 

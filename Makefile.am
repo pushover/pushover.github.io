@@ -9,7 +9,6 @@ pushover_SOURCES = \
   src/graphics.cpp src/graphics.h \
   src/graphicsn.cpp src/graphicsn.h \
   src/leveldata.cpp src/leveldata.h \
-  src/leveldisplay.cpp src/leveldisplay.h \
   src/levelplayer.cpp src/levelplayer.h \
   src/levelset.cpp src/levelset.h \
   src/luaclass.cpp src/luaclass.h \

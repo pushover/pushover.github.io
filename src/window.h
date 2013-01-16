@@ -37,7 +37,7 @@
 // this makes updating easier
 
 class surface_c;
-class graphics_c;
+class graphicsN_c;
 
 class window_c {
 
@@ -46,7 +46,7 @@ class window_c {
     unsigned char x, y, w, h;
     bool done;
     surface_c & surf;
-    graphics_c & gr;
+    graphicsN_c & gr;
 
     void clearInside(void);
 
@@ -54,7 +54,7 @@ class window_c {
 
     // minimum w and h is 2, but then you don't have space in the middle as everything is taken
     // away by the fame
-    window_c(unsigned char x_, unsigned char y_, unsigned char w_, unsigned char h_, surface_c & s, graphics_c & gr);
+    window_c(unsigned char x_, unsigned char y_, unsigned char w_, unsigned char h_, surface_c & s, graphicsN_c & gr);
     virtual ~window_c(void);
 
     virtual bool handleEvent(const SDL_Event & event) { return false; }
@@ -76,7 +76,7 @@ class helpWindow_c : public window_c {
     uint32_t nextPage;
 
     surface_c & s;
-    graphics_c & g;
+    graphicsN_c & g;
 
   private:
 
@@ -84,7 +84,7 @@ class helpWindow_c : public window_c {
 
   public:
 
-    helpWindow_c(const std::string & text, surface_c & s, graphics_c & g);
+    helpWindow_c(const std::string & text, surface_c & s, graphicsN_c & g);
     bool handleEvent(const SDL_Event & event);
 
 };
@@ -114,7 +114,7 @@ class listWindow_c : public window_c {
 
   public:
 
-    listWindow_c(int x, int y, int w, int h, surface_c & s, graphics_c & gr,
+    listWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
         const std::string & title, const std::vector<entry> & entries, bool escape, int initial = 0);
 
     // the the user has selected something
@@ -140,7 +140,7 @@ class InputWindow_c : public window_c {
 
   public:
 
-    InputWindow_c(int x, int y, int w, int h, surface_c & s, graphics_c & gr,
+    InputWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
         const std::string & title);
 
     // the the user has selected something
@@ -157,8 +157,8 @@ class solvedMap_c;
 
 listWindow_c * getMainWindow(surface_c & surf, graphics_c & gr);
 listWindow_c * getConfigWindow(surface_c & surf, graphics_c & gr);
-listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, graphics_c & gr, const std::string & selection);
-listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphics_c & gr, const std::string & lname);
+listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, graphics_c & gr);
+listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphics_c & gr);
 listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr);
 listWindow_c * getSolvedWindow(surface_c & surf, graphics_c & gr);
 listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphics_c & gr);

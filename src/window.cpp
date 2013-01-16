@@ -22,7 +22,7 @@
 #include "window.h"
 
 #include "screen.h"
-#include "graphics.h"
+#include "graphicsn.h"
 #include "levelset.h"
 #include "textsections.h"
 #include "solvedmap.h"
@@ -69,7 +69,7 @@
 #define SEP_COL_G 90
 #define SEP_COL_B 60
 
-window_c::window_c(unsigned char x_, unsigned char y_, unsigned char w_, unsigned char h_, surface_c & s, graphics_c & g) : x(x_), y(y_), w(w_), h(h_), surf(s), gr(g) {
+window_c::window_c(unsigned char x_, unsigned char y_, unsigned char w_, unsigned char h_, surface_c & s, graphicsN_c & g) : x(x_), y(y_), w(w_), h(h_), surf(s), gr(g) {
 
   if (w < 2 || h < 2) return;
 
@@ -231,7 +231,7 @@ void helpWindow_c::displayCurrentPage(void)
   }
 }
 
-helpWindow_c::helpWindow_c(const std::string & t, surface_c & su, graphics_c & gr) : window_c(1, 1, 18, 11, su, gr), help(t),
+helpWindow_c::helpWindow_c(const std::string & t, surface_c & su, graphicsN_c & gr) : window_c(1, 1, 18, 11, su, gr), help(t),
   s(su), g(gr)
 {
   pages.push_back(0);
@@ -276,11 +276,11 @@ class aboutWindow_c : public window_c {
 
   public:
 
-    aboutWindow_c(surface_c & s, graphics_c & g);
+    aboutWindow_c(surface_c & s, graphicsN_c & g);
     bool handleEvent(const SDL_Event & event);
 };
 
-aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 0, 16, 12, s, g) {
+aboutWindow_c::aboutWindow_c(surface_c & s, graphicsN_c & g) : window_c(2, 0, 16, 12, s, g) {
 
   clearInside();
 
@@ -487,7 +487,7 @@ void listWindow_c::redraw(void) {
   }
 }
 
-listWindow_c::listWindow_c(int x, int y, int w, int h, surface_c & s, graphics_c & gr,
+listWindow_c::listWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
     const std::string & t, const std::vector<entry> & e, bool esc, int initial)
   : window_c(x, y, w, h, s, gr), entries(e), title(t), current(initial), escape(esc)
 {
@@ -566,7 +566,7 @@ bool listWindow_c::handleEvent(const SDL_Event & event) {
 }
 
 
-listWindow_c * getMainWindow(surface_c & surf, graphics_c & gr) {
+listWindow_c * getMainWindow(surface_c & surf, graphicsN_c & gr) {
     static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
@@ -581,13 +581,13 @@ listWindow_c * getMainWindow(surface_c & surf, graphics_c & gr) {
     return new listWindow_c(4, 2, 12, 8, surf, gr, _("Main menu"), entries, false);
 }
 
-InputWindow_c * getProfileInputWindow(surface_c & surf, graphics_c & gr)
+InputWindow_c * getProfileInputWindow(surface_c & surf, graphicsN_c & gr)
 {
   return new InputWindow_c(4,2,12,5, surf, gr, _("Enter new profile name"));
 }
 
 
-listWindow_c * getProfileWindow(const solvedMap_c & solve, surface_c & surf, graphics_c & gr)
+listWindow_c * getProfileWindow(const solvedMap_c & solve, surface_c & surf, graphicsN_c & gr)
 {
   std::vector<listWindow_c::entry> entries;
 
@@ -604,7 +604,7 @@ listWindow_c * getProfileWindow(const solvedMap_c & solve, surface_c & surf, gra
   return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Your Profile"), entries, true, solve.getCurrentUser());
 }
 
-listWindow_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, graphics_c & gr)
+listWindow_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, graphicsN_c & gr)
 {
   std::vector<listWindow_c::entry> entries;
 
@@ -614,7 +614,7 @@ listWindow_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, g
   return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Profile to delete"), entries, true, 0);
 }
 
-listWindow_c * getConfigWindow(surface_c & surf, graphics_c & gr) {
+listWindow_c * getConfigWindow(surface_c & surf, graphicsN_c & gr) {
     static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
@@ -627,7 +627,7 @@ listWindow_c * getConfigWindow(surface_c & surf, graphics_c & gr) {
     return new listWindow_c(3, 2, 14, 9, surf, gr, _("Configuration"), entries, true);
 }
 
-listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, graphics_c & gr, const std::string & selection) {
+listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, graphics_c & gr) {
     std::vector<listWindow_c::entry> entries;
 
     int index = 0;
@@ -647,7 +647,7 @@ class levelWindow_c : public listWindow_c
 
   public:
 
-    levelWindow_c(int x, int y, int w, int h, surface_c & s, graphics_c & gr,
+    levelWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
         const std::string & t, const std::vector<entry> & e, bool esc, int initial) :
       listWindow_c(x, y, w, h, s, gr, t, e, esc, initial)
     {
@@ -692,7 +692,7 @@ class levelWindow_c : public listWindow_c
     }
 };
 
-listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphics_c & gr, const std::string & lname) {
+listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphics_c & gr) {
     std::vector<listWindow_c::entry> entries;
 
     int index = -1;
@@ -735,7 +735,7 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
     return new levelWindow_c(4, 0, 12, 12, surf, gr, _("Select Level"), entries, true, index);
 }
 
-listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr) {
+listWindow_c * getQuitWindow(surface_c & surf, graphicsN_c & gr) {
     static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
@@ -749,11 +749,11 @@ listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr) {
     return new listWindow_c(4, 3, 12, 7, surf, gr, _("And now?"), entries, true);
 }
 
-window_c * getAboutWindow(surface_c & surf, graphics_c & gr) {
+window_c * getAboutWindow(surface_c & surf, graphicsN_c & gr) {
     return new aboutWindow_c(surf, gr);
 }
 
-listWindow_c * getSolvedWindow(surface_c & surf, graphics_c & gr) {
+listWindow_c * getSolvedWindow(surface_c & surf, graphicsN_c & gr) {
     static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
@@ -764,7 +764,7 @@ listWindow_c * getSolvedWindow(surface_c & surf, graphics_c & gr) {
     return new listWindow_c(2, 3, 16, 6, surf, gr, _("Congratulations! You did it."), entries, false);
 }
 
-listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphics_c & gr) {
+listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphicsN_c & gr) {
     static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
@@ -799,7 +799,7 @@ listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphics_c & gr
 }
 
 
-listWindow_c * getTimeoutWindow(surface_c & surf, graphics_c & gr) {
+listWindow_c * getTimeoutWindow(surface_c & surf, graphicsN_c & gr) {
     static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
@@ -827,7 +827,7 @@ listWindow_c * getTimeoutWindow(surface_c & surf, graphics_c & gr) {
 }
 
 
-InputWindow_c::InputWindow_c(int x, int y, int w, int h, surface_c & s, graphics_c & gr,
+InputWindow_c::InputWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
         const std::string & ti) : window_c(x, y, w, h, s, gr)
 {
   title = ti;
