@@ -21,14 +21,14 @@
 
 #include "screen.h"
 
-#include "graphics.h"
+#include "graphicsn.h"
 
 #include <SDL/SDL_ttf.h>
 
 #include <iostream>
 #include <vector>
 
-screen_c::screen_c(const graphics_c & g) :
+screen_c::screen_c(const graphicsN_c & g) :
   animationState(0), blockX(g.blockX()), blockY(g.blockY())
 {
   video = SDL_SetVideoMode(g.resolutionX(), g.resolutionY(), 24, 0);

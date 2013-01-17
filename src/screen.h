@@ -34,7 +34,7 @@
  * In front of that can be stacked windows
  */
 
-class graphics_c;
+class graphicsN_c;
 
 /* the 3 available fonts, they are a fixed size and are supposed to contain
  * all the required letters
@@ -139,7 +139,7 @@ class screen_c : public surface_c {
   public:
 
     // constructor, does nothing for the time being
-    screen_c(const graphics_c & gr);
+    screen_c(const graphicsN_c & gr);
     ~screen_c(void);
 
     void flipComplete(void);  // flips the complete screen, not looking at the dirty blocks

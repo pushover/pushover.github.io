@@ -26,9 +26,11 @@
 #include "screen.h"
 
 #include <string>
+#include <vector>
 
 class pngLoader_c;
 class levelData_c;
+class ant_c;
 
 /* implementation for graphics class using the original graphics */
 class graphicsN_c : public graphics_c {
@@ -40,8 +42,6 @@ class graphicsN_c : public graphics_c {
 
     void loadGraphics(void);
 
-    void loadTheme(const std::string & name);
-    void setTheme(const std::string & name);
 
     virtual unsigned int resolutionX(void) const { return 800; }
     virtual unsigned int resolutionY(void) const { return 600; }
@@ -51,25 +51,9 @@ class graphicsN_c : public graphics_c {
     virtual unsigned int blockY(void) const { return 48; }
     virtual unsigned int halveBlockDisplace(void) const { return 8*3; }
 
-    virtual int timeXPos(void) const { return 5*18/2; }
-    virtual int timeYPos(void) const { return 3*186; }
-    virtual int getDominoYStart(void) const { return 3*4; }
-    virtual int convertDominoX(int x) const { return 5*x/2; }
-    virtual int convertDominoY(int y) const { return 3*y; }
-    virtual int splitterY(void) const { return 3*12; }
-
-    virtual void drawAnt(void);
-
-    /* draw the changed stuff into the target surface */
-    void drawDominos(void);
-
-    void markDirty(int x, int y) { dirty.markDirty(x, y); }
-    void markDirtyBg(int x, int y) { dirtybg.markDirty(x, y); dirty.markDirty(x, y); }
-    bool isDirty(int x, int y) const { return dirty.isDirty(x, y); }
     void markAllDirty(void) { dirty.markAllDirty(); }
-    void clearDirty(void) { dirty.clearDirty(); }
-
     const bitfield_c & getDirty(void) const { return dirty; }
+    void clearDirty(void) { dirty.clearDirty(); }
 
     void setPaintData(const levelData_c * l, const ant_c * a, surface_c * t);
 
@@ -83,7 +67,7 @@ class graphicsN_c : public graphics_c {
     // get domino animation image
     SDL_Surface * getDomino(unsigned int domino, unsigned int image) { return dominos[domino][image]; }
 
-  protected:
+  private:
 
     /* some functions for the loaders to store the loaded images */
     void addBgTile(SDL_Surface * v);
@@ -184,6 +168,25 @@ class graphicsN_c : public graphics_c {
     static const unsigned char numDominoTypes;
     static const unsigned char numDominos[23];
 
+    virtual int timeXPos(void) const { return 5*18/2; }
+    virtual int timeYPos(void) const { return 3*186; }
+
+    void loadTheme(const std::string & name);
+    void setTheme(const std::string & name);
+
+    virtual int getDominoYStart(void) const { return 3*4; }
+    virtual int convertDominoX(int x) const { return 5*x/2; }
+    virtual int convertDominoY(int y) const { return 3*y; }
+    virtual int splitterY(void) const { return 3*12; }
+
+    virtual void drawAnt(void);
+
+    /* draw the changed stuff into the target surface */
+    void drawDominos(void);
+
+    void markDirty(int x, int y) { dirty.markDirty(x, y); }
+    void markDirtyBg(int x, int y) { dirtybg.markDirty(x, y); dirty.markDirty(x, y); }
+    bool isDirty(int x, int y) const { return dirty.isDirty(x, y); }
 
 
 };

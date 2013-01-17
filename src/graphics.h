@@ -22,15 +22,6 @@
 #ifndef __GRAPHICS_H__
 #define __GRAPHICS_H__
 
-#include <SDL.h>
-#include <string>
-#include <vector>
-#include <map>
-
-class ant_c;
-class surface_c;
-class levelDisplay_c;
-
 /* this class contains all the information for all graphics */
 class graphics_c {
 
@@ -42,29 +33,6 @@ class graphics_c {
     // needs to be overloaded with a function loading
     // dominos, ant images and the box images
     virtual void loadGraphics(void) = 0;
-
-    /* to get the resolution that should be used */
-    virtual unsigned int resolutionX(void) const = 0;
-    virtual unsigned int resolutionY(void) const = 0;
-
-    /* to get the block size of one block */
-    virtual unsigned int blockX(void) const = 0;
-    virtual unsigned int blockY(void) const = 0;
-
-    virtual unsigned int halveBlockDisplace(void) const = 0;  // return and noffset to actually place the objects
-
-    // needs to be overloaded containing the loading function for a theme
-    virtual void loadTheme(const std::string & name) = 0;
-
-    // the position of the time in the level
-    virtual int timeXPos(void) const = 0;
-    virtual int timeYPos(void) const = 0;
-
-    virtual int getDominoYStart(void) const = 0;
-    virtual int convertDominoX(int x) const = 0;
-    virtual int convertDominoY(int y) const = 0;
-    virtual int splitterY(void) const = 0;
-
 
     virtual void drawLevel(void) = 0;
 
