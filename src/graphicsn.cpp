@@ -33,66 +33,66 @@
 #include <iostream>
 
 static int antOffsets[] = {
-  0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0,
-  0, 0, -9, -30, -24, -24,
-  0, 0, -9, -27, -24, -24,
-  3, 18, 24, 24,
-  3, 18, 24, 24,
-  0, -12, -12, -24, -24, -36, -36, -48,
-  0, -12, -12, -24, -24, -36, -36, -48,
-  0, 12, 12, 24, 24, 36, 36, 48,
-  0, 12, 12, 24, 24, 36, 36, 48,
-  0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0,
-  0, 0, 0, -12, -24, -24,
-  0, 0, 0, -12, -24, -24,
-  6, 15, 24, 24, 24, 24,
-  6, 15, 24, 24, 24, 24,
-  0, -12, -12, -24, -24, -36, -36, -48,
-  0, -12, -12, -24, -24, -36, -36, -48,
-  0, 12, 12, 24, 24, 36, 36, 48,
-  0, 12, 12, 24, 24, 36, 36, 48,
-  0,
-  3,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0,
-  0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 24, 33,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 24, 33,
-  0,
-  0, 0,
-  0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, -6,
-  0, 0, 0, 0, 0, 0, -6,
-  -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, 0, 0,
-  -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, 0, 0,
-  -6, -6, -6, -6, -6, -6, -6, -6,
-  -6, -6, -6, -6, -6, -6, -6, -6,
-  -6, -6, -6, -6,
-  -6, -6, -6, -6,
-  0, 0, 0, 9, 18, 27,
-  0, 0, 0, 9, 18, 27,
-  0, 12, 24, 36,
-  0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  -6, -6,
-  0, -12, -24, -36,
-  -18, -15, -15, -6, -6, 0, 0,
-  0, 0, 0,
-  0, 0, -6, -6, -12, -12, -18,
-  0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0,
-  0,
-  0,
-  -24, -12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  0, 0, 0, 0, 0, 0,                                                 // 6,        // AntAnimWalkLeft,
+  0, 0, 0, 0, 0, 0,                                                 // 6,        // AntAnimWalkRight,
+  0, 0, -9, -30, -24, -24,                                          // 6,        // AntAnimJunpUpLeft,
+  0, 0, -9, -27, -24, -24,                                          // 6,        // AntAnimJunpUpRight,
+  3, 18, 24, 24,                                                    // 4,        // AntAnimJunpDownLeft,
+  3, 18, 24, 24,                                                    // 4,        // AntAnimJunpDownRight,
+  0, -12, -12, -24, -24, -36, -36, -48,                             // 8,        // AntAnimLadder1,
+  0, -12, -12, -24, -24, -36, -36, -48,                             // 8,        // AntAnimLadder2,
+  0, 12, 12, 24, 24, 36, 36, 48,                                    // 8,        // AntAnimLadder3,
+  0, 12, 12, 24, 24, 36, 36, 48,                                    // 8,        // AntAnimLadder4,
+  0, 0, 0, 0, 0, 0,                                                 // 6,        // AntAnimCarryLeft,
+  0, 0, 0, 0, 0, 0,                                                 // 6,        // AntAnimCarryRight,
+  0, 0, 0, -12, -24, -24,                                           // 6,        // AntAnimCarryUpLeft,
+  0, 0, 0, -12, -24, -24,                                           // 6,        // AntAnimCarryUpRight,
+  6, 15, 24, 24, 24, 24,                                            // 6,        // AntAnimCarryDownLeft,
+  6, 15, 24, 24, 24, 24,                                            // 6,        // AntAnimCarryDownRight,
+  0, -12, -12, -24, -24, -36, -36, -48,                             // 8,        // AntAnimCarryLadder1,
+  0, -12, -12, -24, -24, -36, -36, -48,                             // 8,        // AntAnimCarryLadder2,
+  0, 12, 12, 24, 24, 36, 36, 48,                                    // 8,        // AntAnimCarryLadder3,
+  0, 12, 12, 24, 24, 36, 36, 48,                                    // 8,        // AntAnimCarryLadder4,
+  0,                                                                // 1,        // AntAnimCarryStopLeft,
+  3,                                                                // 1,        // AntAnimCarryStopRight,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      // 15,       // AntAnimPullOutLeft,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      // 15,       // AntAnimPullOutRight,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                   // 16,       // AntAnimPushInLeft,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                   // 16,       // AntAnimPushInRight,
+  0, 0,                                                             // 2,        // AntAnimXXX1,          // 2,        // AntAnimXXX4,
+  0, 0,                                                             // 2,        // AntAnimXXX2,          // 2,        // AntAnimXXX3,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 24, 33,                         // 13,       // AntAnimLoosingDominoRight,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 24, 33,             // 17,       // AntAnimLoosingDominoLeft,
+  0,                                                                // 1,        // AntAnimStop,
+  0, 0,                                                             // 2,        // AntAnimTapping,
+  0, 0, 0, 0, 0, 0,                                                 // 6,        // AntAnimYawning,
+  0, 0, 0, 0, 0, 0, -6,                                             // 7,        // AntAnimEnterLeft,
+  0, 0, 0, 0, 0, 0, -6,                                             // 7,        // AntAnimEnterRight,
+  -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, 0, 0,                     // 12,       // AntAnimPushLeft,
+  -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, 0, 0,                     // 12,       // AntAnimPushRight,
+  -6, -6, -6, -6, -6, -6, -6, -6,                                   // 8,        // AntAnimPushStopperLeft,     // 8,        // AntAnimPushDelayLeft,
+  -6, -6, -6, -6, -6, -6, -6, -6,                                   // 8,        // AntAnimPushStopperRight,    // 8,        // AntAnimPushDelayRight,
+  -6, -6, -6, -6,                                                   // 4,        // AntAnimPushRiserLeft,
+  -6, -6, -6, -6,                                                   // 4,        // AntAnimPushRiserRight,
+  0, 0, 0, 9, 18, 27,                                               // 6,        // AntAnimSuddenFallRight,
+  0, 0, 0, 9, 18, 27,                                               // 6,        // AntAnimSuddenFallLeft,
+  0, 12, 24, 36,                                                    // 4,        // AntAnimFalling,
+  0, 0, 0,                                                          // 3,        // AntAnimInFrontOfExploder,    // 1,        // AntAnimInFrontOfExploderWait,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      // 15,       // AntAnimLanding,
+  -6, -6,                                                           // 2,        // AntAnimGhost1,
+  0, -12, -24, -36,                                                 // 4,        // AntAnimGhost2,
+  -18, -15, -15, -6, -6, 0, 0,                                      // 7,        // AntAnimLeaveDoorEnterLevel,
+  0, 0, 0,                                                          // 3,        // AntAnimStepAsideAfterEnter,
+  0, 0, -6, -6, -12, -12, -18,                                      // 7,        // AntAnimEnterDoor,
+  0, 0, 0, 0,                                                       // 4,        // AntAnimXXX9,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                  // 11,       // AntAnimStruggingAgainsFallLeft,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                  // 11,       // AntAnimStruggingAgainsFallRight,
+  0, 0, 0, 0, 0, 0, 0, 0,                                           // 8,        // AntAnimVictory,
+  0, 0, 0, 0, 0, 0, 0, 0,                                           // 8,        // AntAnimShrugging,
+  0, 0, 0, 0, 0, 0, 0, 0,                                           // 8,        // AntAnimNoNo,
+  0,                                                                // 1,        // AntAnimXXXA,
+  0,                                                                // 1,        // AntAnimDominoDying,
+  -24, -12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0                         // 13        // AntAnimLandDying,
 };
 
 void graphicsN_c::addBoxBlock(SDL_Surface * v) {
@@ -595,7 +595,7 @@ void graphicsN_c::drawAnt(void)
       int a = ant->getAnimation() - AntAnimPullOutLeft;
 
       int x = (ant->getBlockX()-2)*blockX();
-      int y = (ant->getBlockY())*blockY()+ant->getScreenBlock()+antDisplace();
+      int y = (ant->getBlockY())*blockY()/2+getAntOffset(ant->getAnimation(), ant->getAnimationImage())+antDisplace();
 
       y += getMoveOffsetY(a, ant->getAnimationImage());
       x += getMoveOffsetX(a, ant->getAnimationImage());
@@ -625,14 +625,14 @@ void graphicsN_c::drawAnt(void)
 
       target->blit(getCarriedDomino(a, ant->getCarriedDomino()-1),
           (ant->getBlockX()-2)*blockX()+getCarryOffsetX(a, ant->getAnimationImage()),
-          (ant->getBlockY())*blockY()+ant->getScreenBlock()+antDisplace()+getCarryOffsetY(a, ant->getAnimationImage()));
+          (ant->getBlockY())*blockY()/2+getAntOffset(ant->getAnimation(), ant->getAnimationImage())+antDisplace()+getCarryOffsetY(a, ant->getAnimationImage()));
 
     }
   }
 
   if (getAnt(ant->getAnimation(), ant->getAnimationImage()))
   {
-    target->blit(getAnt(ant->getAnimation(), ant->getAnimationImage()), ant->getBlockX()*blockX()-45, (ant->getBlockY())*blockY()+ant->getScreenBlock()+antDisplace()+3);
+    target->blit(getAnt(ant->getAnimation(), ant->getAnimationImage()), ant->getBlockX()*blockX()-45, (ant->getBlockY())*blockY()/2+getAntOffset(ant->getAnimation(), ant->getAnimationImage())+antDisplace()+3);
   }
 
   /* what comes now, is to put the ladders back in front of the ant,
@@ -643,67 +643,67 @@ void graphicsN_c::drawAnt(void)
   if (ant->getAnimation() >= AntAnimCarryLadder1 && ant->getAnimation() <= AntAnimCarryLadder4) return;
   if (ant->getAnimation() >= AntAnimXXX1 && ant->getAnimation() <= AntAnimXXX4) return;
 
-  if (level->getFg(ant->getBlockX(), ant->getBlockY()) == levelData_c::FgElementPlatformLadderUp)
+  if (level->getFg(ant->getBlockX(), ant->getBlockY()/2) == levelData_c::FgElementPlatformLadderUp)
   {
-    target->blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant->getBlockX())*blockX(), (ant->getBlockY())*blockY());
+    target->blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant->getBlockX())*blockX(), (ant->getBlockY())*blockY()/2);
   }
   else
   {
-    if ((level->getFg(ant->getBlockX(), ant->getBlockY()) == levelData_c::FgElementPlatformLadderDown) ||
-        (level->getFg(ant->getBlockX(), ant->getBlockY()) == levelData_c::FgElementLadder))
+    if ((level->getFg(ant->getBlockX(), ant->getBlockY()/2) == levelData_c::FgElementPlatformLadderDown) ||
+        (level->getFg(ant->getBlockX(), ant->getBlockY()/2) == levelData_c::FgElementLadder))
     {
-      target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX())*blockX(), (ant->getBlockY())*blockY());
+      target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX())*blockX(), (ant->getBlockY())*blockY()/2);
     }
   }
 
   if ((ant->getBlockY() > 0) &&
-      ((level->getFg(ant->getBlockX(), ant->getBlockY()-1) == levelData_c::FgElementPlatformLadderDown) ||
-       (level->getFg(ant->getBlockX(), ant->getBlockY()-1) == levelData_c::FgElementLadder)))
+      ((level->getFg(ant->getBlockX(), ant->getBlockY()/2-1) == levelData_c::FgElementPlatformLadderDown) ||
+       (level->getFg(ant->getBlockX(), ant->getBlockY()/2-1) == levelData_c::FgElementLadder)))
   {
-    target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX())*blockX(), (ant->getBlockY()-1)*blockY());
+    target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX())*blockX(), (ant->getBlockY()-2)*blockY()/2);
   }
 
-  if (ant->getBlockX() > 0 && isDirty(ant->getBlockX()-1, ant->getBlockY()))
+  if (ant->getBlockX() > 0 && isDirty(ant->getBlockX()-1, ant->getBlockY()/2))
   {
-    if (level->getFg(ant->getBlockX()-1, ant->getBlockY()) == levelData_c::FgElementPlatformLadderUp)
+    if (level->getFg(ant->getBlockX()-1, ant->getBlockY()/2) == levelData_c::FgElementPlatformLadderUp)
     {
-      target->blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant->getBlockX()-1)*blockX(), (ant->getBlockY())*blockY());
+      target->blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant->getBlockX()-1)*blockX(), (ant->getBlockY())*blockY()/2);
     }
     else
     {
-      if ((level->getFg(ant->getBlockX()-1, ant->getBlockY()) == levelData_c::FgElementPlatformLadderDown) ||
-          (level->getFg(ant->getBlockX()-1, ant->getBlockY()) == levelData_c::FgElementLadder))
+      if ((level->getFg(ant->getBlockX()-1, ant->getBlockY()/2) == levelData_c::FgElementPlatformLadderDown) ||
+          (level->getFg(ant->getBlockX()-1, ant->getBlockY()/2) == levelData_c::FgElementLadder))
       {
-        target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()-1)*blockX(), (ant->getBlockY())*blockY());
+        target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()-1)*blockX(), (ant->getBlockY())*blockY()/2);
       }
     }
     if ((ant->getBlockY() > 0) &&
-        ((level->getFg(ant->getBlockX()-1, ant->getBlockY()-1) == levelData_c::FgElementPlatformLadderDown) ||
-         (level->getFg(ant->getBlockX()-1, ant->getBlockY()-1) == levelData_c::FgElementLadder)))
+        ((level->getFg(ant->getBlockX()-1, ant->getBlockY()/2-1) == levelData_c::FgElementPlatformLadderDown) ||
+         (level->getFg(ant->getBlockX()-1, ant->getBlockY()/2-1) == levelData_c::FgElementLadder)))
     {
-      target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()-1)*blockX(), (ant->getBlockY()-1)*blockY());
+      target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()-1)*blockX(), (ant->getBlockY()-2)*blockY()/2);
     }
   }
 
-  if ((ant->getBlockX() < 19) && isDirty(ant->getBlockX()+1, ant->getBlockY()))
+  if ((ant->getBlockX() < 19) && isDirty(ant->getBlockX()+1, ant->getBlockY()/2))
   {
-    if (level->getFg(ant->getBlockX()+1, ant->getBlockY()) == levelData_c::FgElementPlatformLadderUp)
+    if (level->getFg(ant->getBlockX()+1, ant->getBlockY()/2) == levelData_c::FgElementPlatformLadderUp)
     {
-      target->blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant->getBlockX()+1)*blockX(), (ant->getBlockY())*blockY());
+      target->blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant->getBlockX()+1)*blockX(), (ant->getBlockY())*blockY()/2);
     }
     else
     {
-      if ((level->getFg(ant->getBlockX()+1, ant->getBlockY()) == levelData_c::FgElementPlatformLadderDown) ||
-          (level->getFg(ant->getBlockX()+1, ant->getBlockY()) == levelData_c::FgElementLadder))
+      if ((level->getFg(ant->getBlockX()+1, ant->getBlockY()/2) == levelData_c::FgElementPlatformLadderDown) ||
+          (level->getFg(ant->getBlockX()+1, ant->getBlockY()/2) == levelData_c::FgElementLadder))
       {
-        target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()+1)*blockX(), (ant->getBlockY())*blockY());
+        target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()+1)*blockX(), (ant->getBlockY())*blockY()/2);
       }
     }
     if ((ant->getBlockY() > 0) &&
-        ((level->getFg(ant->getBlockX()+1, ant->getBlockY()-1) == levelData_c::FgElementPlatformLadderDown) ||
-         (level->getFg(ant->getBlockX()+1, ant->getBlockY()-1) == levelData_c::FgElementLadder)))
+        ((level->getFg(ant->getBlockX()+1, ant->getBlockY()/2-1) == levelData_c::FgElementPlatformLadderDown) ||
+         (level->getFg(ant->getBlockX()+1, ant->getBlockY()/2-1) == levelData_c::FgElementLadder)))
     {
-      target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()+1)*blockX(), (ant->getBlockY()-1)*blockY());
+      target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()+1)*blockX(), (ant->getBlockY()-2)*blockY()/2);
     }
   }
 }

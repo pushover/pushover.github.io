@@ -122,7 +122,6 @@ class ant_c {
     unsigned int animationTimer;
 
     int blockX, blockY;
-    int subBlock, screenBlock;
 
     levelPlayer_c & level;
     graphicsN_c & gr;
@@ -160,7 +159,7 @@ class ant_c {
     void success(void);
     void fail(void);
 
-    bool isVisible(void) const { return blockX >= 0 && blockX < 20 && blockY >= 0 && blockY < 13; }
+    bool isVisible(void) const { return blockX >= 0 && blockX < 20 && blockY >= 0 && blockY < 25; }
 
     int getPushsLeft(void) const { return numPushsLeft; }
 
@@ -169,7 +168,6 @@ class ant_c {
     unsigned int getCarriedDomino(void) const { return carriedDomino; }
     unsigned int getAnimation(void) const { return animation; }
     unsigned int getAnimationImage(void) const { return animationImage; }
-    int getScreenBlock(void) const { return screenBlock; }
 
     static uint16_t getAntImages(AntAnimationState ant);
 
