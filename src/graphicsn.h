@@ -24,6 +24,7 @@
 
 #include "graphics.h"
 #include "screen.h"
+#include "ant.h"
 
 #include <string>
 #include <vector>
@@ -60,9 +61,7 @@ class graphicsN_c : public graphics_c {
     void drawLevel(void);
 
     // return numbers of images for a given ant animation
-    unsigned int getAntImages(unsigned int animation) { return antImages[animation].size(); }
     int getAntOffset(unsigned int animation, unsigned int step) { return step<antImages[animation].size()?antImages[animation][step].ofs:0; }
-    static const unsigned char numAntAnimations;
     SDL_Surface * getBoxBlock(unsigned int num) { return boxBlocks[num]; }
     // get domino animation image
     SDL_Surface * getDomino(unsigned int domino, unsigned int image) { return dominos[domino][image]; }
@@ -97,7 +96,7 @@ class graphicsN_c : public graphics_c {
 
     std::string dataPath;
 
-    void getAnimation(int anim, pngLoader_c * png);
+    void getAnimation(AntAnimationState anim, pngLoader_c * png);
 
     signed int getCarryOffsetX(unsigned int animation, unsigned int image) const;
     signed int getCarryOffsetY(unsigned int animation, unsigned int image) const ;

@@ -25,7 +25,89 @@
 #include "soundsys.h"
 #include "screen.h"
 
+#include <assert.h>
 
+const unsigned char numAntAnimationsImages[AntAnimNothing] = {
+
+ 6,        // AntAnimWalkLeft,
+ 6,        // AntAnimWalkRight,
+ 6,        // AntAnimJunpUpLeft,
+ 6,        // AntAnimJunpUpRight,
+ 4,        // AntAnimJunpDownLeft,
+ 4,        // AntAnimJunpDownRight,
+ 8,        // AntAnimLadder1,
+ 8,        // AntAnimLadder2,
+ 8,        // AntAnimLadder3,
+ 8,        // AntAnimLadder4,
+ 6,        // AntAnimCarryLeft,
+ 6,        // AntAnimCarryRight,
+ 6,        // AntAnimCarryUpLeft,
+ 6,        // AntAnimCarryUpRight,
+ 6,        // AntAnimCarryDownLeft,
+ 6,        // AntAnimCarryDownRight,
+ 8,        // AntAnimCarryLadder1,
+ 8,        // AntAnimCarryLadder2,
+ 8,        // AntAnimCarryLadder3,
+ 8,        // AntAnimCarryLadder4,
+ 1,        // AntAnimCarryStopLeft,
+ 1,        // AntAnimCarryStopRight,
+ 15,       // AntAnimPullOutLeft,
+ 15,       // AntAnimPullOutRight,
+ 16,       // AntAnimPushInLeft,
+ 16,       // AntAnimPushInRight,
+ 2,        // AntAnimXXX1,
+ 2,        // AntAnimXXX2,
+ 2,        // AntAnimXXX3,
+ 2,        // AntAnimXXX4,
+ 13,       // AntAnimLoosingDominoRight,
+ 17,       // AntAnimLoosingDominoLeft,
+ 0,        // AntAnimXXX7,
+ 1,        // AntAnimStop,
+ 2,        // AntAnimTapping,
+ 6,        // AntAnimYawning,
+ 7,        // AntAnimEnterLeft,
+ 7,        // AntAnimEnterRight,
+ 12,       // AntAnimPushLeft,
+ 12,       // AntAnimPushRight,
+ 8,        // AntAnimPushStopperLeft,
+ 8,        // AntAnimPushStopperRight,
+ 4,        // AntAnimPushRiserLeft,
+ 4,        // AntAnimPushRiserRight,
+ 8,        // AntAnimPushDelayLeft,
+ 8,        // AntAnimPushDelayRight,
+ 6,        // AntAnimSuddenFallRight,
+ 6,        // AntAnimSuddenFallLeft,
+ 4,        // AntAnimFalling,
+ 3,        // AntAnimInFrontOfExploder,
+ 1,        // AntAnimInFrontOfExploderWait,
+ 15,       // AntAnimLanding,
+ 2,        // AntAnimGhost1,
+ 4,        // AntAnimGhost2,
+ 7,        // AntAnimLeaveDoorEnterLevel,
+ 3,        // AntAnimStepAsideAfterEnter,
+ 7,        // AntAnimEnterDoor,
+ 4,        // AntAnimXXX9,
+ 11,       // AntAnimStruggingAgainsFallLeft,
+ 11,       // AntAnimStruggingAgainsFallRight,
+ 8,        // AntAnimVictory,
+ 8,        // AntAnimShrugging,
+ 8,        // AntAnimNoNo,
+ 1,        // AntAnimXXXA,
+ 1,        // AntAnimDominoDying,
+ 13        // AntAnimLandDying,
+
+};
+
+
+uint16_t ant_c::getAntImages(AntAnimationState ant)
+{
+  if (ant < AntAnimNothing)
+  {
+    return numAntAnimationsImages[ant];
+  }
+
+  assert(0);
+}
 
 
 // initialize the ant state for level entering
@@ -172,7 +254,7 @@ bool ant_c::animateAnt(unsigned int delay) {
   }
 
   animationImage++;
-  if (animationImage >= gr.getAntImages(animation)) {
+  if (animationImage >= getAntImages(animation)) {
     animationImage = 0;
     screenBlock = subBlock;
     animationTimer = 0;
@@ -263,7 +345,7 @@ unsigned int ant_c::SFGhost1(void) {
 unsigned int ant_c::SFGhost2(void) {
 
   if (animateAnt(2)) {
-    animationImage = gr.getAntImages(animation) - 1;
+    animationImage = getAntImages(animation) - 1;
     screenBlock = subBlock + gr.getAntOffset(animation, animationImage);
     animationTimer = 2;
   }
@@ -864,9 +946,9 @@ unsigned int ant_c::SFLanding(void) {
 
 // this function checks for possible actions when
 // the user is inactive and the ant in stop state
-unsigned int ant_c::checkForNoKeyActions(void) {
+AntAnimationState ant_c::checkForNoKeyActions(void) {
 
-  unsigned int ReturnAntState = AntAnimStop;
+  AntAnimationState ReturnAntState = AntAnimStop;
 
   // if the user has prepared a push, we don't do anything
   if (animation == AntAnimPushRight || animation == AntAnimPushLeft)
@@ -896,7 +978,7 @@ unsigned int ant_c::checkForNoKeyActions(void) {
         }
         else
         {
-          animation = ReturnAntState = 0;
+          animation = ReturnAntState = AntAnimWalkLeft;
         }
 
         direction = -1;
@@ -920,7 +1002,7 @@ unsigned int ant_c::checkForNoKeyActions(void) {
       }
       else
       {
-        animation = ReturnAntState = 1;
+        animation = ReturnAntState = AntAnimWalkRight;
         direction = 1;
         return ReturnAntState;
       }
@@ -1098,10 +1180,10 @@ bool ant_c::PushableDomino(int x, int y, int ofs) {
 
 // ok, this huge function determines what comes next
 // it decides this on the currently pressed keys and the surroundings
-unsigned int ant_c::SFNextAction(void) {
+AntAnimationState ant_c::SFNextAction(void) {
 
   animationImage = 0;
-  unsigned int returnState;
+  AntAnimationState returnState;
 
   // is true, when the ant is on a ladder
   bool onLadder = (animation >= AntAnimLadder1 && animation <= AntAnimLadder4) ||
@@ -1291,7 +1373,7 @@ unsigned int ant_c::SFNextAction(void) {
     }
     else
     {
-      animation = returnState = 0;
+      animation = returnState = AntAnimWalkLeft;
       direction = -1;
     }
   }
@@ -1683,7 +1765,20 @@ unsigned int ant_c::SFNextAction(void) {
 
   if (carriedDomino && animation < AntAnimCarryLeft)
   {
-    animation += 10;
+    switch (animation)
+    {
+      case AntAnimWalkLeft      : animation = AntAnimCarryLeft;      break;
+      case AntAnimWalkRight     : animation = AntAnimCarryRight;     break;
+      case AntAnimJunpUpLeft    : animation = AntAnimCarryUpLeft;    break;
+      case AntAnimJunpUpRight   : animation = AntAnimCarryUpRight;   break;
+      case AntAnimJunpDownLeft  : animation = AntAnimCarryDownLeft;  break;
+      case AntAnimJunpDownRight : animation = AntAnimCarryDownRight; break;
+      case AntAnimLadder1       : animation = AntAnimCarryLadder1;   break;
+      case AntAnimLadder2       : animation = AntAnimCarryLadder2;   break;
+      case AntAnimLadder3       : animation = AntAnimCarryLadder3;   break;
+      case AntAnimLadder4       : animation = AntAnimCarryLadder4;   break;
+      default: break;
+    }
   }
 
   fallingHight = 0;

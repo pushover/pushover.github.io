@@ -22,6 +22,8 @@
 #ifndef __ANT_H__
 #define __ANT_H__
 
+#include <stdint.h>
+
 // this class contains all necessary code for the ant animation
 
 
@@ -104,7 +106,7 @@ typedef enum {
   AntAnimXXXA,
   AntAnimDominoDying,
   AntAnimLandDying,
-  AntAnimNothing
+  AntAnimNothing     // this needs to be the last as it is also used to count the different animations
 
 } AntAnimationState;
 
@@ -114,7 +116,7 @@ class ant_c {
   private:
 
     unsigned int state;
-    unsigned int animation;
+    AntAnimationState animation;
     unsigned int animationImage;
     unsigned int carriedDomino;
     unsigned int animationTimer;
@@ -131,7 +133,7 @@ class ant_c {
     unsigned int fallingHight;
     signed int direction;
     unsigned int pushDelay;
-    unsigned int pushAnimation;
+    AntAnimationState pushAnimation;
     bool finalAnimationPlayed;
     bool downChecker, upChecker;
     int numPushsLeft;
@@ -168,6 +170,8 @@ class ant_c {
     unsigned int getAnimation(void) const { return animation; }
     unsigned int getAnimationImage(void) const { return animationImage; }
     int getScreenBlock(void) const { return screenBlock; }
+
+    static uint16_t getAntImages(AntAnimationState ant);
 
   private:
 
@@ -223,9 +227,9 @@ class ant_c {
     unsigned int SFStruck(void);
 
 
-    unsigned int SFNextAction(void);
+    AntAnimationState SFNextAction(void);
 
-    unsigned int checkForNoKeyActions(void);
+    AntAnimationState checkForNoKeyActions(void);
     bool CanPlaceDomino(int x, int y, int ofs);
     bool PushableDomino(int x, int y, int ofs);
 };

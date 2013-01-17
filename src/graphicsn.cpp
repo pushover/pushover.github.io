@@ -99,77 +99,6 @@ void graphicsN_c::addBoxBlock(SDL_Surface * v) {
   boxBlocks.push_back(v);
 }
 
-const unsigned char graphicsN_c::numAntAnimations = 66;
-const unsigned char numAntAnimationsImages[graphicsN_c::numAntAnimations] = {
-
- 6,        // AntAnimWalkLeft,
- 6,        // AntAnimWalkRight,
- 6,        // AntAnimJunpUpLeft,
- 6,        // AntAnimJunpUpRight,
- 4,        // AntAnimJunpDownLeft,
- 4,        // AntAnimJunpDownRight,
- 8,        // AntAnimLadder1,
- 8,        // AntAnimLadder2,
- 8,        // AntAnimLadder3,
- 8,        // AntAnimLadder4,
- 6,        // AntAnimCarryLeft,
- 6,        // AntAnimCarryRight,
- 6,        // AntAnimCarryUpLeft,
- 6,        // AntAnimCarryUpRight,
- 6,        // AntAnimCarryDownLeft,
- 6,        // AntAnimCarryDownRight,
- 8,        // AntAnimCarryLadder1,
- 8,        // AntAnimCarryLadder2,
- 8,        // AntAnimCarryLadder3,
- 8,        // AntAnimCarryLadder4,
- 1,        // AntAnimCarryStopLeft,
- 1,        // AntAnimCarryStopRight,
- 15,       // AntAnimPullOutLeft,
- 15,       // AntAnimPullOutRight,
- 16,       // AntAnimPushInLeft,
- 16,       // AntAnimPushInRight,
- 2,        // AntAnimXXX1,
- 2,        // AntAnimXXX2,
- 2,        // AntAnimXXX3,
- 2,        // AntAnimXXX4,
- 13,       // AntAnimLoosingDominoRight,
- 17,       // AntAnimLoosingDominoLeft,
- 0,        // AntAnimXXX7,
- 1,        // AntAnimStop,
- 2,        // AntAnimTapping,
- 6,        // AntAnimYawning,
- 7,        // AntAnimEnterLeft,
- 7,        // AntAnimEnterRight,
- 12,       // AntAnimPushLeft,
- 12,       // AntAnimPushRight,
- 8,        // AntAnimPushStopperLeft,
- 8,        // AntAnimPushStopperRight,
- 4,        // AntAnimPushRiserLeft,
- 4,        // AntAnimPushRiserRight,
- 8,        // AntAnimPushDelayLeft,
- 8,        // AntAnimPushDelayRight,
- 6,        // AntAnimSuddenFallRight,
- 6,        // AntAnimSuddenFallLeft,
- 4,        // AntAnimFalling,
- 3,        // AntAnimInFrontOfExploder,
- 1,        // AntAnimInFrontOfExploderWait,
- 15,       // AntAnimLanding,
- 2,        // AntAnimGhost1,
- 4,        // AntAnimGhost2,
- 7,        // AntAnimLeaveDoorEnterLevel,
- 3,        // AntAnimStepAsideAfterEnter,
- 7,        // AntAnimEnterDoor,
- 4,        // AntAnimXXX9,
- 11,       // AntAnimStruggingAgainsFallLeft,
- 11,       // AntAnimStruggingAgainsFallRight,
- 8,        // AntAnimVictory,
- 8,        // AntAnimShrugging,
- 8,        // AntAnimNoNo,
- 1,        // AntAnimXXXA,
- 1,        // AntAnimDominoDying,
- 13        // AntAnimLandDying,
-
-};
 
 const unsigned char graphicsN_c::numDominoTypes = 23;
 const unsigned char graphicsN_c::numDominos[numDominoTypes] = {
@@ -213,10 +142,10 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
     carriedDominos[i].resize(15);
   }
 
-  antImages.resize(numAntAnimations);
+  antImages.resize((int)AntAnimNothing);
 
-  for (unsigned int i = 0; i < numAntAnimations; i++) {
-    antImages[i].resize(numAntAnimationsImages[i]);
+  for (unsigned int i = 0; i < AntAnimNothing; i++) {
+    antImages[i].resize(ant_c::getAntImages((AntAnimationState)i));
   }
 
 }
@@ -292,11 +221,11 @@ void graphicsN_c::addAnt(unsigned int anim, unsigned int img, signed char yOffse
   antImages[anim][img] = s;
 }
 
-void graphicsN_c::getAnimation(int anim, pngLoader_c * png) {
+void graphicsN_c::getAnimation(AntAnimationState anim, pngLoader_c * png) {
 
   static int antOffsetPos = 0;
 
-  for (unsigned int j = 0; j < getAntImages(anim); j++) {
+  for (unsigned int j = 0; j < ant_c::getAntImages(anim); j++) {
 
     SDL_Surface * v = SDL_CreateRGBSurface(0, png->getWidth(), 75, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
     SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
@@ -352,32 +281,32 @@ void graphicsN_c::loadGraphics(void) {
 
     // load images from first file
     for (unsigned int i = 0; i <= 27; i++)
-      getAnimation(i, &png);
+      getAnimation((AntAnimationState)i, &png);
 
     // load animation 28 and 29 these animations are the same as the 2 animations before but
     // the inverse order
     for (unsigned int i = 28; i <= 29; i++)
-      for (unsigned int j = 0; j < getAntImages(i-2); j++)
-        addAnt(i, j, getAntOffset(i-2, getAntImages(i-2)-j-1),
-            getAnt      (i-2, getAntImages(i-2)-j-1), false);
+      for (unsigned int j = 0; j < ant_c::getAntImages((AntAnimationState)(i-2)); j++)
+        addAnt(i, j, getAntOffset(i-2, ant_c::getAntImages((AntAnimationState)(i-2))-j-1),
+            getAnt      (i-2, ant_c::getAntImages((AntAnimationState)(i-2))-j-1), false);
 
     for (unsigned int i = 30; i <= 43; i++)
-      getAnimation(i, &png);
+      getAnimation((AntAnimationState)i, &png);
 
     // 44 and 45 are again copied from for animations before
     for (unsigned int i = 44; i <= 45; i++)
-      for (unsigned int j = 0; j < getAntImages(i-4); j++)
+      for (unsigned int j = 0; j < ant_c::getAntImages((AntAnimationState)(i-4)); j++)
         addAnt(i, j, getAntOffset(i-4, j), getAnt(i-4, j), false);
 
     for (unsigned int i = 46; i <= 49; i++)
-      getAnimation(i, &png);
+      getAnimation((AntAnimationState)i, &png);
 
     // 50 is copied it is the last images of the animation before
-    addAnt(50, 0, getAntOffset(49, getAntImages(49)-1),
-        getAnt      (49, getAntImages(49)-1), false);
+    addAnt(50, 0, getAntOffset(49, ant_c::getAntImages((AntAnimationState)(49))-1),
+        getAnt      (49, ant_c::getAntImages((AntAnimationState)(49))-1), false);
 
     for (unsigned int i = 51; i <= 65; i++)
-      getAnimation(i, &png);
+      getAnimation((AntAnimationState)i, &png);
   }
 
   {
