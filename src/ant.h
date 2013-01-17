@@ -124,8 +124,6 @@ class ant_c {
     int blockX, blockY;
 
     levelPlayer_c & level;
-    graphicsN_c & gr;
-    surface_c & vid;
 
     unsigned int keyMask;
     unsigned int inactiveTimer;
@@ -144,7 +142,7 @@ class ant_c {
     // initialize the ant state for level entering
     // the level is saved and used later on for dirty block
     // marking, and level modification
-    ant_c(levelPlayer_c & level, graphicsN_c & gr, surface_c & target);
+    ant_c(levelPlayer_c & level);
 
     void initForLevel(void);
 

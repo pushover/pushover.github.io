@@ -95,11 +95,6 @@ static int antOffsets[] = {
   -24, -12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0                         // 13        // AntAnimLandDying,
 };
 
-void graphicsN_c::addBoxBlock(SDL_Surface * v) {
-  boxBlocks.push_back(v);
-}
-
-
 const unsigned char graphicsN_c::numDominoTypes = 23;
 const unsigned char graphicsN_c::numDominos[numDominoTypes] = {
   15,   // DominoTypeStandard,
@@ -128,6 +123,8 @@ const unsigned char graphicsN_c::numDominos[numDominoTypes] = {
 };
 
 
+#define antDisplace (6*3)
+
 
 graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   background = 0;
@@ -147,107 +144,6 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   for (unsigned int i = 0; i < AntAnimNothing; i++) {
     antImages[i].resize(ant_c::getAntImages((AntAnimationState)i));
   }
-
-}
-
-
-graphicsN_c::~graphicsN_c(void) {
-
-  for (unsigned int i = 0; i < bgTiles.size(); i++)
-    for (unsigned int j = 0; j < bgTiles[i].size(); j++)
-      SDL_FreeSurface(bgTiles[i][j]);
-
-  for (unsigned int i = 0; i < fgTiles.size(); i++)
-    for (unsigned int j = 0; j < fgTiles[i].size(); j++)
-      SDL_FreeSurface(fgTiles[i][j]);
-
-  for (unsigned int i = 0; i < dominos.size(); i++)
-    for (unsigned int j = 0; j < dominos[i].size(); j++)
-      if (dominos[i][j])
-        SDL_FreeSurface(dominos[i][j]);
-
-  for (unsigned int i = 0; i < antImages.size(); i++)
-    for (unsigned int j = 0; j < antImages[i].size(); j++)
-      if (antImages[i][j].free)
-        SDL_FreeSurface(antImages[i][j].v);
-
-  for (unsigned int i = 0; i < carriedDominos.size(); i++)
-    for (unsigned int j = 0; j < carriedDominos[i].size(); j++)
-      if (carriedDominos[i][j])
-        SDL_FreeSurface(carriedDominos[i][j]);
-
-  for (unsigned int j = 0; j < boxBlocks.size(); j++)
-    SDL_FreeSurface(boxBlocks[j]);
-}
-
-
-void graphicsN_c::addBgTile(SDL_Surface * v) {
-  bgTiles[curTheme].push_back(v);
-}
-
-void graphicsN_c::addFgTile(SDL_Surface * v) {
-  fgTiles[curTheme].push_back(v);
-}
-
-void graphicsN_c::addBgTile(unsigned int idx, SDL_Surface * v) {
-  if (idx >= bgTiles[curTheme].size())
-    bgTiles[curTheme].resize(idx+1);
-
-  bgTiles[curTheme][idx] = v;
-}
-
-void graphicsN_c::addFgTile(unsigned int idx, SDL_Surface * v) {
-  if (idx >= fgTiles[curTheme].size())
-    fgTiles[curTheme].resize(idx+1);
-
-  fgTiles[curTheme][idx] = v;
-}
-
-void graphicsN_c::setDomino(unsigned int type, unsigned int num, SDL_Surface * v) {
-  dominos[type][num] = v;
-}
-
-void graphicsN_c::setCarriedDomino(unsigned int image, unsigned int domino, SDL_Surface * v) {
-  carriedDominos[image][domino] = v;
-}
-
-void graphicsN_c::addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free) {
-
-  antSprite s;
-  s.v = v;
-  s.ofs = yOffset;
-  s.free = free;
-
-  antImages[anim][img] = s;
-}
-
-void graphicsN_c::getAnimation(AntAnimationState anim, pngLoader_c * png) {
-
-  static int antOffsetPos = 0;
-
-  for (unsigned int j = 0; j < ant_c::getAntImages(anim); j++) {
-
-    SDL_Surface * v = SDL_CreateRGBSurface(0, png->getWidth(), 75, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-    SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-    png->getPart(v);
-
-    int ofs = antOffsets[antOffsetPos++];
-
-    SDL_Rect dst;
-
-    dst.x = 0;
-    dst.y = 0;
-    dst.w = 1;
-    dst.h = 75;
-
-    SDL_FillRect(v, &dst, SDL_MapRGBA(v->format, 0, 0, 0, 0));
-
-    addAnt(anim, j, ofs, v);
-  }
-}
-
-void graphicsN_c::loadGraphics(void) {
 
   // if no data path has been set, we don't even try to load something...
   if (dataPath == "") return;
@@ -269,7 +165,8 @@ void graphicsN_c::loadGraphics(void) {
         SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
         png.getPart(v);
-        setDomino(i, j, v);
+
+        dominos[i][j] = v;
         png.skipLines(2);
       }
   }
@@ -319,20 +216,21 @@ void graphicsN_c::loadGraphics(void) {
 
         png.getPart(v);
 
-        setCarriedDomino(i, j, v);
+        carriedDominos[i][j] = v;
       }
     }
 
     // copy some surfaces surfaces
     for (unsigned int i = 7; i < 10; i++) {
       for (unsigned int j = 0; j < 15; j++) {
-        setCarriedDomino(i, j, SDL_DisplayFormatAlpha(getCarriedDomino(i-1, j)));
+        carriedDominos[i][j] = carriedDominos[i-1][j];
+
       }
     }
 
     for (unsigned int i = 10; i < 12; i++) {
       for (unsigned int j = 0; j < 15; j++) {
-        setCarriedDomino(i, j, SDL_DisplayFormatAlpha(getCarriedDomino(i & 1, j)));
+        carriedDominos[i][j] = carriedDominos[i&1][j];
       }
     }
 
@@ -344,7 +242,7 @@ void graphicsN_c::loadGraphics(void) {
 
         png.getPart(v);
 
-        setCarriedDomino(i, j, v);
+        carriedDominos[i][j] = v;
       }
     }
   }
@@ -375,9 +273,80 @@ void graphicsN_c::loadGraphics(void) {
               (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
               w->pitch);
 
-        addBoxBlock(w);
+        boxBlocks.push_back(w);
       }
     }
+  }
+}
+
+
+graphicsN_c::~graphicsN_c(void) {
+
+  for (unsigned int i = 0; i < bgTiles.size(); i++)
+    for (unsigned int j = 0; j < bgTiles[i].size(); j++)
+      SDL_FreeSurface(bgTiles[i][j]);
+
+  for (unsigned int i = 0; i < fgTiles.size(); i++)
+    for (unsigned int j = 0; j < fgTiles[i].size(); j++)
+      SDL_FreeSurface(fgTiles[i][j]);
+
+  for (unsigned int i = 0; i < dominos.size(); i++)
+    for (unsigned int j = 0; j < dominos[i].size(); j++)
+      if (dominos[i][j])
+        SDL_FreeSurface(dominos[i][j]);
+
+  for (unsigned int i = 0; i < antImages.size(); i++)
+    for (unsigned int j = 0; j < antImages[i].size(); j++)
+      if (antImages[i][j].free)
+        SDL_FreeSurface(antImages[i][j].v);
+
+  for (unsigned int i = 0; i < 7; i++)
+    for (unsigned int j = 0; j < carriedDominos[i].size(); j++)
+      if (carriedDominos[i][j])
+        SDL_FreeSurface(carriedDominos[i][j]);
+
+  for (unsigned int i = 12; i < carriedDominos.size(); i++)
+    for (unsigned int j = 0; j < carriedDominos[i].size(); j++)
+      if (carriedDominos[i][j])
+        SDL_FreeSurface(carriedDominos[i][j]);
+
+  for (unsigned int j = 0; j < boxBlocks.size(); j++)
+    SDL_FreeSurface(boxBlocks[j]);
+}
+
+void graphicsN_c::addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free) {
+
+  antSprite s;
+  s.v = v;
+  s.ofs = yOffset;
+  s.free = free;
+
+  antImages[anim][img] = s;
+}
+
+void graphicsN_c::getAnimation(AntAnimationState anim, pngLoader_c * png) {
+
+  static int antOffsetPos = 0;
+
+  for (unsigned int j = 0; j < ant_c::getAntImages(anim); j++) {
+
+    SDL_Surface * v = SDL_CreateRGBSurface(0, png->getWidth(), 75, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+    SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+    png->getPart(v);
+
+    int ofs = antOffsets[antOffsetPos++];
+
+    SDL_Rect dst;
+
+    dst.x = 0;
+    dst.y = 0;
+    dst.w = 1;
+    dst.h = 75;
+
+    SDL_FillRect(v, &dst, SDL_MapRGBA(v->format, 0, 0, 0, 0));
+
+    addAnt(anim, j, ofs, v);
   }
 }
 
@@ -432,7 +401,11 @@ void graphicsN_c::loadTheme(const std::string & name) {
             memcpy((char*)w->pixels+y*w->pitch,
                    (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
                    w->pitch);
-          addFgTile(i+1, w);
+
+          if (i+1 >= fgTiles[curTheme].size())
+            fgTiles[curTheme].resize(i+2);
+
+          fgTiles[curTheme][i+1] = w;
         }
       }
     }
@@ -452,7 +425,11 @@ void graphicsN_c::loadTheme(const std::string & name) {
             memcpy((char*)w->pixels+y*w->pitch,
                    (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
                    w->pitch);
-          addBgTile(i, w);
+
+          if (i >= bgTiles[curTheme].size())
+            bgTiles[curTheme].resize(i+1);
+
+          bgTiles[curTheme][i] = w;
         }
       }
     }
@@ -595,7 +572,7 @@ void graphicsN_c::drawAnt(void)
       int a = ant->getAnimation() - AntAnimPullOutLeft;
 
       int x = (ant->getBlockX()-2)*blockX();
-      int y = (ant->getBlockY())*blockY()/2+getAntOffset(ant->getAnimation(), ant->getAnimationImage())+antDisplace();
+      int y = (ant->getBlockY())*blockY()/2+getAntOffset(ant->getAnimation(), ant->getAnimationImage())+antDisplace;
 
       y += getMoveOffsetY(a, ant->getAnimationImage());
       x += getMoveOffsetX(a, ant->getAnimationImage());
@@ -625,14 +602,14 @@ void graphicsN_c::drawAnt(void)
 
       target->blit(getCarriedDomino(a, ant->getCarriedDomino()-1),
           (ant->getBlockX()-2)*blockX()+getCarryOffsetX(a, ant->getAnimationImage()),
-          (ant->getBlockY())*blockY()/2+getAntOffset(ant->getAnimation(), ant->getAnimationImage())+antDisplace()+getCarryOffsetY(a, ant->getAnimationImage()));
+          (ant->getBlockY())*blockY()/2+getAntOffset(ant->getAnimation(), ant->getAnimationImage())+antDisplace+getCarryOffsetY(a, ant->getAnimationImage()));
 
     }
   }
 
   if (getAnt(ant->getAnimation(), ant->getAnimationImage()))
   {
-    target->blit(getAnt(ant->getAnimation(), ant->getAnimationImage()), ant->getBlockX()*blockX()-45, (ant->getBlockY())*blockY()/2+getAntOffset(ant->getAnimation(), ant->getAnimationImage())+antDisplace()+3);
+    target->blit(getAnt(ant->getAnimation(), ant->getAnimationImage()), ant->getBlockX()*blockX()-45, (ant->getBlockY())*blockY()/2+getAntOffset(ant->getAnimation(), ant->getAnimationImage())+antDisplace+3);
   }
 
   /* what comes now, is to put the ladders back in front of the ant,

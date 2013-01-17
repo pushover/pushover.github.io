@@ -25,8 +25,6 @@
 #include "leveldata.h"
 
 class ant_c;
-class surface_c;
-class graphics_c;
 
 class levelPlayer_c : public levelData_c {
 
@@ -79,7 +77,7 @@ class levelPlayer_c : public levelData_c {
 
   public:
 
-    levelPlayer_c(surface_c & screen, graphics_c & gr) : inactive(0) {}
+    levelPlayer_c(void) : inactive(0) {}
 
     void load(const textsections_c & sections, const std::string & userString);
 

@@ -50,11 +50,9 @@ static void check_record(const std::string & rec_path, levelsetList_c & levelset
   recorder_c rec;
   rec.load(rec_path);
 
-  graphicsN_c gr("");
-  surface_c surf;
-  levelPlayer_c l(surf, gr);
+  levelPlayer_c l;
   levelsetList.getLevelset(rec.getLevelsetName()).loadLevel(l, rec.getLevelName(), "");
-  ant_c a(l, gr, surf);
+  ant_c a(l);
 
   while (!rec.endOfRecord()) {
     a.setKeyStates(rec.getEvent());
@@ -291,12 +289,11 @@ int main(int argc, char * argv[]) {
   graphicsN_c gr(datadir);
   screen_c screen(gr);
   if (fullscreen) screen.toggleFullscreen();
-  gr.loadGraphics();
   initText(datadir);
   soundSystem_c::instance()->openSound(datadir);
-  levelPlayer_c l(screen, gr);
+  levelPlayer_c l;
   recorder_c rec;
-  ant_c a(l, gr, screen);
+  ant_c a(l);
   solvedMap_c solved;
   std::string lwindowLevel = "";  // when it contains a valid levelname, the level is selected when the levelwindow is opened the next time
 

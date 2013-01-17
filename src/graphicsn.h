@@ -41,16 +41,12 @@ class graphicsN_c : public graphics_c {
     graphicsN_c(const std::string & path);
     ~graphicsN_c(void);
 
-    void loadGraphics(void);
-
-
     virtual unsigned int resolutionX(void) const { return 800; }
     virtual unsigned int resolutionY(void) const { return 600; }
 
     /* to get the block size of one block */
     virtual unsigned int blockX(void) const { return 40; }
     virtual unsigned int blockY(void) const { return 48; }
-    virtual unsigned int halveBlockDisplace(void) const { return 8*3; }
 
     void markAllDirty(void) { dirty.markAllDirty(); }
     const bitfield_c & getDirty(void) const { return dirty; }
@@ -60,34 +56,20 @@ class graphicsN_c : public graphics_c {
 
     void drawLevel(void);
 
-    // return numbers of images for a given ant animation
-    int getAntOffset(unsigned int animation, unsigned int step) { return step<antImages[animation].size()?antImages[animation][step].ofs:0; }
     SDL_Surface * getBoxBlock(unsigned int num) { return boxBlocks[num]; }
     // get domino animation image
     SDL_Surface * getDomino(unsigned int domino, unsigned int image) { return dominos[domino][image]; }
 
   private:
 
-    /* some functions for the loaders to store the loaded images */
-    void addBgTile(SDL_Surface * v);
-    void addFgTile(SDL_Surface * v);
-    void addBgTile(unsigned int idx, SDL_Surface * v);
-    void addFgTile(unsigned int idx, SDL_Surface * v);
-
-    // sets a specific domino for a specific domino type and animation state
-    void setDomino(unsigned int type, unsigned int num, SDL_Surface * v);
-    void setCarriedDomino(unsigned int image, unsigned int domino, SDL_Surface * v);
+    // return numbers of images for a given ant animation
+    int getAntOffset(unsigned int animation, unsigned int step) { return step<antImages[animation].size()?antImages[animation][step].ofs:0; }
 
     // add an image to a specific ant animation, the new image is added at the end
     // you must also provide an y-offset used when animating to displace the image
     // if free is false it is assumed that the surface is used elsewhere and not freed
     // on deletion of object
     void addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free = true);
-
-    // add a box block, there need to be 9 of those blocks, 4 corners, 4 edges and one center
-    // block for the filling, add the blocks as if you had painted a 3x3 box, upper left corner
-    // upper edge, upper right corner, left edge, ...., lower right corner
-    void addBoxBlock(SDL_Surface * v);
 
     // get ant animation image
     SDL_Surface * getAnt(unsigned int animation, unsigned int step) { return antImages[animation][step].v; }
@@ -104,9 +86,6 @@ class graphicsN_c : public graphics_c {
     signed int getMoveOffsetY(unsigned int animation, unsigned int image) const;
     signed int getMoveImage(unsigned int animation, unsigned int image) const;
 
-    unsigned int antDisplace(void) const { return 6*3; }
-
-
     int Min, Sec;   // number of minutes and seconds shown in display
 
     /* this surface contains the background. It is only updated when necessary
@@ -119,8 +98,6 @@ class graphicsN_c : public graphics_c {
     const levelData_c * level;
 
     bitfield_c dirty, dirtybg;
-
-
 
     std::vector<std::string> themeNames;
 

@@ -113,7 +113,7 @@ uint16_t ant_c::getAntImages(AntAnimationState ant)
 // initialize the ant state for level entering
 // the level is saved and used later on for dirty block
 // marking, and level modification
-ant_c::ant_c(levelPlayer_c & level, graphicsN_c & gr, surface_c & target): level(level), gr(gr), vid(target) {
+ant_c::ant_c(levelPlayer_c & level): level(level) {
 
   initForLevel();
 }

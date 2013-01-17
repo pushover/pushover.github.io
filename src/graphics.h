@@ -30,10 +30,6 @@ class graphics_c {
     graphics_c(void);
     virtual ~graphics_c(void);
 
-    // needs to be overloaded with a function loading
-    // dominos, ant images and the box images
-    virtual void loadGraphics(void) = 0;
-
     virtual void drawLevel(void) = 0;
 
 };
