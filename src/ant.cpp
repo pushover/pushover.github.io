@@ -62,37 +62,12 @@ void ant_c::setKeyStates(unsigned int km) {
 // do one animation step for the ant
 void ant_c::performAnimation(void) {
 
-  unsigned int oldAnimation = animation;
-  unsigned int oldImage = animationImage;
-
   if (state == AntAnimNothing) {
     state = callStateFunction(state);
   }
 
   if (state != AntAnimNothing) {
     state = callStateFunction(state);
-  }
-
-  if (oldAnimation != animation || oldImage != animationImage)
-  {
-// TODO    level.markDirty(blockX, blockY-1);
-// TODO    level.markDirty(blockX-1, blockY-1);
-// TODO    level.markDirty(blockX+1, blockY-1);
-// TODO
-// TODO    level.markDirty(blockX, blockY);
-// TODO    level.markDirty(blockX, blockY-2);
-// TODO
-// TODO    level.markDirty(blockX-1, blockY-2);
-// TODO    level.markDirty(blockX-1, blockY);
-// TODO    level.markDirty(blockX-2, blockY-1);
-// TODO    level.markDirty(blockX-2, blockY);
-// TODO    level.markDirty(blockX+1, blockY-2);
-// TODO    level.markDirty(blockX+1, blockY);
-// TODO    level.markDirty(blockX+2, blockY-1);
-// TODO    level.markDirty(blockX+2, blockY);
-// TODO
-// TODO    level.markDirty(blockX+1, blockY+1);
-// TODO    level.markDirty(blockX-1, blockY+1);
   }
 }
 
