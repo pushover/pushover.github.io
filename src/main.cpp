@@ -315,6 +315,7 @@ int main(int argc, char * argv[]) {
       a.initForLevel();
       soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
 
+      gr.setPaintData(&l, &a, &screen);
       nextState = ST_REPLAY;
     }
     catch  (...) {
@@ -332,6 +333,7 @@ int main(int argc, char * argv[]) {
       a.initForLevel();
       soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
 
+      gr.setPaintData(&l, &a, &screen);
       nextState = ST_REPLAY;
       exitAfterReplay = true;
     }
