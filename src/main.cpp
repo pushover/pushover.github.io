@@ -321,8 +321,7 @@ int main(int argc, char * argv[]) {
     catch  (...) {
       nextState = ST_PROFILE_INIT;
     }
-  }
-  if (argc == 3 && strcmp(argv[1], "-R") == 0)
+  } else if (argc == 3 && strcmp(argv[1], "-R") == 0)
   {
     // try to load the record and the level that belongs to it
     // if it fails, fall back to main menu

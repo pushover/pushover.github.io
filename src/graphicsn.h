@@ -74,17 +74,9 @@ class graphicsN_c : public graphics_c {
     // get ant animation image
     SDL_Surface * getAnt(unsigned int animation, unsigned int step) { return antImages[animation][step].v; }
 
-  private:
-
     std::string dataPath;
 
     void getAnimation(AntAnimationState anim, pngLoader_c * png);
-
-    signed int getCarryOffsetX(unsigned int animation, unsigned int image) const;
-    signed int getCarryOffsetY(unsigned int animation, unsigned int image) const ;
-    signed int getMoveOffsetX(unsigned int animation, unsigned int image) const;
-    signed int getMoveOffsetY(unsigned int animation, unsigned int image) const;
-    signed int getMoveImage(unsigned int animation, unsigned int image) const;
 
     int Min, Sec;   // number of minutes and seconds shown in display
 
@@ -119,41 +111,14 @@ class graphicsN_c : public graphics_c {
 
     unsigned int curTheme;
 
-    // get tile for currenly active theme
-    SDL_Surface * getBgTile(unsigned int num) {
-      if (num < bgTiles[curTheme].size())
-        return bgTiles[curTheme][num];
-      else
-        throw std::exception();
-    }
-    SDL_Surface * getFgTile(unsigned int num) {
-      if (num < fgTiles[curTheme].size())
-        return fgTiles[curTheme][num];
-      else
-        throw std::exception();
-    }
-
-
-    // y offset to use when drawing the ant for a given animation
-
-
     // get image for a dmino carried by the ant
     SDL_Surface * getCarriedDomino(unsigned int image, unsigned int domino) { return carriedDominos[image][domino]; }
-
 
     static const unsigned char numDominoTypes;
     static const unsigned char numDominos[23];
 
-    virtual int timeXPos(void) const { return 5*18/2; }
-    virtual int timeYPos(void) const { return 3*186; }
-
     void loadTheme(const std::string & name);
     void setTheme(const std::string & name);
-
-    virtual int getDominoYStart(void) const { return 3*4; }
-    virtual int convertDominoX(int x) const { return 5*x/2; }
-    virtual int convertDominoY(int y) const { return 3*y; }
-    virtual int splitterY(void) const { return 3*12; }
 
     virtual void drawAnt(void);
 

@@ -125,6 +125,12 @@ const unsigned char graphicsN_c::numDominos[numDominoTypes] = {
 
 #define antDisplace (6*3)
 
+int timeXPos(void) { return 5*18/2; }
+int timeYPos(void) { return 3*186; }
+int getDominoYStart(void) { return 3*4; }
+int convertDominoX(int x) { return 5*x/2; }
+int convertDominoY(int y) { return 3*y; }
+int splitterY(void) { return 3*12; }
 
 graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   background = 0;
@@ -457,8 +463,8 @@ static signed int offsets[12][16] = {
   }
 };
 
-signed int graphicsN_c::getCarryOffsetX(unsigned int animation, unsigned int image) const { return 5*offsets[animation][2*image+0]/2; }
-signed int graphicsN_c::getCarryOffsetY(unsigned int animation, unsigned int image) const { return 3*offsets[animation][2*image+1]; }
+signed int getCarryOffsetX(unsigned int animation, unsigned int image) { return 5*offsets[animation][2*image+0]/2; }
+signed int getCarryOffsetY(unsigned int animation, unsigned int image) { return 3*offsets[animation][2*image+1]; }
 
 static signed int moveOffsets[10][64] = {
 
@@ -555,9 +561,9 @@ static signed int moveOffsets[10][64] = {
   }
 };
 
-signed int graphicsN_c::getMoveOffsetX(unsigned int animation, unsigned int image) const { return 5*moveOffsets[animation][4*image+0]/2; }
-signed int graphicsN_c::getMoveOffsetY(unsigned int animation, unsigned int image) const { return 3*moveOffsets[animation][4*image+1]; }
-signed int graphicsN_c::getMoveImage(unsigned int animation, unsigned int image) const { return moveOffsets[animation][4*image+2]; }
+signed int getMoveOffsetX(unsigned int animation, unsigned int image) { return 5*moveOffsets[animation][4*image+0]/2; }
+signed int getMoveOffsetY(unsigned int animation, unsigned int image) { return 3*moveOffsets[animation][4*image+1]; }
+signed int getMoveImage(unsigned int animation, unsigned int image) { return moveOffsets[animation][4*image+2]; }
 
 
 void graphicsN_c::drawAnt(void)
@@ -622,14 +628,14 @@ void graphicsN_c::drawAnt(void)
 
   if (level->getFg(ant->getBlockX(), ant->getBlockY()/2) == levelData_c::FgElementPlatformLadderUp)
   {
-    target->blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant->getBlockX())*blockX(), (ant->getBlockY())*blockY()/2);
+    target->blitBlock(fgTiles[curTheme][levelData_c::FgElementLadderMiddle], (ant->getBlockX())*blockX(), (ant->getBlockY())*blockY()/2);
   }
   else
   {
     if ((level->getFg(ant->getBlockX(), ant->getBlockY()/2) == levelData_c::FgElementPlatformLadderDown) ||
         (level->getFg(ant->getBlockX(), ant->getBlockY()/2) == levelData_c::FgElementLadder))
     {
-      target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX())*blockX(), (ant->getBlockY())*blockY()/2);
+      target->blitBlock(fgTiles[curTheme][levelData_c::FgElementLadder], (ant->getBlockX())*blockX(), (ant->getBlockY())*blockY()/2);
     }
   }
 
@@ -637,28 +643,28 @@ void graphicsN_c::drawAnt(void)
       ((level->getFg(ant->getBlockX(), ant->getBlockY()/2-1) == levelData_c::FgElementPlatformLadderDown) ||
        (level->getFg(ant->getBlockX(), ant->getBlockY()/2-1) == levelData_c::FgElementLadder)))
   {
-    target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX())*blockX(), (ant->getBlockY()-2)*blockY()/2);
+    target->blitBlock(fgTiles[curTheme][levelData_c::FgElementLadder], (ant->getBlockX())*blockX(), (ant->getBlockY()-2)*blockY()/2);
   }
 
   if (ant->getBlockX() > 0 && isDirty(ant->getBlockX()-1, ant->getBlockY()/2))
   {
     if (level->getFg(ant->getBlockX()-1, ant->getBlockY()/2) == levelData_c::FgElementPlatformLadderUp)
     {
-      target->blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant->getBlockX()-1)*blockX(), (ant->getBlockY())*blockY()/2);
+      target->blitBlock(fgTiles[curTheme][levelData_c::FgElementLadderMiddle], (ant->getBlockX()-1)*blockX(), (ant->getBlockY())*blockY()/2);
     }
     else
     {
       if ((level->getFg(ant->getBlockX()-1, ant->getBlockY()/2) == levelData_c::FgElementPlatformLadderDown) ||
           (level->getFg(ant->getBlockX()-1, ant->getBlockY()/2) == levelData_c::FgElementLadder))
       {
-        target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()-1)*blockX(), (ant->getBlockY())*blockY()/2);
+        target->blitBlock(fgTiles[curTheme][levelData_c::FgElementLadder], (ant->getBlockX()-1)*blockX(), (ant->getBlockY())*blockY()/2);
       }
     }
     if ((ant->getBlockY() > 0) &&
         ((level->getFg(ant->getBlockX()-1, ant->getBlockY()/2-1) == levelData_c::FgElementPlatformLadderDown) ||
          (level->getFg(ant->getBlockX()-1, ant->getBlockY()/2-1) == levelData_c::FgElementLadder)))
     {
-      target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()-1)*blockX(), (ant->getBlockY()-2)*blockY()/2);
+      target->blitBlock(fgTiles[curTheme][levelData_c::FgElementLadder], (ant->getBlockX()-1)*blockX(), (ant->getBlockY()-2)*blockY()/2);
     }
   }
 
@@ -666,21 +672,21 @@ void graphicsN_c::drawAnt(void)
   {
     if (level->getFg(ant->getBlockX()+1, ant->getBlockY()/2) == levelData_c::FgElementPlatformLadderUp)
     {
-      target->blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), (ant->getBlockX()+1)*blockX(), (ant->getBlockY())*blockY()/2);
+      target->blitBlock(fgTiles[curTheme][levelData_c::FgElementLadderMiddle], (ant->getBlockX()+1)*blockX(), (ant->getBlockY())*blockY()/2);
     }
     else
     {
       if ((level->getFg(ant->getBlockX()+1, ant->getBlockY()/2) == levelData_c::FgElementPlatformLadderDown) ||
           (level->getFg(ant->getBlockX()+1, ant->getBlockY()/2) == levelData_c::FgElementLadder))
       {
-        target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()+1)*blockX(), (ant->getBlockY())*blockY()/2);
+        target->blitBlock(fgTiles[curTheme][levelData_c::FgElementLadder], (ant->getBlockX()+1)*blockX(), (ant->getBlockY())*blockY()/2);
       }
     }
     if ((ant->getBlockY() > 0) &&
         ((level->getFg(ant->getBlockX()+1, ant->getBlockY()/2-1) == levelData_c::FgElementPlatformLadderDown) ||
          (level->getFg(ant->getBlockX()+1, ant->getBlockY()/2-1) == levelData_c::FgElementLadder)))
     {
-      target->blitBlock(getFgTile(levelData_c::FgElementLadder), (ant->getBlockX()+1)*blockX(), (ant->getBlockY()-2)*blockY()/2);
+      target->blitBlock(fgTiles[curTheme][levelData_c::FgElementLadder], (ant->getBlockX()+1)*blockX(), (ant->getBlockY()-2)*blockY()/2);
     }
   }
 }
@@ -732,8 +738,8 @@ void graphicsN_c::drawDominos(void)
       if (dirtybg.isDirty(x, y))
       {
         for (unsigned char b = 0; b < level->getNumBgLayer(); b++)
-          background->blitBlock(getBgTile(level->getBg(x, y, b)), x*blockX(), y*blockY());
-        background->blitBlock(getFgTile(level->getFg(x, y)), x*blockX(), y*blockY());
+          background->blitBlock(bgTiles[curTheme][level->getBg(x, y, b)], x*blockX(), y*blockY());
+        background->blitBlock(fgTiles[curTheme][level->getFg(x, y)], x*blockX(), y*blockY());
 
         background->gradient(blockX()*x, blockY()*y, blockX(), blockY());
       }
@@ -956,7 +962,7 @@ void graphicsN_c::drawDominos(void)
           dst.y = y*blockY();
           dst.w = blockX();
           dst.h = blockY();
-          target->blitBlock(getFgTile(levelData_c::FgElementLadder2), dst.x, dst.y);
+          target->blitBlock(fgTiles[curTheme][levelData_c::FgElementLadder2], dst.x, dst.y);
         }
         else if (level->getFg(x, y) == levelData_c::FgElementPlatformLadderUp)
         {
@@ -965,7 +971,7 @@ void graphicsN_c::drawDominos(void)
           dst.y = y*blockY();
           dst.w = blockX();
           dst.h = blockY();
-          target->blitBlock(getFgTile(levelData_c::FgElementLadderMiddle), dst.x, dst.y);
+          target->blitBlock(fgTiles[curTheme][levelData_c::FgElementLadderMiddle], dst.x, dst.y);
         }
       }
     }
