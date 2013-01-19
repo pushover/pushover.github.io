@@ -627,11 +627,11 @@ void graphicsN_c::setTheme(const std::string & name)
 
   pngLoader_c png(dataPath+"/themes/"+name+".png");
 
-  SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+  SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), blockY(), 32, 0xff, 0xff00, 0xff0000, 0xff000000);
   SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
-  unsigned int xBlocks = png.getWidth()/40;
-  unsigned int yBlocks = png.getHeight()/48;
+  unsigned int xBlocks = png.getWidth()/blockX();
+  unsigned int yBlocks = png.getHeight()/blockY();
 
   unsigned int foreSize = l.getArraySize("foreground")/2;
   unsigned int backSize = l.getArraySize("background")/2;
@@ -684,18 +684,27 @@ void graphicsN_c::setTheme(const std::string & name)
 
         if (x < xBlocks)
         {
-          SDL_Surface * w = SDL_CreateRGBSurface(0, 40, 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-          SDL_SetAlpha(w, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+          SDL_Surface * w1 = SDL_CreateRGBSurface(0, blockX(), blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+          SDL_SetAlpha(w1, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
-          for (unsigned int y = 0; y < 48; y++)
-            memcpy((char*)w->pixels+y*w->pitch,
+          SDL_Surface * w2 = SDL_CreateRGBSurface(0, blockX(), blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+          SDL_SetAlpha(w2, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+          for (unsigned int y = 0; y < blockY()/2; y++)
+            memcpy((char*)w1->pixels+y*w1->pitch,
                    (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
-                   w->pitch);
+                   w1->pitch);
 
-          if (i >= bgTiles[curTheme].size())
-            bgTiles[curTheme].resize(i+1);
+          for (unsigned int y = 0; y < blockY()/2; y++)
+            memcpy((char*)w2->pixels+y*w2->pitch,
+                   (char*)v->pixels+(y+blockY()/2)*v->pitch+x*40*v->format->BytesPerPixel,
+                   w2->pitch);
 
-          bgTiles[curTheme][i] = w;
+          if (2*i+1 >= bgTiles[curTheme].size())
+            bgTiles[curTheme].resize(2*i+2);
+
+          bgTiles[curTheme][2*i  ] = w1;
+          bgTiles[curTheme][2*i+1] = w2;
         }
       }
     }
@@ -727,7 +736,7 @@ void graphicsN_c::drawDominos(void)
 {
 
   // update background
-  for (unsigned int y = 0; y < 13; y++)
+  for (unsigned int y = 0; y < 25; y++)
   {
     for (unsigned int x = 0; x < 20; x++)
     {
@@ -735,10 +744,13 @@ void graphicsN_c::drawDominos(void)
 //      if (dirtybg.isDirty(x, y))
       {
         for (unsigned char b = 0; b < level->getNumBgLayer(); b++)
-          background->blitBlock(bgTiles[curTheme][level->getBg(x, y, b)], x*blockX(), y*blockY());
-        background->blitBlock(fgTiles[curTheme][level->getFg(x, y)], x*blockX(), y*blockY());
+          background->blitBlock(bgTiles[curTheme][level->getBg(x, y, b)], x*blockX(), y*blockY()/2);
 
-        background->gradient(blockX()*x, blockY()*y, blockX(), blockY());
+        if (y%2)
+        {
+          background->blitBlock(fgTiles[curTheme][level->getFg(x, y/2)], x*blockX(), (y/2)*blockY());
+          background->gradient(blockX()*x, blockY()*(y/2), blockX(), blockY());
+        }
       }
     }
 

@@ -151,7 +151,6 @@ class levelData_c {
       DominoNumber
     };
 
-    unsigned short getBg(unsigned int x, unsigned int y, int layer) const;
     unsigned char getFg(unsigned int x, unsigned int y) const;
 
     unsigned char getDominoType(unsigned int x, unsigned int y) const { return level[2*y][x].dominoType; }
@@ -194,6 +193,8 @@ class levelData_c {
     void print(void);
 
     // NEW INTERFACE please use this only
+
+    unsigned short getBg(unsigned int x, unsigned int y, int layer) const;
 
 };
 

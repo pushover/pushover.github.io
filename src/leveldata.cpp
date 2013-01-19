@@ -493,9 +493,7 @@ bool levelData_c::isTherePlatform(int x, int y) {
 }
 
 unsigned short levelData_c::getBg(unsigned int x, unsigned int y, int layer) const {
-    assert(level[2*y][x].bg[layer]+1 == level[2*y+1][x].bg[layer]);
-    assert((level[2*y][x].bg[layer] & 1) == 0);
-    return level[2*y][x].bg[layer] / 2;
+    return level[y][x].bg[layer];
 }
 unsigned char levelData_c::getFg(unsigned int x, unsigned int y) const
 {
