@@ -173,7 +173,6 @@ class levelData_c {
 
     // query level information of certain places
     bool noGround(int x, int y, bool onLadder);  // returns true, if the ant can't stand
-    bool isTherePlatform(int x, int y);
 
     void print(void);
 

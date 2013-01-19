@@ -778,7 +778,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
 
   // we have reached a special position where we need to check
   // for the ground again
-  if (isTherePlatform(x, y))
+  if (getPlatform(x, 2*y+1))
   {
     // we still crash if there is a domino below us
     if (getDominoType(x, y+1) != DominoTypeEmpty &&
@@ -1177,7 +1177,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
   {
     if (getDominoYOffset(x, y) == 4 && y > 1)
     {
-      if (isTherePlatform(x, y-2))
+      if (getPlatform(x, 2*y-3))
       {
         if (getFg(x, y-1) == 0xA || getFg(x, y-1) == 0xD)
         {
@@ -1190,7 +1190,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
     }
     if (getDominoYOffset(x, y) == -6 && y > 1)
     {
-      if (isTherePlatform(x, y-2))
+      if (getPlatform(x, 2*y-3))
       {
         if (getFg(x, y-1) == 9 || getFg(x, y-1) == 0xE)
         {
@@ -1204,7 +1204,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
     {
       if (y > 1)
       {
-        if (isTherePlatform(x, y-2))
+        if (getPlatform(x, 2*y-3))
         {
           setDominoState(x, y, 16);
           setDominoExtra(x, y, 0);
@@ -1236,7 +1236,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
 
     if (getDominoYOffset(x, y) == -8 && y > 1)
     {
-      if (isTherePlatform(x, y-2))
+      if (getPlatform(x, 2*y-3))
       {
         setDominoState(x, y, 16);
       }
@@ -1244,7 +1244,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
 
     if (getDominoYOffset(x, y) == -6 && y > 1)
     {
-      if (isTherePlatform(x, y-2))
+      if (getPlatform(x, 2*y-3))
       {
         setDominoState(x, y, 17);
       }

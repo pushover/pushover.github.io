@@ -461,37 +461,6 @@ bool levelData_c::noGround(int x, int y, bool onLadder) {
   return true;
 }
 
-// return true, if there is a platform at the given position
-bool levelData_c::isTherePlatform(int x, int y) {
-
-  switch (getFg(x, y))
-  {
-    case FgElementEmpty:              return false;
-    case FgElementPlatformStart:      return true;
-    case FgElementPlatformMiddle:     return true;
-    case FgElementPlatformEnd:        return true;
-    case FgElementPlatformLadderDown: return true;
-    case FgElementLadder:             return false;
-    case FgElementPlatformLadderUp:   return true;
-    case FgElementPlatformStep1:      return true;
-    case FgElementPlatformStep2:      return true;
-    case FgElementPlatformStep3:      return false;
-    case FgElementPlatformStep4:      return false;
-    case FgElementPlatformStep5:      return true;
-    case FgElementPlatformStep6:      return true;
-    case FgElementPlatformStep7:      return false;
-    case FgElementPlatformStep8:      return false;
-    case FgElementLadderMiddle:       return false;
-    case FgElementPlatformStrip:      return true;
-    case FgElementLadder2:            return false;
-    case FgElementDoor0:              return false;
-    case FgElementDoor1:              return false;
-    case FgElementDoor2:              return false;
-    case FgElementDoor3:              return false;
-    default:                          return false;
-  }
-}
-
 unsigned short levelData_c::getBg(unsigned int x, unsigned int y, int layer) const {
     return level[y][x].bg[layer];
 }
