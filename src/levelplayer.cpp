@@ -2193,4 +2193,19 @@ void levelPlayer_c::performDominos(void) {
   timeTick();
 }
 
+bool levelPlayer_c::triggerNotFlat(void) const {
+
+  for (int y = 0; y < 13; y++)
+    for (int x = 0; x < 20; x++)
+      if (getDominoType(x, y) == DominoTypeTrigger) {
+
+        // if the trigger is not lying completely flat
+        if (getDominoState(x, y) != 8 && getDominoState(x, y) != 1 && getDominoState(x, y) != 15)
+          return true;
+        else
+          return false;
+      }
+
+  return false;
+}
 

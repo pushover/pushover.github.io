@@ -186,18 +186,9 @@ int ant_c::performAnimation(unsigned int keyMask)
   // if level is inactive for a longer time and no pushes are left
   if (getPushsLeft() == 0 && level.levelLongInactive()) {
     // search for a trigger
-
-    for (int y = 0; y < 13; y++)
-      for (int x = 0; x < 20; x++)
-        if (level.getDominoType(x, y) == levelData_c::DominoTypeTrigger) {
-
-          // if the trigger is not lying completely flat
-          if (level.getDominoState(x, y) != 8 && level.getDominoState(x, y) != 1 && level.getDominoState(x, y) != 15)
-            return 7;
-
-          x = 20;
-          y = 13;
-        }
+    //
+    if (level.triggerNotFlat())
+      return 7;
   }
 
   return 0;

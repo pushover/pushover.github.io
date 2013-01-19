@@ -92,6 +92,9 @@ class levelPlayer_c : public levelData_c {
 
     bool levelInactive(void) { return inactive > 3; }
     bool levelLongInactive(void) { return inactive > 36; }
+
+    // returns true, when the trigger is not standing but also not flat on the ground
+    bool triggerNotFlat(void) const;
 };
 
 #endif
