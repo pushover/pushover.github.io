@@ -62,21 +62,14 @@ class graphicsN_c : public graphics_c {
 
   private:
 
-    // return numbers of images for a given ant animation
-    int getAntOffset(unsigned int animation, unsigned int step) { return step<antImages[animation].size()?antImages[animation][step].ofs:0; }
-
     // add an image to a specific ant animation, the new image is added at the end
     // you must also provide an y-offset used when animating to displace the image
     // if free is false it is assumed that the surface is used elsewhere and not freed
     // on deletion of object
     void addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free = true);
-
-    // get ant animation image
-    SDL_Surface * getAnt(unsigned int animation, unsigned int step) { return antImages[animation][step].v; }
+    void getAnimation(AntAnimationState anim, pngLoader_c * png);
 
     std::string dataPath;
-
-    void getAnimation(AntAnimationState anim, pngLoader_c * png);
 
     int Min, Sec;   // number of minutes and seconds shown in display
 

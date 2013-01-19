@@ -190,8 +190,8 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
     // the inverse order
     for (unsigned int i = 28; i <= 29; i++)
       for (unsigned int j = 0; j < ant_c::getAntImages((AntAnimationState)(i-2)); j++)
-        addAnt(i, j, getAntOffset(i-2, ant_c::getAntImages((AntAnimationState)(i-2))-j-1),
-            getAnt      (i-2, ant_c::getAntImages((AntAnimationState)(i-2))-j-1), false);
+        addAnt(i, j, antImages[i-2][ant_c::getAntImages((AntAnimationState)(i-2))-j-1].ofs,
+                     antImages[i-2][ant_c::getAntImages((AntAnimationState)(i-2))-j-1].v, false);
 
     for (unsigned int i = 30; i <= 43; i++)
       getAnimation((AntAnimationState)i, &png);
@@ -199,14 +199,14 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
     // 44 and 45 are again copied from for animations before
     for (unsigned int i = 44; i <= 45; i++)
       for (unsigned int j = 0; j < ant_c::getAntImages((AntAnimationState)(i-4)); j++)
-        addAnt(i, j, getAntOffset(i-4, j), getAnt(i-4, j), false);
+        addAnt(i, j, antImages[i-4][j].ofs, antImages[i-4][j].v, false);
 
     for (unsigned int i = 46; i <= 49; i++)
       getAnimation((AntAnimationState)i, &png);
 
     // 50 is copied it is the last images of the animation before
-    addAnt(50, 0, getAntOffset(49, ant_c::getAntImages((AntAnimationState)(49))-1),
-        getAnt      (49, ant_c::getAntImages((AntAnimationState)(49))-1), false);
+    addAnt(50, 0, antImages[49][ant_c::getAntImages((AntAnimationState)(49))-1].ofs,
+                  antImages[49][ant_c::getAntImages((AntAnimationState)(49))-1].v, false);
 
     for (unsigned int i = 51; i <= 65; i++)
       getAnimation((AntAnimationState)i, &png);
@@ -487,7 +487,7 @@ void graphicsN_c::drawAnt(void)
       int a = ant->getAnimation() - AntAnimPullOutLeft;
 
       int x = (ant->getBlockX()-2)*blockX();
-      int y = (ant->getBlockY())*blockY()/2+getAntOffset(ant->getAnimation(), ant->getAnimationImage())+antDisplace;
+      int y = (ant->getBlockY())*blockY()/2+antImages[ant->getAnimation()][ant->getAnimationImage()].ofs+antDisplace;
 
       y += getMoveOffsetY(a, ant->getAnimationImage());
       x += getMoveOffsetX(a, ant->getAnimationImage());
@@ -517,14 +517,16 @@ void graphicsN_c::drawAnt(void)
 
       target->blit(getCarriedDomino(a, ant->getCarriedDomino()-1),
           (ant->getBlockX()-2)*blockX()+getCarryOffsetX(a, ant->getAnimationImage()),
-          (ant->getBlockY())*blockY()/2+getAntOffset(ant->getAnimation(), ant->getAnimationImage())+antDisplace+getCarryOffsetY(a, ant->getAnimationImage()));
+          (ant->getBlockY())*blockY()/2+antImages[ant->getAnimation()][ant->getAnimationImage()].ofs+antDisplace+getCarryOffsetY(a, ant->getAnimationImage()));
 
     }
   }
 
-  if (getAnt(ant->getAnimation(), ant->getAnimationImage()))
+  if (antImages[ant->getAnimation()][ant->getAnimationImage()].v)
   {
-    target->blit(getAnt(ant->getAnimation(), ant->getAnimationImage()), ant->getBlockX()*blockX()-45, (ant->getBlockY())*blockY()/2+getAntOffset(ant->getAnimation(), ant->getAnimationImage())+antDisplace+3);
+    target->blit(
+        antImages[ant->getAnimation()][ant->getAnimationImage()].v, ant->getBlockX()*blockX()-45,
+        (ant->getBlockY())*blockY()/2+antImages[ant->getAnimation()][ant->getAnimationImage()].ofs+antDisplace+3);
   }
 
   /* what comes now, is to put the ladders back in front of the ant,
