@@ -636,6 +636,16 @@ unsigned char levelData_c::getFg(unsigned int x, unsigned int y) const
 
 }
 
+void levelData_c::setPlatform(unsigned int x, unsigned int y, bool val)
+{
+  level[y][x].platform = val;
+}
+
+void levelData_c::setLadder(unsigned int x, unsigned int y, bool val)
+{
+  level[y][x].ladder = val;
+}
+
 void levelData_c::setFg(unsigned int x, unsigned int y, int val)
 {
     switch(val)

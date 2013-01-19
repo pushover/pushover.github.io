@@ -500,29 +500,10 @@ void levelPlayer_c::DTA_4(int x, int y) {
 void levelPlayer_c::DTA_5(int x, int y) {
 
   removeDomino(x, y);
-  setFg(x, y, FgElementEmpty);
 
-  if (getFg(x+1, y) == FgElementPlatformMiddle ||
-      getFg(x+1, y) == FgElementPlatformLadderDown ||
-      getFg(x+1, y) == FgElementPlatformLadderUp)
-  {
-    setFg(x+1, y, FgElementPlatformStart);
-  }
-  else if (getFg(x+1, y) == FgElementPlatformEnd)
-  {
-    setFg(x+1, y, FgElementPlatformStrip);
-  }
-
-  if (getFg(x-1, y) == FgElementPlatformMiddle ||
-      getFg(x-1, y) == FgElementPlatformLadderDown ||
-      getFg(x-1, y) == FgElementPlatformLadderUp)
-  {
-    setFg(x-1, y, FgElementPlatformEnd);
-  }
-  else if (getFg(x-1, y) == FgElementPlatformStart)
-  {
-    setFg(x-1, y, FgElementPlatformStrip);
-  }
+  setPlatform(x, 2*y+1, false);
+  setLadder(x, 2*y, false);
+  setLadder(x, 2*y+1, false);
 }
 
 // hitting next domino to the left
@@ -959,237 +940,31 @@ void levelPlayer_c::DTA_C(int x, int y) {
 // bridger left this is mainly a lot of ifs to
 // find out the new level elements that need to
 // be placed
-void levelPlayer_c::DTA_7(int x, int y) {
-
-  int fg2;
-
-  if (x >= 2)
+void levelPlayer_c::DTA_7(int x, int y)
+{
+  if (x >= 2 && getPlatform(x-2, 2*y+1) && !getPlatform(x-1, 2*y+1))
   {
-    fg2 = getFg(x-2, y);
+    setPlatform(x-1, 2*y+1, true);
+    removeDomino(x, y);
   }
   else
   {
-    fg2 = 0;
+    DTA_1(x,y);
   }
-
-  int fg1;
-
-  if (x >= 1)
-  {
-    fg1 = getFg(x-1, y);
-  }
-  else
-  {
-    fg1 = 0;
-  }
-
-  int fg = getFg(x, y);
-
-  if (fg != FgElementPlatformStart && fg != FgElementPlatformStrip)
-  {
-    DTA_1(x, y);
-    return;
-  }
-
-  int doit = 0;
-
-  if (fg1 == FgElementPlatformEnd)
-  {
-    fg1 = FgElementPlatformMiddle;
-    if (fg == FgElementPlatformStart)
-    {
-      fg = FgElementPlatformMiddle;
-    }
-    else
-    {
-      fg = FgElementPlatformEnd;
-    }
-    doit = 1;
-  }
-  else if (fg1 != FgElementEmpty || fg2 != FgElementPlatformEnd)
-  {
-    if (fg1 == FgElementPlatformStrip)
-    {
-      fg1 = FgElementPlatformStart;
-      if (fg == FgElementPlatformStart)
-      {
-        fg = FgElementPlatformMiddle;
-      }
-      else
-      {
-        fg = FgElementPlatformEnd;
-      }
-      doit = 1;
-    }
-    else
-    {
-      if (fg1 == FgElementEmpty && fg2 == FgElementPlatformStrip)
-      {
-        fg2 = FgElementPlatformStart;
-        fg1 = FgElementPlatformMiddle;
-        if (fg == FgElementPlatformStart)
-        {
-          fg = FgElementPlatformMiddle;
-        }
-        else
-        {
-          fg = FgElementPlatformEnd;
-        }
-        doit = 1;
-      }
-    }
-  }
-  else
-  {
-    fg2 = FgElementPlatformMiddle;
-    fg1 = FgElementPlatformMiddle;
-    if (fg == FgElementPlatformStart)
-    {
-      fg = FgElementPlatformMiddle;
-    }
-    else
-    {
-      fg = FgElementPlatformEnd;
-    }
-    doit = 1;
-  }
-
-  // if we can't build a bridge, we continue falling, maybe topple over and
-  // continue downwards
-  if (doit == 0)
-  {
-    DTA_1(x, y);
-    return;
-  }
-
-  if (x >= 2)
-  {
-    setFg(x-2, y, fg2);
-  }
-
-  if (x >= 1)
-  {
-    setFg(x-1, y, fg1);
-  }
-
-  setFg(x, y, fg);
-  removeDomino(x, y);
 }
 
 // Bridger right same as DTA_7 but for other direction
-void levelPlayer_c::DTA_M(int x, int y) {
-
-  int fg2;
-
-  if (x < 18)
+void levelPlayer_c::DTA_M(int x, int y)
+{
+  if (x < 18 && getPlatform(x+2, 2*y+1) && !getPlatform(x+1, 2*y+1))
   {
-    fg2 = getFg(x+2, y);
+    setPlatform(x+1, 2*y+1, true);
+    removeDomino(x, y);
   }
   else
   {
-    fg2 = 0;
+    DTA_K(x,y);
   }
-
-  int fg1;
-
-  if (x < 19)
-  {
-    fg1 = getFg(x+1, y);
-  }
-  else
-  {
-    fg1 = 0;
-  }
-
-  int fg = getFg(x, y);
-
-  if (fg != FgElementPlatformEnd && fg != FgElementPlatformStrip)
-  {
-    DTA_K(x, y);
-    return;
-  }
-
-  int doit = 0;
-
-  if (fg1 == FgElementPlatformStart)
-  {
-    if (fg == FgElementPlatformEnd)
-    {
-      fg = FgElementPlatformMiddle;
-    }
-    else
-    {
-      fg = FgElementPlatformStart;
-    }
-    fg1 = FgElementPlatformMiddle;
-    doit = 1;
-  }
-  else if (fg1 != FgElementEmpty || fg2 != FgElementPlatformStart)
-  {
-    if (fg1 == FgElementPlatformStrip)
-    {
-      fg1 = FgElementPlatformStart;
-      if (fg == FgElementPlatformEnd)
-      {
-        fg = FgElementPlatformMiddle;
-      }
-      else
-      {
-        fg = FgElementPlatformStart;
-      }
-      doit = 1;
-    }
-    else
-    {
-      if (fg1 == FgElementEmpty && fg2 == FgElementPlatformStrip)
-      {
-        fg2 = FgElementPlatformEnd;
-        fg1 = FgElementPlatformMiddle;
-        if (fg == FgElementPlatformEnd)
-        {
-          fg = FgElementPlatformMiddle;
-        }
-        else
-        {
-          fg = FgElementPlatformStart;
-        }
-        doit = 1;
-      }
-    }
-  }
-  else
-  {
-    fg2 = FgElementPlatformMiddle;
-    fg1 = FgElementPlatformMiddle;
-    if (fg == FgElementPlatformEnd)
-    {
-      fg = FgElementPlatformMiddle;
-    }
-    else
-    {
-      fg = FgElementPlatformStart;
-    }
-    doit = 1;
-  }
-
-  if (doit == 0)
-  {
-    DTA_K(x, y);
-    return;
-  }
-
-  if (x < 18)
-  {
-    setFg(x+2, y, fg2);
-  }
-
-  if (x < 19)
-  {
-    setFg(x+1, y, fg1);
-  }
-
-  setFg(x, y, fg);
-  removeDomino(x, y);
 }
 
 
