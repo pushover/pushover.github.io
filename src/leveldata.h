@@ -171,9 +171,6 @@ class levelData_c {
     void removeDomino(int x, int y);
     void clearDominoExtra(int x, int y) { level[2*y][x].dominoExtra = 0; }
 
-    // query level information of certain places
-    bool noGround(int x, int y, bool onLadder);  // returns true, if the ant can't stand
-
     void print(void);
 
     // NEW INTERFACE please use this only

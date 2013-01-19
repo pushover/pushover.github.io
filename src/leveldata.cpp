@@ -446,21 +446,6 @@ void levelData_c::print(void) {
 
 }
 
-bool levelData_c::noGround(int x, int y, bool onLadder) {
-
-  if (y >= 12) return true;
-
-  if (getFg(x, y) == FgElementEmpty) return true;
-
-  if (getFg(x, y) >= FgElementDoor0) return true;
-
-  if (getFg(x, y) != FgElementLadder) return false;
-
-  if (onLadder) return false;
-
-  return true;
-}
-
 unsigned short levelData_c::getBg(unsigned int x, unsigned int y, int layer) const {
     return level[y][x].bg[layer];
 }

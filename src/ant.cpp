@@ -1200,7 +1200,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
 
   // when we have no ground below us and are not on a ladder we need
   // to fall down
-  if (level.noGround(blockX, blockY/2, onLadder))
+  if (!level.getPlatform(blockX, blockY+1) && (!onLadder || !level.getLadder(blockX, blockY)))
   {
     fallingHight++;
     if (blockY == 26)
