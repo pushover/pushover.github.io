@@ -104,12 +104,6 @@ class graphicsN_c : public graphics_c {
 
     unsigned int curTheme;
 
-    // get image for a dmino carried by the ant
-    SDL_Surface * getCarriedDomino(unsigned int image, unsigned int domino) { return carriedDominos[image][domino]; }
-
-    static const unsigned char numDominoTypes;
-    static const unsigned char numDominos[23];
-
     void setTheme(const std::string & name);
 
     virtual void drawAnt(void);

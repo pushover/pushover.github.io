@@ -140,6 +140,7 @@ class levelData_c {
       DominoTypeCounter1,
       DominoTypeCounter2,
       DominoTypeCounter3,
+      DominoTypeLastNormal = DominoTypeCounter3,
       DominoTypeCrash0,         // all yellow big pile
       DominoTypeCrash1,         // mixed big pile
       DominoTypeCrash2,         // all red big pile
@@ -147,7 +148,7 @@ class levelData_c {
       DominoTypeCrash4,         // mixed little pile
       DominoTypeCrash5,         // all red little pile
       DominoTypeRiserCont,
-      DominoTypeQuaver,
+      DominoNumber
     };
 
     unsigned short getBg(unsigned int x, unsigned int y, int layer) const;

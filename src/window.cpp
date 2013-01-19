@@ -198,7 +198,7 @@ void helpWindow_c::displayCurrentPage(void)
     s.fillRect(SX*column+TX+2, ypos+2, displaywidth-4, 75-4, TXT_COL_R, TXT_COL_G, TXT_COL_B);
 
     for (int i = 0; i < dominoHelp[page].numDominos; i++)
-      s.blitBlock(g.getDomino(dominoHelp[page].dominos[i]-1, 7),
+      s.blitBlock(g.getDomino(dominoHelp[page].dominos[i], 7),
           SX*column+TX-105+displaywidth/2+int(dominoHelp[page].spacing*(1.0*i-(dominoHelp[page].numDominos-1)*0.5)), ypos + 4);
 
     page++;
