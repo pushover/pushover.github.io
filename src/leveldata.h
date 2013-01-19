@@ -168,7 +168,6 @@ class levelData_c {
     void setDominoExtra(unsigned int x, unsigned int y, int val) { level[2*y][x].dominoExtra = val; }
     void setDominoYOffset(unsigned int x, unsigned int y, int val) { level[2*y][x].dominoYOffset = val; }
 
-    void removeDomino(int x, int y);
 
     // NEW INTERFACE please use this only
 
@@ -198,6 +197,7 @@ class levelData_c {
 
     void print(void);
 
+    void removeDomino(int x, int y);
 
 };
 

@@ -386,11 +386,11 @@ void levelData_c::save(std::ostream & stream) const {
 }
 
 void levelData_c::removeDomino(int x, int y) {
-  level[2*y][x].dominoType = DominoTypeEmpty;
-  level[2*y][x].dominoState = 0;
-  level[2*y][x].dominoDir = 0;
-  level[2*y][x].dominoYOffset = 0;
-  level[2*y][x].dominoExtra = 0;
+  level[y][x].dominoType = DominoTypeEmpty;
+  level[y][x].dominoState = 0;
+  level[y][x].dominoDir = 0;
+  level[y][x].dominoYOffset = 0;
+  level[y][x].dominoExtra = 0;
 }
 
 

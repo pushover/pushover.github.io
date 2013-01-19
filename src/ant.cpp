@@ -578,8 +578,8 @@ unsigned int ant_c::SFLooseRight(void) {
   }
 
   if (animationImage == 4) {
-    level.putDownDomino(blockX+1, blockY/2, carriedDomino, false);
-    level.fallingDomino(blockX+1, blockY/2);
+    level.putDownDomino(blockX+1, blockY, carriedDomino, false);
+    level.fallingDomino(blockX+1, blockY);
     carriedDomino = 0;
   } else if (animationImage == 6) {
     blockX++;
@@ -602,8 +602,8 @@ unsigned int ant_c::SFLooseLeft(void) {
   if (animationImage == 4) {
     blockX--;
   } else if (animationImage == 8) {
-    level.putDownDomino(blockX, blockY/2, carriedDomino, false);
-    level.fallingDomino(blockX, blockY/2);
+    level.putDownDomino(blockX, blockY, carriedDomino, false);
+    level.fallingDomino(blockX, blockY);
     carriedDomino = 0;
   } else if (animationImage == 14) {
     soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_FALLING);
@@ -653,7 +653,7 @@ unsigned int ant_c::SFPushInLeft(void) {
 
   blockX--;
   animation = AntAnimWalkLeft;
-  level.putDownDomino(blockX, blockY/2, carriedDomino, true);
+  level.putDownDomino(blockX, blockY, carriedDomino, true);
   carriedDomino = levelData_c::DominoTypeEmpty;
 
   return AntAnimNothing;
@@ -665,7 +665,7 @@ unsigned int ant_c::SFPushInRight(void) {
 
   blockX++;
   animation = AntAnimWalkRight;
-  level.putDownDomino(blockX, blockY/2, carriedDomino, true);
+  level.putDownDomino(blockX, blockY, carriedDomino, true);
   carriedDomino = levelData_c::DominoTypeEmpty;
 
   return AntAnimNothing;
@@ -922,8 +922,8 @@ unsigned int ant_c::SFFalling(void) {
   if (animateAnt(0)) {
 
     if (fallingHight == 1 && carriedDomino != 0) {
-      level.putDownDomino(blockX, blockY/2, carriedDomino, false);
-      level.fallingDomino(blockX, blockY/2);
+      level.putDownDomino(blockX, blockY, carriedDomino, false);
+      level.fallingDomino(blockX, blockY);
       carriedDomino = 0;
     }
 
@@ -1658,17 +1658,15 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
       }
       else
       {
-        carriedDomino = level.pickUpDomino(blockX, blockY/2);
+        carriedDomino = level.pickUpDomino(blockX, blockY);
 
         if (direction == -1)
         {
           animation = returnState = AntAnimPullOutLeft;
-          level.removeDomino(blockX, blockY/2);
         }
         else
         {
           animation = returnState = AntAnimPullOutRight;
-          level.removeDomino(blockX, blockY/2);
         }
       }
     }

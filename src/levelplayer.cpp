@@ -83,43 +83,43 @@ void levelPlayer_c::performDoors(void) {
 }
 
 int levelPlayer_c::pickUpDomino(int x, int y) {
-  int dom = getDominoType(x, y);
+  int dom = getDominoType(x, y/2);
   removeDomino(x, y);
   return dom;
 }
 
 void levelPlayer_c::putDownDomino(int x, int y, int domino, bool pushin) {
 
-  if (getDominoType(x, y) != 0)
+  if (getDominoType(x, y/2) != 0)
   { // there is a domino in the place where we want to put our domino
     if (pushin)
-      DominoCrash(x, y, domino, 0);
+      DominoCrash(x, y/2, domino, 0);
     else
-      DominoCrash(x, y, domino, 0x70);
+      DominoCrash(x, y/2, domino, 0x70);
   }
-  else if (x > 0 && (getDominoType(x-1, y) != DominoTypeEmpty) && (getDominoState(x-1, y) >= 12))
+  else if (x > 0 && (getDominoType(x-1, y/2) != DominoTypeEmpty) && (getDominoState(x-1, y/2) >= 12))
   { // there is no domino in our place but the left neighbor is falling towards us
-    DominoCrash(x, y, domino, 0);
+    DominoCrash(x, y/2, domino, 0);
   }
-  else if (x < 19 && (getDominoType(x+1, y) != DominoTypeEmpty) && getDominoState(x+1, y) <= 4)
+  else if (x < 19 && (getDominoType(x+1, y/2) != DominoTypeEmpty) && getDominoState(x+1, y/2) <= 4)
   { // there is no domino in our place but the right neighbor is falling towards us
-    DominoCrash(x, y, domino, 0);
+    DominoCrash(x, y/2, domino, 0);
   }
   else
   { // we can place the domino
-    setDominoType(x, y, domino);
-    setDominoState(x, y, 8);
-    setDominoDir(x, y, 0);
-    setDominoYOffset(x, y, 0);
-    setDominoExtra(x, y, 0);
+    setDominoType(x, y/2, domino);
+    setDominoState(x, y/2, 8);
+    setDominoDir(x, y/2, 0);
+    setDominoYOffset(x, y/2, 0);
+    setDominoExtra(x, y/2, 0);
   }
 }
 
 void levelPlayer_c::fallingDomino(int x, int y) {
-  if (getDominoType(x, y) == DominoTypeAscender)
-    setDominoExtra(x, y, 0x60);
+  if (getDominoType(x, y/2) == DominoTypeAscender)
+    setDominoExtra(x, y/2, 0x60);
   else
-    setDominoExtra(x, y, 0x70);
+    setDominoExtra(x, y/2, 0x70);
 
   soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
 }
@@ -391,7 +391,7 @@ void levelPlayer_c::DTA_D(int x, int y) {
 // the final vanisher state, remove the vanisher
 // from the level and mark things dirty
 void levelPlayer_c::DTA_8(int x, int y) {
-  removeDomino(x, y);
+  removeDomino(x, y*2);
 }
 
 // this is the nearly fallen down left case
@@ -499,7 +499,7 @@ void levelPlayer_c::DTA_4(int x, int y) {
 // exploder making its hole
 void levelPlayer_c::DTA_5(int x, int y) {
 
-  removeDomino(x, y);
+  removeDomino(x, y*2);
 
   setPlatform(x, 2*y+1, false);
   setLadder(x, 2*y, false);
@@ -771,7 +771,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
     }
 
     // remove the old domino
-    removeDomino(x, y);
+    removeDomino(x, y*2);
 
     return;
   }
@@ -797,7 +797,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
         setDominoDir(x-1, y+2, -1);
         setDominoExtra(x-1, y+2, 0x00);
         setDominoYOffset(x-1, y+2, getDominoYOffset(x, y+1)-16);
-        removeDomino(x, y+1);
+        removeDomino(x, 2*y+2);
       }
       if (getDominoState(x, y+1) == 15)
       {
@@ -806,7 +806,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
         setDominoDir(x+1, y+2, 1);
         setDominoExtra(x+1, y+2, 0x00);
         setDominoYOffset(x+1, y+2, getDominoYOffset(x, y+1)-16);
-        removeDomino(x, y+1);
+        removeDomino(x, 2*y+2);
       }
     }
 
@@ -837,7 +837,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
   {
     DominoCrash(x, y+1, getDominoType(x, y), getDominoExtra(x, y));
 
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
 
     return;
   }
@@ -847,7 +847,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
   pushDomino(x, y+1, -1);
 
   setDominoExtra(x, y+1, getDominoType(x, y));
-  removeDomino(x, y);
+  removeDomino(x, 2*y);
 }
 
 // splitter parts falling further
@@ -945,7 +945,7 @@ void levelPlayer_c::DTA_7(int x, int y)
   if (x >= 2 && getPlatform(x-2, 2*y+1) && !getPlatform(x-1, 2*y+1))
   {
     setPlatform(x-1, 2*y+1, true);
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
   }
   else
   {
@@ -959,7 +959,7 @@ void levelPlayer_c::DTA_M(int x, int y)
   if (x < 18 && getPlatform(x+2, 2*y+1) && !getPlatform(x+1, 2*y+1))
   {
     setPlatform(x+1, 2*y+1, true);
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
   }
   else
   {
@@ -1023,14 +1023,14 @@ void levelPlayer_c::DTA_A(int x, int y) {
       }
     }
 
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
 
     return;
   }
 
   if (c == 0)
   {
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
 
     if (getDominoType(x, y+1-a) == DominoTypeEmpty)
     {
@@ -1063,7 +1063,7 @@ void levelPlayer_c::DTA_A(int x, int y) {
       DominoCrash(x, y-1, getDominoType(x, y), getDominoExtra(x, y));
     }
 
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
   }
 }
 
@@ -1123,14 +1123,14 @@ void levelPlayer_c::DTA_O(int x, int y) {
       }
     }
 
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
 
     return;
   }
 
   if (c == 0)
   {
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
 
     if (getDominoType(x, y+1-a) == DominoTypeEmpty)
     {
@@ -1163,7 +1163,7 @@ void levelPlayer_c::DTA_O(int x, int y) {
       DominoCrash(x, y-1, getDominoType(x, y), getDominoExtra(x, y));
     }
 
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
   }
 }
 
@@ -1229,7 +1229,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
         }
       }
 
-      removeDomino(x, y);
+      removeDomino(x, 2*y);
 
       return;
     }
@@ -1291,7 +1291,7 @@ void levelPlayer_c::DTA_K(int x, int y) {
     if (getDominoType(x+1, y+1) != DominoTypeEmpty)
     {
       DominoCrash(x+1, y+1, getDominoType(x, y), getDominoExtra(x, y));
-      removeDomino(x, y);
+      removeDomino(x, 2*y);
     }
     else
     {
@@ -1303,7 +1303,7 @@ void levelPlayer_c::DTA_K(int x, int y) {
 
       soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
 
-      removeDomino(x, y);
+      removeDomino(x, 2*y);
     }
   }
   else
@@ -1323,7 +1323,7 @@ void levelPlayer_c::DTA_K(int x, int y) {
         setDominoExtra(x+1, y, 0x40);
       }
 
-      removeDomino(x, y);
+      removeDomino(x, 2*y);
 
       return;
     }
@@ -1343,7 +1343,7 @@ void levelPlayer_c::DTA_K(int x, int y) {
         setDominoExtra(x+1, y+1, 0x40);
       }
 
-      removeDomino(x, y);
+      removeDomino(x, 2*y);
 
       return;
     }
@@ -1378,7 +1378,7 @@ void levelPlayer_c::DTA_1(int x, int y) {
     if (getDominoType(x-1, y+1) != DominoTypeEmpty)
     {
       DominoCrash(x-1, y+1, getDominoType(x, y), getDominoExtra(x, y));
-      removeDomino(x, y);
+      removeDomino(x, 2*y);
 
       return;
     }
@@ -1392,7 +1392,7 @@ void levelPlayer_c::DTA_1(int x, int y) {
 
       soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
 
-      removeDomino(x, y);
+      removeDomino(x, 2*y);
     }
   }
   else
@@ -1412,7 +1412,7 @@ void levelPlayer_c::DTA_1(int x, int y) {
         setDominoExtra(x-1, y, 0x40);
       }
 
-      removeDomino(x, y);
+      removeDomino(x, 2*y);
 
       return;
     }
@@ -1432,7 +1432,7 @@ void levelPlayer_c::DTA_1(int x, int y) {
         setDominoExtra(x-1, y+1, 0x40);
       }
 
-      removeDomino(x, y);
+      removeDomino(x, 2*y);
 
       return;
     }
@@ -1473,7 +1473,7 @@ void levelPlayer_c::DTA_6(int x, int y) {
       soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
     }
 
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
 
     return;
   }
@@ -1493,7 +1493,7 @@ void levelPlayer_c::DTA_6(int x, int y) {
       setDominoExtra(x-1, y, 0x40);
     }
 
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
 
     return;
   }
@@ -1513,7 +1513,7 @@ void levelPlayer_c::DTA_6(int x, int y) {
       setDominoExtra(x-1, y+1, 0x40);
     }
 
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
 
     return;
   }
@@ -1530,7 +1530,7 @@ void levelPlayer_c::DTA_6(int x, int y) {
     setDominoYOffset(x-1, y, 0);
   }
 
-  removeDomino(x, y);
+  removeDomino(x, 2*y);
 }
 
 // Tumbler fallen down right
@@ -1563,7 +1563,7 @@ void levelPlayer_c::DTA_L(int x, int y) {
       soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
     }
 
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
 
     return;
   }
@@ -1583,7 +1583,7 @@ void levelPlayer_c::DTA_L(int x, int y) {
       setDominoExtra(x+1, y, 0x40);
     }
 
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
 
     return;
   }
@@ -1603,7 +1603,7 @@ void levelPlayer_c::DTA_L(int x, int y) {
       setDominoExtra(x+1, y+1, 0x40);
     }
 
-    removeDomino(x, y);
+    removeDomino(x, 2*y);
 
     return;
   }
@@ -1619,7 +1619,7 @@ void levelPlayer_c::DTA_L(int x, int y) {
     setDominoDir(x+1, y, getDominoDir(x, y));
   }
 
-  removeDomino(x, y);
+  removeDomino(x, 2*y);
 }
 
 
