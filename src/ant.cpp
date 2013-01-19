@@ -829,7 +829,7 @@ unsigned int ant_c::SFLeaveDoor(void) {
 
   if (animationImage == 0) {
     blockX = level.getEntryX();
-    blockY = level.getEntryY()*2+2;
+    blockY = level.getEntryY()+1;
   }
 
   if (animateAnt(0)) {

@@ -178,9 +178,11 @@ class levelData_c {
     void closeExitDoorStep(void) { doorExitState--; }
 
     unsigned char getEntryX(void) const { return doorEntryX; }
-    unsigned char getEntryY(void) const { return (doorEntryY-1)/2; }
+    unsigned char getEntryY(void) const { return doorEntryY; }
     unsigned char getExitX(void) const { return doorExitX; }
-    unsigned char getExitY(void) const { return (doorExitY-1)/2; }
+    unsigned char getExitY(void) const { return doorExitY; }
+    unsigned char getEntryState(void) const { return doorEntryState; }
+    unsigned char getExitState(void) const { return doorExitState; }
 
     bool isEntryDoorOpen(void) { return doorEntryState == 3; }
     bool isExitDoorOpen(void) { return doorExitState == 3; }
@@ -195,7 +197,8 @@ class levelData_c {
     // NEW INTERFACE please use this only
 
     unsigned short getBg(unsigned int x, unsigned int y, int layer) const;
-
+    bool getPlatform(unsigned int x, unsigned int y) const;
+    bool getLadder(unsigned int x, unsigned int y) const;
 };
 
 

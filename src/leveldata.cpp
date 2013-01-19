@@ -495,6 +495,15 @@ bool levelData_c::isTherePlatform(int x, int y) {
 unsigned short levelData_c::getBg(unsigned int x, unsigned int y, int layer) const {
     return level[y][x].bg[layer];
 }
+
+bool levelData_c::getPlatform(unsigned int x, unsigned int y) const {
+  return level[y][x].platform;
+}
+
+bool levelData_c::getLadder(unsigned int x, unsigned int y) const {
+  return level[y][x].ladder;
+}
+
 unsigned char levelData_c::getFg(unsigned int x, unsigned int y) const
 {
     // check special case for doors
