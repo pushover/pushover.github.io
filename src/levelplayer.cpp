@@ -2209,3 +2209,102 @@ bool levelPlayer_c::triggerNotFlat(void) const {
   return false;
 }
 
+bool levelPlayer_c::levelCompleted(int & fail) const {
+
+  for (int y = 0; y < 13; y++)
+    for (int x = 0; x < 20; x++) {
+      if (getDominoType(x, y) >= DominoTypeCrash0 &&
+          getDominoType(x, y) <= DominoTypeCrash5)
+      {
+        fail = 3;
+        return false;
+      }
+
+      if (getDominoType(x, y) != DominoTypeEmpty && getDominoType(x, y) != DominoTypeStopper)
+      {
+        if (getDominoType(x, y) == DominoTypeSplitter)
+        { // for splitters is must have started to fall
+          if (getDominoState(x, y) > 2 && getDominoState(x, y) <= 8)
+          {
+            fail = 6;
+            return false;
+          }
+        }
+        else if (getDominoType(x, y) == DominoTypeTrigger)
+        { // triggers must as least have started to fall
+          if (getDominoState(x, y) == 8 && !triggerIsFalln())
+          {
+            fail = 6;
+            return false;
+          }
+        }
+        else if (getDominoType(x, y) == DominoTypeTumbler)
+        { // tumbler must lie on something or lean against a wall
+          // not fallen far enough
+          if (getDominoState(x, y) >= 3 && getDominoState(x, y) <= 13) {
+            fail = 6;
+            return false;
+          }
+
+          // fallen far enough but neighbor empty
+          if (   getDominoState(x, y) <= 2
+              && ((x < 1) || (getDominoType(x-1, y) == DominoTypeEmpty))
+              && ((x < 2) || (getDominoType(x-2, y) == DominoTypeEmpty || getDominoState(x-2, y) < 14))
+             )
+          {
+            fail = 6;
+            return false;
+          }
+          if (   getDominoState(x, y) >= 14
+              && ((x > 18) || (getDominoType(x+1, y) == DominoTypeEmpty))
+              && ((x > 17) || (getDominoType(x+2, y) == DominoTypeEmpty || getDominoState(x+2, y) > 2))
+             )
+          {
+            fail = 6;
+            return false;
+          }
+
+        }
+        else
+        {
+          if (getDominoState(x, y) == 8)
+          {
+            fail = 4;
+            return false;
+          }
+          if (getDominoState(x, y) > 3 && getDominoState(x, y) < 13)
+          {
+            // here we certainly fail
+            fail = 6;
+            return false;
+          }
+          // in this case we might still succeed, when we lean against a block
+          if (   getDominoState(x, y) == 3
+              && (   getDominoType(x-1, y) != DominoTypeStopper
+                  || getDominoType(x+1, y) == DominoTypeEmpty
+                  || (getDominoDir(x+1, y) != -1 && getDominoType(x+1, y) != DominoTypeSplitter))
+             )
+          {
+            // here we lean against a of a blocker and can't go back
+            fail = 6;
+            return false;
+          }
+
+          if (   getDominoState(x, y) == 13
+              && (   getDominoType(x+1, y) != DominoTypeStopper
+                  || getDominoType(x-1, y) == DominoTypeEmpty
+                  || (getDominoDir(x-1, y) != 1 && getDominoType(x-1, y) != DominoTypeSplitter))
+             )
+          {
+            // here we lean against a step
+            fail = 6;
+            return false;
+          }
+        }
+      }
+    }
+
+  return true;
+}
+
+

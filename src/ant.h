@@ -28,8 +28,6 @@
 
 
 class levelPlayer_c;
-class graphicsN_c;
-class surface_c;
 
 // the following defines are used for the keymask
 #define KEY_LEFT 1

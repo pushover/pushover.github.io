@@ -72,9 +72,6 @@ class levelData_c {
     levelEntry level[27][20];  //TODO eigentlich nur 25 ebenen, die 26 nur fuer einfacheren Code...
     unsigned char numBg;
 
-    bool triggerFalln;
-
-
   public:
     levelData_c(void);
     virtual ~levelData_c(void) {}
@@ -194,14 +191,6 @@ class levelData_c {
     bool isTherePlatform(int x, int y);
 
     void print(void);
-
-    bool triggerIsFalln(void) const { return triggerFalln; }
-    void setTriggerFalln(void) { triggerFalln = true; }
-    void resetTriggerFalln(void) { triggerFalln = false; }
-
-    // check, if the level has been successfully solved
-    // if not the reason for failure is in fail
-    bool levelCompleted(int & fail) const;
 
     // NEW INTERFACE please use this only
 

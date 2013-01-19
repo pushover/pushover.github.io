@@ -46,7 +46,7 @@
 
 static void check_record(const std::string & rec_path, levelsetList_c & levelsetList,
                          unsigned int & count, unsigned int & failed,
-                         std::string checker(const ant_c & a, const levelData_c & l)) {
+                         std::string checker(const ant_c & a, const levelPlayer_c & l)) {
   recorder_c rec;
   rec.load(rec_path);
 
@@ -72,7 +72,7 @@ static void check_record(const std::string & rec_path, levelsetList_c & levelset
   count++;
 }
 
-void check(int argn, char * argv[], std::string checker(const ant_c & a, const levelData_c & l)) {
+void check(int argn, char * argv[], std::string checker(const ant_c & a, const levelPlayer_c & l)) {
   levelsetList_c levelsetList;
   levelsetList.load("levels", "");
 
@@ -103,7 +103,7 @@ void check(int argn, char * argv[], std::string checker(const ant_c & a, const l
   std::cout << failed << " out of " << count << " tests failed\n";
 }
 
-std::string checker1(const ant_c & a, const levelData_c & l) {
+std::string checker1(const ant_c & a, const levelPlayer_c & l) {
 
     int i;
     // we succeeded, when the ant has vanished, then it went out of the door
@@ -113,7 +113,7 @@ std::string checker1(const ant_c & a, const levelData_c & l) {
       return "Level not Finished";
 }
 
-std::string checker2(const ant_c & a, const levelData_c & l) {
+std::string checker2(const ant_c & a, const levelPlayer_c & l) {
 
     int i;
     // we succeeded, when the ant has vanished, then it went out of the door
@@ -123,7 +123,7 @@ std::string checker2(const ant_c & a, const levelData_c & l) {
       return "Level not Failed";
 }
 
-std::string checker3(const ant_c & a, const levelData_c & l) {
+std::string checker3(const ant_c & a, const levelPlayer_c & l) {
   // we succeeded, when the ant has vanished, then it went out of the door
   for (int y = 0; y < 13; y++)
     for (int x = 0; x < 20; x++)

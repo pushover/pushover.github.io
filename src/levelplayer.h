@@ -70,6 +70,8 @@ class levelPlayer_c : public levelData_c {
     // a counter used to see, if nothing happens within the level
     int inactive;
 
+    bool triggerFalln;
+
   public:
 
     levelPlayer_c(void) : inactive(0) {}
@@ -95,6 +97,15 @@ class levelPlayer_c : public levelData_c {
 
     // returns true, when the trigger is not standing but also not flat on the ground
     bool triggerNotFlat(void) const;
+
+    bool triggerIsFalln(void) const { return triggerFalln; }
+    void setTriggerFalln(void) { triggerFalln = true; }
+    void resetTriggerFalln(void) { triggerFalln = false; }
+
+
+    // check, if the level has been successfully solved
+    // if not the reason for failure is in fail
+    bool levelCompleted(int & fail) const;
 };
 
 #endif
