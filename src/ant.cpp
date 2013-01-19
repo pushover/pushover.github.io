@@ -132,27 +132,78 @@ void ant_c::initForLevel(void) {
   direction = 1;
   pushDelay = 0;
   downChecker = false;
+  finishCheckDone = false;
 
   finalAnimationPlayed = levelFail = levelSuccess = false;
 }
 
-void ant_c::setKeyStates(unsigned int km) {
-  keyMask = km;
-}
-
 // do one animation step for the ant
-void ant_c::performAnimation(void) {
+int ant_c::performAnimation(unsigned int keyMask)
+{
+  level.performDoors();
 
   if (state == AntAnimNothing) {
-    state = callStateFunction(state);
+    state = callStateFunction(state, keyMask);
   }
 
   if (state != AntAnimNothing) {
-    state = callStateFunction(state);
+    state = callStateFunction(state, keyMask);
   }
+
+  level.performDominos();
+
+  int reason = 0;
+
+  if (finishCheckDone && !level.levelCompleted(reason))
+  {
+    // we failed after all
+    level.openExitDoor(false);
+
+    return reason;
+  }
+
+  if (level.triggerIsFalln() && !finishCheckDone)
+  {
+    finishCheckDone = true;
+
+    if (level.levelCompleted(reason) && !carrySomething() && isLiving())
+    {
+      success();
+    }
+    else
+    {
+      fail();
+
+      if (reason)
+        return reason;
+      else if (carrySomething())
+        return 4;
+      else
+        return 5;
+    }
+  }
+
+  // if level is inactive for a longer time and no pushes are left
+  if (getPushsLeft() == 0 && level.levelLongInactive()) {
+    // search for a trigger
+
+    for (int y = 0; y < 13; y++)
+      for (int x = 0; x < 20; x++)
+        if (level.getDominoType(x, y) == levelData_c::DominoTypeTrigger) {
+
+          // if the trigger is not lying completely flat
+          if (level.getDominoState(x, y) != 8 && level.getDominoState(x, y) != 1 && level.getDominoState(x, y) != 15)
+            return 7;
+
+          x = 20;
+          y = 13;
+        }
+  }
+
+  return 0;
 }
 
-unsigned int ant_c::callStateFunction(unsigned int state) {
+unsigned int ant_c::callStateFunction(unsigned int state, unsigned int keyMask) {
 
   switch (state) {
 
@@ -225,10 +276,10 @@ unsigned int ant_c::callStateFunction(unsigned int state) {
     case AntAnimVictory:                   return SFVictory();
     case AntAnimShrugging:                 return SFShrugging();
     case AntAnimNoNo:                      return SFNoNo();
-    case AntAnimXXXA:                      return SFNextAction();
+    case AntAnimXXXA:                      return SFNextAction(keyMask);
     case AntAnimDominoDying:               return SFStruck();
     case AntAnimLandDying:                 return SFLandDying();
-    case AntAnimNothing:                   return SFNextAction();
+    case AntAnimNothing:                   return SFNextAction(keyMask);
     default:                               return AntAnimNothing;
   }
 }
@@ -1147,7 +1198,7 @@ bool ant_c::PushableDomino(int x, int y, int ofs) {
 
 // ok, this huge function determines what comes next
 // it decides this on the currently pressed keys and the surroundings
-AntAnimationState ant_c::SFNextAction(void) {
+AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
 
   animationImage = 0;
   AntAnimationState returnState;

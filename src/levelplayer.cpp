@@ -38,7 +38,6 @@ void levelPlayer_c::load(const textsections_c & sections, const std::string & us
 
   openDoorEntry = openDoorExit = false;
   resetTriggerFalln();
-  finishCheckDone = false;
 
   levelData_c::load(sections, userString);
 }
@@ -2171,9 +2170,7 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y) {
   }
 }
 
-int levelPlayer_c::performDominos(ant_c & a) {
-
-  a.performAnimation();
+void levelPlayer_c::performDominos(void) {
 
   inactive++;
 
@@ -2194,56 +2191,6 @@ int levelPlayer_c::performDominos(ant_c & a) {
       }
 
   timeTick();
-
-  int reason = 0;
-
-  if (finishCheckDone && !levelCompleted(reason))
-  {
-    // we failed after all
-    openExitDoor(false);
-
-    return reason;
-  }
-
-  if (triggerIsFalln() && !finishCheckDone)
-  {
-    finishCheckDone = true;
-
-    if (levelCompleted(reason) && !a.carrySomething() && a.isLiving())
-    {
-      a.success();
-    }
-    else
-    {
-      a.fail();
-
-      if (reason)
-        return reason;
-      else if (a.carrySomething())
-        return 4;
-      else
-        return 5;
-    }
-  }
-
-  // if level is inactive for a longer time and no pushed are left
-  if (a.getPushsLeft() == 0 && inactive > 36) {
-    // search for a trigger
-
-    for (int y = 0; y < 13; y++)
-      for (int x = 0; x < 20; x++)
-        if (getDominoType(x, y) == DominoTypeTrigger) {
-
-          // if the trigger is not lying completely flat
-          if (getDominoState(x, y) != 8 && getDominoState(x, y) != 1 && getDominoState(x, y) != 15)
-            return 7;
-
-          x = 20;
-          y = 13;
-        }
-  }
-
-  return 0;
 }
 
 

@@ -24,14 +24,9 @@
 
 #include "leveldata.h"
 
-class ant_c;
-
 class levelPlayer_c : public levelData_c {
 
   private:
-    // has the level been checked for completion, that is
-    // only done once, once a trigger has fallen
-    bool finishCheckDone;
 
     // requested states for the 2 doors
     bool openDoorExit;
@@ -87,7 +82,7 @@ class levelPlayer_c : public levelData_c {
     void openEntryDoor(bool open) { openDoorEntry = open; }
     void openExitDoor(bool open) { openDoorExit = open; }
 
-    int performDominos(ant_c & ant);
+    void performDominos(void);
 
     int pickUpDomino(int x, int y);  // removes the domino from that position and returns the domino type
     void putDownDomino(int x, int y, int domino, bool pushin);
@@ -96,6 +91,7 @@ class levelPlayer_c : public levelData_c {
     bool pushDomino(int x, int y, int dir);
 
     bool levelInactive(void) { return inactive > 3; }
+    bool levelLongInactive(void) { return inactive > 36; }
 };
 
 #endif

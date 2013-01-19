@@ -55,17 +55,13 @@ static void check_record(const std::string & rec_path, levelsetList_c & levelset
   ant_c a(l);
 
   while (!rec.endOfRecord()) {
-    a.setKeyStates(rec.getEvent());
-    l.performDoors();
-    l.performDominos(a);
+    a.performAnimation(rec.getEvent());
   }
 
   // add a few more iterations at the end to make sure the ant has left the level
-  a.setKeyStates(0);
   for (unsigned int j = 0; j < 100; j++)
   {
-    l.performDoors();
-    l.performDominos(a);
+    a.performAnimation(0);
   }
 
   const std::string error = checker(a, l);
@@ -176,10 +172,9 @@ static unsigned int getKeyMask(void) {
 // 6 trigger not last to fall
 // 7 trigger not flat on the ground
 //
-int playTick(levelPlayer_c & l, ant_c & a, surface_c & screen, graphics_c & gr)
+int playTick(levelPlayer_c & l, ant_c & a, graphics_c & gr, unsigned int keys)
 {
-  l.performDoors();
-  int res = l.performDominos(a);
+  int res = a.performAnimation(keys);
 
   gr.drawLevel();
 
@@ -969,8 +964,7 @@ int main(int argc, char * argv[]) {
           if (failDelay > 0)
           {
             failDelay--;
-            a.setKeyStates(0);
-            playTick(l, a, screen, gr);
+            playTick(l, a, gr, 0);
           }
           else
           {
@@ -988,8 +982,7 @@ int main(int argc, char * argv[]) {
           }
           else
           {
-            a.setKeyStates(rec.getEvent());
-            if (playTick(l, a, screen, gr))
+            if (playTick(l, a, gr, rec.getEvent()))
             {
               if (exitAfterReplay)
               {
@@ -1010,9 +1003,8 @@ int main(int argc, char * argv[]) {
           {
             unsigned int keyMask = getKeyMask();
             rec.addEvent(keyMask);
-            a.setKeyStates(keyMask);
+            failReason = playTick(l, a, gr, keyMask);
           }
-          failReason = playTick(l, a, screen, gr);
 
           if (l.levelInactive())
           {

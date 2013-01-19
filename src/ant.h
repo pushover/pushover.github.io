@@ -125,7 +125,6 @@ class ant_c {
 
     levelPlayer_c & level;
 
-    unsigned int keyMask;
     unsigned int inactiveTimer;
     unsigned int fallingHight;
     signed int direction;
@@ -137,6 +136,10 @@ class ant_c {
 
     bool levelFail, levelSuccess;
 
+    // has the level been checked for completion, that is
+    // only done once, once a trigger has fallen
+    bool finishCheckDone;
+
   public:
 
     // initialize the ant state for level entering
@@ -147,9 +150,7 @@ class ant_c {
     void initForLevel(void);
 
     // do one animation step for the ant
-    void performAnimation(void);
-
-    void setKeyStates(unsigned int keyMask);
+    int performAnimation(unsigned int keyMask);
 
     bool carrySomething(void) { return carriedDomino != 0; }
     bool isLiving(void) { return state != 64 && state != 65 && state != 53; }
@@ -171,7 +172,7 @@ class ant_c {
 
   private:
 
-    unsigned int callStateFunction(unsigned int state);
+    unsigned int callStateFunction(unsigned int state, unsigned int keyMask);
     bool animateAnt(unsigned int delay);
 
 
@@ -223,7 +224,7 @@ class ant_c {
     unsigned int SFStruck(void);
 
 
-    AntAnimationState SFNextAction(void);
+    AntAnimationState SFNextAction(unsigned int keyMask);
 
     AntAnimationState checkForNoKeyActions(void);
     bool CanPlaceDomino(int x, int y, int ofs);
