@@ -170,8 +170,18 @@ class levelData_c {
     void removeDomino(int x, int y);
     void clearDominoExtra(int x, int y) { level[2*y][x].dominoExtra = 0; }
 
-    unsigned char getEntryDoor(void) const { return FgElementDoor0+doorEntryState; }
-    unsigned char getExitDoor(void) const { return FgElementDoor0+doorExitState; }
+    // query level information of certain places
+    bool noGround(int x, int y, bool onLadder);  // returns true, if the ant can't stand
+    bool isTherePlatform(int x, int y);
+
+    void print(void);
+
+    // NEW INTERFACE please use this only
+
+    unsigned short getBg(unsigned int x, unsigned int y, int layer) const;
+    bool getPlatform(unsigned int x, unsigned int y) const;
+    bool getLadder(unsigned int x, unsigned int y) const;
+
     void openEntryDoorStep(void) { doorEntryState++; }
     void closeEntryDoorStep(void) { doorEntryState--; }
     void openExitDoorStep(void) { doorExitState++; }
@@ -185,20 +195,10 @@ class levelData_c {
     unsigned char getExitState(void) const { return doorExitState; }
 
     bool isEntryDoorOpen(void) { return doorEntryState == 3; }
+    bool isEntryDoorClosed(void) { return doorEntryState == 0; }
     bool isExitDoorOpen(void) { return doorExitState == 3; }
     bool isExitDoorClosed(void) { return doorExitState == 0; }
 
-    // query level information of certain places
-    bool noGround(int x, int y, bool onLadder);  // returns true, if the ant can't stand
-    bool isTherePlatform(int x, int y);
-
-    void print(void);
-
-    // NEW INTERFACE please use this only
-
-    unsigned short getBg(unsigned int x, unsigned int y, int layer) const;
-    bool getPlatform(unsigned int x, unsigned int y) const;
-    bool getLadder(unsigned int x, unsigned int y) const;
 };
 
 

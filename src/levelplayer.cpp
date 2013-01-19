@@ -46,37 +46,37 @@ void levelPlayer_c::performDoors(void) {
 
   if (openDoorEntry) {
 
-    if (getEntryDoor() == FgElementDoor0)
+    if (isEntryDoorClosed())
       soundSystem_c::instance()->startSound(soundSystem_c::SE_DOOR_OPEN);
 
-    if (getEntryDoor() < FgElementDoor3) {
+    if (!isEntryDoorOpen()) {
       openEntryDoorStep();
     }
 
   } else {
 
-    if (getEntryDoor() == FgElementDoor3)
+    if (isEntryDoorOpen())
       soundSystem_c::instance()->startSound(soundSystem_c::SE_DOOR_CLOSE);
 
-    if (getEntryDoor() > FgElementDoor0) {
+    if (!isEntryDoorClosed()) {
       closeEntryDoorStep();
     }
   }
 
   if (openDoorExit) {
 
-    if (getExitDoor() == FgElementDoor0)
+    if (isExitDoorClosed())
       soundSystem_c::instance()->startSound(soundSystem_c::SE_DOOR_OPEN);
 
-    if (getExitDoor() < FgElementDoor3) {
+    if (!isExitDoorOpen()) {
       openExitDoorStep();
     }
   } else {
 
-    if (getExitDoor() == FgElementDoor3)
+    if (isExitDoorOpen())
       soundSystem_c::instance()->startSound(soundSystem_c::SE_DOOR_CLOSE);
 
-    if (getExitDoor() > FgElementDoor0) {
+    if (!isExitDoorClosed()) {
       closeExitDoorStep();
     }
   }
