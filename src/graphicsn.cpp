@@ -871,7 +871,6 @@ void graphicsN_c::drawDominos(void)
         target->blit(getDomino(level->getDominoExtra(x, y), level->getDominoExtra(x, y)>=levelData_c::DominoTypeCrash0?0:7),
             SpriteXPos,
             SpriteYPos-splitterY());
-// TODO        clearDominoExtra(x, y);
       }
 
       // paint the actual domino but take care of the special cases of the ascender domino
