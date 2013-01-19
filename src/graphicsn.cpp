@@ -356,97 +356,6 @@ void graphicsN_c::getAnimation(AntAnimationState anim, pngLoader_c * png) {
   }
 }
 
-void graphicsN_c::loadTheme(const std::string & name) {
-
-  // if no data path has been set, we don't even try to load something...
-  if (dataPath == "") return;
-
-  luaClass_c l;
-  l.doFile(dataPath+"/themes/tools.lua");
-  l.doFile(dataPath+"/themes/"+name+".lua");
-
-  pngLoader_c png(dataPath+"/themes/"+name+".png");
-
-  SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-  SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-  unsigned int xBlocks = png.getWidth()/40;
-  unsigned int yBlocks = png.getHeight()/48;
-
-  unsigned int foreSize = l.getArraySize("foreground")/2;
-  unsigned int backSize = l.getArraySize("background")/2;
-
-  for (unsigned int i = 0; i < foreSize; i++)
-    if (  (unsigned int)l.getNumberArray("foreground", 2*i+2) >= yBlocks
-        ||(unsigned int)l.getNumberArray("foreground", 2*i+1) >= xBlocks)
-      std::cout << "Warning: Foreground Tile " << i << " is outside of image\n";
-
-  for (unsigned int i = 0; i < backSize; i++)
-    if (  (unsigned int)l.getNumberArray("background", 2*i+2) >= yBlocks
-        ||(unsigned int)l.getNumberArray("background", 2*i+1) >= xBlocks)
-      std::cout << "Warning: Background Tile " << i << " is outside of image\n";
-
-  unsigned int yPos = 0;
-
-  while (yPos < yBlocks)
-  {
-    png.getPart(v);
-
-    // get possible foreground tiles in the current line
-    for (unsigned int i = 0; i < foreSize; i++) {
-      if ((unsigned int)l.getNumberArray("foreground", 2*i+2) == yPos) {
-
-        unsigned int x = (unsigned int)l.getNumberArray("foreground", 2*i+1);
-
-        if (x < xBlocks)
-        {
-          SDL_Surface * w = SDL_CreateRGBSurface(0, 40, 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-          SDL_SetAlpha(w, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-          for (unsigned int y = 0; y < 48; y++)
-            memcpy((char*)w->pixels+y*w->pitch,
-                   (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
-                   w->pitch);
-
-          if (i+1 >= fgTiles[curTheme].size())
-            fgTiles[curTheme].resize(i+2);
-
-          fgTiles[curTheme][i+1] = w;
-        }
-      }
-    }
-
-    // get possible background tiles in the current line
-    for (unsigned int i = 0; i < backSize; i++) {
-      if (l.getNumberArray("background", 2*i+2) == yPos) {
-
-        unsigned int x = (unsigned int)l.getNumberArray("background", 2*i+1);
-
-        if (x < xBlocks)
-        {
-          SDL_Surface * w = SDL_CreateRGBSurface(0, 40, 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-          SDL_SetAlpha(w, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-          for (unsigned int y = 0; y < 48; y++)
-            memcpy((char*)w->pixels+y*w->pitch,
-                   (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
-                   w->pitch);
-
-          if (i >= bgTiles[curTheme].size())
-            bgTiles[curTheme].resize(i+1);
-
-          bgTiles[curTheme][i] = w;
-        }
-      }
-    }
-
-    yPos++;
-  }
-
-  SDL_FreeSurface(v);
-}
-
-
 static signed int offsets[12][16] = {
   {     -7, -3,  -8, -3, -11, -3, -14, -3, -16, -3, -20, -3,
   }, {   5, -3,   6, -3,   9, -3,  12, -3,  14, -3,  18, -3,
@@ -691,7 +600,11 @@ void graphicsN_c::drawAnt(void)
   }
 }
 
-void graphicsN_c::setTheme(const std::string & name) {
+void graphicsN_c::setTheme(const std::string & name)
+{
+
+  // if no data path has been set, we don't even try to load something...
+  if (dataPath == "") return;
 
   for (unsigned int th = 0; th < themeNames.size(); th++) {
     if (themeNames[th] == name) {
@@ -706,7 +619,89 @@ void graphicsN_c::setTheme(const std::string & name) {
   bgTiles.resize(bgTiles.size()+1);
   fgTiles.resize(fgTiles.size()+1);
 
-  loadTheme(name);
+  luaClass_c l;
+  l.doFile(dataPath+"/themes/tools.lua");
+  l.doFile(dataPath+"/themes/"+name+".lua");
+
+  pngLoader_c png(dataPath+"/themes/"+name+".png");
+
+  SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+  SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+  unsigned int xBlocks = png.getWidth()/40;
+  unsigned int yBlocks = png.getHeight()/48;
+
+  unsigned int foreSize = l.getArraySize("foreground")/2;
+  unsigned int backSize = l.getArraySize("background")/2;
+
+  for (unsigned int i = 0; i < foreSize; i++)
+    if (  (unsigned int)l.getNumberArray("foreground", 2*i+2) >= yBlocks
+        ||(unsigned int)l.getNumberArray("foreground", 2*i+1) >= xBlocks)
+      std::cout << "Warning: Foreground Tile " << i << " is outside of image\n";
+
+  for (unsigned int i = 0; i < backSize; i++)
+    if (  (unsigned int)l.getNumberArray("background", 2*i+2) >= yBlocks
+        ||(unsigned int)l.getNumberArray("background", 2*i+1) >= xBlocks)
+      std::cout << "Warning: Background Tile " << i << " is outside of image\n";
+
+  unsigned int yPos = 0;
+
+  while (yPos < yBlocks)
+  {
+    png.getPart(v);
+
+    // get possible foreground tiles in the current line
+    for (unsigned int i = 0; i < foreSize; i++) {
+      if ((unsigned int)l.getNumberArray("foreground", 2*i+2) == yPos) {
+
+        unsigned int x = (unsigned int)l.getNumberArray("foreground", 2*i+1);
+
+        if (x < xBlocks)
+        {
+          SDL_Surface * w = SDL_CreateRGBSurface(0, 40, 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+          SDL_SetAlpha(w, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+          for (unsigned int y = 0; y < 48; y++)
+            memcpy((char*)w->pixels+y*w->pitch,
+                   (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
+                   w->pitch);
+
+          if (i+1 >= fgTiles[curTheme].size())
+            fgTiles[curTheme].resize(i+2);
+
+          fgTiles[curTheme][i+1] = w;
+        }
+      }
+    }
+
+    // get possible background tiles in the current line
+    for (unsigned int i = 0; i < backSize; i++) {
+      if (l.getNumberArray("background", 2*i+2) == yPos) {
+
+        unsigned int x = (unsigned int)l.getNumberArray("background", 2*i+1);
+
+        if (x < xBlocks)
+        {
+          SDL_Surface * w = SDL_CreateRGBSurface(0, 40, 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+          SDL_SetAlpha(w, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+          for (unsigned int y = 0; y < 48; y++)
+            memcpy((char*)w->pixels+y*w->pitch,
+                   (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
+                   w->pitch);
+
+          if (i >= bgTiles[curTheme].size())
+            bgTiles[curTheme].resize(i+1);
+
+          bgTiles[curTheme][i] = w;
+        }
+      }
+    }
+
+    yPos++;
+  }
+
+  SDL_FreeSurface(v);
 
 }
 

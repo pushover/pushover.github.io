@@ -117,7 +117,6 @@ class graphicsN_c : public graphics_c {
     static const unsigned char numDominoTypes;
     static const unsigned char numDominos[23];
 
-    void loadTheme(const std::string & name);
     void setTheme(const std::string & name);
 
     virtual void drawAnt(void);
