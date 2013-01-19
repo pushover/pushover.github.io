@@ -159,7 +159,6 @@ class levelData_c {
     unsigned char getDominoExtra(unsigned int x, unsigned int y) const { return level[2*y][x].dominoExtra; }
     signed char getDominoYOffset(unsigned int x, unsigned int y) const { return level[2*y][x].dominoYOffset; }
 
-    void setBg(unsigned int x, unsigned int y, int layer, int val);
     void setFg(unsigned int x, unsigned int y, int val);
     void setDominoType(unsigned int x, unsigned int y, int val) { level[2*y][x].dominoType = val; }
     void setDominoState(unsigned int x, unsigned int y, int val) { level[2*y][x].dominoState = val; }

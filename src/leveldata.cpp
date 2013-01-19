@@ -636,10 +636,6 @@ unsigned char levelData_c::getFg(unsigned int x, unsigned int y) const
 
 }
 
-void levelData_c::setBg(unsigned int x, unsigned int y, int layer, int val) {
-    level[2*y  ][x].bg[layer] = 2*val;
-    level[2*y+1][x].bg[layer] = 2*val+1;
-}
 void levelData_c::setFg(unsigned int x, unsigned int y, int val)
 {
     switch(val)
