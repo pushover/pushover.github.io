@@ -627,7 +627,7 @@ listWindow_c * getConfigWindow(surface_c & surf, graphicsN_c & gr) {
     return new listWindow_c(3, 2, 14, 9, surf, gr, _("Configuration"), entries, true);
 }
 
-listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, graphics_c & gr) {
+listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, graphicsN_c & gr, const std::string & selection) {
     std::vector<listWindow_c::entry> entries;
 
     int index = 0;
@@ -692,7 +692,7 @@ class levelWindow_c : public listWindow_c
     }
 };
 
-listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphics_c & gr) {
+listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & lname) {
     std::vector<listWindow_c::entry> entries;
 
     int index = -1;
