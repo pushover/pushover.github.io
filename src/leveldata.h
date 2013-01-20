@@ -156,19 +156,6 @@ class levelData_c {
 
     unsigned char getFg(unsigned int x, unsigned int y) const;
 
-    unsigned char getDominoType(unsigned int x, unsigned int y) const { return level[2*y][x].dominoType; }
-    unsigned char getDominoState(unsigned int x, unsigned int y) const { return level[2*y][x].dominoState; }
-    signed char   getDominoDir(unsigned int x, unsigned int y) const { return level[2*y][x].dominoDir; }
-    unsigned char getDominoExtra(unsigned int x, unsigned int y) const { return level[2*y][x].dominoExtra; }
-    signed char getDominoYOffset(unsigned int x, unsigned int y) const { return level[2*y][x].dominoYOffset; }
-
-    void setDominoType(unsigned int x, unsigned int y, int val) { level[2*y][x].dominoType = val; }
-    void setDominoState(unsigned int x, unsigned int y, int val) { level[2*y][x].dominoState = val; }
-    void setDominoDir(unsigned int x, unsigned int y, int val) { level[2*y][x].dominoDir = val; }
-    void setDominoExtra(unsigned int x, unsigned int y, int val) { level[2*y][x].dominoExtra = val; }
-    void setDominoYOffset(unsigned int x, unsigned int y, int val) { level[2*y][x].dominoYOffset = val; }
-
-
     // NEW INTERFACE please use this only
 
     unsigned short getBg(unsigned int x, unsigned int y, int layer) const;
@@ -199,6 +186,17 @@ class levelData_c {
 
     void removeDomino(int x, int y);
 
+    unsigned char getDominoType(unsigned int x, unsigned int y) const { return level[y][x].dominoType; }
+    unsigned char getDominoState(unsigned int x, unsigned int y) const { return level[y][x].dominoState; }
+    signed char   getDominoDir(unsigned int x, unsigned int y) const { return level[y][x].dominoDir; }
+    unsigned char getDominoExtra(unsigned int x, unsigned int y) const { return level[y][x].dominoExtra; }
+    signed char getDominoYOffset(unsigned int x, unsigned int y) const { return level[y][x].dominoYOffset; }
+
+    void setDominoType(unsigned int x, unsigned int y, int val) { level[y][x].dominoType = val; }
+    void setDominoState(unsigned int x, unsigned int y, int val) { level[y][x].dominoState = val; }
+    void setDominoDir(unsigned int x, unsigned int y, int val) { level[y][x].dominoDir = val; }
+    void setDominoExtra(unsigned int x, unsigned int y, int val) { level[y][x].dominoExtra = val; }
+    void setDominoYOffset(unsigned int x, unsigned int y, int val) { level[y][x].dominoYOffset = val; }
 };
 
 
