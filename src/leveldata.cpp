@@ -35,9 +35,18 @@
 
 #include <assert.h>
 
-levelData_c::levelData_c(void) {
-  for (unsigned int y = 0; y < 27; y++)
-    for (unsigned int x = 0; x < 20; x++) {
+#define LEVELSIZE_V1_X 20
+#define LEVELSIZE_V1_Y 25
+
+levelData_c::levelData_c(void)
+{
+  level.resize(LEVELSIZE_V1_Y);
+
+  for (size_t y = 0; y < level.size(); y++)
+  {
+    level[y].resize(LEVELSIZE_V1_X);
+
+    for (unsigned int x = 0; x < level[y].size(); x++) {
       for (unsigned int i = 0; i < maxBg; i++)
         level[y][x].bg[i] = 0;
       level[y][x].ladder = false;
@@ -48,6 +57,7 @@ levelData_c::levelData_c(void) {
       level[y][x].dominoYOffset = 0;
       level[y][x].dominoExtra = 0;
     }
+  }
 
   // invalid time...
   timeLeft = 60*60*18;
@@ -78,7 +88,10 @@ bool levelData_c::isDominoChar(char ch) {
 
 void levelData_c::load(const textsections_c & sections, const std::string & userString) {
 
-  memset(level, 0, sizeof(level));
+  level.resize(LEVELSIZE_V1_Y);
+
+  for (size_t i = 0; i < level.size(); i++)
+    level[i].resize(LEVELSIZE_V1_X);
 
   /* Version section */
   {
@@ -122,7 +135,7 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
   std::string levelRows[13];
   for (unsigned int y = 0; y < 13; y++) {
     std::string::size_type len = givenLevelRows[y].size();
-    if (len > 20)
+    if (len > LEVELSIZE_V1_X)
       throw format_error("level row is too long");
     /* padding with spaces to the whole width */
     levelRows[y] = givenLevelRows[y] + std::string(20-len, ' ');
@@ -131,8 +144,8 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
   bool doorEntryDefined = false;
   bool doorExitDefined = false;
 
-  for (unsigned int y = 0; y < 25; y++) {
-    for (unsigned int x = 0; x < 20; x++) {
+  for (unsigned int y = 0; y < level.size(); y++) {
+    for (unsigned int x = 0; x < level[y].size(); x++) {
       level[y][x].dominoType = DominoTypeEmpty;
       level[y][x].dominoState = 8;
       level[y][x].dominoDir = 0;
@@ -144,7 +157,7 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
   }
 
   for (unsigned int y = 0; y < 13; y++) {
-    for (unsigned int x = 0; x < 20; x++) {
+    for (unsigned int x = 0; x < LEVELSIZE_V1_X; x++) {
 
       switch (levelRows[y].c_str()[x]) {
 
@@ -191,7 +204,7 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
           break;
 
         case '/':
-          if (y <= 0 || x+1 >= 20)
+          if (y <= 0 || x+1 >= LEVELSIZE_V1_X)
             throw format_error("platform step '/' has an invalid position");
 
           level[(y-1)*2+1][x+1].platform = true;
@@ -231,7 +244,8 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
             level[y*2  ][x].ladder   = true;
           }
 
-          level[y*2+1][x].platform = true;
+          if (y < 12)
+            level[y*2+1][x].platform = true;
       }
     }
   }
@@ -254,10 +268,11 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
       throw format_error("wrong number of background rows");
     for (unsigned int y = 0; y < 13; y++) {
       std::istringstream line(bgSections[b][y]);
-      for (unsigned int x = 0; x < 20; x++) {
+      for (unsigned int x = 0; x < LEVELSIZE_V1_X; x++) {
         line >> level[2*y][x].bg[b];
         level[2*y][x].bg[b] *= 2;
-        level[2*y+1][x].bg[b] = level[2*y][x].bg[b]+1;
+        if (y < 12)
+          level[2*y+1][x].bg[b] = level[2*y][x].bg[b]+1;
 
         if (!line)
           throw format_error("not enough background tiles in a row");
@@ -399,17 +414,47 @@ void levelData_c::removeDomino(int x, int y) {
 
 
 bool levelData_c::operator==(const levelData_c & other) const {
-  return
-    name == other.name &&
-    theme == other.theme &&
-    hint == other.hint &&
-    timeLeft == other.timeLeft &&
-    memcmp(level, other.level, sizeof(level)) == 0 &&
-    numBg == other.numBg &&
-    doorEntryX == other.doorEntryX &&
-    doorEntryY == other.doorEntryY &&
-    doorExitX == other.doorExitX &&
-    doorExitY == other.doorExitY;
+
+  if (name == other.name &&
+      theme == other.theme &&
+      hint == other.hint &&
+      timeLeft == other.timeLeft &&
+      numBg == other.numBg &&
+      doorEntryX == other.doorEntryX &&
+      doorEntryY == other.doorEntryY &&
+      doorExitX == other.doorExitX &&
+      doorExitY == other.doorExitY)
+  {
+    if (level.size() != other.level.size())
+      return false;
+
+    for (size_t y = 0; y < level.size(); y++)
+    {
+      if (level[y].size() != other.level[y].size())
+        return false;
+
+      for (size_t x = 0; x < level[y].size(); x++)
+      {
+        if (level[y][x].dominoType    != other.level[y][x].dominoType) return false;
+        if (level[y][x].dominoState   != other.level[y][x].dominoState) return false;
+        if (level[y][x].dominoDir     != other.level[y][x].dominoDir) return false;
+        if (level[y][x].dominoYOffset != other.level[y][x].dominoYOffset) return false;
+        if (level[y][x].dominoExtra   != other.level[y][x].dominoExtra) return false;
+
+        if (level[y][x].platform != other.level[y][x].platform) return false;
+        if (level[y][x].ladder   != other.level[y][x].ladder) return false;
+
+        for (size_t bgi = 0; bgi < numBg; bgi++)
+          if (level[y][x].bg[bgi] != other.level[y][x].bg[bgi]) return false;
+      }
+    }
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 void levelData_c::print(void) {
@@ -455,20 +500,94 @@ unsigned short levelData_c::getBg(unsigned int x, unsigned int y, int layer) con
 }
 
 bool levelData_c::getPlatform(unsigned int x, unsigned int y) const {
-  return level[y][x].platform;
+  return y < level.size() && x < level[y].size() && level[y][x].platform;
 }
 
 bool levelData_c::getLadder(unsigned int x, unsigned int y) const {
-  return level[y][x].ladder;
+  return y < level.size() && x < level[y].size() && level[y][x].ladder;
 }
 
 void levelData_c::setPlatform(unsigned int x, unsigned int y, bool val)
 {
-  level[y][x].platform = val;
+  if (y < level.size() && x < level[y].size())
+    level[y][x].platform = val;
 }
 
 void levelData_c::setLadder(unsigned int x, unsigned int y, bool val)
 {
-  level[y][x].ladder = val;
+  if (y < level.size() && x < level[y].size())
+    level[y][x].ladder = val;
+}
+
+unsigned char levelData_c::getDominoType(unsigned int x, unsigned int y) const
+{
+  if (y < level.size() && x < level[y].size())
+    return level[y][x].dominoType;
+  else
+    return DominoTypeEmpty;
+}
+unsigned char levelData_c::getDominoState(unsigned int x, unsigned int y) const
+{
+  if (y < level.size() && x < level[y].size())
+    return level[y][x].dominoState;
+  else
+    assert(0);
+}
+signed char   levelData_c::getDominoDir(unsigned int x, unsigned int y) const
+{
+  if (y < level.size() && x < level[y].size())
+    return level[y][x].dominoDir;
+  else
+    assert(0);
+}
+unsigned char levelData_c::getDominoExtra(unsigned int x, unsigned int y) const
+{
+  if (y < level.size() && x < level[y].size())
+    return level[y][x].dominoExtra;
+  else
+    assert(0);
+}
+signed char levelData_c::getDominoYOffset(unsigned int x, unsigned int y) const
+{
+  if (y < level.size() && x < level[y].size())
+    return level[y][x].dominoYOffset;
+  else
+    assert(0);
+}
+
+void levelData_c::setDominoType(unsigned int x, unsigned int y, int val)
+{
+  if (y < level.size() && x < level[y].size())
+    level[y][x].dominoType = val;
+  else
+    assert(0);
+}
+void levelData_c::setDominoState(unsigned int x, unsigned int y, int val)
+{
+  if (y < level.size() && x < level[y].size())
+    level[y][x].dominoState = val;
+  else
+    assert(0);
+}
+void levelData_c::setDominoDir(unsigned int x, unsigned int y, int val)
+{
+  if (y < level.size() && x < level[y].size())
+    level[y][x].dominoDir = val;
+  else
+    assert(0);
+}
+void levelData_c::setDominoExtra(unsigned int x, unsigned int y, int val)
+{
+  if (y < level.size() && x < level[y].size())
+    level[y][x].dominoExtra = val;
+  else
+    assert(0);
+}
+void levelData_c::setDominoYOffset(unsigned int x, unsigned int y, int val)
+{
+  if (y < level.size() && x < level[y].size())
+    level[y][x].dominoYOffset = val;
+  else
+    assert(0);
 }
 

@@ -23,6 +23,7 @@
 #define __LEVEL_DATA_H__
 
 #include <string>
+#include <vector>
 
 class textsections_c;
 
@@ -69,7 +70,7 @@ class levelData_c {
         // 0x70 falling domino, pile of rubbish...
     } levelEntry;
 
-    levelEntry level[27][20];  //TODO eigentlich nur 25 ebenen, die 26 nur fuer einfacheren Code...
+    std::vector< std::vector<levelEntry> > level;
     unsigned char numBg;
 
   public:
@@ -128,8 +129,6 @@ class levelData_c {
     // NEW INTERFACE please use this only
 
     unsigned short getBg(unsigned int x, unsigned int y, int layer) const;
-    bool getPlatform(unsigned int x, unsigned int y) const;
-    bool getLadder(unsigned int x, unsigned int y) const;
 
     void openEntryDoorStep(void) { doorEntryState++; }
     void closeEntryDoorStep(void) { doorEntryState--; }
@@ -148,6 +147,9 @@ class levelData_c {
     bool isExitDoorOpen(void) { return doorExitState == 3; }
     bool isExitDoorClosed(void) { return doorExitState == 0; }
 
+    bool getPlatform(unsigned int x, unsigned int y) const;
+    bool getLadder(unsigned int x, unsigned int y) const;
+
     void setPlatform(unsigned int x, unsigned int y, bool val);
     void setLadder(unsigned int x, unsigned int y, bool val);
 
@@ -155,17 +157,20 @@ class levelData_c {
 
     void removeDomino(int x, int y);
 
-    unsigned char getDominoType(unsigned int x, unsigned int y) const { return level[y][x].dominoType; }
-    unsigned char getDominoState(unsigned int x, unsigned int y) const { return level[y][x].dominoState; }
-    signed char   getDominoDir(unsigned int x, unsigned int y) const { return level[y][x].dominoDir; }
-    unsigned char getDominoExtra(unsigned int x, unsigned int y) const { return level[y][x].dominoExtra; }
-    signed char getDominoYOffset(unsigned int x, unsigned int y) const { return level[y][x].dominoYOffset; }
+    unsigned char getDominoType(unsigned int x, unsigned int y) const;
+    unsigned char getDominoState(unsigned int x, unsigned int y) const;
+    signed char   getDominoDir(unsigned int x, unsigned int y) const;
+    unsigned char getDominoExtra(unsigned int x, unsigned int y) const;
+    signed char getDominoYOffset(unsigned int x, unsigned int y) const;
 
-    void setDominoType(unsigned int x, unsigned int y, int val) { level[y][x].dominoType = val; }
-    void setDominoState(unsigned int x, unsigned int y, int val) { level[y][x].dominoState = val; }
-    void setDominoDir(unsigned int x, unsigned int y, int val) { level[y][x].dominoDir = val; }
-    void setDominoExtra(unsigned int x, unsigned int y, int val) { level[y][x].dominoExtra = val; }
-    void setDominoYOffset(unsigned int x, unsigned int y, int val) { level[y][x].dominoYOffset = val; }
+    void setDominoType(unsigned int x, unsigned int y, int val);
+    void setDominoState(unsigned int x, unsigned int y, int val);
+    void setDominoDir(unsigned int x, unsigned int y, int val);
+    void setDominoExtra(unsigned int x, unsigned int y, int val);
+    void setDominoYOffset(unsigned int x, unsigned int y, int val);
+
+    size_t levelY(void) const { return level.size(); }
+    size_t levelX(void) const { if (level.size() == 0) return 0; else return level[0].size(); }
 };
 
 
