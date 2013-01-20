@@ -81,6 +81,8 @@ class graphicsN_c : public graphics_c {
 
     const ant_c * ant;
     const levelData_c * level;
+    levelData_c l2;  // level copy for dirty Block detection
+    int antX, antY, antAnim, antImage;
 
     bitfield_c dirty, dirtybg;
 
@@ -115,6 +117,8 @@ class graphicsN_c : public graphics_c {
     void markDirtyBg(int x, int y) { dirtybg.markDirty(x, y); dirty.markDirty(x, y); }
     bool isDirty(int x, int y) const { return dirty.isDirty(x, y); }
 
+
+    void findDirtyBlocks(void);
 
 };
 

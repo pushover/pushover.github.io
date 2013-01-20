@@ -74,13 +74,13 @@ class bitfield_c {
   private:
 
     // the dirty blocks
-    uint32_t dynamicDirty[13];
+    uint32_t dynamicDirty[25];
 
   public:
 
-    void markDirty(int x, int y) { if (x >= 0 && x < 20 && y >= 0 && y < 13) dynamicDirty[y] |= (1 << x); }
+    void markDirty(int x, int y) { if (x >= 0 && x < 20 && y >= 0 && y < 25) dynamicDirty[y] |= (1 << x); }
     bool isDirty(int x, int y) const {
-      if (x >= 0 && x < 20 && y >= 0 && y < 13)
+      if (x >= 0 && x < 20 && y >= 0 && y < 25)
         return (dynamicDirty[y] & (1 << x)) != 0;
       else
         return false;

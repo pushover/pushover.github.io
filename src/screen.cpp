@@ -50,13 +50,13 @@ void screen_c::toggleFullscreen(void)
 
 void bitfield_c::clearDirty(void)
 {
-  for (unsigned int y = 0; y < 13; y++)
+  for (unsigned int y = 0; y < 25; y++)
     dynamicDirty[y] = 0;
 }
 
 void bitfield_c::markAllDirty(void)
 {
-  for (unsigned int y = 0; y < 13; y++)
+  for (unsigned int y = 0; y < 25; y++)
     dynamicDirty[y] = 0xFFFFFFFF;
 }
 
@@ -148,10 +148,10 @@ void screen_c::flipComplete(void)
 
 void screen_c::flipDirty(const bitfield_c & dirty)
 {
-  SDL_Rect rects[10*13];
+  SDL_Rect rects[10*25];
   int numrects = 0;
 
-  for (int y = 0; y < 13; y++)
+  for (int y = 0; y < 25; y++)
   {
     int rowStart = -1;
 
@@ -164,15 +164,11 @@ void screen_c::flipDirty(const bitfield_c & dirty)
       }
       else if (rowStart != -1)
       {
-        rects[numrects].y = blockY*y;
+        rects[numrects].y = blockY*y/2;
         rects[numrects].x = blockX*rowStart;
 
-        if (y == 12)
-          rects[numrects].h = blockY/2;
-        else
-          rects[numrects].h = blockY;
-
         rects[numrects].w = blockX*(x-rowStart);
+        rects[numrects].h = blockY/2;
         numrects++;
         rowStart = -1;
       }

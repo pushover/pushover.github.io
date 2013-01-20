@@ -714,12 +714,12 @@ void graphicsN_c::drawDominos(void)
 {
 
   // update background
-  for (unsigned int y = 0; y < 25; y++)
+  for (unsigned int y = 0; y < level->levelY(); y++)
   {
-    for (unsigned int x = 0; x < 20; x++)
+    for (unsigned int x = 0; x < level->levelX(); x++)
     {
       // when the current block is dirty, recreate it
-//      if (dirtybg.isDirty(x, y))
+      if (dirtybg.isDirty(x, y))
       {
         for (unsigned char b = 0; b < level->getNumBgLayer(); b++)
           background->blitBlock(bgTiles[curTheme][level->getBg(x, y, b)], x*blockX(), y*blockY()/2);
@@ -736,7 +736,7 @@ void graphicsN_c::drawDominos(void)
           background->blitBlock(fgTiles[curTheme][FG_DOORSTART+1+2*level->getExitState()], x*blockX(), y*blockY()/2);
 
         // blit platforms
-        if (y < 24 && level->getPlatform(x, y+1))
+        if (y+1 < level->levelY() && level->getPlatform(x, y+1))
         {
           if (!level->getPlatform(x-1, y+1) && !level->getPlatform(x+1, y+1))
             background->blitBlock(fgTiles[curTheme][30], x*blockX(), y*blockY()/2);
@@ -773,48 +773,11 @@ void graphicsN_c::drawDominos(void)
   }
   dirtybg.clearDirty();
 
-  int timeLeft = level->getTimeLeft();
-
-  // the dirty marks for the clock
-  {
-
-    // calculate the second left
-    int tm = timeLeft/18;
-
-    // if negative make positive again
-    if (timeLeft < 0)
-      tm = -tm+1;
-
-    int newSec = tm%60;
-    int newMin = tm/60;
-
-    if (newSec != Sec || timeLeft == -1)
-    {
-      dirty.markDirty(3, 11);
-      dirty.markDirty(3, 12);
-    }
-
-    if (newSec != Sec || newMin != Min || timeLeft % 18 == 17 || timeLeft % 18 == 8 || timeLeft == -1)
-    {
-      dirty.markDirty(2, 11);
-      dirty.markDirty(2, 12);
-    }
-
-    if (newMin != Min || timeLeft == -1)
-    {
-      dirty.markDirty(1, 11);
-      dirty.markDirty(1, 12);
-    }
-
-    Min = newMin;
-    Sec = newSec;
-  }
-
   // copy background, where necessary
-  for (unsigned int y = 0; y < 13; y++)
-    for (unsigned int x = 0; x < 20; x++)
+  for (unsigned int y = 0; y < level->levelY(); y++)
+    for (unsigned int x = 0; x < level->levelX(); x++)
       if (dirty.isDirty(x, y))
-        target->copy(*background, x*blockX(), y*blockY(), blockX(), blockY());
+        target->copy(*background, x*blockX(), y*blockY()/2, blockX(), blockY()/2);
 
   static int XposOffset[] = {-16, -16,  0,-16,  0,  0, 0, 0, 0,  0, 0, 16,  0, 16, 16, 0};
   static int YposOffset[] = { -8,  -6,  0, -4,  0, -2, 0, 0, 0, -2, 0, -4,  0, -6, -8, 0};
@@ -827,13 +790,13 @@ void graphicsN_c::drawDominos(void)
 
   int SpriteYPos = getDominoYStart();
 
-  for (int y = 0; y < 25; y++, SpriteYPos += blockY()/2) {
+  for (int y = 0; y < level->levelY(); y++, SpriteYPos += blockY()/2) {
 
     int SpriteXPos = -2*blockX();
 
-    for (int x = 0; x < 20; x++, SpriteXPos += blockX()) {
+    for (int x = 0; x < level->levelX(); x++, SpriteXPos += blockX()) {
 
-//      if (!dirty.isDirty(x, y)) continue;
+      if (!dirty.isDirty(x, y)) continue;
 
       // paint the left neighbor domino, if it leans in our direction and is not painted on its own
       if (y < 25 && x > 0 && !dirty.isDirty(x-1, y+1) && level->getDominoType(x-1, y+1) != DominoTypeEmpty &&
@@ -861,6 +824,13 @@ void graphicsN_c::drawDominos(void)
         target->blit(dominos[level->getDominoType(x, y+1)][level->getDominoState(x, y+1)-1],
             SpriteXPos,
             SpriteYPos+convertDominoY(level->getDominoYOffset(x, y+1))+blockY()/2);
+      }
+
+      if (y < 24 && !dirty.isDirty(x, y+2) && level->getDominoType(x, y+2) != DominoTypeEmpty)
+      {
+        target->blit(dominos[level->getDominoType(x, y+2)][level->getDominoState(x, y+2)-1],
+            SpriteXPos,
+            SpriteYPos+convertDominoY(level->getDominoYOffset(x, y+2))+blockY());
       }
 
       // paint the splitting domino for the splitter
@@ -978,24 +948,127 @@ void graphicsN_c::drawDominos(void)
 
 }
 
+void graphicsN_c::findDirtyBlocks(void)
+{
+  // check level structur for changes
+
+  for (size_t y = 0; y < level->levelY(); y++)
+    for (size_t x = 0; x < level->levelX(); x++)
+    {
+      if (level->getPlatform(x, y) != l2.getPlatform(x, y))
+      {
+        for (int i = 0; i < 3; i++)
+          for (int j = 0; j < 3; j++)
+          {
+            dirty.markDirty(x-1+i, y-1+j);
+            dirtybg.markDirty(x-1+i, y-1+j);
+          }
+
+        l2.setPlatform(x,y, level->getPlatform(x, y));
+      }
+
+      if (level->getDominoType(x, y) != l2.getDominoType(x, y) ||
+          level->getDominoState(x, y) != l2.getDominoState(x, y) ||
+          level->getDominoYOffset(x, y) != l2.getDominoYOffset(x, y)
+         )
+      {
+        for (int i = 0; i < 3; i++)
+          for (int j = 0; j < 4; j++)
+          {
+            dirty.markDirty(x-1+i, y-3+j);
+          }
+
+        l2.setDominoType(x, y, level->getDominoType(x, y));
+        l2.setDominoState(x, y, level->getDominoState(x, y));
+        l2.setDominoYOffset(x, y, level->getDominoYOffset(x, y));
+      }
+    }
+
+  // check for changes in doors
+  if (level->getEntryState() != l2.getEntryState())
+  {
+    dirty.markDirty(level->getEntryX(), level->getEntryY());
+    dirty.markDirty(level->getEntryX(), level->getEntryY()-1);
+    dirtybg.markDirty(level->getEntryX(), level->getEntryY());
+    dirtybg.markDirty(level->getEntryX(), level->getEntryY()-1);
+
+    while (level->getEntryState() < l2.getEntryState()) l2.closeEntryDoorStep();
+    while (level->getEntryState() > l2.getEntryState()) l2.openEntryDoorStep();
+  }
+
+  if (level->getExitState() != l2.getExitState())
+  {
+    dirty.markDirty(level->getExitX(), level->getExitY());
+    dirty.markDirty(level->getExitX(), level->getExitY()-1);
+    dirtybg.markDirty(level->getExitX(), level->getExitY());
+    dirtybg.markDirty(level->getExitX(), level->getExitY()-1);
+
+    while (level->getExitState() < l2.getExitState()) l2.closeExitDoorStep();
+    while (level->getExitState() > l2.getExitState()) l2.openExitDoorStep();
+  }
+
+  // check for ant movement
+  if (ant->getBlockX() != antX || ant->getBlockY() != antY || ant->getAnimation() != antAnim || ant->getAnimationImage() != antImage)
+  {
+    antX = ant->getBlockX();
+    antY = ant->getBlockY();
+    antAnim = ant->getAnimation();
+    antImage = ant->getAnimationImage();
+
+    for (int i = 0; i < 5; i++)
+      for (int j = 0; j < 9; j++)
+      {
+        dirty.markDirty(antX-2+i, antY-6+j);
+      }
+  }
+
+  int timeLeft = level->getTimeLeft();
+
+  // calculate the second left
+  int tm = timeLeft/18;
+
+  if (timeLeft < 0)
+    tm = -tm+1;
+
+  int newSec = tm%60;
+  int newMin = tm/60;
+
+  if (newSec != Sec || timeLeft == -1)
+  {
+    dirty.markDirty(3, 24);
+    dirty.markDirty(3, 23);
+    dirty.markDirty(2, 24);
+    dirty.markDirty(2, 23);
+  }
+
+  if (newMin != Min || timeLeft == -1)
+  {
+    dirty.markDirty(2, 23);
+    dirty.markDirty(2, 24);
+    dirty.markDirty(1, 23);
+    dirty.markDirty(1, 24);
+  }
+
+  Sec = newSec;
+  Min = newMin;
+}
+
 void graphicsN_c::drawLevel(void) {
 
   if (!level || !ant || !target) return;
 
-  markAllDirty();
+  findDirtyBlocks();
 
   drawDominos();
   drawAnt();
 
-  int timeLeft = level->getTimeLeft();
-
-  if (timeLeft < 60*60*18)
-  { // output the time
+  if (Min != -1)
+  {
     char time[6];
     snprintf(time, 6, "%02i:%02i", Min, Sec);
 
     fontParams_s pars;
-    if (timeLeft >= 0)
+    if (level->getTimeLeft() >= 0)
     {
       pars.color.r = pars.color.g = 255; pars.color.b = 0;
     }
