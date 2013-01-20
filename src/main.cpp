@@ -300,6 +300,7 @@ int main(int argc, char * argv[]) {
   recorder_c rec;
   ant_c a(l, gr, screen);
   solvedMap_c solved;
+  std::string lwindowLevel = "";  // when it contains a valid levelname, the level is selected when the levelwindow is opened the next time
 
   // prepare the list of levelsets
   levelsetList_c * levelsetList = loadAllLevels(datadir, "");
@@ -439,8 +440,7 @@ int main(int argc, char * argv[]) {
             case ST_PROFILE:  window = getProfileWindow(solved, screen, gr); break;
             case ST_PROFILE_IN: window = getProfileInputWindow(screen, gr); break;
             case ST_PROFILE_DEL: window = getProfileSelector(solved, screen, gr); break;
-            case ST_LEVELSET: window = getMissionWindow(*levelsetList, screen, gr); break;
-            case ST_LEVEL:    window = getLevelWindow(levelsetList->getLevelset(selectedMission), solved, screen, gr); break;
+            case ST_LEVELSET: window = getMissionWindow(*levelsetList, screen, gr, selectedMission); break;
             case ST_QUIT:     window = getQuitWindow(screen, gr); break;
             case ST_LEVELCONF:
             case ST_CONFIG:   window = getConfigWindow(screen, gr); break;
@@ -448,6 +448,12 @@ int main(int argc, char * argv[]) {
             case ST_ABOUT:    window = getAboutWindow(screen, gr); break;
             case ST_FAILED:   window = getFailedWindow(failReason, screen, gr); break;
             case ST_TIMEOUT:  window = getTimeoutWindow(screen, gr); break;
+
+
+            case ST_LEVEL:
+                window = getLevelWindow(levelsetList->getLevelset(selectedMission), solved, screen, gr, lwindowLevel);
+                lwindowLevel = "";
+                break;
 
             case ST_HELP:
                               {
@@ -670,6 +676,7 @@ int main(int argc, char * argv[]) {
                 else
                 {
                   nextState = ST_LEVEL;
+                  lwindowLevel = "";
                   selectedMission = levelsetList->getLevelsetNames()[sel];
                 }
               }
@@ -765,6 +772,7 @@ int main(int argc, char * argv[]) {
                   case 3:
                     nextState = ST_LEVEL;
                     soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
+                    lwindowLevel = l.getName();
                     break;    // return to level list
                   case 1:
                           {       // restart level
@@ -800,6 +808,7 @@ int main(int argc, char * argv[]) {
                 {
                   case 0:
                     nextState = ST_LEVEL;
+                    lwindowLevel = "";
                     break; // select next level to play
                 }
               }
@@ -845,6 +854,7 @@ int main(int argc, char * argv[]) {
                     break;
                   case 1:
                     nextState = ST_LEVEL;
+                    lwindowLevel = l.getName();
                     soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
                     break;  // back to level list
                 }
@@ -891,6 +901,7 @@ int main(int argc, char * argv[]) {
                     break;
                   case 1:                            // continue to next level
                     nextState = ST_LEVEL;
+                    lwindowLevel = l.getName();
                     break; // select next level to play
                 }
               }

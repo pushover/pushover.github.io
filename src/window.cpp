@@ -625,15 +625,19 @@ listWindow_c * getConfigWindow(surface_c & surf, graphics_c & gr) {
     return new listWindow_c(3, 2, 14, 9, surf, gr, _("Configuration"), entries, true);
 }
 
-listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, graphics_c & gr) {
+listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, graphics_c & gr, const std::string & selection) {
     std::vector<listWindow_c::entry> entries;
+
+    int index = 0;
 
     for (unsigned int i = 0; i < ls.getLevelsetNames().size(); i++)
     {
+      if (selection == ls.getLevelsetNames()[i])
+        index = i;
       entries.push_back(listWindow_c::entry(_(ls.getLevelsetNames()[i].c_str())));
     }
 
-    return new listWindow_c(4, 2, 12, 9, surf, gr, _("Select Levelset"), entries, true);
+    return new listWindow_c(4, 2, 12, 9, surf, gr, _("Select Levelset"), entries, true, index);
 }
 
 class levelWindow_c : public listWindow_c
@@ -685,7 +689,7 @@ class levelWindow_c : public listWindow_c
     }
 };
 
-listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphics_c & gr) {
+listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphics_c & gr, const std::string & lname) {
     std::vector<listWindow_c::entry> entries;
 
     int index = -1;
@@ -693,6 +697,9 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
     for (unsigned int i = 0; i < ls.getLevelNames().size(); i++)
     {
         std::string e = ls.getLevelNames()[i];
+
+        if (e == lname)
+          index = i;
 
         if (solv.solved(ls.getChecksum(e)))
         {
@@ -715,7 +722,6 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
             if (index == -1)
               index = i;
         }
-
     }
 
     if (entries.size() == 0) throw std::runtime_error(_("No Level in Levelset"));

@@ -157,8 +157,8 @@ class solvedMap_c;
 
 listWindow_c * getMainWindow(surface_c & surf, graphics_c & gr);
 listWindow_c * getConfigWindow(surface_c & surf, graphics_c & gr);
-listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, graphics_c & gr);
-listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphics_c & gr);
+listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, graphics_c & gr, const std::string & selection);
+listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphics_c & gr, const std::string & lname);
 listWindow_c * getQuitWindow(surface_c & surf, graphics_c & gr);
 listWindow_c * getSolvedWindow(surface_c & surf, graphics_c & gr);
 listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphics_c & gr);
