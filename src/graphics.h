@@ -27,8 +27,8 @@ class graphics_c {
 
   public:
 
-    graphics_c(void);
-    virtual ~graphics_c(void);
+    graphics_c(void) {}
+    virtual ~graphics_c(void) {}
 
     virtual void drawLevel(void) = 0;
 
