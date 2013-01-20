@@ -67,7 +67,7 @@ const unsigned char numAntAnimationsImages[AntAnimNothing] = {
  2,        // AntAnimXXX4,
  13,       // AntAnimLoosingDominoRight,
  17,       // AntAnimLoosingDominoLeft,
- 0,        // AntAnimXXX7,
+ 0,        // AntAnimStepOutForLoosingDomino,
  1,        // AntAnimStop,
  2,        // AntAnimTapping,
  6,        // AntAnimYawning,
@@ -92,7 +92,7 @@ const unsigned char numAntAnimationsImages[AntAnimNothing] = {
  7,        // AntAnimLeaveDoorEnterLevel,
  3,        // AntAnimStepAsideAfterEnter,
  7,        // AntAnimEnterDoor,
- 4,        // AntAnimXXX9,
+ 4,        // AntAnimStepBackForDoor,
  11,       // AntAnimStruggingAgainsFallLeft,
  11,       // AntAnimStruggingAgainsFallRight,
  8,        // AntAnimVictory,
@@ -239,7 +239,7 @@ AntAnimationState ant_c::callStateFunction(unsigned int state, unsigned int keyM
     case AntAnimXXX4:                      return SFLeaveLadderLeft();
     case AntAnimLoosingDominoRight:        return SFLooseRight();
     case AntAnimLoosingDominoLeft:         return SFLooseLeft();
-    case AntAnimXXX7:                      return SFXXX7();
+    case AntAnimStepOutForLoosingDomino:   return SFStepOutForLoosingDomino();
     case AntAnimStop:                      return SFInactive();
     case AntAnimTapping:                   return SFLazying();
     case AntAnimYawning:                   return SFLazying();
@@ -266,7 +266,7 @@ AntAnimationState ant_c::callStateFunction(unsigned int state, unsigned int keyM
     case AntAnimLeaveDoorEnterLevel:       return SFLeaveDoor();
     case AntAnimStepAsideAfterEnter:       return SFStepAside();
     case AntAnimEnterDoor:                 return SFEnterDoor();
-    case AntAnimXXX9:                      return SFXXX9();
+    case AntAnimStepBackForDoor:           return SFStepBackForDoor();
     case AntAnimStruggingAgainsFallLeft:   return SFFlailing();
     case AntAnimStruggingAgainsFallRight:  return SFFlailing();
     // 60
@@ -356,7 +356,7 @@ AntAnimationState ant_c::SFVictory(void) {
   return animation;
 }
 
-AntAnimationState ant_c::SFXXX9(void) {
+AntAnimationState ant_c::SFStepBackForDoor(void) {
   if (animateAnt(0)) {
     animation = AntAnimEnterDoor;
     blockX--;
@@ -572,13 +572,13 @@ AntAnimationState ant_c::SFEnterDominosRight(void) {
   return AntAnimNothing;
 }
 
-AntAnimationState ant_c::SFXXX7(void) {
+AntAnimationState ant_c::SFStepOutForLoosingDomino(void) {
   if (animateAnt(0))
   {
     animation = AntAnimLoosingDominoRight;
     return animation;
   }
-  return AntAnimXXX7;
+  return AntAnimStepOutForLoosingDomino;
 }
 
 AntAnimationState ant_c::SFLooseRight(void) {
@@ -1428,7 +1428,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
     {
       if (carriedDomino != 0)
       {
-        returnState = AntAnimXXX7;
+        returnState = AntAnimStepOutForLoosingDomino;
         animation = AntAnimCarryRight;
         direction = 1;
       }
@@ -1477,7 +1477,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
       }
       else
       {
-        animation = returnState = AntAnimXXX9;
+        animation = returnState = AntAnimStepBackForDoor;
         upChecker = true;
       }
     }

@@ -69,7 +69,7 @@ typedef enum {
   AntAnimXXX4,
   AntAnimLoosingDominoRight,
   AntAnimLoosingDominoLeft,
-  AntAnimXXX7,
+  AntAnimStepOutForLoosingDomino,
   AntAnimStop,
   AntAnimTapping,
   AntAnimYawning,
@@ -94,7 +94,7 @@ typedef enum {
   AntAnimLeaveDoorEnterLevel,
   AntAnimStepAsideAfterEnter,
   AntAnimEnterDoor,
-  AntAnimXXX9,
+  AntAnimStepBackForDoor,
   AntAnimStruggingAgainsFallLeft,
   AntAnimStruggingAgainsFallRight,
   AntAnimVictory,
@@ -153,8 +153,6 @@ class ant_c {
 
     bool isVisible(void) const;
 
-    int getPushsLeft(void) const { return numPushsLeft; }
-
     int16_t getBlockX(void) const { return blockX; }
     int16_t getBlockY(void) const { return blockY; }
     unsigned int getCarriedDomino(void) const { return carriedDomino; }
@@ -197,7 +195,7 @@ class ant_c {
     AntAnimationState SFEnterLadder(void);
     AntAnimationState SFLooseRight(void);
     AntAnimationState SFLooseLeft(void);
-    AntAnimationState SFXXX7(void);   // TODO what's this state????
+    AntAnimationState SFStepOutForLoosingDomino(void);
     AntAnimationState SFEnterDominosLeft(void);
     AntAnimationState SFEnterDominosRight(void);
     AntAnimationState SFPushLeft(void);
@@ -210,7 +208,7 @@ class ant_c {
     AntAnimationState SFGhost2(void);
     AntAnimationState SFLandDying(void);
     AntAnimationState SFEnterDoor(void);
-    AntAnimationState SFXXX9(void);   // TODO what's this state????
+    AntAnimationState SFStepBackForDoor(void);
     AntAnimationState SFNoNo(void);
     AntAnimationState SFVictory(void);
     AntAnimationState SFShrugging(void);
