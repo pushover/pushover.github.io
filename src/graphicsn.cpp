@@ -882,7 +882,7 @@ void graphicsN_c::drawDominos(void)
             SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
       }
       else if (level->getDominoType(x, y) == levelData_c::DominoTypeAscender && level->getDominoState(x, y) == 1 && level->getDominoExtra(x, y) == 0 &&
-          level->getFg(x-1, y/2-2) == levelData_c::FgElementEmpty)
+          !level->getPlatform(x-1, y-3))
       { // this is the case of the ascender domino completely horizontal and with the plank it is below not existing
         // so we see the above face of the domino. Normally there is a wall above us so we only see
         // the front face of the domino
@@ -891,7 +891,7 @@ void graphicsN_c::drawDominos(void)
             SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
       }
       else if (level->getDominoType(x, y) == levelData_c::DominoTypeAscender && level->getDominoState(x, y) == 15 && level->getDominoExtra(x, y) == 0 &&
-          level->getFg(x+1, y/2-2) == levelData_c::FgElementEmpty)
+          !level->getPlatform(x+1, y-3))
       {
         target->blit(dominos[levelData_c::DominoTypeRiserCont][StoneImageOffset[level->getDominoState(x, y)-1]],
             SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]-2),
