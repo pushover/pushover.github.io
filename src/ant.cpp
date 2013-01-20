@@ -976,11 +976,9 @@ AntAnimationState ant_c::checkForNoKeyActions(void) {
       return ReturnAntState;
     }
 
-    if (level.getFg(blockX, blockY/2) == levelData_c::FgElementPlatformLadderDown ||
-        level.getFg(blockX, blockY/2) == levelData_c::FgElementPlatformLadderUp)
+    if (level.getLadder(blockX, blockY))
     {
-      if (level.getFg(blockX-1, blockY/2) > levelData_c::FgElementEmpty &&
-          level.getFg(blockX-1, blockY/2) != levelData_c::FgElementLadder)
+      if (level.getPlatform(blockX-1, blockY+1))
       {
         if (carriedDomino != 0)
         {
@@ -994,12 +992,12 @@ AntAnimationState ant_c::checkForNoKeyActions(void) {
         direction = -1;
         return ReturnAntState;
       }
-      if (level.getFg(blockX+1, blockY/2) == 0)
+      if (!level.getPlatform(blockX+1, blockY+1))
       {
         direction = -1;
         return ReturnAntState;
       }
-      if (level.getFg(blockX+1, blockY/2) == 5)
+      if (level.getLadder(blockX+1, blockY+1))
       {
         direction = -1;
         return ReturnAntState;
@@ -1017,18 +1015,14 @@ AntAnimationState ant_c::checkForNoKeyActions(void) {
         return ReturnAntState;
       }
     }
-    if ((level.getFg(blockX, blockY/2-1) == 4 ||
-         level.getFg(blockX, blockY/2-1) == 5) &&
-         inactiveTimer > 0x0A0)
+    if (level.getLadder(blockX, blockY-1) &&
+        inactiveTimer > 0x0A0)
     {
-
       animation = ReturnAntState = AntAnimLadder1;
       return ReturnAntState;
     }
-    if ((level.getFg(blockX, blockY/2+1) == 5 ||
-         level.getFg(blockX, blockY/2+1) == 6 ||
-         level.getFg(blockX, blockY/2+1) == 4) &&
-        level.getFg(blockX, blockY/2) == 5)
+    if (level.getLadder(blockX, blockY+2) &&
+        level.getLadder(blockX, blockY+1))
     {
       animation = ReturnAntState = AntAnimLadder3;
     }
@@ -1254,13 +1248,6 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
     else
     {
       animation = returnState = AntAnimLanding;
-      if (level.getFg(blockX, blockY/2) != levelData_c::FgElementPlatformStep2 &&
-          level.getFg(blockX, blockY/2) != levelData_c::FgElementPlatformStep5)
-      {
-      }
-      else
-      {
-      }
     }
   }
   else if (keyMask & KEY_LEFT)
@@ -1313,21 +1300,20 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
         direction = -1;
       }
     }
-    else if (level.getFg(blockX, blockY/2) == levelData_c::FgElementPlatformStep2)
+    else if (level.getPlatform(blockX-1, blockY))
     {
       animation = returnState = AntAnimJunpUpLeft;
       direction = -1;
     }
-    else if (level.getFg(blockX, blockY/2) == levelData_c::FgElementPlatformStep5)
+    else if (!level.getPlatform(blockX-1, blockY+1) && level.getPlatform(blockX-1, blockY+2))
     {
       animation = returnState = AntAnimJunpDownLeft;
       direction = -1;
     }
-    else if (level.getFg(blockX, blockY/2) == levelData_c::FgElementLadder)
+    else if (!level.getPlatform(blockX, blockY+1) && level.getLadder(blockX, blockY))
     {
     }
-    else if (level.getFg(blockX-1, blockY/2) == 0 ||
-        level.getFg(blockX-1, blockY/2) == 5)
+    else if (!level.getPlatform(blockX-1, blockY+1))
     {
       if (carriedDomino != 0)
       {
@@ -1344,16 +1330,6 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
         animation = returnState = AntAnimStruggingAgainsFallLeft;
         direction = -1;
       }
-    }
-    else if (level.getFg(blockX-1, blockY/2) == 0x0A)
-    {
-      animation = returnState = AntAnimJunpUpLeft;
-      direction = -1;
-    }
-    else if (level.getFg(blockX-1, blockY/2) == 0x0B)
-    {
-      animation = returnState = AntAnimJunpDownLeft;
-      direction = -1;
     }
     else if (carriedDomino != 0 &&
         (direction == 20 || direction == -20))
@@ -1422,21 +1398,20 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
         direction = 1;
       }
     }
-    else if (level.getFg(blockX, blockY/2) == levelData_c::FgElementPlatformStep2)
+    else if (!level.getPlatform(blockX+1, blockY+1) && level.getPlatform(blockX+1, blockY+2))
     {
       animation = returnState = AntAnimJunpDownRight;
       direction = 1;
     }
-    else if (level.getFg(blockX, blockY/2) == levelData_c::FgElementPlatformStep5)
+    else if (level.getPlatform(blockX+1, blockY))
     {
       animation = returnState = AntAnimJunpUpRight;
       direction = 1;
     }
-    else if (level.getFg(blockX, blockY/2) == levelData_c::FgElementLadder)
+    else if (!level.getPlatform(blockX, blockY+1) && level.getLadder(blockX, blockY))
     {
     }
-    else if (level.getFg(blockX+1, blockY/2) == levelData_c::FgElementEmpty ||
-        level.getFg(blockX+1, blockY/2) == levelData_c::FgElementLadder)
+    else if (!level.getPlatform(blockX+1, blockY+1))
     {
       if (carriedDomino != 0)
       {
@@ -1454,16 +1429,6 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
         animation = returnState = AntAnimStruggingAgainsFallRight;
         direction = 1;
       }
-    }
-    else if (level.getFg(blockX+1, blockY/2) == levelData_c::FgElementPlatformStep2)
-    {
-      animation = returnState = AntAnimJunpDownRight;
-      direction = 1;
-    }
-    else if (level.getFg(blockX+1, blockY/2) == levelData_c::FgElementPlatformStep7)
-    {
-      animation = returnState = AntAnimJunpUpRight;
-      direction = 1;
     }
     else if (carriedDomino != 0 &&
         (direction == 20 || direction == -20))
@@ -1484,7 +1449,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   }
   else if (keyMask & KEY_UP)
   {
-    if ((level.getFg(blockX, blockY/2-1) == levelData_c::FgElementDoor3) &&
+    if ((level.getExitX() == blockX && level.getExitY()+1 == blockY && level.isExitDoorOpen()) &&
         (level.getDominoType(blockX, blockY) == 0 ||
          level.getDominoState(blockX, blockY) > 8) &&
         (level.getDominoType(blockX-1, blockY) == 0 ||
@@ -1503,7 +1468,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
         upChecker = true;
       }
     }
-    else if (level.getFg(blockX, blockY/2) == levelData_c::FgElementPlatformLadderUp)
+    else if (level.getLadder(blockX, blockY) && !level.getLadder(blockX, blockY+1))
     {
       if (carriedDomino == 0)
       {
@@ -1524,13 +1489,13 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
         upChecker = true;
       }
     }
-    else if (level.getFg(blockX, blockY/2-1) == levelData_c::FgElementLadder)
+    else if (level.getLadder(blockX, blockY-1) && !level.getPlatform(blockX, blockY-1))
     {
       animation = returnState = AntAnimLadder1;
       direction = -20;
       upChecker = true;
     }
-    else if (level.getFg(blockX, blockY/2-1) == levelData_c::FgElementPlatformLadderDown)
+    else if (level.getLadder(blockX, blockY-1) && level.getPlatform(blockX, blockY-1))
     {
       animation = returnState = AntAnimLadder2;
       direction = -20;
@@ -1586,7 +1551,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
       animationImage = 9;
       downChecker = true;
     }
-    else if (level.getFg(blockX, blockY/2) == levelData_c::FgElementPlatformLadderDown)
+    else if (level.getPlatform(blockX, blockY+1) && level.getLadder(blockX, blockY+1))
     {
       if (carriedDomino != 0)
       {
@@ -1610,15 +1575,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
         direction = 20;
       }
     }
-    else if (level.getFg(blockX, blockY/2+1) == levelData_c::FgElementLadder)
-    {
-      animation = returnState = AntAnimLadder3;
-      direction = 20;
-    }
-    else if (level.getFg(blockX, blockY/2+1) == 6 ||
-        (level.getFg(blockX, blockY/2+1) == 4 &&
-         level.getFg(blockX, blockY/2) == 5))
-
+    else if (level.getLadder(blockX, blockY+2))
     {
       animation = returnState = AntAnimLadder3;
       direction = 20;
@@ -1636,8 +1593,8 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
         && (level.getDominoType(blockX, blockY) != 0)
         && (level.getDominoState(blockX, blockY) == 8)
         && (level.getDominoType(blockX, blockY) != levelData_c::DominoTypeAscender || level.getDominoExtra(blockX, blockY) != 0x60)
-        && (level.getFg(blockX, blockY/2) != levelData_c::FgElementLadder)
-        )
+        && level.getPlatform(blockX, blockY+1)
+          )
     {
       if (level.getDominoType(blockX, blockY) == levelData_c::DominoTypeTrigger)
       {
@@ -1692,12 +1649,12 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   }
   else if (direction == -20)
   {
-    if (level.getFg(blockX, blockY/2-1) == 5)
+    if (level.getLadder(blockX, blockY-1) && !level.getPlatform(blockX, blockY-1))
     {
       animation = returnState = AntAnimLadder1;
       direction = -20;
     }
-    else if (level.getFg(blockX, blockY/2-1) != 4)
+    else if (!level.getLadder(blockX, blockY-1) || !level.getPlatform(blockX, blockY-1))
     {
       direction = -1;
     }
@@ -1709,9 +1666,9 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   }
   else if (direction == 20)
   {
-    if (level.getFg(blockX, blockY/2+1) == 5)
+    if (level.getLadder(blockX, blockY+2) && !level.getPlatform(blockX, blockY+2))
     {
-      if (level.getFg(blockX, blockY/2) == 4)
+      if (level.getLadder(blockX, blockY+1) && level.getPlatform(blockX, blockY+1))
       {
         direction = 20;
       }
@@ -1720,12 +1677,6 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
         animation = returnState = AntAnimLadder3;
         direction = 20;
       }
-    } else if ((level.getFg(blockX, blockY/2+1) == 6 ||
-                level.getFg(blockX, blockY/2+1) == 4) &&
-               level.getFg(blockX, blockY/2) == 5)
-    {
-      animation = returnState = AntAnimLadder3;
-      direction = 20;
     }
   }
 
@@ -1735,7 +1686,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   {
     inactiveTimer = 0;
   }
-  else if (carriedDomino != 0 || level.getFg(blockX, blockY/2) == levelData_c::FgElementLadder || finalAnimationPlayed)
+  else if (carriedDomino != 0 || (level.getLadder(blockX, blockY+1) && !level.getPlatform(blockX, blockY+1)) || finalAnimationPlayed)
   {
     inactiveTimer++;
     returnState = checkForNoKeyActions();
