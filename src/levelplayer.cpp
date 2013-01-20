@@ -510,10 +510,7 @@ void levelPlayer_c::DTA_5(int x, int y) {
 void levelPlayer_c::DTA_3(int x, int y) {
 
   // if we hit a step, stop falling
-  if (x > 0 && getFg(x-1, y/2) == FgElementPlatformStep4)
-    return;
-
-  if (getDominoYOffset(x, y) == 8 && x > 0 && getFg(x-1, y/2) == FgElementPlatformStep1)
+  if (x > 0 && getPlatform(x-1, y))
     return;
 
   // if the next domino is empty, continue falling
@@ -589,9 +586,6 @@ void levelPlayer_c::DTA_3(int x, int y) {
 void levelPlayer_c::DTA_I(int x, int y) {
 
   if (x < 19 && getPlatform(x+1, y))
-    return;
-
-  if (getDominoYOffset(x, y) == 8 && x < 19 && getFg(x-1, y/2) == FgElementPlatformStep6)
     return;
 
   if (getDominoType(x+1, y) == DominoTypeEmpty) {
@@ -814,7 +808,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
     setDominoExtra(x, y, 0);
 
     // we need to set the yOffset properly for the halve steps
-    if (getFg(x, y/2) == 8 || getFg(x, y/2) == 11)
+    if (!getPlatform(x, y+1))
     {
       setDominoYOffset(x, y, 8);
     }
@@ -882,7 +876,7 @@ void levelPlayer_c::DTA_C(int x, int y) {
   if (a == 3)
   {
     // left halve is at a pushing place, check if we hit the wall
-    if (x > 0 && getFg(x-1, y/2) != 0xA)
+    if (x > 0 && !getPlatform(x-1, y))
     {
       // no wall, check, if we hit a domino and if so try to push it
       if (getDominoType(x-1, y) == DominoTypeEmpty)
@@ -971,25 +965,18 @@ void levelPlayer_c::DTA_M(int x, int y)
 // riser
 void levelPlayer_c::DTA_A(int x, int y) {
 
-  int a;
+  int a = (getDominoExtra(x, y) == 0x50) ? 2 : 4;
 
-  if (getDominoExtra(x, y) == 0x50)
-    a = 2;
-  else
-    a = 4;
+  bool leftAboveEmpty = true;
+  bool aboveEmpty = true;
 
-  int b;
-  if (x > 0)
-    b = getFg(x-1, (y-a)/2);
-  else
-    b = FgElementEmpty;
+  if (x < 19 && getPlatform(x-1, y-a+1))             leftAboveEmpty = false;
+  if (x < 19  && y > a+1 && getPlatform(x-1, y-a-1)) aboveEmpty = false;
 
-  int c = getFg(x, (y-a)/2);
 
-  if ((c == FgElementPlatformStart || c == FgElementPlatformStrip) &&
-      b == FgElementEmpty)
+  if (aboveEmpty && leftAboveEmpty)
   {
-    if (a == 2)
+    if (getDominoExtra(x, y) == 0x50)
     {
       if (getDominoType(x-1, y) == DominoTypeEmpty)
       {
@@ -1028,7 +1015,7 @@ void levelPlayer_c::DTA_A(int x, int y) {
     return;
   }
 
-  if (c == 0)
+  if (!getPlatform(x, y-a+1))
   {
     removeDomino(x, y);
 
@@ -1071,25 +1058,17 @@ void levelPlayer_c::DTA_A(int x, int y) {
 // Riser
 void levelPlayer_c::DTA_O(int x, int y) {
 
-  int a;
+  int a = (getDominoExtra(x, y) == 0x50) ? 2 : 4;
 
-  if (getDominoExtra(x, y) == 0x50)
-    a = 2;
-  else
-    a = 4;
+  bool rightAboveEmpty = true;
+  bool aboveEmpty = true;
 
-  int b;
-  if (x < 19)
-    b = getFg(x+1, (y-a)/2);
-  else
-    b = FgElementEmpty;
+  if (x < 19 && getPlatform(x+1, y-a+1))             rightAboveEmpty = false;
+  if (x < 19  && y > a+1 && getPlatform(x+1, y-a-1)) aboveEmpty = false;
 
-  int c = getFg(x, (y-a)/2);
-
-  if ((c == FgElementPlatformEnd || c == FgElementPlatformStrip) &&
-      b == FgElementEmpty)
+  if (aboveEmpty && rightAboveEmpty)
   {
-    if (a == 2)
+    if (getDominoExtra(x, y) == 0x50)
     {
       if (getDominoType(x+1, y) == DominoTypeEmpty)
       {
@@ -1128,7 +1107,7 @@ void levelPlayer_c::DTA_O(int x, int y) {
     return;
   }
 
-  if (c == 0)
+  if (!getPlatform(x, y-a+1))
   {
     removeDomino(x, y);
 
@@ -1264,24 +1243,15 @@ void levelPlayer_c::DTA_H(int x, int y) {
 
 // Stone completely fallen down right used for
 // standard, Trigger, Delay, Bridger
-void levelPlayer_c::DTA_K(int x, int y) {
-  int fg;
+void levelPlayer_c::DTA_K(int x, int y)
+{
+  bool rightEmpty = true;
 
-  if (x < 19)
-    fg = getFg(x+1, y/2);
-  else
-    fg = 0;
+  if (x < 19 && getPlatform(x+1, y+1))
+    rightEmpty = false;
 
-  if (fg == FgElementLadder)
-    fg = 0;
-
-  if ((getFg(x, y/2) == FgElementPlatformEnd ||
-        getFg(x, y/2) == FgElementPlatformStrip)
-      &&
-      fg == FgElementEmpty
-     )
+  if (getPlatform(x, y+1) && !getPlatform(x+1, y+2) && rightEmpty)
   {
-
     if (getDominoType(x+1, y+2) != DominoTypeEmpty)
     {
       DominoCrash(x+1, y+2, getDominoType(x, y), getDominoExtra(x, y));
@@ -1302,7 +1272,7 @@ void levelPlayer_c::DTA_K(int x, int y) {
   }
   else
   {
-    if (x < 19 && getFg(x, y/2) == FgElementPlatformStep1 && fg == FgElementPlatformStep2)
+    if (x < 19 && getPlatform(x, y+1) && getPlatform(x+1, y+2) && rightEmpty)
     {
       if (getDominoType(x+1, y) != DominoTypeEmpty)
       {
@@ -1322,7 +1292,7 @@ void levelPlayer_c::DTA_K(int x, int y) {
       return;
     }
 
-    if (x < 19 && y < 24 && getFg(x, y/2) == FgElementPlatformStep2)
+    if (x < 19 && y < 24 && !getPlatform(x, y+1))
     {
       if (getDominoType(x+1, y+2) != 0)
       {
@@ -1352,21 +1322,12 @@ void levelPlayer_c::DTA_K(int x, int y) {
 // standard, Trigger, Delay, Bridger
 void levelPlayer_c::DTA_1(int x, int y) {
 
-  int fg;
+  bool leftEmpty = true;
 
-  if (x > 0)
-    fg = getFg(x-1, y/2);
-  else
-    fg = 0;
+  if (x > 0 && getPlatform(x-1, y+1))
+    leftEmpty = false;
 
-  if (fg == FgElementLadder)
-    fg = 0;
-
-  if ((getFg(x, y/2) == FgElementPlatformStart ||
-        getFg(x, y/2) == FgElementPlatformStrip)
-      &&
-      fg == FgElementEmpty
-     )
+  if (getPlatform(x, y+1) && !getPlatform(x-1, y+2) && leftEmpty)
   {
 
     if (getDominoType(x-1, y+2) != DominoTypeEmpty)
@@ -1391,7 +1352,7 @@ void levelPlayer_c::DTA_1(int x, int y) {
   }
   else
   {
-    if (x > 0 && getFg(x, y/2) == FgElementPlatformStep6 && fg == FgElementPlatformStep5)
+    if (x > 0 && getPlatform(x, y+1) && getPlatform(x-1, y+2) && leftEmpty)
     {
       if (getDominoType(x-1, y) != DominoTypeEmpty)
       {
@@ -1411,7 +1372,7 @@ void levelPlayer_c::DTA_1(int x, int y) {
       return;
     }
 
-    if (x > 0 && y < 24 && getFg(x, y/2) == FgElementPlatformStep5)
+    if (x > 0 && y < 24 && !getPlatform(x, y+1))
     {
       if (getDominoType(x-1, y+2) != 0)
       {
@@ -1440,17 +1401,12 @@ void levelPlayer_c::DTA_1(int x, int y) {
 // Tumbler fallen down left
 void levelPlayer_c::DTA_6(int x, int y) {
 
-  int fg;
+  bool leftEmpty = true;
 
-  if (x > 0)
-    fg = getFg(x-1, y/2);
-  else
-    fg = 0;
+  if (x > 0 && getPlatform(x-1, y+1))
+    leftEmpty = false;
 
-  if (fg == FgElementLadder)
-    fg = 0;
-
-  if ((getFg(x, y/2) == FgElementPlatformStart || getFg(x, y/2) == FgElementPlatformStrip) && fg == 0)
+  if (getPlatform(x, y+1) && !getPlatform(x-1, y+2) && leftEmpty)
   {
     if (getDominoType(x-1, y+2) != 0)
     {
@@ -1472,7 +1428,7 @@ void levelPlayer_c::DTA_6(int x, int y) {
     return;
   }
 
-  if (x > 0 && getFg(x, y/2) == FgElementPlatformStep6 && fg == FgElementPlatformStep5)
+  if (x > 0 && getPlatform(x, y+1) && getPlatform(x-1, y+2) && leftEmpty)
   {
     if (getDominoType(x-1, y) != 0)
     {
@@ -1492,7 +1448,7 @@ void levelPlayer_c::DTA_6(int x, int y) {
     return;
   }
 
-  if (x > 0 && y < 24 && getFg(x, y/2) == FgElementPlatformStep5)
+  if (x > 0 && y < 24 && !getPlatform(x, y+1))
   {
     if (getDominoType(x-1, y+2) != 0)
     {
@@ -1533,17 +1489,12 @@ void levelPlayer_c::DTA_6(int x, int y) {
 // Tumbler fallen down right
 void levelPlayer_c::DTA_L(int x, int y) {
 
-  int fg;
+  bool rightEmpty = true;
 
-  if (x < 19)
-    fg = getFg(x+1, y/2);
-  else
-    fg = 0;
+  if (x < 19 && getPlatform(x+1, y+1))
+    rightEmpty = false;
 
-  if (fg == FgElementLadder)
-    fg = 0;
-
-  if ((getFg(x, y/2) == FgElementPlatformEnd || getFg(x, y/2) == FgElementPlatformStrip) && fg == 0)
+  if (getPlatform(x, y+1) && !getPlatform(x+1, y+2) && rightEmpty)
   {
     if (getDominoType(x+1, y+2) != 0)
     {
@@ -1565,7 +1516,7 @@ void levelPlayer_c::DTA_L(int x, int y) {
     return;
   }
 
-  if (x < 19 && getFg(x, y/2) == FgElementPlatformStep1 && fg == FgElementPlatformStep2)
+  if (x < 19 && getPlatform(x, y+1) && getPlatform(x+1, y+2) && rightEmpty)
   {
     if (getDominoType(x+1, y) != 0)
     {
@@ -1585,7 +1536,7 @@ void levelPlayer_c::DTA_L(int x, int y) {
     return;
   }
 
-  if (x < 19 && y < 24 && getFg(x, y/2) == FgElementPlatformStep2)
+  if (x < 19 && y < 24 && !getPlatform(x, y+1))
   {
     if (getDominoType(x+1, y+2) != 0)
     {
