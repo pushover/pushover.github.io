@@ -149,11 +149,7 @@ class ant_c {
     // do one animation step for the ant
     int performAnimation(unsigned int keyMask);
 
-    bool carrySomething(void) { return carriedDomino != 0; }
     bool isLiving(void) { return state != AntAnimDominoDying && state != AntAnimLandDying && state != AntAnimGhost2; }
-
-    void success(void);
-    void fail(void);
 
     bool isVisible(void) const;
 

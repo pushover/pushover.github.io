@@ -171,17 +171,18 @@ int ant_c::performAnimation(unsigned int keyMask)
   {
     finishCheckDone = true;
 
-    if (level.levelCompleted(reason) && !carrySomething() && isLiving())
+    if (level.levelCompleted(reason) && carriedDomino == DominoTypeEmpty && isLiving())
     {
-      success();
+      levelSuccess = true;
+      level.openExitDoor(true);
     }
     else
     {
-      fail();
+      levelFail = true;
 
       if (reason)
         return reason;
-      else if (carrySomething())
+      else if (carriedDomino != DominoTypeEmpty)
         return 4;
       else
         return 5;
@@ -189,7 +190,7 @@ int ant_c::performAnimation(unsigned int keyMask)
   }
 
   // if level is inactive for a longer time and no pushes are left
-  if (getPushsLeft() == 0 && level.levelLongInactive()) {
+  if (numPushsLeft == 0 && level.levelLongInactive()) {
     // search for a trigger
     //
     if (level.triggerNotFlat())
@@ -1740,15 +1741,6 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   fallingHight = 0;
   return returnState;
 
-}
-
-void ant_c::success(void) {
-  levelSuccess = true;
-  level.openExitDoor(true);
-}
-
-void ant_c::fail(void) {
-  levelFail = true;
 }
 
 bool ant_c::isVisible(void) const
