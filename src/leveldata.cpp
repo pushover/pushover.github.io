@@ -226,7 +226,7 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
           std::string::size_type dt = dominoChars.find_first_of(levelRows[y].c_str()[x]);
           if (dt == std::string::npos)
             throw format_error("invalid domino type");
-          level[2*y][x].dominoType = dt;
+          level[2*y][x].dominoType = (DominoType)dt;
 
           bool ladderAbove   = y > 0
                                && levelRows[y-1].c_str()[x] == 'H';
@@ -519,7 +519,7 @@ void levelData_c::setLadder(unsigned int x, unsigned int y, bool val)
     level[y][x].ladder = val;
 }
 
-unsigned char levelData_c::getDominoType(unsigned int x, unsigned int y) const
+DominoType levelData_c::getDominoType(unsigned int x, unsigned int y) const
 {
   if (y < level.size() && x < level[y].size())
     return level[y][x].dominoType;
@@ -555,7 +555,7 @@ signed char levelData_c::getDominoYOffset(unsigned int x, unsigned int y) const
     assert(0);
 }
 
-void levelData_c::setDominoType(unsigned int x, unsigned int y, int val)
+void levelData_c::setDominoType(unsigned int x, unsigned int y, DominoType val)
 {
   if (y < level.size() && x < level[y].size())
     level[y][x].dominoType = val;

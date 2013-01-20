@@ -20,8 +20,7 @@
  */
 
 #include "ant.h"
-#include "graphicsn.h"
-#include "levelplayer.h"
+
 #include "soundsys.h"
 #include "screen.h"
 
@@ -127,7 +126,7 @@ void ant_c::initForLevel(void) {
   state = animation = AntAnimLeaveDoorEnterLevel;
   animationImage = 0;
   animationTimer = 0;
-  carriedDomino = 0;
+  carriedDomino = DominoTypeEmpty;
   inactiveTimer = 0;
   numPushsLeft = 1;
   fallingHight = 0;
@@ -456,26 +455,30 @@ AntAnimationState ant_c::SFPushLeft(void) {
       if (pushDelay == 0) {
 
         switch(level.getDominoType(blockX-1, blockY)) {
-          case levelData_c::DominoTypeStopper:
-          case levelData_c::DominoTypeCounter1:
-          case levelData_c::DominoTypeCounter2:
-          case levelData_c::DominoTypeCounter3:
+          case DominoTypeStopper:
+          case DominoTypeCounter1:
+          case DominoTypeCounter2:
+          case DominoTypeCounter3:
             pushDelay = 5;
             pushAnimation = AntAnimPushStopperLeft;
             break;
 
-          case levelData_c::DominoTypeExploder:
+          case DominoTypeExploder:
             animationImage = 9;
             break;
 
-          case levelData_c::DominoTypeDelay:
+          case DominoTypeDelay:
             pushDelay = 5;
             pushAnimation = AntAnimPushDelayLeft;
             break;
 
-          case levelData_c::DominoTypeAscender:
+          case DominoTypeAscender:
             pushDelay = 2;
             pushAnimation = AntAnimPushRiserLeft;
+            break;
+
+          default:
+            assert(0);
             break;
         }
       }
@@ -504,29 +507,32 @@ AntAnimationState ant_c::SFPushRight(void) {
       if (pushDelay == 0) {
 
         switch(level.getDominoType(blockX+1, blockY)) {
-          case levelData_c::DominoTypeStopper:
-          case levelData_c::DominoTypeCounter1:
-          case levelData_c::DominoTypeCounter2:
-          case levelData_c::DominoTypeCounter3:
+          case DominoTypeStopper:
+          case DominoTypeCounter1:
+          case DominoTypeCounter2:
+          case DominoTypeCounter3:
             pushDelay = 5;
             pushAnimation = AntAnimPushStopperRight;
             break;
 
-          case levelData_c::DominoTypeExploder:
+          case DominoTypeExploder:
             animationImage = 9;
             break;
 
-          case levelData_c::DominoTypeDelay:
+          case DominoTypeDelay:
             pushDelay = 5;
             pushAnimation = AntAnimPushDelayRight;
             break;
 
-          case levelData_c::DominoTypeAscender:
+          case DominoTypeAscender:
             pushDelay = 2;
             pushAnimation = AntAnimPushRiserRight;
             break;
-        }
 
+          default:
+            assert(0);
+            break;
+        }
       }
     }
   }
@@ -586,7 +592,7 @@ AntAnimationState ant_c::SFLooseRight(void) {
   if (animationImage == 4) {
     level.putDownDomino(blockX+1, blockY, carriedDomino, false);
     level.fallingDomino(blockX+1, blockY);
-    carriedDomino = 0;
+    carriedDomino = DominoTypeEmpty;
   } else if (animationImage == 6) {
     blockX++;
   } else if (animationImage == 10) {
@@ -610,7 +616,7 @@ AntAnimationState ant_c::SFLooseLeft(void) {
   } else if (animationImage == 8) {
     level.putDownDomino(blockX, blockY, carriedDomino, false);
     level.fallingDomino(blockX, blockY);
-    carriedDomino = 0;
+    carriedDomino = DominoTypeEmpty;
   } else if (animationImage == 14) {
     soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_FALLING);
   }
@@ -660,7 +666,7 @@ AntAnimationState ant_c::SFPushInLeft(void) {
   blockX--;
   animation = AntAnimWalkLeft;
   level.putDownDomino(blockX, blockY, carriedDomino, true);
-  carriedDomino = levelData_c::DominoTypeEmpty;
+  carriedDomino = DominoTypeEmpty;
 
   return AntAnimNothing;
 }
@@ -672,7 +678,7 @@ AntAnimationState ant_c::SFPushInRight(void) {
   blockX++;
   animation = AntAnimWalkRight;
   level.putDownDomino(blockX, blockY, carriedDomino, true);
-  carriedDomino = levelData_c::DominoTypeEmpty;
+  carriedDomino = DominoTypeEmpty;
 
   return AntAnimNothing;
 }
@@ -930,7 +936,7 @@ AntAnimationState ant_c::SFFalling(void) {
     if (fallingHight == 1 && carriedDomino != 0) {
       level.putDownDomino(blockX, blockY, carriedDomino, false);
       level.fallingDomino(blockX, blockY);
-      carriedDomino = 0;
+      carriedDomino = DominoTypeEmpty;
     }
 
     animation = AntAnimFalling;
@@ -1076,7 +1082,7 @@ AntAnimationState ant_c::checkForNoKeyActions(void) {
   }
 
   // is we are in front of an exploder -> push hands on ears
-  if (level.getDominoType(blockX, blockY) == levelData_c::DominoTypeExploder)
+  if (level.getDominoType(blockX, blockY) == DominoTypeExploder)
   {
     if (animation == AntAnimInFrontOfExploderWait)
     {
@@ -1128,12 +1134,12 @@ bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
   if (x > 19 && ofs == 1) return false;
 
   // if the target position is not empty, we can't put the domino there
-  if (level.getDominoType(x, y) != levelData_c::DominoTypeEmpty) return false;
+  if (level.getDominoType(x, y) != DominoTypeEmpty) return false;
   if (!level.getPlatform(x, y+1)) return false;
 
   if (y%2) return false;
 
-  if (   (carriedDomino != levelData_c::DominoTypeVanish)
+  if (   (carriedDomino != DominoTypeVanish)
       && (   ((x == level.getEntryX()) && (y-1 == level.getEntryY()))
           || ((x == level.getExitX()) && (y-1 == level.getExitY()))
          )
@@ -1144,10 +1150,10 @@ bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
 
   // check neighbor places, if there is a domino falling in our direction, we
   // must not place the domino there....
-  if ((x < 19) && level.getDominoType(x+1, y) != levelData_c::DominoTypeEmpty && level.getDominoState(x+1, y) < 8)
+  if ((x < 19) && level.getDominoType(x+1, y) != DominoTypeEmpty && level.getDominoState(x+1, y) < 8)
     return false;
 
-  if ((x >  0) && level.getDominoType(x-1, y) != levelData_c::DominoTypeEmpty && level.getDominoState(x-1, y) > 8)
+  if ((x >  0) && level.getDominoType(x-1, y) != DominoTypeEmpty && level.getDominoState(x-1, y) > 8)
     return false;
 
   // no other reason to not place the domino
@@ -1158,13 +1164,13 @@ bool ant_c::PushableDomino(int x, int y, int ofs) {
 
   if (carriedDomino != 0) return false;
 
-  if (level.getDominoType(x+ofs, y) == levelData_c::DominoTypeEmpty) return false;
+  if (level.getDominoType(x+ofs, y) == DominoTypeEmpty) return false;
   if (!level.getPlatform(x+ofs, y+1)) return false;
 //  if (level.getLadder(x+ofs, y-1)) return false;  // TODO there is something with ladders in the original
-  if (level.getDominoType(x+ofs, y) == levelData_c::DominoTypeSplitter) return false;
+  if (level.getDominoType(x+ofs, y) == DominoTypeSplitter) return false;
   if (level.getDominoState(x+ofs, y) != 8) return false;
 
-  if (level.getDominoType(x, y) == levelData_c::DominoTypeEmpty) return true;
+  if (level.getDominoType(x, y) == DominoTypeEmpty) return true;
 
   if (ofs == -1)
   {
@@ -1598,11 +1604,11 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
     else if ((carriedDomino == 0)
         && (level.getDominoType(blockX, blockY) != 0)
         && (level.getDominoState(blockX, blockY) == 8)
-        && (level.getDominoType(blockX, blockY) != levelData_c::DominoTypeAscender || level.getDominoExtra(blockX, blockY) != 0x60)
+        && (level.getDominoType(blockX, blockY) != DominoTypeAscender || level.getDominoExtra(blockX, blockY) != 0x60)
         && level.getPlatform(blockX, blockY+1)
           )
     {
-      if (level.getDominoType(blockX, blockY) == levelData_c::DominoTypeTrigger)
+      if (level.getDominoType(blockX, blockY) == DominoTypeTrigger)
       {
         animation = returnState = AntAnimNoNo;
       }

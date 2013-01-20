@@ -107,21 +107,21 @@ static struct {
   uint16_t spacing;
   std::string text;
 } dominoHelp[NUM_DOMINOS] = {
-  { 1, {levelData_c::DominoTypeStandard},   50,  0, _("Standard: nothing special about this stone, it simply falls") },
-  { 1, {levelData_c::DominoTypeStopper},    50,  0, _("Blocker: can not fall, only stone allowed to stand at level end") },
-  { 1, {levelData_c::DominoTypeSplitter},   50,  0, _("Splitter: when something falls on its top it will split in two") },
-  { 1, {levelData_c::DominoTypeExploder},   50,  0, _("Exploder: will blast a hole into the platform below it") },
-  { 1, {levelData_c::DominoTypeDelay},      50,  0, _("Delay: falls not immediately but a while after being pushed") },
-  { 1, {levelData_c::DominoTypeTumbler},    50,  0, _("Tumbler: will continue rolling until it hits an obstacle") },
-  { 1, {levelData_c::DominoTypeBridger},    50,  0, _("Bridger: will connect the platform if there is a gap of one unit") },
-  { 1, {levelData_c::DominoTypeVanish},     50,  0, _("Vanish: pushes next block but then vanishes, only stone you may place in front of doors") },
-  { 1, {levelData_c::DominoTypeTrigger},    50,  0, _("Trigger: the last domino that must fall and it must lie flat, can not be moved") },
-  { 1, {levelData_c::DominoTypeAscender},   50,  0, _("Ascender: will raise to ceiling when pushed and then flip up there") },
-  { 2, {levelData_c::DominoTypeConnectedA,
-        levelData_c::DominoTypeConnectedB}, 50, 18, _("Entangled: all stones of this type will fall together as if quantum entangled") },
-  { 3, {levelData_c::DominoTypeCounter1,
-        levelData_c::DominoTypeCounter2,
-        levelData_c::DominoTypeCounter3}, 60, 15, _("Semiblocker: these behave like blocker as long as there is a stone still standing that has more lines") },
+  { 1, {DominoTypeStandard},   50,  0, _("Standard: nothing special about this stone, it simply falls") },
+  { 1, {DominoTypeStopper},    50,  0, _("Blocker: can not fall, only stone allowed to stand at level end") },
+  { 1, {DominoTypeSplitter},   50,  0, _("Splitter: when something falls on its top it will split in two") },
+  { 1, {DominoTypeExploder},   50,  0, _("Exploder: will blast a hole into the platform below it") },
+  { 1, {DominoTypeDelay},      50,  0, _("Delay: falls not immediately but a while after being pushed") },
+  { 1, {DominoTypeTumbler},    50,  0, _("Tumbler: will continue rolling until it hits an obstacle") },
+  { 1, {DominoTypeBridger},    50,  0, _("Bridger: will connect the platform if there is a gap of one unit") },
+  { 1, {DominoTypeVanish},     50,  0, _("Vanish: pushes next block but then vanishes, only stone you may place in front of doors") },
+  { 1, {DominoTypeTrigger},    50,  0, _("Trigger: the last domino that must fall and it must lie flat, can not be moved") },
+  { 1, {DominoTypeAscender},   50,  0, _("Ascender: will raise to ceiling when pushed and then flip up there") },
+  { 2, {DominoTypeConnectedA,
+        DominoTypeConnectedB}, 50, 18, _("Entangled: all stones of this type will fall together as if quantum entangled") },
+  { 3, {DominoTypeCounter1,
+        DominoTypeCounter2,
+        DominoTypeCounter3}, 60, 15, _("Semiblocker: these behave like blocker as long as there is a stone still standing that has more lines") },
 };
 
 #define SX 310

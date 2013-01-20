@@ -27,6 +27,34 @@
 
 class textsections_c;
 
+typedef enum {
+  DominoTypeEmpty,
+  DominoTypeStandard,
+  DominoTypeStopper,
+  DominoTypeSplitter,
+  DominoTypeExploder,
+  DominoTypeDelay,
+  DominoTypeTumbler,
+  DominoTypeBridger,
+  DominoTypeVanish,
+  DominoTypeTrigger,
+  DominoTypeAscender,
+  DominoTypeConnectedA,
+  DominoTypeConnectedB,
+  DominoTypeCounter1,
+  DominoTypeCounter2,
+  DominoTypeCounter3,
+  DominoTypeLastNormal = DominoTypeCounter3,
+  DominoTypeCrash0,         // all yellow big pile
+  DominoTypeCrash1,         // mixed big pile
+  DominoTypeCrash2,         // all red big pile
+  DominoTypeCrash3,         // all yellow little pile
+  DominoTypeCrash4,         // mixed little pile
+  DominoTypeCrash5,         // all red little pile
+  DominoTypeRiserCont,
+  DominoNumber
+} DominoType;
+
 class levelData_c {
 
   private:
@@ -57,7 +85,7 @@ class levelData_c {
       unsigned short bg[maxBg];
       bool platform;
       bool ladder;
-      unsigned char dominoType;
+      DominoType dominoType;
       unsigned char dominoState;
       char dominoDir;
       char dominoYOffset;
@@ -99,33 +127,6 @@ class levelData_c {
 
     // OLD INTERFACE, Deprecated
 
-    enum {
-      DominoTypeEmpty,
-      DominoTypeStandard,
-      DominoTypeStopper,
-      DominoTypeSplitter,
-      DominoTypeExploder,
-      DominoTypeDelay,
-      DominoTypeTumbler,
-      DominoTypeBridger,
-      DominoTypeVanish,
-      DominoTypeTrigger,
-      DominoTypeAscender,
-      DominoTypeConnectedA,
-      DominoTypeConnectedB,
-      DominoTypeCounter1,
-      DominoTypeCounter2,
-      DominoTypeCounter3,
-      DominoTypeLastNormal = DominoTypeCounter3,
-      DominoTypeCrash0,         // all yellow big pile
-      DominoTypeCrash1,         // mixed big pile
-      DominoTypeCrash2,         // all red big pile
-      DominoTypeCrash3,         // all yellow little pile
-      DominoTypeCrash4,         // mixed little pile
-      DominoTypeCrash5,         // all red little pile
-      DominoTypeRiserCont,
-      DominoNumber
-    };
 
     // NEW INTERFACE please use this only
 
@@ -158,13 +159,13 @@ class levelData_c {
 
     void removeDomino(int x, int y);
 
-    unsigned char getDominoType(unsigned int x, unsigned int y) const;
+    DominoType getDominoType(unsigned int x, unsigned int y) const;
     unsigned char getDominoState(unsigned int x, unsigned int y) const;
     signed char   getDominoDir(unsigned int x, unsigned int y) const;
     unsigned char getDominoExtra(unsigned int x, unsigned int y) const;
     signed char getDominoYOffset(unsigned int x, unsigned int y) const;
 
-    void setDominoType(unsigned int x, unsigned int y, int val);
+    void setDominoType(unsigned int x, unsigned int y, DominoType val);
     void setDominoState(unsigned int x, unsigned int y, int val);
     void setDominoDir(unsigned int x, unsigned int y, int val);
     void setDominoExtra(unsigned int x, unsigned int y, int val);

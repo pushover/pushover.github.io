@@ -82,13 +82,13 @@ void levelPlayer_c::performDoors(void) {
   }
 }
 
-int levelPlayer_c::pickUpDomino(int x, int y) {
-  int dom = getDominoType(x, y);
+DominoType levelPlayer_c::pickUpDomino(int x, int y) {
+  DominoType dom = getDominoType(x, y);
   removeDomino(x, y);
   return dom;
 }
 
-void levelPlayer_c::putDownDomino(int x, int y, int domino, bool pushin) {
+void levelPlayer_c::putDownDomino(int x, int y, DominoType domino, bool pushin) {
 
   if (getDominoType(x, y) != 0)
   { // there is a domino in the place where we want to put our domino
@@ -173,6 +173,9 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
         DominoCrash(x, y, getDominoYOffset(x+dir, y), getDominoExtra(x+dir, y));
         return false;
       }
+      break;
+
+    default:
       break;
   }
 
@@ -336,6 +339,9 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
     case DominoTypeCrash4:
     case DominoTypeCrash5:
       retVal = false;
+      break;
+
+    default:
       break;
   }
 
@@ -657,7 +663,7 @@ void levelPlayer_c::DTA_I(int x, int y) {
 void levelPlayer_c::DominoCrash(int x, int y, int type, int extra) {
 
   // what do we crash into?
-  int next = getDominoType(x, y);
+  DominoType next = getDominoType(x, y);
 
   // depending on what crashed we get a new pile
 

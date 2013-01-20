@@ -95,7 +95,7 @@ static const int antOffsets[] = {
   -24, -12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0                         // 13        // AntAnimLandDying,
 };
 
-static const unsigned char numDominos[levelData_c::DominoNumber] = {
+static const unsigned char numDominos[DominoNumber] = {
   0,    // DominoTypeEmpty
   15,   // DominoTypeStandard,
   15,   // DominoTypeStopper,
@@ -136,12 +136,12 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   ant = 0;
   level = 0;
 
-  dominos.resize(levelData_c::DominoNumber);
-  carriedDominos.resize(levelData_c::DominoNumber);
+  dominos.resize(DominoNumber);
+  carriedDominos.resize(DominoNumber);
 
-  for (unsigned int i = 0; i < levelData_c::DominoNumber; i++) {
+  for (unsigned int i = 0; i < DominoNumber; i++) {
     dominos[i].resize(numDominos[i]);
-    carriedDominos[i].resize(levelData_c::DominoTypeLastNormal+1);
+    carriedDominos[i].resize(DominoTypeLastNormal+1);
     carriedDominos[i][0] = 0;
   }
 
@@ -216,7 +216,7 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
     pngLoader_c png(dataPath+"/data/carried.png");
 
     for (unsigned int i = 0; i < 7; i++) {
-      for (unsigned int j = 1; j <= levelData_c::DominoTypeLastNormal; j++) {
+      for (unsigned int j = 1; j <= DominoTypeLastNormal; j++) {
         SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 55, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
         SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
@@ -228,21 +228,21 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
 
     // copy some surfaces surfaces
     for (unsigned int i = 7; i < 10; i++) {
-      for (unsigned int j = 1; j <= levelData_c::DominoTypeLastNormal; j++) {
+      for (unsigned int j = 1; j <= DominoTypeLastNormal; j++) {
         carriedDominos[i][j] = carriedDominos[i-1][j];
 
       }
     }
 
     for (unsigned int i = 10; i < 12; i++) {
-      for (unsigned int j = 1; j <= levelData_c::DominoTypeLastNormal; j++) {
+      for (unsigned int j = 1; j <= DominoTypeLastNormal; j++) {
         carriedDominos[i][j] = carriedDominos[i&1][j];
       }
     }
 
     // load the final surfaces
     for (unsigned int i = 12; i < 16; i++) {
-      for (unsigned int j = 1; j <= levelData_c::DominoTypeLastNormal; j++) {
+      for (unsigned int j = 1; j <= DominoTypeLastNormal; j++) {
         SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 55, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
         SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
@@ -517,7 +517,7 @@ void graphicsN_c::drawAnt(void)
       {
         // the ant normaly toppled the domino slightly over then lifting it up, but those
         // images don't exist with some dominos, so we stay with the vertical image
-        if (img != 7 && (ant->getCarriedDomino() == levelData_c::DominoTypeSplitter || ant->getCarriedDomino() == levelData_c::DominoTypeExploder || ant->getCarriedDomino() == levelData_c::DominoTypeAscender))
+        if (img != 7 && (ant->getCarriedDomino() == DominoTypeSplitter || ant->getCarriedDomino() == DominoTypeExploder || ant->getCarriedDomino() == DominoTypeAscender))
         {
           img = 7;
         }
@@ -836,27 +836,27 @@ void graphicsN_c::drawDominos(void)
 //      if (!dirty.isDirty(x, y)) continue;
 
       // paint the left neighbor domino, if it leans in our direction and is not painted on its own
-      if (y < 25 && x > 0 && !dirty.isDirty(x-1, y+1) && level->getDominoType(x-1, y+1) != levelData_c::DominoTypeEmpty &&
+      if (y < 25 && x > 0 && !dirty.isDirty(x-1, y+1) && level->getDominoType(x-1, y+1) != DominoTypeEmpty &&
           (level->getDominoState(x-1, y+1) > 8 ||
-           (level->getDominoType(x-1, y+1) == levelData_c::DominoTypeSplitter && level->getDominoState(x-1, y+1) != 8) ||
-           level->getDominoState(x-1, y+1) >= levelData_c::DominoTypeCrash0))
+           (level->getDominoType(x-1, y+1) == DominoTypeSplitter && level->getDominoState(x-1, y+1) != 8) ||
+           level->getDominoState(x-1, y+1) >= DominoTypeCrash0))
       {
         target->blit(dominos[level->getDominoType(x-1, y+1)][level->getDominoState(x-1, y+1)-1],
             SpriteXPos-blockX(),
             SpriteYPos+convertDominoY(level->getDominoYOffset(x-1, y+1))+blockY()/2);
       }
 
-      if (x > 0 && !dirty.isDirty(x-1, y) && level->getDominoType(x-1, y) != levelData_c::DominoTypeEmpty &&
+      if (x > 0 && !dirty.isDirty(x-1, y) && level->getDominoType(x-1, y) != DominoTypeEmpty &&
           (level->getDominoState(x-1, y) > 8 ||
-           (level->getDominoType(x-1, y) == levelData_c::DominoTypeSplitter && level->getDominoState(x-1, y) != 8) ||
-           level->getDominoType(x-1, y) >= levelData_c::DominoTypeCrash0))
+           (level->getDominoType(x-1, y) == DominoTypeSplitter && level->getDominoState(x-1, y) != 8) ||
+           level->getDominoType(x-1, y) >= DominoTypeCrash0))
       {
         target->blit(dominos[level->getDominoType(x-1, y)][level->getDominoState(x-1, y)-1],
             SpriteXPos-blockX(),
             SpriteYPos+convertDominoY(level->getDominoYOffset(x-1, y)));
       }
 
-      if (y < 25 && !dirty.isDirty(x, y+1) && level->getDominoType(x, y+1) != levelData_c::DominoTypeEmpty)
+      if (y < 25 && !dirty.isDirty(x, y+1) && level->getDominoType(x, y+1) != DominoTypeEmpty)
       {
         target->blit(dominos[level->getDominoType(x, y+1)][level->getDominoState(x, y+1)-1],
             SpriteXPos,
@@ -864,40 +864,40 @@ void graphicsN_c::drawDominos(void)
       }
 
       // paint the splitting domino for the splitter
-      if (level->getDominoType(x, y) == levelData_c::DominoTypeSplitter &&
+      if (level->getDominoType(x, y) == DominoTypeSplitter &&
           level->getDominoState(x, y) == 6 &&
           level->getDominoExtra(x, y) != 0)
       {
-        target->blit(dominos[level->getDominoExtra(x, y)][level->getDominoExtra(x, y)>=levelData_c::DominoTypeCrash0?0:7],
+        target->blit(dominos[level->getDominoExtra(x, y)][level->getDominoExtra(x, y)>=DominoTypeCrash0?0:7],
             SpriteXPos,
             SpriteYPos-splitterY());
       }
 
       // paint the actual domino but take care of the special cases of the ascender domino
-      if (level->getDominoType(x, y) == levelData_c::DominoTypeAscender && level->getDominoExtra(x, y) == 0x60 &&
+      if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoExtra(x, y) == 0x60 &&
           level->getDominoState(x, y) < 16 && level->getDominoState(x, y) != 8)
       {
-        target->blit(dominos[levelData_c::DominoTypeRiserCont][StoneImageOffset[level->getDominoState(x, y)-1]],
+        target->blit(dominos[DominoTypeRiserCont][StoneImageOffset[level->getDominoState(x, y)-1]],
             SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]),
             SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
       }
-      else if (level->getDominoType(x, y) == levelData_c::DominoTypeAscender && level->getDominoState(x, y) == 1 && level->getDominoExtra(x, y) == 0 &&
+      else if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoState(x, y) == 1 && level->getDominoExtra(x, y) == 0 &&
           !level->getPlatform(x-1, y-3))
       { // this is the case of the ascender domino completely horizontal and with the plank it is below not existing
         // so we see the above face of the domino. Normally there is a wall above us so we only see
         // the front face of the domino
-        target->blit(dominos[levelData_c::DominoTypeRiserCont][StoneImageOffset[level->getDominoState(x, y)-1]],
+        target->blit(dominos[DominoTypeRiserCont][StoneImageOffset[level->getDominoState(x, y)-1]],
             SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]+6),
             SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
       }
-      else if (level->getDominoType(x, y) == levelData_c::DominoTypeAscender && level->getDominoState(x, y) == 15 && level->getDominoExtra(x, y) == 0 &&
+      else if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoState(x, y) == 15 && level->getDominoExtra(x, y) == 0 &&
           !level->getPlatform(x+1, y-3))
       {
-        target->blit(dominos[levelData_c::DominoTypeRiserCont][StoneImageOffset[level->getDominoState(x, y)-1]],
+        target->blit(dominos[DominoTypeRiserCont][StoneImageOffset[level->getDominoState(x, y)-1]],
             SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]-2),
             SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
       }
-      else if (level->getDominoType(x, y) != levelData_c::DominoTypeEmpty)
+      else if (level->getDominoType(x, y) != DominoTypeEmpty)
       {
         target->blit(dominos[level->getDominoType(x, y)][level->getDominoState(x, y)-1],
             SpriteXPos,
@@ -905,20 +905,20 @@ void graphicsN_c::drawDominos(void)
       }
 
       // paint the right neighbor if it is leaning in our direction
-      if (x < 19 && y < 25 && !dirty.isDirty(x+1, y+1) && level->getDominoType(x+1, y+1) != levelData_c::DominoTypeEmpty &&
+      if (x < 19 && y < 25 && !dirty.isDirty(x+1, y+1) && level->getDominoType(x+1, y+1) != DominoTypeEmpty &&
           (level->getDominoState(x+1, y+1) < 8 ||
-           (level->getDominoType(x+1, y+1) == levelData_c::DominoTypeSplitter && level->getDominoState(x+1, y+1) != 8) ||
-           level->getDominoType(x+1, y+1) >= levelData_c::DominoTypeCrash0))
+           (level->getDominoType(x+1, y+1) == DominoTypeSplitter && level->getDominoState(x+1, y+1) != 8) ||
+           level->getDominoType(x+1, y+1) >= DominoTypeCrash0))
       {
         target->blit(dominos[level->getDominoType(x+1, y+1)][level->getDominoState(x+1, y+1)-1],
             SpriteXPos+blockX(),
             SpriteYPos+convertDominoY(level->getDominoYOffset(x+1, y+1))+blockY()/2);
       }
 
-      if (x < 19 && !dirty.isDirty(x+1, y) && level->getDominoType(x+1, y) != levelData_c::DominoTypeEmpty &&
+      if (x < 19 && !dirty.isDirty(x+1, y) && level->getDominoType(x+1, y) != DominoTypeEmpty &&
           (level->getDominoState(x+1, y) < 8 ||
-           (level->getDominoType(x+1, y) == levelData_c::DominoTypeSplitter && level->getDominoState(x+1, y) != 8) ||
-           level->getDominoType(x+1, y) >= levelData_c::DominoTypeCrash0))
+           (level->getDominoType(x+1, y) == DominoTypeSplitter && level->getDominoState(x+1, y) != 8) ||
+           level->getDominoType(x+1, y) >= DominoTypeCrash0))
       {
         target->blit(dominos[level->getDominoType(x+1, y)][level->getDominoState(x+1, y)-1],
             SpriteXPos+blockX(),
@@ -927,37 +927,37 @@ void graphicsN_c::drawDominos(void)
 
       if (y >= 24) continue;
 
-      if (!dirty.isDirty(x, y+2) && level->getDominoType(x, y+2) == levelData_c::DominoTypeAscender)
+      if (!dirty.isDirty(x, y+2) && level->getDominoType(x, y+2) == DominoTypeAscender)
       {
         target->blit(dominos[level->getDominoType(x, y+2)][level->getDominoState(x, y+2)-1],
             SpriteXPos,
             SpriteYPos+convertDominoY(level->getDominoYOffset(x, y+2))+blockY());
       }
 
-      if (x > 0 && !dirty.isDirty(x-1, y+2) && level->getDominoType(x-1, y+2) == levelData_c::DominoTypeAscender)
+      if (x > 0 && !dirty.isDirty(x-1, y+2) && level->getDominoType(x-1, y+2) == DominoTypeAscender)
       {
         target->blit(dominos[level->getDominoType(x-1, y+2)][level->getDominoState(x-1, y+2)-1],
             SpriteXPos-blockX(),
             SpriteYPos+convertDominoY(level->getDominoYOffset(x-1, y+2))+blockY());
       }
 
-      if (x < 19 && !dirty.isDirty(x+1, y+2) && level->getDominoType(x+1, y+2) == levelData_c::DominoTypeAscender)
+      if (x < 19 && !dirty.isDirty(x+1, y+2) && level->getDominoType(x+1, y+2) == DominoTypeAscender)
       {
         target->blit(dominos[level->getDominoType(x+1, y+2)][level->getDominoState(x+1, y+2)-1],
             SpriteXPos+blockX(),
             SpriteYPos+convertDominoY(level->getDominoYOffset(x+1, y+2))+blockY());
       }
 
-      if (level->getDominoType(x, y) != levelData_c::DominoTypeAscender) continue;
+      if (level->getDominoType(x, y) != DominoTypeAscender) continue;
 
-      if (!dirty.isDirty(x, y+2) && level->getDominoType(x, y+2) != levelData_c::DominoTypeEmpty)
+      if (!dirty.isDirty(x, y+2) && level->getDominoType(x, y+2) != DominoTypeEmpty)
       {
         target->blit(dominos[level->getDominoType(x, y+2)][level->getDominoState(x, y+2)-1],
             SpriteXPos,
             SpriteYPos+convertDominoY(level->getDominoYOffset(x, y+2))+blockY());
       }
 
-      if (x > 0 && !dirty.isDirty(x-1, y+2) && level->getDominoType(x-1, y+2) != levelData_c::DominoTypeEmpty)
+      if (x > 0 && !dirty.isDirty(x-1, y+2) && level->getDominoType(x-1, y+2) != DominoTypeEmpty)
       {
         target->blit(dominos[level->getDominoType(x-1, y+2)][level->getDominoState(x-1, y+2)-1],
             SpriteXPos-blockX(),
@@ -968,7 +968,7 @@ void graphicsN_c::drawDominos(void)
 
       if (!dirty.isDirty(x+1, y+2)) continue;
 
-      if (level->getDominoType(x+1, y+2) == levelData_c::DominoTypeEmpty) continue;
+      if (level->getDominoType(x+1, y+2) == DominoTypeEmpty) continue;
 
       target->blit(dominos[level->getDominoType(x+1, y+2)][level->getDominoState(x+1, y+2)-1],
           SpriteXPos+blockX(),

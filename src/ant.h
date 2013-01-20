@@ -22,12 +22,11 @@
 #ifndef __ANT_H__
 #define __ANT_H__
 
+#include "levelplayer.h"
+
 #include <stdint.h>
 
 // this class contains all necessary code for the ant animation
-
-
-class levelPlayer_c;
 
 // the following defines are used for the keymask
 #define KEY_LEFT 1
@@ -116,7 +115,7 @@ class ant_c {
     AntAnimationState state;
     AntAnimationState animation;
     unsigned int animationImage;
-    unsigned int carriedDomino;
+    DominoType carriedDomino;
     unsigned int animationTimer;
 
     int16_t blockX, blockY;
