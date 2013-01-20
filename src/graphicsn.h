@@ -58,7 +58,7 @@ class graphicsN_c : public graphics_c {
 
     SDL_Surface * getBoxBlock(unsigned int num) { return boxBlocks[num]; }
     // get domino animation image
-    SDL_Surface * getDomino(unsigned int domino, unsigned int image) { return dominos[domino][image]; }
+    SDL_Surface * getHelpDominoImage(unsigned int domino) { return dominos[domino][7]; }
 
   private:
 
