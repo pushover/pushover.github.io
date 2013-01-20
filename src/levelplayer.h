@@ -51,7 +51,6 @@ class levelPlayer_c : public levelData_c {
     void DTA_K(int x, int y);
     void DTA_F(int x, int y);
     void DTA_C(int x, int y);
-    void DTA_D(int x, int y);
     void DTA_5(int x, int y);
     void DTA_G(int x, int y);
     void DTA_6(int x, int y);
@@ -65,7 +64,6 @@ class levelPlayer_c : public levelData_c {
     void DTA_A(int x, int y);
     void DTA_H(int x, int y);
     void DTA_O(int x, int y);
-    void DTA_B(int x, int y);
 
     // a counter used to see, if nothing happens within the level
     int inactive;

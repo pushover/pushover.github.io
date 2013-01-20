@@ -374,20 +374,6 @@ void levelPlayer_c::DTA_G(int x, int y) {
     setDominoExtra(x, y, getDominoExtra(x, y)-1);
 }
 
-// crash case with dust clouds, we need to call DTA_E because
-// dominos might crash in the air and the rubble needs to fall down
-void levelPlayer_c::DTA_B(int x, int y) {
-  DTA_E(x, y);
-}
-
-// splitter opening simply call the normal domino falling
-// function and mark some more blocks because we split left and
-// right and the normal function will only mark one side
-void levelPlayer_c::DTA_D(int x, int y) {
-
-  DTA_4(x, y);
-}
-
 // the final vanisher state, remove the vanisher
 // from the level and mark things dirty
 void levelPlayer_c::DTA_8(int x, int y) {
@@ -455,13 +441,13 @@ void levelPlayer_c::DTA_J(int x, int y) {
 
   // if the 2nd next right neighbor is not empty and far enough fallen to the left
   // we stop
-  if (x <= 17 && getDominoType(x+2, y) != 0 && getDominoState(x+2, y) < 3)
+  if (x+2 < levelX() && getDominoType(x+2, y) != 0 && getDominoState(x+2, y) < 3)
     return;
 
   // if the domino is a splitter, we need to check, if it is in one of the
   // states where the right halve is far enough down
   // if this is not the case or it is no splitter fall further
-  if (x > 17 ||
+  if (x+2 >= levelX() ||
       getDominoType(x+2, y) != DominoTypeSplitter ||
       (getDominoState(x+2, y) != 1 &&
        getDominoState(x+2, y) != 9 &&
@@ -747,7 +733,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
 
     // if we have not yet fallen out of the level put
     // the domino into the next block below
-    if (y+1 < levelY())
+    if (y+2 < levelY())
     {
       if (getDominoType(x, y+1) == DominoTypeEmpty)
       {
@@ -820,7 +806,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
 
   // we can continue, if there is either no domino or no more
   // level below us
-  if (y >= levelY() || getDominoType(x, y+2) == DominoTypeEmpty || getDominoYOffset(x, y+2) != 0)
+  if (y+2 >= levelY() || getDominoType(x, y+2) == DominoTypeEmpty || getDominoYOffset(x, y+2) != 0)
   {
     setDominoYOffset(x, y, getDominoYOffset(x, y)+4);
     return;
@@ -1636,10 +1622,10 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y) {
               // DominoTypeSplitter
     case 17*(DominoTypeSplitter-1) +   1: DTA_C(x, y); break;
     case 17*(DominoTypeSplitter-1) +   2: DTA_C(x, y); break;
-    case 17*(DominoTypeSplitter-1) +   3: DTA_D(x, y); break;
-    case 17*(DominoTypeSplitter-1) +   4: DTA_D(x, y); break;
-    case 17*(DominoTypeSplitter-1) +   5: DTA_D(x, y); break;
-    case 17*(DominoTypeSplitter-1) +   6: DTA_D(x, y); break;
+    case 17*(DominoTypeSplitter-1) +   3: DTA_4(x, y); break;
+    case 17*(DominoTypeSplitter-1) +   4: DTA_4(x, y); break;
+    case 17*(DominoTypeSplitter-1) +   5: DTA_4(x, y); break;
+    case 17*(DominoTypeSplitter-1) +   6: DTA_4(x, y); break;
     case 17*(DominoTypeSplitter-1) +   7: DTA_F(x, y); break;
     case 17*(DominoTypeSplitter-1) +   8: DTA_C(x, y); break;
     case 17*(DominoTypeSplitter-1) +   9: DTA_C(x, y); break;
@@ -1848,46 +1834,46 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y) {
     case 17*(DominoTypeCounter3-1) +  14: DTA_K(x, y); break;
 
               // DominoTypeCrash0
-    case 17*(DominoTypeCrash0-1) +   0: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash0-1) +   1: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash0-1) +   2: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash0-1) +   3: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash0-1) +   4: DTA_B(x, y); break;
+    case 17*(DominoTypeCrash0-1) +   0: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash0-1) +   1: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash0-1) +   2: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash0-1) +   3: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash0-1) +   4: DTA_E(x, y); break;
 
               // DominoTypeCrash1
-    case 17*(DominoTypeCrash1-1) +   0: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash1-1) +   1: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash1-1) +   2: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash1-1) +   3: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash1-1) +   4: DTA_B(x, y); break;
+    case 17*(DominoTypeCrash1-1) +   0: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash1-1) +   1: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash1-1) +   2: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash1-1) +   3: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash1-1) +   4: DTA_E(x, y); break;
 
               // DominoTypeCrash2
-    case 17*(DominoTypeCrash2-1) +   0: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash2-1) +   1: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash2-1) +   2: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash2-1) +   3: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash2-1) +   4: DTA_B(x, y); break;
+    case 17*(DominoTypeCrash2-1) +   0: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash2-1) +   1: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash2-1) +   2: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash2-1) +   3: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash2-1) +   4: DTA_E(x, y); break;
 
               // DominoTypeCrash3
-    case 17*(DominoTypeCrash3-1) +   0: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash3-1) +   1: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash3-1) +   2: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash3-1) +   3: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash3-1) +   4: DTA_B(x, y); break;
+    case 17*(DominoTypeCrash3-1) +   0: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash3-1) +   1: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash3-1) +   2: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash3-1) +   3: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash3-1) +   4: DTA_E(x, y); break;
 
               // DominoTypeCrash4
-    case 17*(DominoTypeCrash4-1) +   0: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash4-1) +   1: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash4-1) +   2: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash4-1) +   3: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash4-1) +   4: DTA_B(x, y); break;
+    case 17*(DominoTypeCrash4-1) +   0: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash4-1) +   1: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash4-1) +   2: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash4-1) +   3: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash4-1) +   4: DTA_E(x, y); break;
 
               // DominoTypeCrash5
-    case 17*(DominoTypeCrash5-1) +   0: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash5-1) +   1: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash5-1) +   2: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash5-1) +   3: DTA_B(x, y); break;
-    case 17*(DominoTypeCrash5-1) +   4: DTA_B(x, y); break;
+    case 17*(DominoTypeCrash5-1) +   0: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash5-1) +   1: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash5-1) +   2: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash5-1) +   3: DTA_E(x, y); break;
+    case 17*(DominoTypeCrash5-1) +   4: DTA_E(x, y); break;
               // DominoTypeRiserCont
               // DominoTypeQuaver
   }
