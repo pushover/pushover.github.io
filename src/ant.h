@@ -113,13 +113,13 @@ class ant_c {
 
   private:
 
-    unsigned int state;
+    AntAnimationState state;
     AntAnimationState animation;
     unsigned int animationImage;
     unsigned int carriedDomino;
     unsigned int animationTimer;
 
-    int blockX, blockY;
+    int16_t blockX, blockY;
 
     levelPlayer_c & level;
 
@@ -151,17 +151,17 @@ class ant_c {
     int performAnimation(unsigned int keyMask);
 
     bool carrySomething(void) { return carriedDomino != 0; }
-    bool isLiving(void) { return state != 64 && state != 65 && state != 53; }
+    bool isLiving(void) { return state != AntAnimDominoDying && state != AntAnimLandDying && state != AntAnimGhost2; }
 
     void success(void);
     void fail(void);
 
-    bool isVisible(void) const { return blockX >= 0 && blockX < 20 && blockY >= 0 && blockY < 25; }
+    bool isVisible(void) const;
 
     int getPushsLeft(void) const { return numPushsLeft; }
 
-    int getBlockX(void) const { return blockX; }
-    int getBlockY(void) const { return blockY; }
+    int16_t getBlockX(void) const { return blockX; }
+    int16_t getBlockY(void) const { return blockY; }
     unsigned int getCarriedDomino(void) const { return carriedDomino; }
     unsigned int getAnimation(void) const { return animation; }
     unsigned int getAnimationImage(void) const { return animationImage; }
@@ -170,56 +170,56 @@ class ant_c {
 
   private:
 
-    unsigned int callStateFunction(unsigned int state, unsigned int keyMask);
+    AntAnimationState callStateFunction(unsigned int state, unsigned int keyMask);
     bool animateAnt(unsigned int delay);
 
 
-    unsigned int SFLeaveDoor(void);
-    unsigned int SFStepAside(void);
-    unsigned int SFWalkLeft(void);
-    unsigned int SFWalkRight(void);
-    unsigned int SFJumpUpLeft(void);
-    unsigned int SFJumpUpRight(void);
-    unsigned int SFJumpDownLeft(void);
-    unsigned int SFJumpDownRight(void);
-    unsigned int SFInFrontOfExploder(void);
-    unsigned int SFInactive(void);
-    unsigned int SFLazying(void);
-    unsigned int SFFlailing(void);
-    unsigned int SFStartFallingLeft(void);
-    unsigned int SFStartFallingRight(void);
-    unsigned int SFFalling(void);
-    unsigned int SFLanding(void);
-    unsigned int SFLadder1(void);
-    unsigned int SFLadder2(void);
-    unsigned int SFLadder3(void);
-    unsigned int SFPullOutLeft(void);
-    unsigned int SFPullOutRight(void);
-    unsigned int SFPushInLeft(void);
-    unsigned int SFPushInRight(void);
-    unsigned int SFLeaveLadderRight(void);
-    unsigned int SFLeaveLadderLeft(void);
-    unsigned int SFEnterLadder(void);
-    unsigned int SFLooseRight(void);
-    unsigned int SFLooseLeft(void);
-    unsigned int SFXXX7(void);   // TODO what's this state????
-    unsigned int SFEnterDominosLeft(void);
-    unsigned int SFEnterDominosRight(void);
-    unsigned int SFPushLeft(void);
-    unsigned int SFPushRight(void);
-    unsigned int SFPushSpecialLeft(void);
-    unsigned int SFPushSpecialRight(void);
-    unsigned int SFPushDelayLeft(void);
-    unsigned int SFPushDelayRight(void);
-    unsigned int SFGhost1(void);
-    unsigned int SFGhost2(void);
-    unsigned int SFLandDying(void);
-    unsigned int SFEnterDoor(void);
-    unsigned int SFXXX9(void);   // TODO what's this state????
-    unsigned int SFNoNo(void);
-    unsigned int SFVictory(void);
-    unsigned int SFShrugging(void);
-    unsigned int SFStruck(void);
+    AntAnimationState SFLeaveDoor(void);
+    AntAnimationState SFStepAside(void);
+    AntAnimationState SFWalkLeft(void);
+    AntAnimationState SFWalkRight(void);
+    AntAnimationState SFJumpUpLeft(void);
+    AntAnimationState SFJumpUpRight(void);
+    AntAnimationState SFJumpDownLeft(void);
+    AntAnimationState SFJumpDownRight(void);
+    AntAnimationState SFInFrontOfExploder(void);
+    AntAnimationState SFInactive(void);
+    AntAnimationState SFLazying(void);
+    AntAnimationState SFFlailing(void);
+    AntAnimationState SFStartFallingLeft(void);
+    AntAnimationState SFStartFallingRight(void);
+    AntAnimationState SFFalling(void);
+    AntAnimationState SFLanding(void);
+    AntAnimationState SFLadder1(void);
+    AntAnimationState SFLadder2(void);
+    AntAnimationState SFLadder3(void);
+    AntAnimationState SFPullOutLeft(void);
+    AntAnimationState SFPullOutRight(void);
+    AntAnimationState SFPushInLeft(void);
+    AntAnimationState SFPushInRight(void);
+    AntAnimationState SFLeaveLadderRight(void);
+    AntAnimationState SFLeaveLadderLeft(void);
+    AntAnimationState SFEnterLadder(void);
+    AntAnimationState SFLooseRight(void);
+    AntAnimationState SFLooseLeft(void);
+    AntAnimationState SFXXX7(void);   // TODO what's this state????
+    AntAnimationState SFEnterDominosLeft(void);
+    AntAnimationState SFEnterDominosRight(void);
+    AntAnimationState SFPushLeft(void);
+    AntAnimationState SFPushRight(void);
+    AntAnimationState SFPushSpecialLeft(void);
+    AntAnimationState SFPushSpecialRight(void);
+    AntAnimationState SFPushDelayLeft(void);
+    AntAnimationState SFPushDelayRight(void);
+    AntAnimationState SFGhost1(void);
+    AntAnimationState SFGhost2(void);
+    AntAnimationState SFLandDying(void);
+    AntAnimationState SFEnterDoor(void);
+    AntAnimationState SFXXX9(void);   // TODO what's this state????
+    AntAnimationState SFNoNo(void);
+    AntAnimationState SFVictory(void);
+    AntAnimationState SFShrugging(void);
+    AntAnimationState SFStruck(void);
 
 
     AntAnimationState SFNextAction(unsigned int keyMask);

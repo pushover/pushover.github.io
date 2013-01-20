@@ -27,6 +27,13 @@
 
 #include <assert.h>
 
+// the statemashine for the ant works as follows:
+// - detect what the ant has to do next
+// - play the complete animation resuling maybe in a new position or somethin else
+// - repeat
+
+
+// all the ant animations do have a certain fixed number of images
 const unsigned char numAntAnimationsImages[AntAnimNothing] = {
 
  6,        // AntAnimWalkLeft,
@@ -101,18 +108,13 @@ const unsigned char numAntAnimationsImages[AntAnimNothing] = {
 
 uint16_t ant_c::getAntImages(AntAnimationState ant)
 {
-  if (ant < AntAnimNothing)
-  {
-    return numAntAnimationsImages[ant];
-  }
+  assert(ant < AntAnimNothing);
 
-  assert(0);
+  return numAntAnimationsImages[ant];
 }
 
 
-// initialize the ant state for level entering
-// the level is saved and used later on for dirty block
-// marking, and level modification
+// Initialisation
 ant_c::ant_c(levelPlayer_c & level): level(level) {
 
   initForLevel();
@@ -137,19 +139,23 @@ void ant_c::initForLevel(void) {
   finalAnimationPlayed = levelFail = levelSuccess = false;
 }
 
-// do one animation step for the ant
+// do one animation step for the level
 int ant_c::performAnimation(unsigned int keyMask)
 {
+  // first do the doors
   level.performDoors();
 
+  // first check, if the any has no active action, if not try to find one
   if (state == AntAnimNothing) {
     state = callStateFunction(state, keyMask);
   }
 
+  // do the action animation
   if (state != AntAnimNothing) {
     state = callStateFunction(state, keyMask);
   }
 
+  // now the level update for all the dominos
   level.performDominos();
 
   int reason = 0;
@@ -194,7 +200,7 @@ int ant_c::performAnimation(unsigned int keyMask)
   return 0;
 }
 
-unsigned int ant_c::callStateFunction(unsigned int state, unsigned int keyMask) {
+AntAnimationState ant_c::callStateFunction(unsigned int state, unsigned int keyMask) {
 
   switch (state) {
 
@@ -314,21 +320,21 @@ bool ant_c::animateAnt(unsigned int delay) {
 
 // I will not comment all these functions
 
-unsigned int ant_c::SFStruck(void) {
+AntAnimationState ant_c::SFStruck(void) {
   if (animateAnt(2))
     ;
 
   return animation;
 }
 
-unsigned int ant_c::SFNoNo(void) {
+AntAnimationState ant_c::SFNoNo(void) {
   if (animateAnt(3))
     return AntAnimNothing;
 
   return animation;
 }
 
-unsigned int ant_c::SFShrugging(void) {
+AntAnimationState ant_c::SFShrugging(void) {
 
   if (animationImage == 1)
     soundSystem_c::instance()->startSound(soundSystem_c::SE_SHRUGGING);
@@ -339,7 +345,7 @@ unsigned int ant_c::SFShrugging(void) {
   return animation;
 }
 
-unsigned int ant_c::SFVictory(void) {
+AntAnimationState ant_c::SFVictory(void) {
 
   if (animationImage == 1)
     soundSystem_c::instance()->startSound(soundSystem_c::SE_VICTORY);
@@ -350,7 +356,7 @@ unsigned int ant_c::SFVictory(void) {
   return animation;
 }
 
-unsigned int ant_c::SFXXX9(void) {
+AntAnimationState ant_c::SFXXX9(void) {
   if (animateAnt(0)) {
     animation = AntAnimEnterDoor;
     blockX--;
@@ -359,7 +365,7 @@ unsigned int ant_c::SFXXX9(void) {
   return animation;
 }
 
-unsigned int ant_c::SFEnterDoor(void) {
+AntAnimationState ant_c::SFEnterDoor(void) {
 
   if (animateAnt(0)) {
 
@@ -374,14 +380,14 @@ unsigned int ant_c::SFEnterDoor(void) {
   return animation;
 }
 
-unsigned int ant_c::SFGhost1(void) {
+AntAnimationState ant_c::SFGhost1(void) {
   if (animateAnt(0))
     animation = AntAnimGhost2;
 
   return animation;
 }
 
-unsigned int ant_c::SFGhost2(void) {
+AntAnimationState ant_c::SFGhost2(void) {
 
   if (animateAnt(2)) {
     animationImage = getAntImages(animation) - 1;
@@ -391,7 +397,7 @@ unsigned int ant_c::SFGhost2(void) {
   return animation;
 }
 
-unsigned int ant_c::SFLandDying(void) {
+AntAnimationState ant_c::SFLandDying(void) {
 
   if (animationImage == 3)
     soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_LANDING);
@@ -404,7 +410,7 @@ unsigned int ant_c::SFLandDying(void) {
 
 // in the delay push functions we wait until the domino finally falls
 
-unsigned int ant_c::SFPushDelayLeft(void) {
+AntAnimationState ant_c::SFPushDelayLeft(void) {
   if (animateAnt(5) || level.pushDomino(blockX-1, blockY, -1)) {
     animationImage = 9;
     animation = AntAnimPushLeft;
@@ -413,7 +419,7 @@ unsigned int ant_c::SFPushDelayLeft(void) {
   return animation;
 }
 
-unsigned int ant_c::SFPushDelayRight(void) {
+AntAnimationState ant_c::SFPushDelayRight(void) {
   if (animateAnt(5) || level.pushDomino(blockX+1, blockY, -1)) {
     animationImage = 9;
     animation = AntAnimPushRight;
@@ -422,7 +428,7 @@ unsigned int ant_c::SFPushDelayRight(void) {
   return animation;
 }
 
-unsigned int ant_c::SFPushSpecialLeft(void) {
+AntAnimationState ant_c::SFPushSpecialLeft(void) {
   if (animateAnt(5)) {
     animationImage = 9;
     animation = AntAnimPushLeft;
@@ -431,7 +437,7 @@ unsigned int ant_c::SFPushSpecialLeft(void) {
   return animation;
 }
 
-unsigned int ant_c::SFPushSpecialRight(void) {
+AntAnimationState ant_c::SFPushSpecialRight(void) {
   if (animateAnt(5)) {
     animationImage = 9;
     animation = AntAnimPushRight;
@@ -444,7 +450,7 @@ unsigned int ant_c::SFPushSpecialRight(void) {
 // normally the pushDOmino function returns false then
 // we branch into another animation
 
-unsigned int ant_c::SFPushLeft(void) {
+AntAnimationState ant_c::SFPushLeft(void) {
   if (animationImage == 1) {
     if (!level.pushDomino(blockX-1, blockY, -1)) {
       if (pushDelay == 0) {
@@ -492,7 +498,7 @@ unsigned int ant_c::SFPushLeft(void) {
   return animation;
 }
 
-unsigned int ant_c::SFPushRight(void) {
+AntAnimationState ant_c::SFPushRight(void) {
   if (animationImage == 1) {
     if (!level.pushDomino(blockX+1, blockY, 1)) {
       if (pushDelay == 0) {
@@ -541,7 +547,7 @@ unsigned int ant_c::SFPushRight(void) {
   return animation;
 }
 
-unsigned int ant_c::SFEnterDominosLeft(void) {
+AntAnimationState ant_c::SFEnterDominosLeft(void) {
   if (!animateAnt(0))
     return animation;
 
@@ -550,7 +556,7 @@ unsigned int ant_c::SFEnterDominosLeft(void) {
   return AntAnimNothing;
 }
 
-unsigned int ant_c::SFEnterDominosRight(void) {
+AntAnimationState ant_c::SFEnterDominosRight(void) {
   if (!animateAnt(0))
     return animation;
 
@@ -559,7 +565,7 @@ unsigned int ant_c::SFEnterDominosRight(void) {
   return AntAnimNothing;
 }
 
-unsigned int ant_c::SFXXX7(void) {
+AntAnimationState ant_c::SFXXX7(void) {
   if (animateAnt(0))
   {
     animation = AntAnimLoosingDominoRight;
@@ -568,7 +574,7 @@ unsigned int ant_c::SFXXX7(void) {
   return AntAnimXXX7;
 }
 
-unsigned int ant_c::SFLooseRight(void) {
+AntAnimationState ant_c::SFLooseRight(void) {
   if (animateAnt(0)) {
     animation = AntAnimFalling;
     blockY += 2;
@@ -590,7 +596,7 @@ unsigned int ant_c::SFLooseRight(void) {
   return animation;
 }
 
-unsigned int ant_c::SFLooseLeft(void) {
+AntAnimationState ant_c::SFLooseLeft(void) {
   if (animateAnt(0)) {
     animation = AntAnimFalling;
     blockY += 2;
@@ -612,7 +618,7 @@ unsigned int ant_c::SFLooseLeft(void) {
   return animation;
 }
 
-unsigned int ant_c::SFLeaveLadderRight(void) {
+AntAnimationState ant_c::SFLeaveLadderRight(void) {
 
   if (!animateAnt(0))
     return animation;
@@ -622,7 +628,7 @@ unsigned int ant_c::SFLeaveLadderRight(void) {
 
 }
 
-unsigned int ant_c::SFLeaveLadderLeft(void) {
+AntAnimationState ant_c::SFLeaveLadderLeft(void) {
 
   if (!animateAnt(0))
     return animation;
@@ -631,7 +637,7 @@ unsigned int ant_c::SFLeaveLadderLeft(void) {
   return animation;
 }
 
-unsigned int ant_c::SFEnterLadder(void) {
+AntAnimationState ant_c::SFEnterLadder(void) {
 
   if (!animateAnt(0))
     return animation;
@@ -646,7 +652,7 @@ unsigned int ant_c::SFEnterLadder(void) {
   return animation;
 }
 
-unsigned int ant_c::SFPushInLeft(void) {
+AntAnimationState ant_c::SFPushInLeft(void) {
 
   if (!animateAnt(0))
     return animation;
@@ -659,7 +665,7 @@ unsigned int ant_c::SFPushInLeft(void) {
   return AntAnimNothing;
 }
 
-unsigned int ant_c::SFPushInRight(void) {
+AntAnimationState ant_c::SFPushInRight(void) {
   if (!animateAnt(0))
     return animation;
 
@@ -671,7 +677,7 @@ unsigned int ant_c::SFPushInRight(void) {
   return AntAnimNothing;
 }
 
-unsigned int ant_c::SFPullOutLeft(void) {
+AntAnimationState ant_c::SFPullOutLeft(void) {
 
   if (animationImage == 3)
     soundSystem_c::instance()->startSound(soundSystem_c::SE_PICK_UP_DOMINO);
@@ -683,7 +689,7 @@ unsigned int ant_c::SFPullOutLeft(void) {
   return AntAnimNothing;
 }
 
-unsigned int ant_c::SFPullOutRight(void) {
+AntAnimationState ant_c::SFPullOutRight(void) {
 
   if (animationImage == 3)
     soundSystem_c::instance()->startSound(soundSystem_c::SE_PICK_UP_DOMINO);
@@ -696,7 +702,7 @@ unsigned int ant_c::SFPullOutRight(void) {
 
 }
 
-unsigned int ant_c::SFLadder1(void) {
+AntAnimationState ant_c::SFLadder1(void) {
 
   if (!animateAnt(0))
     return animation;
@@ -705,7 +711,7 @@ unsigned int ant_c::SFLadder1(void) {
   return AntAnimNothing;
 }
 
-unsigned int ant_c::SFLadder2(void) {
+AntAnimationState ant_c::SFLadder2(void) {
 
   if (!animateAnt(0))
     return animation;
@@ -721,7 +727,7 @@ unsigned int ant_c::SFLadder2(void) {
   return AntAnimNothing;
 }
 
-unsigned int ant_c::SFLadder3(void) {
+AntAnimationState ant_c::SFLadder3(void) {
 
   if (!animateAnt(0))
     return animation;
@@ -730,7 +736,7 @@ unsigned int ant_c::SFLadder3(void) {
   return AntAnimNothing;
 }
 
-unsigned int ant_c::SFWalkLeft(void) {
+AntAnimationState ant_c::SFWalkLeft(void) {
 
   if (animateAnt(0)) {
     blockX--;
@@ -740,7 +746,7 @@ unsigned int ant_c::SFWalkLeft(void) {
   return animation;
 }
 
-unsigned int ant_c::SFWalkRight(void) {
+AntAnimationState ant_c::SFWalkRight(void) {
 
   if (animateAnt(0)) {
     blockX++;
@@ -750,7 +756,7 @@ unsigned int ant_c::SFWalkRight(void) {
   return animation;
 }
 
-unsigned int ant_c::SFJumpUpLeft(void) {
+AntAnimationState ant_c::SFJumpUpLeft(void) {
   if (!animateAnt(0)) {
     return animation;
   }
@@ -767,7 +773,7 @@ unsigned int ant_c::SFJumpUpLeft(void) {
   return AntAnimNothing;
 }
 
-unsigned int ant_c::SFJumpUpRight(void) {
+AntAnimationState ant_c::SFJumpUpRight(void) {
   if (!animateAnt(0)) {
     return animation;
   }
@@ -784,7 +790,7 @@ unsigned int ant_c::SFJumpUpRight(void) {
   return AntAnimNothing;
 }
 
-unsigned int ant_c::SFJumpDownLeft(void) {
+AntAnimationState ant_c::SFJumpDownLeft(void) {
   if (!animateAnt(0)) {
     return animation;
   }
@@ -801,7 +807,7 @@ unsigned int ant_c::SFJumpDownLeft(void) {
   return AntAnimNothing;
 }
 
-unsigned int ant_c::SFJumpDownRight(void) {
+AntAnimationState ant_c::SFJumpDownRight(void) {
   if (!animateAnt(0)) {
     return animation;
   }
@@ -821,7 +827,7 @@ unsigned int ant_c::SFJumpDownRight(void) {
 
 // we wait until the door is open to enter
 // the level
-unsigned int ant_c::SFLeaveDoor(void) {
+AntAnimationState ant_c::SFLeaveDoor(void) {
   level.openEntryDoor(true);
 
   if (!level.isEntryDoorOpen())
@@ -839,7 +845,7 @@ unsigned int ant_c::SFLeaveDoor(void) {
   return animation;
 }
 
-unsigned int ant_c::SFStepAside(void) {
+AntAnimationState ant_c::SFStepAside(void) {
 
   if (animateAnt(0)) {
     animation = AntAnimStop;
@@ -850,7 +856,7 @@ unsigned int ant_c::SFStepAside(void) {
   return animation;
 }
 
-unsigned int ant_c::SFInFrontOfExploder(void) {
+AntAnimationState ant_c::SFInFrontOfExploder(void) {
 
   if (animateAnt(3)) {
     animation = AntAnimInFrontOfExploderWait;
@@ -859,7 +865,7 @@ unsigned int ant_c::SFInFrontOfExploder(void) {
   return animation;
 }
 
-unsigned int ant_c::SFLazying(void) {
+AntAnimationState ant_c::SFLazying(void) {
 
   if (animateAnt(3)) {
     return AntAnimNothing;
@@ -868,11 +874,11 @@ unsigned int ant_c::SFLazying(void) {
   return animation;
 }
 
-unsigned int ant_c::SFInactive(void) {
+AntAnimationState ant_c::SFInactive(void) {
   return AntAnimNothing;
 }
 
-unsigned int ant_c::SFFlailing(void) {
+AntAnimationState ant_c::SFFlailing(void) {
   if (animateAnt(0)) {
     return AntAnimNothing;
   }
@@ -880,7 +886,7 @@ unsigned int ant_c::SFFlailing(void) {
   return animation;
 }
 
-unsigned int ant_c::SFStartFallingLeft(void) {
+AntAnimationState ant_c::SFStartFallingLeft(void) {
 
   if (animationImage == 2)
   {
@@ -898,7 +904,7 @@ unsigned int ant_c::SFStartFallingLeft(void) {
   return animation;
 }
 
-unsigned int ant_c::SFStartFallingRight(void) {
+AntAnimationState ant_c::SFStartFallingRight(void) {
 
   if (animationImage == 2)
   {
@@ -917,7 +923,7 @@ unsigned int ant_c::SFStartFallingRight(void) {
   return animation;
 }
 
-unsigned int ant_c::SFFalling(void) {
+AntAnimationState ant_c::SFFalling(void) {
 
   if (animateAnt(0)) {
 
@@ -941,7 +947,7 @@ unsigned int ant_c::SFFalling(void) {
   return animation;
 }
 
-unsigned int ant_c::SFLanding(void) {
+AntAnimationState ant_c::SFLanding(void) {
 
   if (animationImage == 2)
     soundSystem_c::instance()->startSound(soundSystem_c::SE_ANT_LANDING);
@@ -1737,5 +1743,10 @@ void ant_c::success(void) {
 
 void ant_c::fail(void) {
   levelFail = true;
+}
+
+bool ant_c::isVisible(void) const
+{
+  return blockX >= 0 && (size_t)blockX < level.levelX() && blockY >= 0 && (size_t)blockY < level.levelY();
 }
 
