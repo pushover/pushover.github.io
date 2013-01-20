@@ -66,6 +66,7 @@ class levelData_c {
         // 0-9  for splitter is the domino that splits the splitter (for display)
         // 0x40 for all dominos means it is falling of the edge and still turning, so
         //      please fall slower
+        // 0x50 raiser is clinging to the ceiling
         // 0x60 riser rising
         // 0x70 falling domino, pile of rubbish...
     } levelEntry;

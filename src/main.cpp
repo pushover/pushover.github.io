@@ -1055,8 +1055,6 @@ int main(int argc, char * argv[]) {
         screen.flipDirty(gr.getDirty());
         gr.clearDirty();
       }
-//      l.print();
-//      getchar();
     }
   }
 
