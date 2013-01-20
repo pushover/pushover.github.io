@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: roever@users.sf.net\n"
-"POT-Creation-Date: 2013-01-11 22:31+0100\n"
+"POT-Creation-Date: 2013-01-20 20:00+0100\n"
 "PO-Revision-Date: 2013-01-10 14:15+0200\n"
 "Last-Translator: Ondrej Caletka <oskar456@users.sf.net>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -124,7 +124,7 @@ msgstr "Nové levely:"
 msgid "Play Levelset"
 msgstr "Spustit hru"
 
-#: src/window.cpp:573 src/window.cpp:625 src/window.cpp:723
+#: src/window.cpp:573 src/window.cpp:625 src/window.cpp:742
 msgid "Configuration"
 msgstr "Konfigurace"
 
@@ -176,113 +176,113 @@ msgstr "Přepnout zvukové efekty"
 msgid "Toggle Background Music"
 msgstr "Přepnout hudbu"
 
-#: src/window.cpp:636
+#: src/window.cpp:640
 msgid "Select Levelset"
 msgstr "Vyber sadu levelů"
 
 #. TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
-#: src/window.cpp:665
+#: src/window.cpp:669
 msgid "unsolved"
 msgstr "nevyřešný"
 
 #. TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
-#: src/window.cpp:667
+#: src/window.cpp:671
 msgid "solved but not in time"
 msgstr "vyřešený pozdě"
 
 #. TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
-#: src/window.cpp:669
+#: src/window.cpp:673
 msgid "solved"
 msgstr "vyřešený"
 
-#: src/window.cpp:708
+#: src/window.cpp:727
 msgid "No Level in Levelset"
 msgstr "V sadě není žádný level"
 
-#: src/window.cpp:713
+#: src/window.cpp:732
 msgid "Select Level"
 msgstr "Vyber level"
 
-#: src/window.cpp:721
+#: src/window.cpp:740
 msgid "Return to level"
 msgstr "Návrat ke hře"
 
-#: src/window.cpp:722
+#: src/window.cpp:741
 msgid "Restart level"
 msgstr "Restartovat level"
 
-#: src/window.cpp:724 src/window.cpp:751
+#: src/window.cpp:743 src/window.cpp:770
 msgid "Return to menu"
 msgstr "Návrat do menu"
 
-#: src/window.cpp:727
+#: src/window.cpp:746
 msgid "And now?"
 msgstr "Co teď?"
 
-#: src/window.cpp:739
+#: src/window.cpp:758
 msgid "Continue"
 msgstr "Pokračovat"
 
-#: src/window.cpp:742
+#: src/window.cpp:761
 msgid "Congratulations! You did it."
 msgstr "Gratuluji! Vyřešil jsi level."
 
-#: src/window.cpp:750 src/window.cpp:785
+#: src/window.cpp:769 src/window.cpp:804
 msgid "Retry the level"
 msgstr "Zkusit level znovu"
 
-#: src/window.cpp:756
+#: src/window.cpp:775
 msgid "You failed: Some dominoes crashed"
 msgstr "Bohužel, některé kostky se srazily"
 
-#: src/window.cpp:757
+#: src/window.cpp:776
 msgid "You failed: Not all dominoes fell"
 msgstr "Bohužel, některé kostky nespadly"
 
-#: src/window.cpp:758
+#: src/window.cpp:777
 msgid "You failed: You died"
 msgstr "Bohužel, zemřel jsi"
 
-#: src/window.cpp:759
+#: src/window.cpp:778
 msgid "You failed: Trigger was not last to fall"
 msgstr "Bohužel, cílová kostka nespadla jako poslední"
 
-#: src/window.cpp:760
+#: src/window.cpp:779
 msgid "You failed: Trigger not flat on the ground"
 msgstr "Bohužel, cílová kostka neleží na rovné zemi"
 
-#: src/window.cpp:761
+#: src/window.cpp:780
 msgid "You failed... but I don't know why ...?"
 msgstr "Bohužel to nevyšlo, ale nevím proč…"
 
-#: src/window.cpp:786
+#: src/window.cpp:805
 msgid "Select next level"
 msgstr "Vyber další level"
 
-#: src/window.cpp:790
+#: src/window.cpp:809
 msgid "Not quite, you were not fast enough, but you may continue if you want"
 msgstr "Kdepak, nebyl jsi dost rychlý. Ale můžeš pokračovat, jestli chceš."
 
-#: src/main.cpp:456
+#: src/main.cpp:462
 msgid "Arrange dominos in a run so that trigger falls last. You have 1 push."
 msgstr ""
 "Uspořádej kostky tak, aby cílová spadla nakonec. Můžeš strčit jen do jedné."
 
 #: po/leveltexts.txt:1
-msgid "Crashed again"
-msgstr "Zase srážka"
-
-#: po/leveltexts.txt:2
-msgid "Create asymmetry, then compensate!"
-msgstr "Vytvoř asymetrii a pak ji kompenzuj!"
-
-#: po/leveltexts.txt:3
 msgid "Crash!"
 msgstr "Srážka!"
 
-#: po/leveltexts.txt:4
+#: po/leveltexts.txt:2
 msgid "Keep the top domino pair from falling!"
 msgstr "Nenech horní pár kostek spadnout!"
+
+#: po/leveltexts.txt:3
+msgid "Crashed again"
+msgstr "Zase srážka"
+
+#: po/leveltexts.txt:4
+msgid "Create asymmetry, then compensate!"
+msgstr "Vytvoř asymetrii a pak ji kompenzuj!"
 
 #: po/leveltexts.txt:5
 msgid "Dominik 1"
@@ -480,857 +480,821 @@ msgid "Mirror the level!"
 msgstr "Přestav level zrcadlově!"
 
 #: po/leveltexts.txt:64
-msgid "Original"
-msgstr "Původní"
-
-#: po/leveltexts.txt:65
 msgid "001"
 msgstr ""
 
-#: po/leveltexts.txt:66
+#: po/leveltexts.txt:65
 msgid "Move them close, then push!"
 msgstr "Dej je k sobě a zatlač!"
 
-#: po/leveltexts.txt:67
+#: po/leveltexts.txt:66
 msgid "002"
 msgstr ""
 
-#: po/leveltexts.txt:68
+#: po/leveltexts.txt:67
 msgid "Move and push!"
 msgstr "Přesuň a zatlač!"
 
-#: po/leveltexts.txt:69
+#: po/leveltexts.txt:68
 msgid "003"
 msgstr ""
 
-#: po/leveltexts.txt:70
+#: po/leveltexts.txt:69
 msgid "You need to tumble!"
 msgstr "Potřebuješ kutálivou!"
 
-#: po/leveltexts.txt:71
+#: po/leveltexts.txt:70
 msgid "004"
 msgstr ""
 
-#: po/leveltexts.txt:72
+#: po/leveltexts.txt:71
 msgid "Which side?"
 msgstr "Ze které strany?"
 
-#: po/leveltexts.txt:73
+#: po/leveltexts.txt:72
 msgid "005"
 msgstr ""
 
-#: po/leveltexts.txt:74
+#: po/leveltexts.txt:73
 msgid "Move the Bridger!"
 msgstr "Přesuň tu mostovou!"
 
-#: po/leveltexts.txt:75
+#: po/leveltexts.txt:74
 msgid "006"
 msgstr ""
 
-#: po/leveltexts.txt:76
+#: po/leveltexts.txt:75
 msgid "Where to split?"
 msgstr "Kam dát dělicí?"
 
-#: po/leveltexts.txt:77
+#: po/leveltexts.txt:76
 msgid "007"
 msgstr ""
 
-#: po/leveltexts.txt:78
+#: po/leveltexts.txt:77
 msgid "Pop the floor!"
 msgstr "Rozbij tu podlahu!"
 
-#: po/leveltexts.txt:79
+#: po/leveltexts.txt:78
 msgid "008"
 msgstr ""
 
-#: po/leveltexts.txt:80
+#: po/leveltexts.txt:79
 msgid "Should the Blocker be there?"
 msgstr "Opravdu by tam měla být ta zarážka?"
 
-#: po/leveltexts.txt:81
+#: po/leveltexts.txt:80
 msgid "009"
 msgstr ""
 
-#: po/leveltexts.txt:82
+#: po/leveltexts.txt:81
 msgid "Swap the blocks!"
 msgstr "Prohoď ty kostky!"
 
-#: po/leveltexts.txt:83
+#: po/leveltexts.txt:82
 msgid "010"
 msgstr ""
 
-#: po/leveltexts.txt:84
+#: po/leveltexts.txt:83
 msgid "Tumbler up!"
 msgstr "Kutálivou nahoru!"
 
-#: po/leveltexts.txt:85
+#: po/leveltexts.txt:84
 msgid "011"
 msgstr ""
 
-#: po/leveltexts.txt:86
+#: po/leveltexts.txt:85
 msgid "Watch the gap!"
 msgstr "Pozor na díru!"
 
-#: po/leveltexts.txt:87
+#: po/leveltexts.txt:86
 msgid "012"
 msgstr ""
 
-#: po/leveltexts.txt:88
+#: po/leveltexts.txt:87
 msgid "Float away!"
 msgstr "Odleť pryč!"
 
-#: po/leveltexts.txt:89
+#: po/leveltexts.txt:88
 msgid "013"
 msgstr ""
 
-#: po/leveltexts.txt:90
+#: po/leveltexts.txt:89
 msgid "Drop a Yellow, make the push!"
 msgstr "Upusť žlutou a zatlač!"
 
-#: po/leveltexts.txt:91
+#: po/leveltexts.txt:90
 msgid "014"
 msgstr ""
 
-#: po/leveltexts.txt:92
+#: po/leveltexts.txt:91
 msgid "Move a few and push!"
 msgstr "Pár jich přesuň a zatlač!"
 
-#: po/leveltexts.txt:93
+#: po/leveltexts.txt:92
 msgid "015"
 msgstr ""
 
-#: po/leveltexts.txt:94
+#: po/leveltexts.txt:93
 msgid "To float is the key!"
 msgstr "Řešením je létání!"
 
-#: po/leveltexts.txt:95
+#: po/leveltexts.txt:94
 msgid "016"
 msgstr ""
 
-#: po/leveltexts.txt:96
+#: po/leveltexts.txt:95
 msgid "Place the Bridge, swap the Yellow, push the right side!"
 msgstr "Dej tam mostovou, prohoď žluté a strč do pravé strany!"
 
-#: po/leveltexts.txt:97
+#: po/leveltexts.txt:96
 msgid "017"
 msgstr ""
 
-#: po/leveltexts.txt:98
+#: po/leveltexts.txt:97
 msgid "It's your problem!"
 msgstr "Je to na tobě!"
 
-#: po/leveltexts.txt:99
+#: po/leveltexts.txt:98
 msgid "018"
 msgstr ""
 
-#: po/leveltexts.txt:100
+#: po/leveltexts.txt:99
 msgid "Move the Exploder, swap some Yellows, push from the top!"
 msgstr "Přesuň výbušnou, vyměň žluté a zatlač shora!"
 
-#: po/leveltexts.txt:101
+#: po/leveltexts.txt:100
 msgid "019"
 msgstr ""
 
-#: po/leveltexts.txt:102
+#: po/leveltexts.txt:101
 msgid "Drop a Yellow, move Exploder, now it's up to you!"
 msgstr "Upusť žlutou, přesuň výbušnou, zbytek je na tobě!"
 
-#: po/leveltexts.txt:103
+#: po/leveltexts.txt:102
 msgid "020"
 msgstr ""
 
-#: po/leveltexts.txt:104
+#: po/leveltexts.txt:103
 msgid "Hide the Blocker behind the ladder!"
 msgstr "Schovej zarážku za žebřík!"
 
-#: po/leveltexts.txt:105
+#: po/leveltexts.txt:104
 msgid "021"
 msgstr ""
 
-#: po/leveltexts.txt:106
+#: po/leveltexts.txt:105
 msgid "It's easy!"
 msgstr "Je to lehké!"
 
-#: po/leveltexts.txt:107
+#: po/leveltexts.txt:106
 msgid "022"
 msgstr ""
 
-#: po/leveltexts.txt:108
+#: po/leveltexts.txt:107
 msgid "Bring them down!"
 msgstr "Snes je dolů!"
 
-#: po/leveltexts.txt:109
+#: po/leveltexts.txt:108
 msgid "023"
 msgstr ""
 
-#: po/leveltexts.txt:110
+#: po/leveltexts.txt:109
 msgid "One block to move!"
 msgstr "Stačí přesunout jednu kostku!"
 
-#: po/leveltexts.txt:111
+#: po/leveltexts.txt:110
 msgid "024"
 msgstr ""
 
-#: po/leveltexts.txt:112
+#: po/leveltexts.txt:111
 msgid "You can drop a Yellow!"
 msgstr "Nějakou žlutou můžeš upustit!"
 
-#: po/leveltexts.txt:113
+#: po/leveltexts.txt:112
 msgid "025"
 msgstr ""
 
-#: po/leveltexts.txt:114
+#: po/leveltexts.txt:113
 msgid "It's just a big Delay!"
 msgstr "Jen velké zpoždění!"
 
-#: po/leveltexts.txt:115
+#: po/leveltexts.txt:114
 msgid "026"
 msgstr ""
 
-#: po/leveltexts.txt:116
+#: po/leveltexts.txt:115
 msgid "Tumbler!"
 msgstr "Kutálivou!"
 
-#: po/leveltexts.txt:117
+#: po/leveltexts.txt:116
 msgid "027"
 msgstr ""
 
-#: po/leveltexts.txt:118
+#: po/leveltexts.txt:117
 msgid "Exploder to go!"
 msgstr "Výbušná na cesty!"
 
-#: po/leveltexts.txt:119
+#: po/leveltexts.txt:118
 msgid "028"
 msgstr ""
 
-#: po/leveltexts.txt:120
+#: po/leveltexts.txt:119
 msgid "Wrong way - wrong place!"
 msgstr "Špatný směr − špatné místo!"
 
-#: po/leveltexts.txt:121
+#: po/leveltexts.txt:120
 msgid "029"
 msgstr ""
 
-#: po/leveltexts.txt:122
+#: po/leveltexts.txt:121
 msgid "You need four in a line before you push!"
 msgstr "Před zatlačením potřebuješ čtyři v řadě!"
 
-#: po/leveltexts.txt:123
+#: po/leveltexts.txt:122
 msgid "030"
 msgstr ""
 
-#: po/leveltexts.txt:124
+#: po/leveltexts.txt:123
 msgid "Three blocks to move, the Tumbler is one!"
 msgstr "Je potřeba pohnout se třemi, jedna z nich je kutálivá!"
 
-#: po/leveltexts.txt:125
+#: po/leveltexts.txt:124
 msgid "031"
 msgstr ""
 
-#: po/leveltexts.txt:126
+#: po/leveltexts.txt:125
 msgid "Swap the Floater with some block!"
 msgstr "Vyměň létající za nějakou jinou!"
 
-#: po/leveltexts.txt:127
+#: po/leveltexts.txt:126
 msgid "032"
 msgstr ""
 
-#: po/leveltexts.txt:128
+#: po/leveltexts.txt:127
 msgid "You need to move Delays to the Trigger side!"
 msgstr "Je třeba dát zpožďovací na stranu cílové!"
 
-#: po/leveltexts.txt:129
+#: po/leveltexts.txt:128
 msgid "033"
 msgstr ""
 
-#: po/leveltexts.txt:130
+#: po/leveltexts.txt:129
 msgid "Move with care!"
 msgstr "Přesouvej opatrně!"
 
-#: po/leveltexts.txt:131
+#: po/leveltexts.txt:130
 msgid "034"
 msgstr ""
 
-#: po/leveltexts.txt:132
+#: po/leveltexts.txt:131
 msgid "Stop the move!"
 msgstr "Zastav ten pohyb!"
 
-#: po/leveltexts.txt:133
+#: po/leveltexts.txt:132
 msgid "035"
 msgstr ""
 
-#: po/leveltexts.txt:134
+#: po/leveltexts.txt:133
 msgid "Move the Float and the Normal, but leave the Delay alone!"
 msgstr "Přesuň létající a obyčejnou, ale na zpožďovací nesahej!"
 
-#: po/leveltexts.txt:135
+#: po/leveltexts.txt:134
 msgid "036"
 msgstr ""
 
-#: po/leveltexts.txt:136
+#: po/leveltexts.txt:135
 msgid "Get home in time!"
 msgstr "Dostaň se domů včas!"
 
-#: po/leveltexts.txt:137
+#: po/leveltexts.txt:136
 msgid "037"
 msgstr ""
 
-#: po/leveltexts.txt:138
+#: po/leveltexts.txt:137
 msgid "Start the run in the middle!"
 msgstr "Spusť to uprostřed!"
 
-#: po/leveltexts.txt:139
+#: po/leveltexts.txt:138
 msgid "038"
 msgstr ""
 
-#: po/leveltexts.txt:140
+#: po/leveltexts.txt:139
 msgid "Place the Floater, swap the top!"
 msgstr "Umísti létající, vyměň to nahoře!"
 
-#: po/leveltexts.txt:141
+#: po/leveltexts.txt:140
 msgid "039"
 msgstr ""
 
-#: po/leveltexts.txt:142
+#: po/leveltexts.txt:141
 msgid "Just move the Normal dominoes up and the Blocker across!"
 msgstr "Jen přesuň obyčejné nahoru a zarážku na druhou stranu!"
 
-#: po/leveltexts.txt:143
+#: po/leveltexts.txt:142
 msgid "040"
 msgstr ""
 
-#: po/leveltexts.txt:144
+#: po/leveltexts.txt:143
 msgid "Move the Delay!"
 msgstr "Přesuň zpožďovací!"
 
-#: po/leveltexts.txt:145
+#: po/leveltexts.txt:144
 msgid "041"
 msgstr ""
 
-#: po/leveltexts.txt:146
+#: po/leveltexts.txt:145
 msgid "Build a bridge!"
 msgstr "Postav most!"
 
-#: po/leveltexts.txt:147
+#: po/leveltexts.txt:146
 msgid "042"
 msgstr ""
 
-#: po/leveltexts.txt:148
+#: po/leveltexts.txt:147
 msgid "Drop the block!"
 msgstr "Upusť tu kostku!"
 
-#: po/leveltexts.txt:149
+#: po/leveltexts.txt:148
 msgid "043"
 msgstr ""
 
-#: po/leveltexts.txt:150
+#: po/leveltexts.txt:149
 msgid "Just a Tumbler in the wrong place!"
 msgstr "Jen kutálivá je na špatném místě!"
 
-#: po/leveltexts.txt:151
+#: po/leveltexts.txt:150
 msgid "044"
 msgstr ""
 
-#: po/leveltexts.txt:152
+#: po/leveltexts.txt:151
 msgid "Move the Floater, make the push!"
 msgstr "Přesuň létající a zatlač!"
 
-#: po/leveltexts.txt:153
+#: po/leveltexts.txt:152
 msgid "045"
 msgstr ""
 
-#: po/leveltexts.txt:154
+#: po/leveltexts.txt:153
 msgid "Make a trap for the Tumbler until a bridge is made!"
 msgstr "Vytvoř past pro kutálivou, dokud se most nepostaví!"
 
-#: po/leveltexts.txt:155
+#: po/leveltexts.txt:154
 msgid "046"
 msgstr ""
 
-#: po/leveltexts.txt:156
+#: po/leveltexts.txt:155
 msgid "Place the Floaters!"
 msgstr "Rozmísti létající!"
 
-#: po/leveltexts.txt:157
+#: po/leveltexts.txt:156
 msgid "047"
 msgstr ""
 
-#: po/leveltexts.txt:158
+#: po/leveltexts.txt:157
 msgid "Move a Delay down and watch the Tumbler and Floater cross over!"
 msgstr "Přesuň zpožďovací dolů a sleduj křižování kutálivé a létající!"
 
-#: po/leveltexts.txt:159
+#: po/leveltexts.txt:158
 msgid "048"
 msgstr ""
 
-#: po/leveltexts.txt:160
+#: po/leveltexts.txt:159
 msgid "Time is tight!"
 msgstr "Nemáš moc času!"
 
-#: po/leveltexts.txt:161
+#: po/leveltexts.txt:160
 msgid "049"
 msgstr ""
 
-#: po/leveltexts.txt:162
+#: po/leveltexts.txt:161
 msgid "Make the push, grab the block and run for your life!"
 msgstr "Zatlač, vezmi kostku a běž co to jde!"
 
-#: po/leveltexts.txt:163
+#: po/leveltexts.txt:162
 msgid "050"
 msgstr ""
 
-#: po/leveltexts.txt:164
+#: po/leveltexts.txt:163
 msgid "Push and pick up and run!"
 msgstr "Zatlač, vezmi a běž!"
 
-#: po/leveltexts.txt:165
+#: po/leveltexts.txt:164
 msgid "051"
 msgstr ""
 
-#: po/leveltexts.txt:166
+#: po/leveltexts.txt:165
 msgid "Drop the domino that's by the exit! Make the push later!"
 msgstr "Upusť kostku, co je u východu, zatlačíš až později!"
 
-#: po/leveltexts.txt:167
+#: po/leveltexts.txt:166
 msgid "052"
 msgstr ""
 
-#: po/leveltexts.txt:168
+#: po/leveltexts.txt:167
 msgid "Make the push, move your Floater! Stop the block! Go home!"
 msgstr "Zatlač, přesuň létající! Odstraň tu zarážku! Rychle domů!"
 
-#: po/leveltexts.txt:169
+#: po/leveltexts.txt:168
 msgid "053"
 msgstr ""
 
-#: po/leveltexts.txt:170
+#: po/leveltexts.txt:169
 msgid "Start the main run with a drop and push the others!"
 msgstr "Rozjeď to upuštěním a zatlač do těch zbylých!"
 
-#: po/leveltexts.txt:171
+#: po/leveltexts.txt:170
 msgid "054"
 msgstr ""
 
-#: po/leveltexts.txt:172
+#: po/leveltexts.txt:171
 msgid "Place Floaters under the holes!"
 msgstr "Pod díry dej létající!"
 
-#: po/leveltexts.txt:173
+#: po/leveltexts.txt:172
 msgid "055"
 msgstr ""
 
-#: po/leveltexts.txt:174
+#: po/leveltexts.txt:173
 msgid "Push the Tumbler, run and move the Bridge! Then jump! Be quick!"
 msgstr "Zatlač kutálivou, pak běž a přesuň mostovou! A skoč, ale rychle!"
 
-#: po/leveltexts.txt:175
+#: po/leveltexts.txt:174
 msgid "056"
 msgstr ""
 
-#: po/leveltexts.txt:176
+#: po/leveltexts.txt:175
 msgid "Use Blockers to turn the dominoes!"
 msgstr "Otoč směr kostek pomocí zarážek!"
 
-#: po/leveltexts.txt:177
+#: po/leveltexts.txt:176
 msgid "057"
 msgstr ""
 
-#: po/leveltexts.txt:178
+#: po/leveltexts.txt:177
 msgid "Tumblers cross in the middle! Timing is critical!"
 msgstr "Kutálivé se uprostřed kříží, je potřeba to dobře načasovat!"
 
-#: po/leveltexts.txt:179
+#: po/leveltexts.txt:178
 msgid "058"
 msgstr ""
 
-#: po/leveltexts.txt:180
+#: po/leveltexts.txt:179
 msgid ""
 "Drop dominoes on Splitters to start the runs! Move domino in front of exit!"
 msgstr ""
 "Upusť kostky na dělicí pro spuštění pádu! Přesuň kostku, co je před východem!"
 
-#: po/leveltexts.txt:181
+#: po/leveltexts.txt:180
 msgid "059"
 msgstr ""
 
-#: po/leveltexts.txt:182
+#: po/leveltexts.txt:181
 msgid "Push, block, move and run!"
 msgstr "Zatlač, odraz, přesuň a běž!"
 
-#: po/leveltexts.txt:183
+#: po/leveltexts.txt:182
 msgid "060"
 msgstr ""
 
-#: po/leveltexts.txt:184
+#: po/leveltexts.txt:183
 msgid "Drop the first Floater and push the second!"
 msgstr "První létající upusť, do druhé strč!"
 
-#: po/leveltexts.txt:185
+#: po/leveltexts.txt:184
 msgid "061"
 msgstr ""
 
-#: po/leveltexts.txt:186
+#: po/leveltexts.txt:185
 msgid "Place the Standard!"
 msgstr "Umísti tu obyčejnou!"
 
-#: po/leveltexts.txt:187
+#: po/leveltexts.txt:186
 msgid "062"
 msgstr ""
 
-#: po/leveltexts.txt:188
+#: po/leveltexts.txt:187
 msgid "Get home quickly!"
 msgstr "Rychle domů!"
 
-#: po/leveltexts.txt:189
+#: po/leveltexts.txt:188
 msgid "063"
 msgstr ""
 
-#: po/leveltexts.txt:190
+#: po/leveltexts.txt:189
 msgid "Arrange Delays down central column and push left hand Normal domino!"
 msgstr "Uspořádej zpožďovací do prostředního sloupce a strč do levé obyčejné!"
 
-#: po/leveltexts.txt:191
+#: po/leveltexts.txt:190
 msgid "064"
 msgstr ""
 
-#: po/leveltexts.txt:192
+#: po/leveltexts.txt:191
 msgid "You have to move a Delay and a Bridge after the run starts!"
 msgstr "Musíš přesunout zpožďovací a mostovou až po spuštění domina!"
 
-#: po/leveltexts.txt:193
+#: po/leveltexts.txt:192
 msgid "065"
 msgstr ""
 
-#: po/leveltexts.txt:194
+#: po/leveltexts.txt:193
 msgid ""
 "Move everything off the centre platform except the Tumbler and Exploder!"
 msgstr "Přesuň z prostřední plošiny všechno kromě kutálivé a výbušné!"
 
-#: po/leveltexts.txt:195
+#: po/leveltexts.txt:194
 msgid "066"
 msgstr ""
 
-#: po/leveltexts.txt:196
+#: po/leveltexts.txt:195
 msgid "Make the push, move the Blocker!"
 msgstr "Zatlač a přesuň zarážku!"
 
-#: po/leveltexts.txt:197
+#: po/leveltexts.txt:196
 msgid "067"
 msgstr ""
 
-#: po/leveltexts.txt:198
+#: po/leveltexts.txt:197
 msgid "Trap Tumbler to move the Bridger on time!"
 msgstr "Uvězni kutálivou, abys mohl včas přesunout mostovou!"
 
-#: po/leveltexts.txt:199
+#: po/leveltexts.txt:198
 msgid "068"
 msgstr ""
 
-#: po/leveltexts.txt:200
+#: po/leveltexts.txt:199
 msgid "Make push, move Floater!"
 msgstr "Zatlač a přesuň létající!"
 
-#: po/leveltexts.txt:201
+#: po/leveltexts.txt:200
 msgid "069"
 msgstr ""
 
-#: po/leveltexts.txt:202
+#: po/leveltexts.txt:201
 msgid "Push a Floater to start the run! Be careful with the Yellow one!"
 msgstr "Spusť to strčením do létající! Pozor na tu žlutou!"
 
-#: po/leveltexts.txt:203
+#: po/leveltexts.txt:202
 msgid "070"
 msgstr ""
 
-#: po/leveltexts.txt:204
+#: po/leveltexts.txt:203
 msgid "Delay another way!"
 msgstr "Zase je potřeba zpožďovat!"
 
-#: po/leveltexts.txt:205
+#: po/leveltexts.txt:204
 msgid "071"
 msgstr ""
 
-#: po/leveltexts.txt:206 po/leveltexts.txt:230
+#: po/leveltexts.txt:205 po/leveltexts.txt:229
 msgid "Tumbler timing is troublesome!"
 msgstr "Načasování kutálivé je oříšek!"
 
-#: po/leveltexts.txt:207
+#: po/leveltexts.txt:206
 msgid "072"
 msgstr ""
 
-#: po/leveltexts.txt:208
+#: po/leveltexts.txt:207
 msgid "Lefthand side finishes last! Use the Bridges!"
 msgstr "Levá strana padá nakonec! Použij mostové kostky!"
 
-#: po/leveltexts.txt:209
+#: po/leveltexts.txt:208
 msgid "073"
 msgstr ""
 
-#: po/leveltexts.txt:210
+#: po/leveltexts.txt:209
 msgid "Push a Floater to start two runs!"
 msgstr "Strč do létajicí a spusť dva běhy zároveň!"
 
-#: po/leveltexts.txt:211
+#: po/leveltexts.txt:210
 msgid "074"
 msgstr ""
 
-#: po/leveltexts.txt:212
+#: po/leveltexts.txt:211
 msgid "Use the Blocker to stop the Tumbler! Watch out for the Floater!"
 msgstr "Zastav kutálivou pomocí zarážky! Pozor na tu létající!"
 
-#: po/leveltexts.txt:213
+#: po/leveltexts.txt:212
 msgid "075"
 msgstr ""
 
-#: po/leveltexts.txt:214
+#: po/leveltexts.txt:213
 msgid "Start the run and see what happens!"
 msgstr "Rozjeď to a sleduj, co se bude dít!"
 
-#: po/leveltexts.txt:215
+#: po/leveltexts.txt:214
 msgid "076"
 msgstr ""
 
-#: po/leveltexts.txt:216
+#: po/leveltexts.txt:215
 msgid "You'll have to put that Yellow in the run somewhere!"
 msgstr "Tu žlutou budeš muset někam strčit během padání domina!"
 
-#: po/leveltexts.txt:217
+#: po/leveltexts.txt:216
 msgid "077"
 msgstr ""
 
-#: po/leveltexts.txt:218
+#: po/leveltexts.txt:217
 msgid "Make the bridge, then it's all down to time!"
 msgstr "Udělej most, zbytek je jen o čase!"
 
-#: po/leveltexts.txt:219
+#: po/leveltexts.txt:218
 msgid "078"
 msgstr ""
 
-#: po/leveltexts.txt:220
+#: po/leveltexts.txt:219
 msgid "Push the Tumbler and then start hurrying!"
 msgstr "Strč do kutálivé a začni pospíchat!"
 
-#: po/leveltexts.txt:221
+#: po/leveltexts.txt:220
 msgid "079"
 msgstr ""
 
-#: po/leveltexts.txt:222
+#: po/leveltexts.txt:221
 msgid "Be sure to place the Delays right! The Yellow is important!"
 msgstr "Dej ty zpožďovací správně! Ta žlutá je důležitá!"
 
-#: po/leveltexts.txt:223
+#: po/leveltexts.txt:222
 msgid "080"
 msgstr ""
 
-#: po/leveltexts.txt:224
+#: po/leveltexts.txt:223
 msgid "Tumbler, Floater and Blocker?"
 msgstr "Kutálivá, létající a zarážka?"
 
-#: po/leveltexts.txt:225
+#: po/leveltexts.txt:224
 msgid "081"
 msgstr ""
 
-#: po/leveltexts.txt:226
+#: po/leveltexts.txt:225
 msgid ""
 "Push a domino into a Splitter and wait for a trapped Tumbler and move up!"
 msgstr "Strč kostku do dělicí, počkej na uvěznění valivé a přesouvej nahoru!"
 
-#: po/leveltexts.txt:227
+#: po/leveltexts.txt:226
 msgid "082"
 msgstr ""
 
-#: po/leveltexts.txt:228
+#: po/leveltexts.txt:227
 msgid "Time is of the essence!"
 msgstr "Hlavní přísadou je načasování!"
 
-#: po/leveltexts.txt:229
+#: po/leveltexts.txt:228
 msgid "083"
 msgstr ""
 
-#: po/leveltexts.txt:231
+#: po/leveltexts.txt:230
 msgid "084"
 msgstr ""
 
-#: po/leveltexts.txt:232
+#: po/leveltexts.txt:231
 msgid "Some dominoes have a split personality!"
 msgstr "Některé kostky mají rozdvojenou osobnost!"
 
-#: po/leveltexts.txt:233
+#: po/leveltexts.txt:232
 msgid "085"
 msgstr ""
 
-#: po/leveltexts.txt:234
+#: po/leveltexts.txt:233
 msgid "Left hand side finishes last! Use the Bridgers!"
 msgstr "Levá strana padá nakonec! Použij mostové kostky!"
 
-#: po/leveltexts.txt:235
+#: po/leveltexts.txt:234
 msgid "086"
 msgstr ""
 
-#: po/leveltexts.txt:236
+#: po/leveltexts.txt:235
 msgid "Push the one next to the entrance door!"
 msgstr "Zatlač do té kostky vedle vchodových dveří!"
 
-#: po/leveltexts.txt:237
+#: po/leveltexts.txt:236
 msgid "087"
 msgstr ""
 
-#: po/leveltexts.txt:238
+#: po/leveltexts.txt:237
 msgid "Do you really need that Bridger?"
 msgstr "Opravdu potřebuješ tu mostovou?"
 
-#: po/leveltexts.txt:239
+#: po/leveltexts.txt:238
 msgid "088"
 msgstr ""
 
-#: po/leveltexts.txt:240
+#: po/leveltexts.txt:239
 msgid "Push the run and drop the other! This will keep you busy!"
 msgstr "Rozjeď to a upusť tu druhou! To tě zabaví!"
 
-#: po/leveltexts.txt:241
+#: po/leveltexts.txt:240
 msgid "089"
 msgstr ""
 
-#: po/leveltexts.txt:242
+#: po/leveltexts.txt:241
 msgid "Start the run and trap the Tumbler so you can complete the puzzle!"
 msgstr "Spusť domino a uvězni kutálivou, ať můžeš vyřešit skládačku!"
 
-#: po/leveltexts.txt:243
+#: po/leveltexts.txt:242
 msgid "090"
 msgstr ""
 
-#: po/leveltexts.txt:244
+#: po/leveltexts.txt:243
 msgid "Be quick moving those Delays!"
 msgstr "Rychle s tím přesouvání zpožďovacích kostek!"
 
-#: po/leveltexts.txt:245
+#: po/leveltexts.txt:244
 msgid "091"
 msgstr ""
 
-#: po/leveltexts.txt:246 po/leveltexts.txt:248
+#: po/leveltexts.txt:245 po/leveltexts.txt:247
 msgid "Catch the Tumblers!"
 msgstr "Chyť ty kutálivé!"
 
-#: po/leveltexts.txt:247
+#: po/leveltexts.txt:246
 msgid "091 (SNES)"
 msgstr ""
 
-#: po/leveltexts.txt:249
+#: po/leveltexts.txt:248
 msgid "092"
 msgstr ""
 
-#: po/leveltexts.txt:250
+#: po/leveltexts.txt:249
 msgid "Push the Tumbler away from the Trigger domino and be busy!"
 msgstr "Strč do kutálivé směrem od cílové a zabav se!"
 
-#: po/leveltexts.txt:251
+#: po/leveltexts.txt:250
 msgid "093"
 msgstr ""
 
-#: po/leveltexts.txt:252
+#: po/leveltexts.txt:251
 msgid "Put Floater in last! Insert Delay to stop Tumblers!"
 msgstr "Na konec dej létající! Zastav kutálivé pomocí zpožďovacích!"
 
-#: po/leveltexts.txt:253
+#: po/leveltexts.txt:252
 msgid "094"
 msgstr ""
 
-#: po/leveltexts.txt:254
+#: po/leveltexts.txt:253
 msgid "Drop the Floaters in position! Start one run with a drop!"
 msgstr "Dej ty létající na správné místo! Jeden běh začni upuštěním!"
 
-#: po/leveltexts.txt:255
+#: po/leveltexts.txt:254
 msgid "095"
 msgstr ""
 
-#: po/leveltexts.txt:256
+#: po/leveltexts.txt:255
 msgid "Symmetry - and don't forget to bridge after the Trigger!"
 msgstr "Symetricky - a nezapomeň na mostovou za cílovou kostkou!"
 
-#: po/leveltexts.txt:257
+#: po/leveltexts.txt:256
 msgid "096"
 msgstr ""
 
-#: po/leveltexts.txt:258
+#: po/leveltexts.txt:257
 msgid "You must create a run of Tumblers that can fall off a platform!"
 msgstr "Musíš udělat řadu kutálivých, co spadne z plošiny!"
 
-#: po/leveltexts.txt:259
+#: po/leveltexts.txt:258
 msgid "097"
 msgstr ""
 
-#: po/leveltexts.txt:260
+#: po/leveltexts.txt:259
 msgid "You've got some running to do!"
 msgstr ""
 
-#: po/leveltexts.txt:261
+#: po/leveltexts.txt:260
 msgid "098"
 msgstr ""
 
-#: po/leveltexts.txt:262
+#: po/leveltexts.txt:261
 msgid ""
 "Use a drop! There is a way to make it work with a push, but I can't find it!"
 msgstr ""
 "Použij upuštění. Jde to udělat i strčením do kostky, ale zapomněl jsem jak!"
 
-#: po/leveltexts.txt:263
+#: po/leveltexts.txt:262
 msgid "099"
 msgstr ""
 
-#: po/leveltexts.txt:264
+#: po/leveltexts.txt:263
 msgid ""
 "Tumbler, Normal, Bridger, Tumbler, put remaining Tumbler in place and push!"
 msgstr ""
 "Kutálivá, obyčejná, mostová, kutálivá, pak dej kutálivou na místo a zatlač!"
 
-#: po/leveltexts.txt:265
+#: po/leveltexts.txt:264
 msgid "100"
 msgstr ""
 
-#: po/leveltexts.txt:266
+#: po/leveltexts.txt:265
 msgid "You're in the dark!"
 msgstr "Jsi ve tmě!"
 
-#: po/leveltexts.txt:267
+#: po/leveltexts.txt:266
 msgid "101"
 msgstr ""
 
-#: po/leveltexts.txt:268
+#: po/leveltexts.txt:267
 msgid "Don't waste time with the ringing bell!"
 msgstr "Neztrácej čas se zvoněním!"
 
-#~ msgid "(done)"
-#~ msgstr "(vyřešen)"
-
-#~ msgid "You failed: You've been too slow"
-#~ msgstr "Prohrál jsi: Byl jsi přiliš pomalý"
-
-#~ msgid "Nu What?"
-#~ msgstr "Co teď?"
-
-#~ msgid "Standard"
-#~ msgstr "Obyčejná"
-
-#~ msgid "Blocker"
-#~ msgstr "Zarážka"
-
-#~ msgid "Splitter"
-#~ msgstr "Dělicí"
-
-#~ msgid "Exploder"
-#~ msgstr "Výbušná"
-
-#~ msgid "Delay"
-#~ msgstr "Zpožďěná"
-
-#~ msgid "Tumbler"
-#~ msgstr "Kutálivá"
-
-#~ msgid "Vanish"
-#~ msgstr "Mizivá"
-
-#~ msgid "Trigger"
-#~ msgstr "Cílová"
-
-#~ msgid "Ascender"
-#~ msgstr "Létající"
+#: po/leveltexts.txt:268
+msgid "Original"
+msgstr "Původní"
