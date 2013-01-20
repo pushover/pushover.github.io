@@ -72,9 +72,6 @@ class levelData_c {
     levelEntry level[27][20];  //TODO eigentlich nur 25 ebenen, die 26 nur fuer einfacheren Code...
     unsigned char numBg;
 
-    // we need this to load the old level format
-    void setFg(unsigned int x, unsigned int y, int val);
-
   public:
     levelData_c(void);
     virtual ~levelData_c(void) {}
@@ -99,32 +96,6 @@ class levelData_c {
 
 
     // OLD INTERFACE, Deprecated
-
-    /* Foreground elements */
-    enum {
-      FgElementEmpty,              // 0
-      FgElementPlatformStart,
-      FgElementPlatformMiddle,
-      FgElementPlatformEnd,
-      FgElementPlatformLadderDown,
-      FgElementLadder,             // 5
-      FgElementPlatformLadderUp,
-      FgElementPlatformStep1,
-      FgElementPlatformStep2,
-      FgElementPlatformStep3,
-      FgElementPlatformStep4,      // 10
-      FgElementPlatformStep5,
-      FgElementPlatformStep6,
-      FgElementPlatformStep7,
-      FgElementPlatformStep8,
-      FgElementLadderMiddle,       //     used for ladder redraw but not in level
-      FgElementPlatformStrip,
-      FgElementLadder2,            //     used for ladder redraw but not in level
-      FgElementDoor0,              // 20
-      FgElementDoor1,              // used in door animation, but not in level
-      FgElementDoor2,              // used in door animation, but not in level
-      FgElementDoor3               // used in door animation, but not in level
-    };
 
     enum {
       DominoTypeEmpty,
@@ -153,8 +124,6 @@ class levelData_c {
       DominoTypeRiserCont,
       DominoNumber
     };
-
-    unsigned char getFg(unsigned int x, unsigned int y) const;
 
     // NEW INTERFACE please use this only
 
