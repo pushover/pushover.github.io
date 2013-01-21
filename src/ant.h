@@ -36,6 +36,9 @@
 #define KEY_ACTION 16
 
 
+// This enumeration contains all the possible animations that the ant can
+// perform. The number of images in each animation is fixes and can be
+// aquired using getAntImages
 typedef enum {
   AntAnimWalkLeft,
   AntAnimWalkRight,
@@ -107,30 +110,62 @@ typedef enum {
 
 } AntAnimationState;
 
-
 class ant_c {
 
   private:
 
+    // The current state of the ant. The state is the current action
+    // Most stated do have their own animations, but some dont' in that
     AntAnimationState state;
+
+    // The animation currently played, normally the animation and state
+    // is identical, but some states do share animations, this is why we
+    // do have this separated
     AntAnimationState animation;
+
+    // The current image of the current animation
     unsigned int animationImage;
+
+    // The domino that the ant currently carries
     DominoType carriedDomino;
+
+    // this contains the number of ticks that have
+    // to pass before the next animation image of
+    // the current anmation is played
     unsigned int animationTimer;
 
+    // current position of the ant
     int16_t blockX, blockY;
 
+    // the level the ant acts on
     levelPlayer_c & level;
 
+    // how many ticks the ant has been inactive
     unsigned int inactiveTimer;
+
+    // how high have we falln
     unsigned int fallingHight;
+
+    // current looking direction
     signed int direction;
+
+    // in PushLeft or PushRight we only have the start of the push
+    // animation, after that it branches off depending on the domino
+    // pushed. This variable contains the number of ticks until
+    // the 2nd part of the push animation is played
     unsigned int pushDelay;
+    // this contains the 2nd part of the push animation
     AntAnimationState pushAnimation;
+
+    // has the final jubilation animation been played?
     bool finalAnimationPlayed;
     bool downChecker, upChecker;
+
+    // number of pushed left, normally 1 or 0
     int numPushsLeft;
 
+    // if the fail or success of the level has been decided
+    // it is shown in these 2 variables
     bool levelFail, levelSuccess;
 
     // has the level been checked for completion, that is
