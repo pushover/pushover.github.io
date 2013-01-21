@@ -776,7 +776,7 @@ int main(int argc, char * argv[]) {
                     break;    // return to level list
                   case 1:
                           {       // restart level
-                            nextState = ST_PREPLAY;
+                            nextState = ST_PLAY;
                             levelset_c ls = levelsetList->getLevelset(selectedMission);
                             ls.loadLevel(l, l.getName(), solved.getUserString());
                             a.initForLevel();
@@ -829,7 +829,6 @@ int main(int argc, char * argv[]) {
                 {
                   case 0:                            // try again
                     {
-                      nextState = ST_PREPLAY;
                       // find the current level
                       levelset_c ls = levelsetList->getLevelset(selectedMission);
 
@@ -848,8 +847,14 @@ int main(int argc, char * argv[]) {
                         }
                       }
 
-                      if (!foundLevel) nextState = ST_MAIN;
-                      else nextState = ST_PREPLAY;
+                      if (!foundLevel)
+                      {
+                        nextState = ST_MAIN;
+                      }
+                      else
+                      {
+                        nextState = ST_PLAY;
+                      }
                     }
                     break;
                   case 1:
@@ -876,7 +881,6 @@ int main(int argc, char * argv[]) {
                 {
                   case 0:                            // try again
                     {
-                      nextState = ST_PREPLAY;
                       // find the current level
                       levelset_c ls = levelsetList->getLevelset(selectedMission);
 
@@ -895,8 +899,14 @@ int main(int argc, char * argv[]) {
                         }
                       }
 
-                      if (!foundLevel) nextState = ST_MAIN;
-                      else nextState = ST_PREPLAY;
+                      if (!foundLevel)
+                      {
+                        nextState = ST_MAIN;
+                      }
+                      else
+                      {
+                        nextState = ST_PLAY;
+                      }
                     }
                     break;
                   case 1:                            // continue to next level
