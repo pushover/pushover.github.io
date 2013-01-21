@@ -137,6 +137,8 @@ class levelData_c {
     void openExitDoorStep(void) { doorExitState++; }
     void closeExitDoorStep(void) { doorExitState--; }
 
+    // the y position defines the BASE of the door, so the other
+    // halv if above it
     unsigned char getEntryX(void) const { return doorEntryX; }
     unsigned char getEntryY(void) const { return doorEntryY; }
     unsigned char getExitX(void) const { return doorExitX; }

@@ -846,7 +846,7 @@ AntAnimationState ant_c::SFLeaveDoor(void) {
 
   if (animationImage == 0) {
     blockX = level.getEntryX();
-    blockY = level.getEntryY()+1;
+    blockY = level.getEntryY();
   }
 
   if (animateAnt(0)) {
@@ -1148,8 +1148,8 @@ bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
 
   // all stoned except for the vanisher may not be placed in front of doors
   if (   (carriedDomino != DominoTypeVanish)
-      && (   ((x == level.getEntryX()) && (y == level.getEntryY()+1))
-          || ((x == level.getExitX())  && (y == level.getExitY()+1))
+      && (   ((x == level.getEntryX()) && (y == level.getEntryY()))
+          || ((x == level.getExitX())  && (y == level.getExitY()))
          )
      )
   {
@@ -1469,7 +1469,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   }
   else if (keyMask & KEY_UP)
   {
-    if ((level.getExitX() == blockX && level.getExitY()+1 == blockY && level.isExitDoorOpen()) &&
+    if ((level.getExitX() == blockX && level.getExitY() == blockY && level.isExitDoorOpen()) &&
         (level.getDominoType(blockX, blockY) == 0 ||
          level.getDominoState(blockX, blockY) > 8) &&
         (level.getDominoType(blockX-1, blockY) == 0 ||

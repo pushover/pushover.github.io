@@ -725,14 +725,14 @@ void graphicsN_c::drawDominos(void)
           background->blitBlock(bgTiles[curTheme][level->getBg(x, y, b)], x*blockX(), y*blockY()/2);
 
         // blit the doors
-        if (x == level->getEntryX() && y+1 == level->getEntryY())
+        if (x == level->getEntryX() && y+2 == level->getEntryY())
           background->blitBlock(fgTiles[curTheme][FG_DOORSTART+0+2*level->getEntryState()], x*blockX(), y*blockY()/2);
-        if (x == level->getEntryX() && y   == level->getEntryY())
+        if (x == level->getEntryX() && y+1 == level->getEntryY())
           background->blitBlock(fgTiles[curTheme][FG_DOORSTART+1+2*level->getEntryState()], x*blockX(), y*blockY()/2);
 
-        if (x == level->getExitX() && y+1 == level->getExitY())
+        if (x == level->getExitX() && y+2 == level->getExitY())
           background->blitBlock(fgTiles[curTheme][FG_DOORSTART+0+2*level->getExitState()], x*blockX(), y*blockY()/2);
-        if (x == level->getExitX() && y   == level->getExitY())
+        if (x == level->getExitX() && y+1 == level->getExitY())
           background->blitBlock(fgTiles[curTheme][FG_DOORSTART+1+2*level->getExitState()], x*blockX(), y*blockY()/2);
 
         // blit platforms
@@ -985,12 +985,17 @@ void graphicsN_c::findDirtyBlocks(void)
     }
 
   // check for changes in doors
+  //
+  // The thing with the door is that it is drawn one level _above_
+  // the position where it is, and also the door position is the base
+  // is is 2 levels high, so we need to mark 2 blocks as dirty and they
+  // are 1 and 2 levels above the door position
   if (level->getEntryState() != l2.getEntryState())
   {
-    dirty.markDirty(level->getEntryX(), level->getEntryY());
     dirty.markDirty(level->getEntryX(), level->getEntryY()-1);
-    dirtybg.markDirty(level->getEntryX(), level->getEntryY());
+    dirty.markDirty(level->getEntryX(), level->getEntryY()-2);
     dirtybg.markDirty(level->getEntryX(), level->getEntryY()-1);
+    dirtybg.markDirty(level->getEntryX(), level->getEntryY()-2);
 
     while (level->getEntryState() < l2.getEntryState()) l2.closeEntryDoorStep();
     while (level->getEntryState() > l2.getEntryState()) l2.openEntryDoorStep();
@@ -998,10 +1003,10 @@ void graphicsN_c::findDirtyBlocks(void)
 
   if (level->getExitState() != l2.getExitState())
   {
-    dirty.markDirty(level->getExitX(), level->getExitY());
     dirty.markDirty(level->getExitX(), level->getExitY()-1);
-    dirtybg.markDirty(level->getExitX(), level->getExitY());
+    dirty.markDirty(level->getExitX(), level->getExitY()-2);
     dirtybg.markDirty(level->getExitX(), level->getExitY()-1);
+    dirtybg.markDirty(level->getExitX(), level->getExitY()-2);
 
     while (level->getExitState() < l2.getExitState()) l2.closeExitDoorStep();
     while (level->getExitState() > l2.getExitState()) l2.openExitDoorStep();

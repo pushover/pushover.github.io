@@ -166,7 +166,7 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
             throw format_error("duplicate entry door");
           doorEntryDefined = true;
           doorEntryX = x;
-          doorEntryY = 2*y+1;
+          doorEntryY = 2*y+2;
           doorEntryState = 0;
 
           break;
@@ -176,7 +176,7 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
             throw format_error("duplicate exit door");
           doorExitDefined = true;
           doorExitX = x;
-          doorExitY = 2*y+1;
+          doorExitY = 2*y+2;
           doorExitState = 0;
           break;
 
