@@ -82,7 +82,8 @@ class graphicsN_c : public graphics_c {
     const ant_c * ant;
     const levelData_c * level;
     levelData_c l2;  // level copy for dirty Block detection
-    int antX, antY, antAnim, antImage;
+    int16_t antX, antY;
+    unsigned int antAnim, antImage;
 
     bitfield_c dirty, dirtybg;
 

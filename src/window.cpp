@@ -388,7 +388,7 @@ void listWindow_c::redraw(void) {
 
   while (true)
   {
-    int ypos2 = ypos;
+    unsigned int ypos2 = ypos;
     unsigned int line2 = line;
 
     bool back = false;
@@ -969,7 +969,7 @@ bool InputWindow_c::handleEvent(const SDL_Event & event)
         char utf8[10];
         size_t s = utf8EncodeOne(event.key.keysym.unicode, utf8, 10);
 
-        for (int i = 0; i < s; i++)
+        for (size_t i = 0; i < s; i++)
         {
           input.insert(cursorPosition, 1, utf8[i]);
           cursorPosition++;

@@ -125,8 +125,8 @@ std::string checker2(const ant_c & a, const levelPlayer_c & l) {
 
 std::string checker3(const ant_c & a, const levelPlayer_c & l) {
   // we succeeded, when the ant has vanished, then it went out of the door
-  for (int y = 0; y < l.levelY(); y++)
-    for (int x = 0; x < l.levelX(); x++)
+  for (size_t y = 0; y < l.levelY(); y++)
+    for (size_t x = 0; x < l.levelX(); x++)
       if (l.getDominoType(x, y) >= DominoTypeCrash0 &&
           l.getDominoType(x, y) <= DominoTypeCrash5) {
         return "";

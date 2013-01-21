@@ -790,16 +790,16 @@ void graphicsN_c::drawDominos(void)
 
   int SpriteYPos = getDominoYStart();
 
-  for (int y = 0; y < level->levelY(); y++, SpriteYPos += blockY()/2) {
+  for (size_t y = 0; y < level->levelY(); y++, SpriteYPos += blockY()/2) {
 
     int SpriteXPos = -2*blockX();
 
-    for (int x = 0; x < level->levelX(); x++, SpriteXPos += blockX()) {
+    for (size_t x = 0; x < level->levelX(); x++, SpriteXPos += blockX()) {
 
       if (!dirty.isDirty(x, y)) continue;
 
       // paint the left neighbor domino, if it leans in our direction and is not painted on its own
-      if (y < 25 && x > 0 && !dirty.isDirty(x-1, y+1) && level->getDominoType(x-1, y+1) != DominoTypeEmpty &&
+      if (y < level->levelY() && x > 0 && !dirty.isDirty(x-1, y+1) && level->getDominoType(x-1, y+1) != DominoTypeEmpty &&
           (level->getDominoState(x-1, y+1) > 8 ||
            (level->getDominoType(x-1, y+1) == DominoTypeSplitter && level->getDominoState(x-1, y+1) != 8) ||
            level->getDominoState(x-1, y+1) >= DominoTypeCrash0))
@@ -895,7 +895,7 @@ void graphicsN_c::drawDominos(void)
             SpriteYPos+convertDominoY(level->getDominoYOffset(x+1, y)));
       }
 
-      if (y >= 24) continue;
+      if (y+1 >= level->levelY()) continue;
 
       if (!dirty.isDirty(x, y+2) && level->getDominoType(x, y+2) == DominoTypeAscender)
       {
@@ -934,7 +934,7 @@ void graphicsN_c::drawDominos(void)
             SpriteYPos+convertDominoY(level->getDominoYOffset(x-1, y+2))+blockY());
       }
 
-      if (x >= 19) continue;
+      if (x+1 >= level->levelX()) continue;
 
       if (!dirty.isDirty(x+1, y+2)) continue;
 

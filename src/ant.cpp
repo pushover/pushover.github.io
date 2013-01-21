@@ -585,7 +585,7 @@ AntAnimationState ant_c::SFLooseRight(void) {
   if (animateAnt(0)) {
     animation = AntAnimFalling;
     blockY += 2;
-    if (blockY+1 > level.levelY()) blockY = level.levelY()-1;
+    if ((size_t)(blockY+1) > level.levelY()) blockY = level.levelY()-1;
     fallingHight++;
     return AntAnimNothing;
   }
@@ -607,7 +607,7 @@ AntAnimationState ant_c::SFLooseLeft(void) {
   if (animateAnt(0)) {
     animation = AntAnimFalling;
     blockY += 2;
-    if (blockY+1 > level.levelY()) blockY = level.levelY()-1;
+    if ((size_t)(blockY+1) > level.levelY()) blockY = level.levelY()-1;
     fallingHight++;
     return AntAnimNothing;
   }
@@ -903,7 +903,7 @@ AntAnimationState ant_c::SFStartFallingLeft(void) {
   if (animateAnt(0)) {
     blockX--;
     animation = AntAnimFalling;
-    blockY = blockY+2 < level.levelY() ? blockY+2 : level.levelY();
+    blockY = (size_t)(blockY+2) < level.levelY() ? blockY+2 : level.levelY();
     fallingHight++;
     return AntAnimNothing;
   }
@@ -922,7 +922,7 @@ AntAnimationState ant_c::SFStartFallingRight(void) {
     blockX++;
 
     animation = AntAnimFalling;
-    blockY = blockY+2 < level.levelY() ? blockY+2 : level.levelY();
+    blockY = (size_t)(blockY+2) < level.levelY() ? blockY+2 : level.levelY();
     fallingHight++;
     return AntAnimNothing;
   }
@@ -1132,7 +1132,7 @@ bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
   x += ofs;
 
   if (x < 0 && ofs == -1) return false;
-  if (x+1 > level.levelX() && ofs == 1) return false;
+  if ((size_t)(x+1) > level.levelX() && ofs == 1) return false;
 
   // if the target position is not empty, we can't put the domino there
   if (level.getDominoType(x, y) != DominoTypeEmpty) return false;
@@ -1151,7 +1151,7 @@ bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
 
   // check neighbor places, if there is a domino falling in our direction, we
   // must not place the domino there....
-  if ((x+1 < level.levelX()) && level.getDominoType(x+1, y) != DominoTypeEmpty && level.getDominoState(x+1, y) < 8)
+  if (((size_t)(x+1) < level.levelX()) && level.getDominoType(x+1, y) != DominoTypeEmpty && level.getDominoState(x+1, y) < 8)
     return false;
 
   if ((x >  0) && level.getDominoType(x-1, y) != DominoTypeEmpty && level.getDominoState(x-1, y) > 8)
@@ -1231,7 +1231,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
         (level.getDominoType(blockX+1, blockY) != 0 &&
          level.getDominoState(blockX+1, blockY) < 8))
     {
-      if (blockX+1 < level.levelX())
+      if ((size_t)(blockX+1) < level.levelX())
       {
         blockX++;
         animation = returnState = AntAnimDominoDying;
@@ -1363,7 +1363,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   }
   else if (keyMask & KEY_RIGHT)
   {
-    if (blockX+1 >= level.levelX())
+    if ((size_t)(blockX+1) >= level.levelX())
     {
       direction = -1;
     }
