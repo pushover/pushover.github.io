@@ -262,14 +262,12 @@ static void u4(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bl
       int xp = rnd % 8;
       int yp = rnd / 8;
 
-      int bh = (y == 12) ? bly/2 : bly;
-
-      int by = bly*y+yp*bh/8;
+      int by = bly*y+yp*bly/8;
       int bx = blx*x+xp*blx/8;
       int bw = blx/8;
-      bh = bh/8;
+      int bh = bly/8;
 
-      if (bh > 0) {
+      if (bh > 0 && by < video->h) {
         rects[count].x=bx;
         rects[count].y=by;
         rects[count].w=bw;
@@ -295,10 +293,10 @@ bool screen_c::flipAnimate(void)
       default: f = f3; break;
     }
     switch (rand()%4) {
-      case 0: u = u1; break;
-      case 1: u = u2; break;
-      case 2: u = u3; break;
-      case 3: u = u4; break;
+      case 0: u = u1; break;  // left --> right update
+      case 1: u = u2; break;  // up --> down update
+      case 2: u = u3; break;  // inside out update
+      case 3: u = u4; break;  // diffuse update
       default: u = u3; break;
     }
   }
