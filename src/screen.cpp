@@ -189,8 +189,8 @@ static int clip(int v) {
 }
 
 // a list of functions that return value between 0 and 255, depending on x and y
-static int f1(int x, int y, int a) { return clip(y*256/4+x*256/20 - 1024 + a*((1024+256)/64)); }
-static int f2(int x, int y, int a) { return clip(y*x*256/65 - 1024 + a*((1024+256)/64)); }
+static int f1(int x, int y, int a) { return clip((13-y)*64 - 13*64 + a*((13*64+256)/64)); }
+static int f2(int x, int y, int a) { return clip(x*32 - 20*32 + a*((32*20+256)/64)); }
 static int f3(int x, int y, int a) { return clip(((2*y-12)*(2*y-12)+(2*x-19)*(2*x-19))*256/127 - 1024 + a*((1024+256)/64)); }
 
 static SDL_Rect rects[13*20*255];
@@ -287,9 +287,9 @@ bool screen_c::flipAnimate(void)
 
   if (animationState == 0) {
     switch (rand()%3) {
-      case 0: f = f1; break;
-      case 1: f = f2; break;
-      case 2: f = f3; break;
+      case 0: f = f1; break;  // up down sweep
+      case 1: f = f2; break;  // right to left sewep
+      case 2: f = f3; break;  // circular outside in
       default: f = f3; break;
     }
     switch (rand()%4) {
