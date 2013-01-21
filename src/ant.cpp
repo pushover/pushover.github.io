@@ -428,6 +428,8 @@ AntAnimationState ant_c::SFPushDelayRight(void) {
   return animation;
 }
 
+// This is the push stopper animation, after a while
+// we simply abort the animation and return
 AntAnimationState ant_c::SFPushSpecialLeft(void) {
   if (animateAnt(5)) {
     animationImage = 9;
@@ -583,6 +585,8 @@ AntAnimationState ant_c::SFStepOutForLoosingDomino(void) {
 
 AntAnimationState ant_c::SFLooseRight(void) {
   if (animateAnt(0)) {
+    // start falling, we fall 2 blocks at the start as if there is a block one step below us
+    // we don't fall but rather jump down
     animation = AntAnimFalling;
     blockY += 2;
     if ((size_t)(blockY+1) > level.levelY()) blockY = level.levelY()-1;
@@ -934,7 +938,7 @@ AntAnimationState ant_c::SFFalling(void) {
 
   if (animateAnt(0)) {
 
-    if (fallingHight == 1 && carriedDomino != 0) {
+    if (fallingHight == 1 && carriedDomino != DominoTypeEmpty) {
       level.putDownDomino(blockX, blockY, carriedDomino, false);
       level.fallingDomino(blockX, blockY);
       carriedDomino = DominoTypeEmpty;
@@ -1043,7 +1047,7 @@ AntAnimationState ant_c::checkForNoKeyActions(void) {
   }
 
   // if we carry a domino and wait too long we try to set the domino down
-  if (carriedDomino != 0)
+  if (carriedDomino != DominoTypeEmpty)
   {
     // stop immediately when no cursor key is given
     if (inactiveTimer == 1)
@@ -1131,18 +1135,21 @@ bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
 
   x += ofs;
 
-  if (x < 0 && ofs == -1) return false;
-  if ((size_t)(x+1) > level.levelX() && ofs == 1) return false;
+  // outside of the level
+  if (x < 0) return false;
+  if ((size_t)(x) >= level.levelX()) return false;
 
   // if the target position is not empty, we can't put the domino there
   if (level.getDominoType(x, y) != DominoTypeEmpty) return false;
   if (!level.getPlatform(x, y+1)) return false;
 
+  // TODO should go away but required a new level record for 038_a
   if (y%2) return false;
 
+  // all stoned except for the vanisher may not be placed in front of doors
   if (   (carriedDomino != DominoTypeVanish)
-      && (   ((x == level.getEntryX()) && (y-1 == level.getEntryY()))
-          || ((x == level.getExitX()) && (y-1 == level.getExitY()))
+      && (   ((x == level.getEntryX()) && (y == level.getEntryY()+1))
+          || ((x == level.getExitX())  && (y == level.getExitY()+1))
          )
      )
   {
