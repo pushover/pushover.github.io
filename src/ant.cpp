@@ -1146,7 +1146,7 @@ bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
   // TODO should go away but required a new level record for 038_a
   if (y%2) return false;
 
-  // all stoned except for the vanisher may not be placed in front of doors
+  // all stones except for the vanisher may not be placed in front of doors
   if (   (carriedDomino != DominoTypeVanish)
       && (   ((x == level.getEntryX()) && (y == level.getEntryY()))
           || ((x == level.getExitX())  && (y == level.getExitY()))
@@ -1204,7 +1204,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   if (!level.getPlatform(blockX, blockY+1) && (!onLadder || !level.getLadder(blockX, blockY)))
   {
     fallingHight++;
-    if (blockY == 26)
+    if ((size_t)blockY >= level.levelY()+1)
     {
       animation = returnState = AntAnimLandDying;
       animationImage = 12;
@@ -1279,13 +1279,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
     else if (animation == AntAnimPushLeft)
     {
       downChecker = true;
-      if (numPushsLeft == 0)
-      {
-      }
-      else if (!(keyMask & KEY_ACTION))
-      {
-      }
-      else
+      if ((numPushsLeft > 0) && (keyMask & KEY_ACTION))
       {
         numPushsLeft--;
         returnState = AntAnimPushLeft;
@@ -1310,10 +1304,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
           direction = -1;
         }
       }
-      else if (!PushableDomino(blockX+1, blockY, -1))
-      {
-      }
-      else
+      else if (PushableDomino(blockX+1, blockY, -1))
       {
         blockX++;
         animation = AntAnimPushLeft;
@@ -1377,13 +1368,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
     else if (animation == AntAnimPushRight)
     {
       downChecker = true;
-      if (numPushsLeft == 0)
-      {
-      }
-      else if (!(keyMask & KEY_ACTION))
-      {
-      }
-      else
+      if ((numPushsLeft > 0) && (keyMask & KEY_ACTION))
       {
         numPushsLeft--;
         returnState = AntAnimPushRight;
@@ -1408,10 +1393,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
           direction = 1;
         }
       }
-      else if (!PushableDomino(blockX-1, blockY, 1))
-      {
-      }
-      else
+      else if (PushableDomino(blockX-1, blockY, 1))
       {
         blockX--;
         animation = AntAnimPushRight;
@@ -1586,10 +1568,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
           direction = 20;
         }
       }
-      else if (downChecker)
-      {
-      }
-      else
+      else if (!downChecker)
       {
         animation = returnState = AntAnimLadder4;
         direction = 20;
@@ -1603,13 +1582,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   }
   else if (keyMask & KEY_ACTION)
   {
-    if (animation == AntAnimPushRight)
-    {
-    }
-    else if (animation == AntAnimPushLeft)
-    {
-    }
-    else if ((carriedDomino == 0)
+    if ((animation != AntAnimPushRight) && (animation != AntAnimPushLeft) && (carriedDomino == 0)
         && (level.getDominoType(blockX, blockY) != 0)
         && (level.getDominoState(blockX, blockY) == 8)
         && (level.getDominoType(blockX, blockY) != DominoTypeAscender || level.getDominoExtra(blockX, blockY) != 0x60)
@@ -1634,37 +1607,34 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
         }
       }
     }
-    else if (carriedDomino == 0)
+    else if (carriedDomino != DominoTypeEmpty)
     {
-    }
-    else if (CanPlaceDomino(blockX, blockY, 0))
-    {
-      if (direction == -1)
+      if (CanPlaceDomino(blockX, blockY, 0))
       {
-        blockX++;
-        animation = returnState = AntAnimPushInLeft;
-        animationImage = 4;
+        if (direction == -1)
+        {
+          blockX++;
+          animation = returnState = AntAnimPushInLeft;
+          animationImage = 4;
+        }
+        else
+        {
+          blockX--;
+          animation = returnState = AntAnimPushInRight;
+          animationImage = 4;
+        }
       }
-      else
+      else if (CanPlaceDomino(blockX, blockY, direction))
       {
-        blockX--;
-        animation = returnState = AntAnimPushInRight;
-        animationImage = 4;
+        if (direction == -1)
+        {
+          animation = returnState = AntAnimPushInLeft;
+        }
+        else if (direction == 1)
+        {
+          animation = returnState = AntAnimPushInRight;
+        }
       }
-    }
-    else if (!CanPlaceDomino(blockX, blockY, direction))
-    {
-    }
-    else if (direction == -1)
-    {
-      animation = returnState = AntAnimPushInLeft;
-    }
-    else if (direction != 1)
-    {
-    }
-    else
-    {
-      animation = returnState = AntAnimPushInRight;
     }
   }
   else if (direction == -20)
