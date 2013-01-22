@@ -200,7 +200,7 @@ static void u1(int x, int y, int f0, int f, int blx, int bly) {
   int by = bly*y;
   int bx = blx*x;
   int bw = f*blx/256;
-  int bh = (y == 12) ? bly/2 : bly;
+  int bh = bly;
 
   if (bw > 0){
     rects[count].x=bx;
@@ -215,9 +215,7 @@ static void u2(int x, int y, int f0, int f, int blx, int bly) {
   int by = bly*y;
   int bx = blx*x;
   int bw = blx;
-  int bh = (y == 12) ? bly/2 : bly;
-
-  bh = bh*f/256;
+  int bh = f*bly/256;
 
   if (bh > 0) {
     rects[count].x=bx;
@@ -231,13 +229,10 @@ static void u2(int x, int y, int f0, int f, int blx, int bly) {
 static void u3(int x, int y, int f0, int f, int blx, int bly) {
   int by = bly*y + bly/2 - bly/2*f/256;
   int bx = blx*x + blx/2 - blx/2*f/256;
-  int bw = blx;
-  int bh = (y == 12) ? bly/2 : bly;
+  int bw = f*blx/256;
+  int bh = f*bly/256;
 
-  bh = bh*f/256;
-  bw = bw*f/256;
-
-  if (bh > 0) {
+  if (bh > 0 && bw > 0) {
     rects[count].x=bx;
     rects[count].y=by;
     rects[count].w=bw;
@@ -267,13 +262,11 @@ static void u4(int x, int y, int f0, int f, int blx, int bly) {
       int bw = blx/8;
       int bh = bly/8;
 
-      if (bh > 0 && by < 600) {
-        rects[count].x=bx;
-        rects[count].y=by;
-        rects[count].w=bw;
-        rects[count].h=bh;
-        count++;
-      }
+      rects[count].x=bx;
+      rects[count].y=by;
+      rects[count].w=bw;
+      rects[count].h=bh;
+      count++;
     }
 
     rnd = (21*rnd+11) % 64;
