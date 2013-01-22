@@ -28,6 +28,8 @@
 #include <iostream>
 #include <vector>
 
+#include <assert.h>
+
 screen_c::screen_c(const graphicsN_c & g) :
   animationState(0), blockX(g.blockX()), blockY(g.blockY())
 {
@@ -185,11 +187,11 @@ static int clip(int v) {
 }
 
 // a list of functions that return value between 0 and 255, depending on x and y
-static int f1(int x, int y, int a) { return clip((13-y)*64 - 13*64 + a*((13*64+256)/64)); }
+static int f1(int x, int y, int a) { return clip((15-y)*64 - 15*64 + a*((15*64+256)/64)); }
 static int f2(int x, int y, int a) { return clip(x*32 - 20*32 + a*((32*20+256)/64)); }
-static int f3(int x, int y, int a) { return clip(((2*y-12)*(2*y-12)+(2*x-19)*(2*x-19))*256/127 - 1024 + a*((1024+256)/64)); }
+static int f3(int x, int y, int a) { return clip(((2*y-14)*(2*y-14)+(2*x-19)*(2*x-19))*256/127 - 1123 + a*((1123+256)/64)); }
 
-static SDL_Rect rects[13*20*255];
+static SDL_Rect rects[15*20*255];
 static int count;
 
 static void u1(int x, int y, int f0, int f, int blx, int bly) {
@@ -278,6 +280,8 @@ static void u4(int x, int y, int f0, int f, int blx, int bly) {
 
 bool screen_c::flipAnimate(void)
 {
+  assert(video->w == 800 && video->h == 600);
+
   static int (*f)(int, int, int);
   static void (*u)(int, int, int, int, int, int);
 
@@ -301,7 +305,7 @@ bool screen_c::flipAnimate(void)
   animationState++;
   count=0;
 
-  for (int y = 0; y < 13; y++)
+  for (int y = 0; y < 15; y++)
   {
     for (int x = 0; x < 20; x++)
     {
@@ -310,7 +314,7 @@ bool screen_c::flipAnimate(void)
 
       if (valNew != valOld)
       {
-        u(x, y, valOld, valNew, blockX, blockY);
+        u(x, y, valOld, valNew, 40, 40);
       }
     }
   }
