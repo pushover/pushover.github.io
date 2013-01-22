@@ -196,7 +196,7 @@ static int f3(int x, int y, int a) { return clip(((2*y-12)*(2*y-12)+(2*x-19)*(2*
 static SDL_Rect rects[13*20*255];
 static int count;
 
-static void u1(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bly) {
+static void u1(int x, int y, int f0, int f, int blx, int bly) {
   int by = bly*y;
   int bx = blx*x;
   int bw = f*blx/256;
@@ -211,7 +211,7 @@ static void u1(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bl
   }
 }
 
-static void u2(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bly) {
+static void u2(int x, int y, int f0, int f, int blx, int bly) {
   int by = bly*y;
   int bx = blx*x;
   int bw = blx;
@@ -228,7 +228,7 @@ static void u2(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bl
   }
 }
 
-static void u3(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bly) {
+static void u3(int x, int y, int f0, int f, int blx, int bly) {
   int by = bly*y + bly/2 - bly/2*f/256;
   int bx = blx*x + blx/2 - blx/2*f/256;
   int bw = blx;
@@ -246,7 +246,7 @@ static void u3(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bl
   }
 }
 
-static void u4(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bly) {
+static void u4(int x, int y, int f0, int f, int blx, int bly) {
 
   uint8_t rnd = (x+20*y) % 64;
 
@@ -267,7 +267,7 @@ static void u4(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bl
       int bw = blx/8;
       int bh = bly/8;
 
-      if (bh > 0 && by < video->h) {
+      if (bh > 0 && by < 600) {
         rects[count].x=bx;
         rects[count].y=by;
         rects[count].w=bw;
@@ -283,7 +283,7 @@ static void u4(SDL_Surface * video, int x, int y, int f0, int f, int blx, int bl
 bool screen_c::flipAnimate(void)
 {
   static int (*f)(int, int, int);
-  static void (*u)(SDL_Surface *, int, int, int, int, int, int);
+  static void (*u)(int, int, int, int, int, int);
 
   if (animationState == 0) {
     switch (rand()%3) {
@@ -314,7 +314,7 @@ bool screen_c::flipAnimate(void)
 
       if (valNew != valOld)
       {
-        u(video, x, y, valOld, valNew, blockX, blockY);
+        u(x, y, valOld, valNew, blockX, blockY);
       }
     }
   }
