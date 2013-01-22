@@ -187,9 +187,11 @@ static int clip(int v) {
 }
 
 // a list of functions that return value between 0 and 255, depending on x and y
-static int f1(int x, int y, int a) { return clip((15-y)*64 - 15*64 + a*((15*64+256)/64)); }
-static int f2(int x, int y, int a) { return clip(x*32 - 20*32 + a*((32*20+256)/64)); }
+static int f1(int x, int y, int a) { return clip((14-y)*32 - 14*32 + (a*(14*32+256)/64)); }
+static int f2(int x, int y, int a) { return clip(x*32 - 19*32 + (a*(19*32+256)/64)); }
 static int f3(int x, int y, int a) { return clip(((2*y-14)*(2*y-14)+(2*x-19)*(2*x-19))*256/127 - 1123 + a*((1123+256)/64)); }
+static int f4(int x, int y, int a) { return clip((y)*32 - 14*32 + (a*(14*32+256)/64)); }
+static int f5(int x, int y, int a) { return clip((19-x)*32 - 19*32 + (a*(19*32+256)/64)); }
 
 static SDL_Rect rects[15*20*255];
 static int count;
@@ -278,6 +280,145 @@ static void u4(int x, int y, int f0, int f, int blx, int bly) {
   }
 }
 
+static void u_matrix(int x, int y, int f0, int f, int blx, int bly, uint8_t matrix[64])
+{
+  f0 /= 4;
+  f /= 4;
+
+  for (int i = 0; i < 64; i++)
+  {
+    if (f0 <= matrix[i] && matrix[i] < f)
+    {
+      int xp = i % 8;
+      int yp = i / 8;
+
+      int by = bly*y+yp*bly/8;
+      int bx = blx*x+xp*blx/8;
+      int bw = blx/8;
+      int bh = bly/8;
+
+      rects[count].x=bx;
+      rects[count].y=by;
+      rects[count].w=bw;
+      rects[count].h=bh;
+      count++;
+    }
+  }
+}
+
+static uint8_t matrixes[8][64] =
+{
+  { 6, 7, 8, 9,10,11,37,38, 5,20,21,22,23,24,12,39, 4,19,34,35,36,25,13,40, 3,18,17,16,15,14,26,41,    // P
+    2,31,30,29,28,27,63,42, 1,32,54,55,58,59,62,43, 0,33,53,56,57,60,61,44,52,51,50,49,48,47,46,45 },
+  { 0,31,49,60,59,17,16,32, 1,30,50,61,58,18,15,33, 2,29,51,62,57,19,14,34, 3,28,52,63,56,20,13,35,    // U
+    4,27,53,54,55,21,12,36, 5,26,25,24,23,22,11,37,47, 6, 7, 8, 9,10,48,38,46,45,44,43,42,41,40,39 },
+  {55,13,14,15,16,17,48,47,12,23,22,21,20,19,18,46,24,11,54,53,52,51,50,45,56,25,10, 9, 8,26,49,44,    // S
+   57,58,59,50,61, 7,27,43, 0,32,31,30,29,28, 6,42,63, 1, 2, 3, 4, 5,62,41,33,34,35,36,37,38,39,40 },
+  { 0,30,53,63,49,24,12,48, 1,29,52,51,50,23,13,47, 2,28,27,26,25,22,14,46, 3, 7, 8, 9,10,11,15,45,    // H
+    4,31,56,57,58,21,16,44, 5,32,55,62,59,20,17,43, 6,33,54,61,60,19,18,42,34,35,36,37,38,39,40,41 },
+  {51, 0, 1, 2, 3, 4,61,50,19,20,21,22,23,24, 5,49,18,35,52,53,54,25, 6,48,17,34,59,60,55,26, 7,47,    // O
+   16,33,58,57,56,27, 8,46,15,32,31,30,29,28, 9,45,63,14,13,12,11,10,62,44,36,37,38,39,40,41,42,43 },
+  { 0,23,39,57,47,13,12,38, 1,22,40,56,46,14,11,37, 2,21,41,55,45,15,10,36, 3,20,42,54,44,16, 9,35,    // V
+   48, 4,19,43,17, 8,53,34,58,49, 5,18, 7,52,62,33,60,59,50, 6,51,61,63,32,24,25,26,27,28,29,30,31 },
+  { 6, 5, 4, 3, 2, 1, 0,51, 7,28,27,26,25,24,23,50, 8,28,51,52,53,55,56,49, 9,19,20,21,22,58,57,48,    // E
+   10,30,63,62,61,60,59,47,11,31,32,33,34,35,36,46,12,13,14,15,16,17,18,45,37,38,39,40,41,42,43,44 },
+  { 6, 7, 8, 9,10,11,53,52, 5,32,33,34,35,36,12,51, 4,31,57,56,55,37,13,50, 3,18,17,16,15,14,54,49,    // R
+    2,28,27,26,25,24,19,48, 1,29,58,61,62,23,20,47, 0,30,59,60,63,22,21,46,38,39,40,41,42,43,44,45 },
+};
+
+
+static void u5(int x, int y, int f0, int f, int blx, int bly)
+{
+  u_matrix(x, y, f0, f, blx, bly, matrixes[(x+y)%8]);
+}
+
+static void u6(int x, int y, int f0, int f, int blx, int bly)
+{
+  int bx = blx*x;
+  int by = bly*y;
+  int bw = f*blx/512;
+  int bh = bly/2;
+
+  if (bw > 0){
+    rects[count].x=bx;
+    rects[count].y=by;
+    rects[count].w=bw;
+    rects[count].h=bh;
+    count++;
+  }
+
+  bx = blx*x;
+  bh = f*bly/512;
+  by = bly*y+bly-bh;
+  bw = blx/2;
+
+  if (bh > 0){
+    rects[count].x=bx;
+    rects[count].y=by;
+    rects[count].w=bw;
+    rects[count].h=bh;
+    count++;
+  }
+
+  bw = f*blx/512;
+  bx = blx*x+blx-bw;
+  bh = bly/2;
+  by = bly*y+bly/2;
+
+  if (bw > 0){
+    rects[count].x=bx;
+    rects[count].y=by;
+    rects[count].w=bw;
+    rects[count].h=bh;
+    count++;
+  }
+
+  bw = blx/2;
+  bx = blx*x+blx/2;
+  bh = f*bly/512;
+  by = bly*y;
+
+  if (bh > 0){
+    rects[count].x=bx;
+    rects[count].y=by;
+    rects[count].w=bw;
+    rects[count].h=bh;
+    count++;
+  }
+}
+
+static void u7(int x, int y, int f0, int f, int blx, int bly)
+{
+  int w = f*blx/512;
+
+  if (w > 0)
+  {
+    rects[count].x=x*blx;
+    rects[count].y=y*bly;
+    rects[count].w=blx;
+    rects[count].h=w;
+    count++;
+
+    rects[count].x=x*blx;
+    rects[count].y=y*bly+bly-w;
+    rects[count].w=blx;
+    rects[count].h=w;
+    count++;
+
+    rects[count].x=x*blx;
+    rects[count].y=y*bly;
+    rects[count].w=w;
+    rects[count].h=bly;
+    count++;
+
+    rects[count].x=x*blx+blx-w;
+    rects[count].y=y*bly;
+    rects[count].w=w;
+    rects[count].h=bly;
+    count++;
+  }
+}
+
 bool screen_c::flipAnimate(void)
 {
   assert(video->w == 800 && video->h == 600);
@@ -286,21 +427,25 @@ bool screen_c::flipAnimate(void)
   static void (*u)(int, int, int, int, int, int);
 
   if (animationState == 0) {
-    switch (rand()%3) {
+    switch (rand()%5) {
       case 0: f = f1; break;  // up down sweep
       case 1: f = f2; break;  // right to left sewep
       case 2: f = f3; break;  // circular outside in
+      case 3: f = f4; break;  // down up
+      case 4: f = f5; break;  // left right
       default: f = f3; break;
     }
-    switch (rand()%4) {
+    switch (rand()%7) {
       case 0: u = u1; break;  // left --> right update
       case 1: u = u2; break;  // up --> down update
       case 2: u = u3; break;  // inside out update
       case 3: u = u4; break;  // diffuse update
+      case 4: u = u5; break;  // PUSHOVER
+      case 5: u = u6; break;  // windmill
+      case 6: u = u7; break;  // outside in
       default: u = u3; break;
     }
   }
-
 
   animationState++;
   count=0;
