@@ -1091,6 +1091,21 @@ void graphicsN_c::drawLevel(void) {
 
     target->renderText(&pars, time);
   }
+
+  {
+    std::string txt = _("F1: Help");
+    fontParams_s pars;
+
+    pars.font = FNT_SMALL;
+    pars.alignment = ALN_TEXT;
+    pars.box.w = getTextWidth(pars.font, txt);
+    pars.box.h = getFontHeight(pars.font);
+    pars.box.x = 800-pars.box.w-10;
+    pars.box.y = 600-pars.box.h-10;
+    pars.shadow = 1;
+
+    target->renderText(&pars, txt);
+  }
 }
 
 
