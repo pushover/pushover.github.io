@@ -18,6 +18,8 @@ Version 0.0.4
 - new type of domino: counter blocker, but with no levels using it, yet
 - improved help window, better suited for translation and a bit more text
 - a few new levels in A&V
+- mission and level names are now translated
+- fix to the background images of 3 dungeon levels
 
 Version 0.0.3 May 2011
 
