@@ -591,3 +591,13 @@ void levelData_c::setDominoYOffset(unsigned int x, unsigned int y, int val)
     assert(0);
 }
 
+bool levelContainsDomino(const levelData_c & l, DominoType d)
+{
+  for (size_t y = 0; y < l.levelY(); y++)
+    for (size_t x = 0; x < l.levelX(); x++)
+      if (l.getDominoType(x, y) == d) {
+        return true;
+      }
+  return false;
+}
+

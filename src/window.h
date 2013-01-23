@@ -38,6 +38,7 @@
 
 class surface_c;
 class graphicsN_c;
+class levelData_c;
 
 class window_c {
 
@@ -71,7 +72,7 @@ class window_c {
 class helpWindow_c : public window_c {
 
   private:
-    std::string help;
+    const levelData_c & level;
     std::vector<uint32_t> pages;
     uint32_t nextPage;
 
@@ -84,7 +85,7 @@ class helpWindow_c : public window_c {
 
   public:
 
-    helpWindow_c(const std::string & text, surface_c & s, graphicsN_c & g);
+    helpWindow_c(const levelData_c & level, surface_c & s, graphicsN_c & g);
     bool handleEvent(const SDL_Event & event);
 
 };

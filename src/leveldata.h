@@ -116,7 +116,7 @@ class levelData_c {
 
     int getTimeLeft(void) const { return timeLeft; }
     void timeTick(void) { timeLeft--; }
-    bool someTimeLeft(void) { return timeLeft > 0; }
+    bool someTimeLeft(void) const { return timeLeft > 0; }
 
     const std::string getChecksum(void) const { return checksum; }
     const std::string getChecksumNoTime(void) const { return checksumNoTime; }
@@ -176,6 +176,8 @@ class levelData_c {
     size_t levelY(void) const { return level.size(); }
     size_t levelX(void) const { if (level.size() == 0) return 0; else return level[0].size(); }
 };
+
+bool levelContainsDomino(const levelData_c & l, DominoType d);
 
 
 #endif

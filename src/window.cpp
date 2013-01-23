@@ -102,7 +102,7 @@ window_c::~window_c(void) {
 #define NUM_DOMINOS 12
 static struct {
   uint16_t numDominos;
-  uint16_t dominos[3];
+  DominoType dominos[3];
   uint16_t boxWidth;
   uint16_t spacing;
   std::string text;
@@ -138,6 +138,13 @@ void helpWindow_c::displayCurrentPage(void)
   uint32_t page = *(pages.rbegin());
   uint32_t ypos = (Y()+1)*gr.blockY();
 
+  std::string help;
+
+  if (level.someTimeLeft())
+    help = _("Arrange dominos in a run so that trigger falls last. You have 1 push.");
+  else
+    help = level.getHint();
+
   if (page == 0)
   {
     par.font = FNT_NORMAL;
@@ -165,6 +172,20 @@ void helpWindow_c::displayCurrentPage(void)
 
   while (page < NUM_DOMINOS)
   {
+    bool dominoInLevel = false;
+
+    for (int i = 0; i < dominoHelp[page].numDominos; i++)
+      if (levelContainsDomino(level, dominoHelp[page].dominos[i]))
+      {
+        dominoInLevel = true;
+        break;
+      }
+
+    if (!dominoInLevel)
+    {
+      page++;
+      continue;
+    }
 
     int displaywidth = dominoHelp[page].boxWidth;
 
@@ -231,7 +252,7 @@ void helpWindow_c::displayCurrentPage(void)
   }
 }
 
-helpWindow_c::helpWindow_c(const std::string & t, surface_c & su, graphicsN_c & gr) : window_c(1, 1, 18, 11, su, gr), help(t),
+helpWindow_c::helpWindow_c(const levelData_c & l, surface_c & su, graphicsN_c & gr) : window_c(1, 1, 18, 11, su, gr), level(l),
   s(su), g(gr)
 {
   pages.push_back(0);

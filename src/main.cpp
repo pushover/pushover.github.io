@@ -466,16 +466,7 @@ int main(int argc, char * argv[]) {
                 lwindowLevel = "";
                 break;
 
-            case ST_HELP:
-                              {
-                                std::string text;
-                                if (l.someTimeLeft())
-                                  text = _("Arrange dominos in a run so that trigger falls last. You have 1 push.");
-                                else
-                                  text = l.getHint();
-
-                                window = new helpWindow_c(text, screen, gr);
-                              }
+            case ST_HELP:     window = new helpWindow_c(l, screen, gr);
                               break;
 
             case ST_PREREPLAY:
