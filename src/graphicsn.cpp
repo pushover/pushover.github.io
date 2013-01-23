@@ -164,7 +164,7 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   {
     pngLoader_c png(dataPath+"/data/dominos.png");
 
-    for (unsigned int i = 0; i < 18; i++)
+    for (unsigned int i = 1; i < DominoNumber; i++)
       for (unsigned int j = 0; j < numDominos[i]; j++) {
 
         SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 58, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
