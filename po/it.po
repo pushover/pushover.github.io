@@ -83,8 +83,8 @@ msgstr ""
 "pietra ancora in piedi che ha più linee"
 
 #: src/window.cpp:301
-msgid "Pushover - About"
-msgstr "Informazioni su Pushover"
+msgid "Pushover - %s - About"
+msgstr "Informazioni su Pushover %s"
 
 #: src/window.cpp:318
 msgid "Original Concept:"

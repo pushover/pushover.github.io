@@ -81,8 +81,8 @@ msgstr ""
 "Polozarážka: kostka se chová jako zarážka, dokud stojí kostka s více proužky"
 
 #: src/window.cpp:301
-msgid "Pushover - About"
-msgstr "O hře Pushover"
+msgid "Pushover - %s - About"
+msgstr "O hře Pushover (%s)"
 
 #: src/window.cpp:318
 msgid "Original Concept:"

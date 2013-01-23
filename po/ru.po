@@ -74,7 +74,7 @@ msgid ""
 msgstr ""
 
 #: src/window.cpp:301
-msgid "Pushover - About"
+msgid "Pushover - %s - About"
 msgstr ""
 
 #: src/window.cpp:318

@@ -74,8 +74,8 @@ msgid ""
 msgstr ""
 
 #: src/window.cpp:301
-msgid "Pushover - About"
-msgstr "Pushover - à propos"
+msgid "Pushover - %s - About"
+msgstr "Pushover - %s - à propos"
 
 #: src/window.cpp:318
 msgid "Original Concept:"

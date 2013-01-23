@@ -88,8 +88,8 @@ msgstr ""
 "steht"
 
 #: src/window.cpp:301
-msgid "Pushover - About"
-msgstr "Über Pushover"
+msgid "Pushover - %s - About"
+msgstr "Über Pushover (%s)"
 
 #: src/window.cpp:318
 msgid "Original Concept:"

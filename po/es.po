@@ -88,8 +88,8 @@ msgstr ""
 "ficha aún en pie que tiene más líneas"
 
 #: src/window.cpp:301
-msgid "Pushover - About"
-msgstr "Acerca de Pushover"
+msgid "Pushover - %s - About"
+msgstr "Acerca de Pushover (%s)"
 
 #: src/window.cpp:318
 msgid "Original Concept:"

@@ -27,6 +27,7 @@
 #include "textsections.h"
 #include "solvedmap.h"
 #include "leveldata.h"
+#include "config.h"
 
 #include <SDL.h>
 
@@ -298,7 +299,11 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 0, 16,
   par.box.w = gr.blockX()*(W()-2);
   par.box.h = getFontHeight(FNT_BIG);
 
-  surf.renderText(&par, _("Pushover - About"));
+  {
+    char title[200];
+    snprintf(title, 200, _("Pushover - %s - About"), PACKAGE_VERSION);
+    surf.renderText(&par, title);
+  }
 
   int ypos = gr.blockY()*(Y()+1) + getFontHeight(FNT_BIG);
 
