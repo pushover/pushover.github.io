@@ -911,7 +911,7 @@ int main(int argc, char * argv[]) {
                     break;
                   case 1:                            // continue to next level
                     nextState = ST_LEVEL;
-                    lwindowLevel = l.getName();
+                    lwindowLevel = "";
                     break; // select next level to play
                 }
               }
