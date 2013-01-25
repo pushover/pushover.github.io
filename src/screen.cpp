@@ -192,6 +192,77 @@ static int f2(int x, int y, int a) { return clip(x*32 - 19*32 + (a*(19*32+256)/6
 static int f3(int x, int y, int a) { return clip(((2*y-14)*(2*y-14)+(2*x-19)*(2*x-19))*256/127 - 1123 + a*((1123+256)/64)); }
 static int f4(int x, int y, int a) { return clip((y)*32 - 14*32 + (a*(14*32+256)/64)); }
 static int f5(int x, int y, int a) { return clip((19-x)*32 - 19*32 + (a*(19*32+256)/64)); }
+static int f6(int x, int y, int a) {
+  switch (a / 8)
+  {
+    case 0:
+      switch (x / 5)
+      {
+        case 0: return 0;
+        case 1: return 0;
+        case 2: return a * 16;
+        default: return 0;
+      }
+    case 1:
+      switch (x / 5)
+      {
+        case 0: return (a-8)*16;
+        case 1: return 0;
+        case 2: return 128;
+        default: return 0;
+      }
+    case 2:
+      switch (x / 5)
+      {
+        case 0: return 128;
+        case 1: return 0;
+        case 2: return 128;
+        default: return (a-16)*16;
+      }
+    case 3:
+      switch (x / 5)
+      {
+        case 0: return 128;
+        case 1: return (a-24)*16;
+        case 2: return 128;
+        default: return 128;
+      }
+    case 4:
+      switch (x / 5)
+      {
+        case 0: return 128;
+        case 1: return 128+(a-32)*16;
+        case 2: return 128;
+        default: return 128;
+      }
+    case 5:
+      switch (x / 5)
+      {
+        case 0: return 128;
+        case 1: return 256;
+        case 2: return 128;
+        default: return 128+(a-40)*16;
+      }
+    case 6:
+      switch (x / 5)
+      {
+        case 0: return 128+(a-48)*16;
+        case 1: return 256;
+        case 2: return 128;
+        default: return 256;
+      }
+    case 7:
+      switch (x / 5)
+      {
+        case 0: return 256;
+        case 1: return 256;
+        case 2: return 128+(a-56)*16;
+        default: return 256;
+      }
+  }
+}
+
+
 
 static SDL_Rect rects[15*20*255];
 static int count;
@@ -420,12 +491,13 @@ bool screen_c::flipAnimate(void)
   static void (*u)(int, int, int, int, int, int);
 
   if (animationState == 0) {
-    switch (rand()%5) {
+    switch (rand()%6) {
       case 0: f = f1; break;  // up down sweep
       case 1: f = f2; break;  // right to left sewep
       case 2: f = f3; break;  // circular outside in
       case 3: f = f4; break;  // down up
       case 4: f = f5; break;  // left right
+      case 5: f = f6; break;  // column wise half and half
       default: f = f3; break;
     }
     switch (rand()%7) {
