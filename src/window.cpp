@@ -193,7 +193,15 @@ void helpWindow_c::displayCurrentPage(void)
     par.alignment = ALN_TEXT;
     par.color.r = TXT_COL_R; par.color.g = TXT_COL_G; par.color.b = TXT_COL_B;
     par.shadow = 0;
-    par.box.x = SX*column+TX+displaywidth+5;
+
+    if (rightToLeft())
+    {
+      par.box.x = SX*column+TX;
+    }
+    else
+    {
+      par.box.x = SX*column+TX+displaywidth+5;
+    }
     par.box.w = SX-displaywidth-15;
     par.box.y = ypos;
     par.box.h = 80;
@@ -215,12 +223,14 @@ void helpWindow_c::displayCurrentPage(void)
         linehight = h;
     }
 
-    s.fillRect(SX*column+TX,   ypos,   displaywidth,   75, 0, 0, 0);
-    s.fillRect(SX*column+TX+2, ypos+2, displaywidth-4, 75-4, TXT_COL_R, TXT_COL_G, TXT_COL_B);
+    int rlOffset = rightToLeft() ? SX-displaywidth-10 : 0;
+
+    s.fillRect(rlOffset+SX*column+TX,   ypos,   displaywidth,   75, 0, 0, 0);
+    s.fillRect(rlOffset+SX*column+TX+2, ypos+2, displaywidth-4, 75-4, TXT_COL_R, TXT_COL_G, TXT_COL_B);
 
     for (int i = 0; i < dominoHelp[page].numDominos; i++)
       s.blitBlock(g.getHelpDominoImage(dominoHelp[page].dominos[i]),
-          SX*column+TX-105+displaywidth/2+int(dominoHelp[page].spacing*(1.0*i-(dominoHelp[page].numDominos-1)*0.5)), ypos + 4);
+          rlOffset+SX*column+TX-105+displaywidth/2+int(dominoHelp[page].spacing*(1.0*i-(dominoHelp[page].numDominos-1)*0.5)), ypos + 4);
 
     page++;
     column++;
@@ -335,35 +345,35 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphicsN_c & g) : window_c(2, 0, 16
   par.alignment = ALN_TEXT;
   par.box.x = gr.blockX()*(X()+1);
   par.box.y = ypos;
-  par.box.w = gr.blockX()*(W()-2)-30;
+  par.box.w = gr.blockX()*(W()-2);
   par.box.h = lineH;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Concept:"))*lineH; par.box.x += 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Chas Partington")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Concept:"))*lineH; par.box.x += 30; par.box.w -= 60;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Chas Partington")*lineH; par.box.x -= 30; par.box.w += 60;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Programming:"))*lineH; par.box.x += 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Dave Elcock, Helen Elcock, Keith Watterson")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Programming:"))*lineH; par.box.x += 30; par.box.w -= 60;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Dave Elcock, Helen Elcock, Keith Watterson")*lineH; par.box.x -= 30; par.box.w += 60;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Graphics:"))*lineH; par.box.x += 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Bryan King, Barry Armstrong")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Graphics:"))*lineH; par.box.x += 30; par.box.w -= 60;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Bryan King, Barry Armstrong")*lineH; par.box.x -= 30; par.box.w += 60;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Music & SFX:"))*lineH; par.box.x += 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Keith Tinman, Dean Evans, Johnathan Dunn")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Music & SFX:"))*lineH; par.box.x += 30; par.box.w -= 60;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Keith Tinman, Dean Evans, Johnathan Dunn")*lineH; par.box.x -= 30; par.box.w += 60;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Levels:"))*lineH; par.box.x += 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Harry Nadler, Avril Rigby, Don Rigby, Chris Waterworth")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Levels:"))*lineH; par.box.x += 30; par.box.w -= 60;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Harry Nadler, Avril Rigby, Don Rigby, Chris Waterworth")*lineH; par.box.x -= 30; par.box.w += 60;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Programming:"))*lineH; par.box.x += 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Andreas Röver, Volker Grabsch")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Programming:"))*lineH; par.box.x += 30; par.box.w -= 60;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Andreas Röver, Volker Grabsch")*lineH; par.box.x -= 30; par.box.w += 60;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Music:"))*lineH; par.box.x += 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Roberto Lorenz")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Music:"))*lineH; par.box.x += 30; par.box.w -= 60;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Roberto Lorenz")*lineH; par.box.x -= 30; par.box.w += 60;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Graphics:"))*lineH; par.box.x += 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Harald Radke")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Graphics:"))*lineH; par.box.x += 30; par.box.w -= 60;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Harald Radke")*lineH; par.box.x -= 30; par.box.w += 60;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Levels:"))*lineH; par.box.x += 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, " A&V: Volker Grabsch, Andreas Röver, Dominik Pöhlker")*lineH; par.box.x -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Levels:"))*lineH; par.box.x += 30; par.box.w -= 60;
+  par.shadow = 0; par.box.y += surf.renderText(&par, " A&V: Volker Grabsch, Andreas Röver, Dominik Pöhlker")*lineH; par.box.x -= 30; par.box.w += 60;
 }
 
 

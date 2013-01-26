@@ -124,8 +124,6 @@ static const unsigned char numDominos[DominoNumber] = {
 
 #define antDisplace (6*3)
 
-int timeXPos(void) { return 5*18/2; }
-int timeYPos(void) { return 3*186; }
 int getDominoYStart(void) { return 3*4; }
 int convertDominoX(int x) { return 5*x/2; }
 int convertDominoY(int y) { return 3*y; }
@@ -1082,9 +1080,9 @@ void graphicsN_c::drawLevel(void) {
       pars.color.r = 255; pars.color.g = pars.color.b = 0;
     }
     pars.font = FNT_BIG;
-    pars.alignment = ALN_TEXT;
-    pars.box.x = timeXPos();
-    pars.box.y = timeYPos();
+    pars.alignment = ALN_CENTER;
+    pars.box.x = 45;
+    pars.box.y = 558;
     pars.box.w = 50;
     pars.box.h = 50;
     pars.shadow = 1;

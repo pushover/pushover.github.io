@@ -25,6 +25,8 @@
 
 #include <SDL/SDL_ttf.h>
 
+#include "fribidi.h"
+
 #include <iostream>
 #include <vector>
 
@@ -618,8 +620,45 @@ static std::vector<std::string> split(const std::string & text, char splitter)
   return res;
 }
 
-unsigned int surface_c::renderText(const fontParams_s * par, const std::string & t)
+
+static std::string fribiditize(const std::string &text)
 {
+    FriBidiCharType base = FRIBIDI_TYPE_ON;
+    FriBidiChar *logicalString = new FriBidiChar[text.length() + 1];
+    FriBidiChar *visualString = new FriBidiChar[text.length() + 1];
+
+    int ucsLength = fribidi_charset_to_unicode(FRIBIDI_CHAR_SET_UTF8,
+            const_cast<char*>(text.c_str()),
+            text.length(), logicalString);
+    fribidi_boolean ok = fribidi_log2vis(logicalString, ucsLength, &base,
+            visualString, NULL, NULL, NULL);
+    if (!ok) {
+        return text;
+    }
+
+    char *buffer = new char[text.length() + 1];
+    int length = fribidi_unicode_to_charset(FRIBIDI_CHAR_SET_UTF8,
+            visualString, ucsLength, buffer);
+    std::string result = std::string(buffer, length);
+    delete[] buffer;
+    delete[] visualString;
+    delete[] logicalString;
+    return result;
+}
+
+bool rightToLeft(void)
+{
+  //TRANSLATORS: don't translate this string, rather enter the main text direction this will influence how dialogs are
+  //layouted, possible values "left to right" "right to left" anything that is not "right to left" will be treated as
+  //left to right
+  return strcmp(_("left to right"), "right to left") == 0;
+}
+
+unsigned int surface_c::renderText(const fontParams_s * par, const std::string & t1)
+{
+
+  std::string t = fribiditize(t1);
+
   // make some safety checks, empty strings are not output
   bool onlySpace = true;
   for (size_t i = 0; i < t.length(); i++)
@@ -676,6 +715,11 @@ unsigned int surface_c::renderText(const fontParams_s * par, const std::string &
     if (par->alignment == ALN_TEXT) {
 
       SDL_Rect r = par->box;
+
+      if (rightToLeft())
+      {
+        r.x = r.x+r.w-vv->w;
+      }
       r.w = vv->w;
       r.h = vv->h;
       r.y = ypos;

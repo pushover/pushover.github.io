@@ -67,6 +67,8 @@ unsigned int getFontHeight(unsigned int font);
 unsigned int getTextWidth(unsigned int font, const std::string & t);
 unsigned int getTextHeight(const fontParams_s * par, const std::string & t);
 
+bool rightToLeft(void);
+
 
 // 2dimensional bitfield of 20x13 bits
 class bitfield_c {

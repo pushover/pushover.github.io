@@ -1,4 +1,6 @@
 # List of source files which contain translatable strings.
+src/screen.cpp
 src/window.cpp
 src/main.cpp
+src/graphicsn.cpp
 po/leveltexts.txt
