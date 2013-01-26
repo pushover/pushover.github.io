@@ -669,6 +669,7 @@ class levelWindow_c : public listWindow_c
       par.box.y = (Y()+H()-1)*gr.blockY();
       par.box.w = gr.blockX()*(W()-2)-30;
       par.box.h = 10;
+      par.shadow = false;
 
       std::string text[3] = {
         //TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
