@@ -59,6 +59,9 @@ levelData_c::levelData_c(void)
     }
   }
 
+  doorEntryState = 0;
+  doorExitState = 0;
+
   // invalid time...
   timeLeft = 60*60*18;
 }
@@ -94,9 +97,9 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
     level[i].resize(LEVELSIZE_V1_X);
 
   /* Version section */
+  unsigned int givenVersion;
   {
     std::istringstream versionStream(sections.getSingleLine("Version"));
-    unsigned int givenVersion;
     versionStream >> givenVersion;
     if (!versionStream.eof() || !versionStream)
       throw format_error("invalid level version");
@@ -127,23 +130,6 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
   if (hint == "")
     hint = "No hint!";
 
-  /* Level section */
-  const std::vector<std::string> & givenLevelRows =
-    sections.getSingleSection("Level");
-  if (givenLevelRows.size() != 13)
-    throw format_error("wrong number of level rows");
-  std::string levelRows[13];
-  for (unsigned int y = 0; y < 13; y++) {
-    std::string::size_type len = givenLevelRows[y].size();
-    if (len > LEVELSIZE_V1_X)
-      throw format_error("level row is too long");
-    /* padding with spaces to the whole width */
-    levelRows[y] = givenLevelRows[y] + std::string(20-len, ' ');
-  }
-
-  bool doorEntryDefined = false;
-  bool doorExitDefined = false;
-
   for (unsigned int y = 0; y < level.size(); y++) {
     for (unsigned int x = 0; x < level[y].size(); x++) {
       level[y][x].dominoType = DominoTypeEmpty;
@@ -153,164 +139,356 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
       level[y][x].dominoExtra = 0;
       level[y][x].platform = false;
       level[y][x].ladder = false;
+
+      for (unsigned int b = 0; b < maxBg; b++)
+        level[y][x].bg[b] = 0;
     }
   }
 
-  for (unsigned int y = 0; y < 13; y++) {
-    for (unsigned int x = 0; x < LEVELSIZE_V1_X; x++) {
+  doorEntryState = 0;
+  doorExitState = 0;
 
-      switch (levelRows[y].c_str()[x]) {
+  if (givenVersion == 1)
+  {
+    /* Level section */
+    const std::vector<std::string> & givenLevelRows =
+      sections.getSingleSection("Level");
+    if (givenLevelRows.size() != 13)
+      throw format_error("wrong number of level rows");
+    std::string levelRows[13];
+    for (unsigned int y = 0; y < 13; y++) {
+      std::string::size_type len = givenLevelRows[y].size();
+      if (len > LEVELSIZE_V1_X)
+        throw format_error("level row is too long");
+      /* padding with spaces to the whole width */
+      levelRows[y] = givenLevelRows[y] + std::string(LEVELSIZE_V1_X-len, ' ');
+    }
 
-        case '1':
-          if (doorEntryDefined)
-            throw format_error("duplicate entry door");
-          doorEntryDefined = true;
-          doorEntryX = x;
-          doorEntryY = 2*y+2;
-          doorEntryState = 0;
+    bool doorEntryDefined = false;
+    bool doorExitDefined = false;
 
-          break;
+    for (unsigned int y = 0; y < 13; y++) {
+      for (unsigned int x = 0; x < LEVELSIZE_V1_X; x++) {
 
-        case '2':
-          if (doorExitDefined)
-            throw format_error("duplicate exit door");
-          doorExitDefined = true;
-          doorExitX = x;
-          doorExitY = 2*y+2;
-          doorExitState = 0;
-          break;
+        switch (levelRows[y].c_str()[x]) {
 
-        case ' ':
-        case '^':
-          if (x > 0 && levelRows[y].c_str()[x-1] == '/')
-          {
+          case '1':
+            if (doorEntryDefined)
+              throw format_error("duplicate entry door");
+            doorEntryDefined = true;
+            doorEntryX = x;
+            doorEntryY = 2*y+2;
+            doorEntryState = 0;
+
+            break;
+
+          case '2':
+            if (doorExitDefined)
+              throw format_error("duplicate exit door");
+            doorExitDefined = true;
+            doorExitX = x;
+            doorExitY = 2*y+2;
+            doorExitState = 0;
+            break;
+
+          case ' ':
+          case '^':
+            if (x > 0 && levelRows[y].c_str()[x-1] == '/')
+            {
+              level[y*2  ][x].platform = true;
+            }
+            break;
+
+          case '$':
+            level[2*y][x].dominoType = DominoTypeStandard;
+            level[2*y][x].dominoExtra = 0x70;
+            break;
+
+          case '\\':
+            if (y <= 0 || x <= 0)
+              throw format_error("platform step '\\' has an invalid position");
+
+            level[(y-1)*2+1][x-1].platform = true;
+            level[y*2  ][x-1].platform = true;
             level[y*2  ][x].platform = true;
-          }
-          break;
+            level[y*2+1][x].platform = true;
+            break;
 
-        case '$':
-          level[2*y][x].dominoType = DominoTypeStandard;
-          level[2*y][x].dominoExtra = 0x70;
-          break;
+          case '/':
+            if (y <= 0 || x+1 >= LEVELSIZE_V1_X)
+              throw format_error("platform step '/' has an invalid position");
 
-        case '\\':
-          if (y <= 0 || x <= 0)
-            throw format_error("platform step '\\' has an invalid position");
+            level[(y-1)*2+1][x+1].platform = true;
+            level[y*2  ][x].platform = true;
+            level[y*2+1][x].platform = true;
+            break;
 
-          level[(y-1)*2+1][x-1].platform = true;
-          level[y*2  ][x-1].platform = true;
-          level[y*2  ][x].platform = true;
-          level[y*2+1][x].platform = true;
-          break;
-
-        case '/':
-          if (y <= 0 || x+1 >= LEVELSIZE_V1_X)
-            throw format_error("platform step '/' has an invalid position");
-
-          level[(y-1)*2+1][x+1].platform = true;
-          level[y*2  ][x].platform = true;
-          level[y*2+1][x].platform = true;
-          break;
-
-        case 'H':
-        case 'V':
-          level[y*2  ][x].ladder   = true;
-          level[y*2+1][x].ladder   = true;
-          break;
-
-        case '.':
-          level[y*2+1][x].platform = true;
-          break;
-
-        default:
-          std::string::size_type dt = dominoChars.find_first_of(levelRows[y].c_str()[x]);
-          if (dt == std::string::npos)
-            throw format_error("invalid domino type");
-          level[2*y][x].dominoType = (DominoType)dt;
-
-          bool ladderAbove   = y > 0
-                               && levelRows[y-1].c_str()[x] == 'H';
-          bool ladderBelow   = y+1 < 13
-                               && (levelRows[y+1].c_str()[x] == 'H'
-                                   || levelRows[y+1].c_str()[x] == 'V'
-                                   || levelRows[y+1].c_str()[x] == '^');
-          if (ladderBelow)
-          {
+          case 'H':
+          case 'V':
             level[y*2  ][x].ladder   = true;
             level[y*2+1][x].ladder   = true;
-          }
-          else if (ladderAbove)
-          {
-            level[y*2  ][x].ladder   = true;
-          }
+            break;
 
-          if (y < 12)
+          case '.':
             level[y*2+1][x].platform = true;
+            break;
+
+          default:
+            std::string::size_type dt = dominoChars.find_first_of(levelRows[y].c_str()[x]);
+            if (dt == std::string::npos)
+              throw format_error("invalid domino type");
+            level[2*y][x].dominoType = (DominoType)dt;
+
+            bool ladderAbove   = y > 0
+              && levelRows[y-1].c_str()[x] == 'H';
+            bool ladderBelow   = y+1 < 13
+              && (levelRows[y+1].c_str()[x] == 'H'
+                  || levelRows[y+1].c_str()[x] == 'V'
+                  || levelRows[y+1].c_str()[x] == '^');
+            if (ladderBelow)
+            {
+              level[y*2  ][x].ladder   = true;
+              level[y*2+1][x].ladder   = true;
+            }
+            else if (ladderAbove)
+            {
+              level[y*2  ][x].ladder   = true;
+            }
+
+            if (y < 12)
+              level[y*2+1][x].platform = true;
+        }
       }
     }
-  }
 
-  if (!doorEntryDefined)
-    throw format_error("missing entry door");
-  if (!doorExitDefined)
-    throw format_error("missing exit door");
+    if (!doorEntryDefined)
+      throw format_error("missing entry door");
+    if (!doorExitDefined)
+      throw format_error("missing exit door");
 
-  /* Background sections */
-  const std::vector<std::vector<std::string> > & bgSections =
-    sections.getMultiSection("Background");
-  numBg = bgSections.size();
-  if (numBg == 0)
-    throw format_error("missing Background section");
-  if (numBg > maxBg)
-    throw format_error("too many Background sections");
-  for (unsigned char b = 0; b < numBg; b++) {
-    if (bgSections[b].size() != 13)
-      throw format_error("wrong number of background rows");
-    for (unsigned int y = 0; y < 13; y++) {
-      std::istringstream line(bgSections[b][y]);
-      for (unsigned int x = 0; x < LEVELSIZE_V1_X; x++) {
-        line >> level[2*y][x].bg[b];
-        level[2*y][x].bg[b] *= 2;
-        if (y < 12)
-          level[2*y+1][x].bg[b] = level[2*y][x].bg[b]+1;
+    /* Background sections */
+    const std::vector<std::vector<std::string> > & bgSections =
+      sections.getMultiSection("Background");
+    numBg = bgSections.size();
+    if (numBg == 0)
+      throw format_error("missing Background section");
+    if (numBg > maxBg)
+      throw format_error("too many Background sections");
+    for (unsigned char b = 0; b < numBg; b++) {
+      if (bgSections[b].size() != 13)
+        throw format_error("wrong number of background rows");
+      for (unsigned int y = 0; y < 13; y++) {
+        std::istringstream line(bgSections[b][y]);
+        for (unsigned int x = 0; x < LEVELSIZE_V1_X; x++) {
+          line >> level[2*y][x].bg[b];
+          level[2*y][x].bg[b] *= 2;
+          if (y < 12)
+            level[2*y+1][x].bg[b] = level[2*y][x].bg[b]+1;
 
-        if (!line)
-          throw format_error("not enough background tiles in a row");
+          if (!line)
+            throw format_error("not enough background tiles in a row");
+        }
+        if (!line.eof())
+          throw format_error("too many background tiles in a row");
       }
-      if (!line.eof())
-        throw format_error("too many background tiles in a row");
     }
-  }
 
-  /* Calculate checksum */
-  {
-    SHA1 sha1;
-    for (unsigned int y = 0; y < 13; y++) {
-      sha1.update(levelRows[y]);
+    /* Calculate checksum */
+    {
+      SHA1 sha1;
+      for (unsigned int y = 0; y < 13; y++) {
+        sha1.update(levelRows[y]);
+      }
+      {
+        std::ostringstream timeLeftStream;
+        timeLeftStream << timeLeft;
+        sha1.update(timeLeftStream.str());
+      }
+      sha1.update(userString);
+      checksum = sha1.final();
     }
     {
-      std::ostringstream timeLeftStream;
-      timeLeftStream << timeLeft;
-      sha1.update(timeLeftStream.str());
+      SHA1 sha1;
+      for (unsigned int y = 0; y < 13; y++) {
+        sha1.update(levelRows[y]);
+      }
+      sha1.update(userString);
+      checksumNoTime = sha1.final();
     }
-    sha1.update(userString);
-    checksum = sha1.final();
   }
+  else if (givenVersion == 2)
   {
-    SHA1 sha1;
-    for (unsigned int y = 0; y < 13; y++) {
-      sha1.update(levelRows[y]);
+    /* Size section (format XxY) */
+    {
+      std::istringstream sizeStream(sections.getSingleLine("Size"));
+      unsigned int size;
+      sizeStream >> size;
+      if (size != LEVELSIZE_V1_X)
+        throw format_error("invalid size, only 20 columns supported for now");
+
+      if (sizeStream.get() != 'x')
+        throw format_error("invalid size format");
+
+      sizeStream >> size;
+      if (!sizeStream.eof() || !sizeStream)
+        throw format_error("invalid time format");
+
+      if (size != LEVELSIZE_V1_Y)
+        throw format_error("invalid size, only 25 rows supported for now");
     }
-    sha1.update(userString);
-    checksumNoTime = sha1.final();
+
+    /* doors section (format entryX;entryY exitX;exitY) */
+    {
+      std::istringstream doorsStream(sections.getSingleLine("Doors"));
+
+      unsigned int pos;
+      doorsStream >> pos;
+      if (pos >= LEVELSIZE_V1_X)
+        throw format_error("invalid x-position for entry door");
+
+      doorEntryX = pos;
+
+      if (doorsStream.get() != ';')
+        throw format_error("invalid door format");
+
+      doorsStream >> pos;
+
+      if (pos >= LEVELSIZE_V1_Y)
+        throw format_error("invalid y-position for entry door");
+
+      doorEntryY = pos;
+
+      if (doorsStream.get() != ' ')
+        throw format_error("invalid door format");
+
+      doorsStream >> pos;
+      if (pos >= LEVELSIZE_V1_X)
+        throw format_error("invalid x-position for exit door");
+
+      doorExitX = pos;
+
+      if (doorsStream.get() != ';')
+        throw format_error("invalid door format");
+
+      doorsStream >> pos;
+
+      if (pos >= LEVELSIZE_V1_Y)
+        throw format_error("invalid y-position for exit door");
+
+      doorExitY = pos;
+
+      if (!doorsStream.eof() || !doorsStream)
+        throw format_error("invalid time format");
+    }
+
+    /* Level section */
+    const std::vector<std::string> & givenLevelRows =
+      sections.getSingleSection("Level");
+    if (givenLevelRows.size() != LEVELSIZE_V1_Y)
+      throw format_error("wrong number of level rows");
+    std::string levelRows[LEVELSIZE_V1_Y];
+    for (unsigned int y = 0; y < LEVELSIZE_V1_Y; y++) {
+      std::string::size_type len = givenLevelRows[y].size();
+      if (len > 2*LEVELSIZE_V1_X)
+        throw format_error("level row is too long");
+      /* padding with spaces to the whole width */
+      levelRows[y] = givenLevelRows[y] + std::string(2*LEVELSIZE_V1_X-len, ' ');
+    }
+
+    for (unsigned int y = 0; y < LEVELSIZE_V1_Y; y++) {
+      for (unsigned int x = 0; x < LEVELSIZE_V1_X; x++) {
+        switch (levelRows[y][2*x])
+        {
+          case ' ': break;
+          case 'H': level[y][x].ladder = true; break;
+          case '-': level[y][x].platform = true; break;
+          case 'B': level[y][x].platform = level[y][x].ladder = true; break;
+          default: throw format_error("invalid platform element");
+        }
+
+        if (levelRows[y][2*x+1] != ' ')
+        {
+          std::string::size_type dt = dominoChars.find_first_of(levelRows[y].c_str()[2*x+1]);
+
+          if (dt == std::string::npos)
+            throw format_error("invalid domino type");
+
+          level[y][x].dominoType = (DominoType)dt;
+        }
+      }
+    }
+
+    /* Background sections */
+    const std::vector<std::vector<std::string> > & bgSections =
+      sections.getMultiSection("Background");
+    numBg = bgSections.size();
+    if (numBg == 0)
+      throw format_error("missing Background section");
+    if (numBg > maxBg)
+      throw format_error("too many Background sections");
+    for (unsigned char b = 0; b < numBg; b++) {
+      if (bgSections[b].size() != LEVELSIZE_V1_Y)
+        throw format_error("wrong number of background rows");
+      for (unsigned int y = 0; y < LEVELSIZE_V1_Y; y++) {
+        std::istringstream line(bgSections[b][y]);
+        for (unsigned int x = 0; x < LEVELSIZE_V1_X; x++) {
+          line >> level[y][x].bg[b];
+
+          if (!line)
+            throw format_error("not enough background tiles in a row");
+        }
+        if (!line.eof())
+          throw format_error("too many background tiles in a row");
+      }
+    }
+
+    /* Calculate checksum */
+    {
+      // checksums are calculates over the level section and the doors section and the time
+
+      SHA1 sha1;
+      for (unsigned int y = 0; y < LEVELSIZE_V1_Y; y++) {
+        sha1.update(levelRows[y]);
+      }
+      {
+        std::ostringstream timeLeftStream;
+        timeLeftStream << timeLeft;
+        sha1.update(timeLeftStream.str());
+      }
+      {
+        std::ostringstream doorsStream;
+        doorsStream << doorEntryX << doorEntryY << doorExitX << doorExitY;
+        sha1.update(doorsStream.str());
+      }
+
+      sha1.update(userString);
+      checksum = sha1.final();
+    }
+    {
+      SHA1 sha1;
+      for (unsigned int y = 0; y < LEVELSIZE_V1_Y; y++) {
+        sha1.update(levelRows[y]);
+      }
+      {
+        std::ostringstream doorsStream;
+        doorsStream << doorEntryX << doorEntryY << doorExitX << doorExitY;
+        sha1.update(doorsStream.str());
+      }
+      sha1.update(userString);
+      checksumNoTime = sha1.final();
+    }
   }
+  else
+  {
+    throw format_error("level version not supported");
+  }
+
 }
 
 void levelData_c::save(std::ostream & stream) const
 {
-#if 0 // TODO create new save function
-
   unsigned int timeSeconds = timeLeft/18;
+
   stream <<
   textsections_c::firstLine << "\n"
   "\n"
@@ -330,78 +508,61 @@ void levelData_c::save(std::ostream & stream) const
        << "\n"
   "\n"
   "Hint\n"
-  "| " << hint << "\n";
+  "| " << hint << "\n"
+  "\n"
+  "Size\n"
+  "| " << levelX() << "x" << levelY() << "\n"
+  "\n"
+  "Doors\n"
+  "| " << (int)doorEntryX << ";" << (int)doorEntryY << " " << (int)doorExitX << ";" << (int)doorExitY << "\n";
 
   stream << '\n';
   stream << "Level\n";
-  stream << '+' << std::string(20+1, '-') << '\n';
-  for (unsigned int y = 0; y < 13; y++) {
+  stream << '+' << std::string(2*levelX()+1, '-') << '\n';
+  for (unsigned int y = 0; y < levelY(); y++)
+  {
     std::string line = "| ";
-    for (unsigned int x = 0; x < 20; x++) {
-      if (x == doorEntryX && y == doorEntryY)
-        line += '1';
-      else if (x == doorExitX && y == doorExitY)
-        line += '2';
-      else switch (getFg(x, y)) {
-        case FgElementEmpty:
-        case FgElementPlatformStep2:
-        case FgElementPlatformStep3:
-        case FgElementPlatformStep5:
-        case FgElementPlatformStep8:
-        case FgElementDoor0:
-        case FgElementDoor1:
-        case FgElementDoor2:
-        case FgElementDoor3:
-          if (y > 0 && getFg(x, y-1) == FgElementPlatformLadderDown)
-            line += '^';
-          else if (getDominoType(x, y) != DominoTypeEmpty)
-            line += '$';
-          else
-            line += ' ';
-          break;
-        case FgElementPlatformStep4:
-          line += '\\';
-          break;
-        case FgElementPlatformStep7:
-          line += '/';
-          break;
-        case FgElementLadder:
-          if (y+1 >= 13
-              || getFg(x, y+1) == FgElementPlatformLadderDown
-              || getFg(x, y+1) == FgElementLadder
-              || getFg(x, y+1) == FgElementPlatformLadderUp)
-            line += 'H';
-          else
-            line += 'V';
-          break;
-        default:
-          unsigned char dt = getDominoType(x, y);
-          if (dt == DominoTypeEmpty
-              && getFg(x, y) == FgElementPlatformStrip)
-            line += '.';
-          else if (dt < dominoChars.size())
-            line += dominoChars[dt];
-          else
-            throw format_error("level contains a domino type which can't be saved");
+    for (unsigned int x = 0; x < levelX(); x++)
+    {
+      if (getLadder(x, y))
+      {
+        if (getPlatform(x, y))
+          line += 'B';
+        else
+          line += 'H';
       }
+      else
+      {
+        if (getPlatform(x, y))
+          line += '-';
+        else
+          line += ' ';
+      }
+
+      unsigned char dt = getDominoType(x, y);
+      if (dt == DominoTypeEmpty)
+        line += ' ';
+      else if (dt < dominoChars.size())
+        line += dominoChars[dt];
+      else
+        throw format_error("level contains a domino type which can't be saved");
     }
     stream << line.substr(0, line.find_last_not_of(' ')+1) << '\n';
   }
-  stream << '+' << std::string(20+1, '-') << '\n';
+  stream << '+' << std::string(2*levelX()+1, '-') << '\n';
 
   for (unsigned char b = 0; b < numBg; b++) {
     stream << '\n';
     stream << "Background\n";
     stream << '+' << std::string((3+1)*20, '-') << '\n';
-    for (unsigned int y = 0; y < 13; y++) {
+    for (unsigned int y = 0; y < levelY(); y++) {
       stream << '|';
-      for (unsigned int x = 0; x < 20; x++)
+      for (unsigned int x = 0; x < levelX(); x++)
         stream << ' ' << std::setfill(' ') << std::setw(3) << getBg(x, y, b);
       stream << '\n';
     }
-    stream << '+' << std::string((3+1)*20, '-') << '\n';
+    stream << '+' << std::string((3+1)*levelX(), '-') << '\n';
   }
-#endif
 }
 
 void levelData_c::removeDomino(int x, int y) {

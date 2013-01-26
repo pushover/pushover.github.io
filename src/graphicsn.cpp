@@ -703,6 +703,11 @@ void graphicsN_c::setPaintData(const levelData_c * l, const ant_c * a, surface_c
   dirtybg.markAllDirty();
   dirty.markAllDirty();
 
+  antX = antY = 200;
+  antAnim = 1000;
+  antImage = 1000;
+
+
   Min = Sec = -1;
 
   if (!background) background = new surface_c(t->getIdentical());

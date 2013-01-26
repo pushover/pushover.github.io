@@ -365,6 +365,7 @@ int main(int argc, char * argv[]) {
       textsections_c sections(file, true);
       l.load(sections, "");
       selectedMission = "Original";            // TODO we need to find out which levelset this file belongs to
+      gr.setPaintData(&l, &a, &screen);
       soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
 
       nextState = ST_PREPLAY;
