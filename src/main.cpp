@@ -144,7 +144,7 @@ static std::string getDataDir(void)
 static std::string getLocaleDir(void)
 {
   struct stat st;
-  return std::string((stat(LOCALEDIR, &st) == 0) ? LOCALEDIR : "locale");
+  return std::string((stat("locale", &st) == 0) ? "locale" : LOCALEDIR);
 }
 
 static unsigned int getKeyMask(void) {
