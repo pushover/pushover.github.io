@@ -36,7 +36,7 @@ LIBS="$LIBS $LIBINTL"
 # Checks for libraries.
 AC_MSG_CHECKING([for Lua package name])
 PKG_CHECK_EXISTS([lua5.1], [LUA="lua5.1"],
-    [PKG_CHECK_EXISTS([lua-5.1], [LUA="lua-5.1"], [LUA="lua"])])
+    [PKG_CHECK_EXISTS([lua-5.2], [LUA="lua-5.2"], [LUA="lua"])])
 AC_MSG_RESULT([$LUA])
 
 PKG_CHECK_EXISTS([zlib], [ZLIB="zlib >= 1.2.3"],
