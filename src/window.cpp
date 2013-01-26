@@ -301,6 +301,7 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphics_c & g) : window_c(2, 0, 16,
 
   {
     char title[200];
+    //TRANSLATORS: the %s is a placeholder for the version
     snprintf(title, 200, _("Pushover - %s - About"), PACKAGE_VERSION);
     surf.renderText(&par, title);
   }
