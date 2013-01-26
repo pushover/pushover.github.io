@@ -180,7 +180,7 @@ dist-win32: all
 	done
 	cd $(srcdir) && for FILE in $(dist_doc_DATA); do \
 	    sed 's,$$,\r,' < $$FILE > $(abs_builddir)/$(win32dir)/$$FILE.txt; \
-	    rm $$FILE; \
+	    rm $(abs_builddir)/$(win32dir)/$$FILE; \
 	    done
 	$(RM)      '$(abs_builddir)/$(win32dir).zip'
 	cd '$(abs_builddir)' && zip -r9 $(win32dir).zip $(win32dir)
