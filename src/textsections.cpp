@@ -119,3 +119,8 @@ const std::string &
     throw format_error("section \"" + sectionName + "\""
                        " has more than one line");
 }
+
+bool textsections_c::hasSection(const std::string sectionName) const {
+  return sections.find(sectionName) != sections.end();
+}
+

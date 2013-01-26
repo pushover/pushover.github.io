@@ -111,6 +111,16 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
   /* Theme section */
   theme = sections.getSingleLine("Theme");
 
+  /* Author section */
+  if (sections.hasSection("Author"))
+  {
+    author = sections.getSingleLine("Author");
+  }
+  else
+  {
+    author = "unknown";
+  }
+
   /* Time section (time format is M:SS) */
   {
     std::istringstream timeStream(sections.getSingleLine("Time"));
@@ -497,6 +507,9 @@ void levelData_c::save(std::ostream & stream) const
   "\n"
   "Name\n"
   "| " << name << "\n"
+  "\n"
+  "Author\n"
+  "| " << author << "\n"
   "\n"
   "Theme\n"
   "| " << theme << "\n"

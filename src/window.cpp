@@ -162,7 +162,52 @@ void helpWindow_c::displayCurrentPage(void)
 
     s.renderText(&par, _(help.c_str()));
 
-    ypos += getTextHeight(&par, _(help.c_str())) + 20;
+    ypos += getTextHeight(&par, _(help.c_str())) + 10;
+
+    s.fillRect(par.box.x, ypos, par.box.w, 2, TXT_COL_R, TXT_COL_G, TXT_COL_B);
+
+    ypos += 12;
+
+    par.font = FNT_SMALL;
+    par.shadow = false;
+    par.color.r = TXT_COL_R; par.color.g = TXT_COL_G; par.color.b = TXT_COL_B;
+    par.box.y = ypos;
+    par.box.h = getFontHeight(FNT_SMALL);
+    par.alignment = ALN_TEXT;
+    s.renderText(&par, _("Level information "));
+    ypos += getFontHeight(FNT_SMALL);
+
+    par.box.y = ypos;
+    par.box.x += 10;
+    par.box.w -= 20;
+    if (rightToLeft())
+    {
+      s.renderText(&par, _(level.getName().c_str()) + std::string(_("Level name: ")));
+    }
+    else
+    {
+      s.renderText(&par, std::string(_("Level name: ")) + _(level.getName().c_str()));
+    }
+    ypos += getFontHeight(FNT_SMALL);
+
+    par.box.y = ypos;
+    if (rightToLeft())
+    {
+      s.renderText(&par, level.getAuthor() + _("Level author: "));
+    }
+    else
+    {
+      s.renderText(&par, _("Level author: ") + level.getAuthor());
+    }
+
+    ypos += getFontHeight(FNT_SMALL);
+    ypos += 10;
+
+    par.box.x -= 10;
+    par.box.w += 20;
+    s.fillRect(par.box.x, ypos, par.box.w, 2, TXT_COL_R, TXT_COL_G, TXT_COL_B);
+
+    ypos += 12;
   }
 
   nextPage = 0;

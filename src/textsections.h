@@ -48,6 +48,8 @@ class textsections_c {
       getSingleSection(const std::string sectionName) const;
     const std::string &
       getSingleLine(const std::string sectionName) const;
+
+    bool hasSection(const std::string sectionName) const;
 };
 
 #endif

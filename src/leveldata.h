@@ -67,6 +67,7 @@ class levelData_c {
     std::string name;
     std::string theme;
     std::string hint;
+    std::string author;
 
     std::string checksum;
     std::string checksumNoTime;
@@ -113,6 +114,7 @@ class levelData_c {
     const std::string getName(void) const { return name; }
     const std::string getTheme(void) const { return theme; }
     const std::string getHint(void) const { return hint; }
+    const std::string getAuthor(void) const { return author; }
 
     int getTimeLeft(void) const { return timeLeft; }
     void timeTick(void) { timeLeft--; }
