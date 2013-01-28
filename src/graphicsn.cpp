@@ -1043,18 +1043,18 @@ void graphicsN_c::findDirtyBlocks(void)
 
   if (newSec != Sec || timeLeft == -1)
   {
-    dirty.markDirty(3, 24);
-    dirty.markDirty(3, 23);
     dirty.markDirty(2, 24);
     dirty.markDirty(2, 23);
+    dirty.markDirty(1, 24);
+    dirty.markDirty(1, 23);
   }
 
   if (newMin != Min || timeLeft == -1)
   {
-    dirty.markDirty(2, 23);
-    dirty.markDirty(2, 24);
     dirty.markDirty(1, 23);
     dirty.markDirty(1, 24);
+    dirty.markDirty(0, 23);
+    dirty.markDirty(0, 24);
   }
 
   Sec = newSec;
