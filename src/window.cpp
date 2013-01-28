@@ -76,6 +76,8 @@ window_c::window_c(unsigned char x_, unsigned char y_, unsigned char w_, unsigne
   clearInside();
 
   done = false;
+
+  gr.markAllDirty();
 }
 
 void window_c::clearInside(void) {
