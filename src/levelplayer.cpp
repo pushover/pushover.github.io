@@ -37,7 +37,6 @@
 void levelPlayer_c::load(const textsections_c & sections, const std::string & userString) {
 
   openDoorEntry = openDoorExit = false;
-  resetTriggerFalln();
 
   levelData_c::load(sections, userString);
 }
@@ -353,13 +352,9 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
 // normal domino fallen function and additionally set the trigger bit
 void levelPlayer_c::DTA_9(int x, int y) {
   DTA_1(x, y);
-
-  setTriggerFalln();
 }
 void levelPlayer_c::DTA_N(int x, int y) {
   DTA_K(x, y);
-
-  setTriggerFalln();
 }
 
 // this is for the stopper, splitter and exploder dominos, when they
@@ -1781,28 +1776,52 @@ bool levelPlayer_c::triggerNotFlat(void) const {
 
   for (size_t y = 0; y < levelY(); y++)
     for (size_t x = 0; x < levelX(); x++)
-      if (getDominoType(x, y) == DominoTypeTrigger) {
-
+      if (getDominoType(x, y) == DominoTypeTrigger)
+      {
         // if the trigger is not lying completely flat
         if (getDominoState(x, y) != 8 && getDominoState(x, y) != 1 && getDominoState(x, y) != 15)
           return true;
-        else
-          return false;
+
+        // there can be multiple triggers, so go on
       }
 
   return false;
 }
 
-bool levelPlayer_c::levelCompleted(int & fail) const {
+bool levelPlayer_c::triggerIsFalln(void) const {
 
   for (size_t y = 0; y < levelY(); y++)
-    for (size_t x = 0; x < levelX(); x++) {
+    for (size_t x = 0; x < levelX(); x++)
+      if (getDominoType(x, y) == DominoTypeTrigger)
+      {
+        // if the trigger is not lying flat... then it is not falln
+        if (    (getDominoState(x, y) !=  1)
+             && (getDominoState(x, y) !=  15)
+            )
+          return false;
+
+        // there can be multiple triggers, so go on
+      }
+
+  return true;
+}
+
+bool levelPlayer_c::rubblePile(void) const
+{
+  for (size_t y = 0; y < levelY(); y++)
+    for (size_t x = 0; x < levelX(); x++)
       if (getDominoType(x, y) >= DominoTypeCrash0 &&
           getDominoType(x, y) <= DominoTypeCrash5)
       {
-        fail = 3;
-        return false;
+        return true;
       }
+  return false;
+}
+
+bool levelPlayer_c::dominosFalln(void) const {
+
+  for (size_t y = 0; y < levelY(); y++)
+    for (size_t x = 0; x < levelX(); x++) {
 
       if (getDominoType(x, y) != DominoTypeEmpty && getDominoType(x, y) != DominoTypeStopper)
       {
@@ -1810,7 +1829,6 @@ bool levelPlayer_c::levelCompleted(int & fail) const {
         { // for splitters is must have started to fall
           if (getDominoState(x, y) > 2 && getDominoState(x, y) <= 8)
           {
-            fail = 6;
             return false;
           }
         }
@@ -1818,7 +1836,6 @@ bool levelPlayer_c::levelCompleted(int & fail) const {
         { // triggers must as least have started to fall
           if (getDominoState(x, y) == 8 && !triggerIsFalln())
           {
-            fail = 6;
             return false;
           }
         }
@@ -1826,7 +1843,6 @@ bool levelPlayer_c::levelCompleted(int & fail) const {
         { // tumbler must lie on something or lean against a wall
           // not fallen far enough
           if (getDominoState(x, y) >= 3 && getDominoState(x, y) <= 13) {
-            fail = 6;
             return false;
           }
 
@@ -1836,7 +1852,6 @@ bool levelPlayer_c::levelCompleted(int & fail) const {
               && ((x < 2) || (getDominoType(x-2, y) == DominoTypeEmpty || getDominoState(x-2, y) < 14))
              )
           {
-            fail = 6;
             return false;
           }
           if (   getDominoState(x, y) >= 14
@@ -1844,7 +1859,6 @@ bool levelPlayer_c::levelCompleted(int & fail) const {
               && ((x+3 > levelX()) || (getDominoType(x+2, y) == DominoTypeEmpty || getDominoState(x+2, y) > 2))
              )
           {
-            fail = 6;
             return false;
           }
 
@@ -1853,13 +1867,11 @@ bool levelPlayer_c::levelCompleted(int & fail) const {
         {
           if (getDominoState(x, y) == 8)
           {
-            fail = 4;
             return false;
           }
           if (getDominoState(x, y) > 3 && getDominoState(x, y) < 13)
           {
             // here we certainly fail
-            fail = 6;
             return false;
           }
           // in this case we might still succeed, when we lean against a block
@@ -1870,7 +1882,6 @@ bool levelPlayer_c::levelCompleted(int & fail) const {
              )
           {
             // here we lean against a of a blocker and can't go back
-            fail = 6;
             return false;
           }
 
@@ -1881,7 +1892,6 @@ bool levelPlayer_c::levelCompleted(int & fail) const {
              )
           {
             // here we lean against a step
-            fail = 6;
             return false;
           }
         }
@@ -1891,4 +1901,15 @@ bool levelPlayer_c::levelCompleted(int & fail) const {
   return true;
 }
 
+
+bool levelPlayer_c::dominosStanding(void) const
+{
+  for (size_t y = 0; y < levelY(); y++)
+    for (size_t x = 0; x < levelX(); x++)
+      if (getDominoType(x, y) != DominoTypeEmpty && getDominoType(x, y) != DominoTypeStopper)
+        if (getDominoState(x, y) == 8)
+          return true;
+
+  return false;
+}
 

@@ -133,13 +133,12 @@ void ant_c::initForLevel(void) {
   direction = 1;
   pushDelay = 0;
   downChecker = false;
-  finishCheckDone = false;
 
   finalAnimationPlayed = levelFail = levelSuccess = false;
 }
 
 // do one animation step for the level
-int ant_c::performAnimation(unsigned int keyMask)
+LevelState ant_c::performAnimation(unsigned int keyMask)
 {
   // first do the doors
   level.performDoors();
@@ -154,50 +153,88 @@ int ant_c::performAnimation(unsigned int keyMask)
     state = callStateFunction(state, keyMask);
   }
 
+  // the trigger must be laying properly before
+  // and after the domino update (well or it must
+  // have vanished
+  bool trigger = level.triggerIsFalln();
+
   // now the level update for all the dominos
   level.performDominos();
 
-  int reason = 0;
+  trigger = trigger ? level.triggerIsFalln() : false;
 
-  if (finishCheckDone && !level.levelCompleted(reason))
+  // check, whether we open the exit door we can close it
+  // again, when something unexpected happens
+  if (   trigger
+      && !level.rubblePile()
+      && !level.dominosStanding()
+      && isVisible()
+     )
   {
-    // we failed after all
+    level.openExitDoor(true);
+  }
+  else
+  {
     level.openExitDoor(false);
-
-    return reason;
   }
 
-  if (level.triggerIsFalln() && !finishCheckDone)
+  // check, if we want to play the jubilation or shruggint animation
+  if (trigger)
   {
-    finishCheckDone = true;
-
-    if (level.levelCompleted(reason) && carriedDomino == DominoTypeEmpty && isLiving())
+    if (!level.rubblePile() && level.dominosFalln() && carriedDomino == DominoTypeEmpty && isLiving())
     {
       levelSuccess = true;
-      level.openExitDoor(true);
     }
     else
     {
       levelFail = true;
-
-      if (reason)
-        return reason;
-      else if (carriedDomino != DominoTypeEmpty)
-        return 4;
-      else
-        return 5;
     }
   }
 
   // if level is inactive for a longer time and no pushes are left
-  if (numPushsLeft == 0 && level.levelLongInactive()) {
-    // search for a trigger
+  if (numPushsLeft == 0 && level.levelLongInactive())
+  {
+    // if the trigger has been toppled but it is not completely flat,
+    // the level failed because of it
     //
+    // on th eother hand even if we don't have any more pushes it might
+    // still happen that we can solve the leven, when the tigger is stll
+    // upright
     if (level.triggerNotFlat())
-      return 7;
+      return LS_triggerNotFlat;
+
+    if (level.rubblePile())
+      return LS_crashes;
+
+    if (trigger)
+    {
+      if (carriedDomino != DominoTypeEmpty)
+        return LS_carrying;
+
+      if (level.dominosStanding())
+        return LS_someLeft;
+    }
   }
 
-  return 0;
+  if (!isLiving())
+  {
+    return LS_died;
+  }
+
+  if (trigger && !isVisible() && level.isExitDoorClosed())
+  {
+    // level is solved and ant left it
+    if (level.someTimeLeft())
+    {
+      return LS_solved;
+    }
+    else
+    {
+      return LS_solvedTime;
+    }
+  }
+
+  return LS_undecided;
 }
 
 AntAnimationState ant_c::callStateFunction(unsigned int state, unsigned int keyMask) {

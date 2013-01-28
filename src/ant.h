@@ -110,6 +110,21 @@ typedef enum {
 
 } AntAnimationState;
 
+// these are the return values for performAnimation. When they are signalled is given in the comment
+typedef enum
+{
+  LS_undecided,      // still all things open, level undecided
+  LS_solved,         // successfully and in time solved,         when exit door has closed and ant is out
+  LS_solvedTime,     // solved but not in time,                  when exit door has closed and ant is out
+  LS_died,           // the ant has died                         a while after the ant died
+  LS_crashes,        // something crashed                        and level has become quiet (no domino action)
+  LS_triggerNotFlat, // the trigger is not flat on the ground    and level has become quiet
+  LS_triggerNotLast, // the trigger was not the last to fall     and level has become quiet
+  LS_someLeft,       // some dominos are left standing, no push left and level ha sbecome quiet
+  LS_carrying        // you are still holding a domino           and level has become quiet
+
+} LevelState;
+
 class ant_c {
 
   private:
@@ -182,7 +197,7 @@ class ant_c {
     void initForLevel(void);
 
     // do one animation step for the ant
-    int performAnimation(unsigned int keyMask);
+    LevelState performAnimation(unsigned int keyMask);
 
     bool isLiving(void) { return state != AntAnimDominoDying && state != AntAnimLandDying && state != AntAnimGhost2; }
 

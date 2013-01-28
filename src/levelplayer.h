@@ -96,14 +96,12 @@ class levelPlayer_c : public levelData_c {
     // returns true, when the trigger is not standing but also not flat on the ground
     bool triggerNotFlat(void) const;
 
-    bool triggerIsFalln(void) const { return triggerFalln; }
-    void setTriggerFalln(void) { triggerFalln = true; }
-    void resetTriggerFalln(void) { triggerFalln = false; }
 
 
-    // check, if the level has been successfully solved
-    // if not the reason for failure is in fail
-    bool levelCompleted(int & fail) const;
+    bool dominosFalln(void) const; // returns true when all dominos are falln far enough
+    bool dominosStanding(void) const; // returns true, when there is at least one domino still standing
+    bool rubblePile(void) const;  // there is at least one pile of rubbish on the board
+    bool triggerIsFalln(void) const;
 };
 
 #endif

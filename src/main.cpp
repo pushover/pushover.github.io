@@ -103,21 +103,24 @@ void check(int argn, char * argv[], std::string checker(const ant_c & a, const l
   std::cout << failed << " out of " << count << " tests failed\n";
 }
 
-std::string checker1(const ant_c & a, const levelPlayer_c & l) {
+std::string checker1(const ant_c & a, const levelPlayer_c & l)
+{
+    if (a.isVisible())
+      return "Ant still visible";
 
-    int i;
-    // we succeeded, when the ant has vanished, then it went out of the door
-    if (a.isVisible() == false && l.levelCompleted(i))
-      return "";
-    else
-      return "Level not Finished";
+
+    if (!l.dominosFalln())
+      return "Not all dominos falln";
+
+    if (l.rubblePile())
+      return "Crashes happened";
+
+    return "";
 }
 
 std::string checker2(const ant_c & a, const levelPlayer_c & l) {
 
-    int i;
-    // we succeeded, when the ant has vanished, then it went out of the door
-    if (a.isVisible() == true || !l.levelCompleted(i))
+    if (a.isVisible() == true || !l.dominosFalln() || l.rubblePile())
       return "";
     else
       return "Level not Failed";
@@ -125,14 +128,11 @@ std::string checker2(const ant_c & a, const levelPlayer_c & l) {
 
 std::string checker3(const ant_c & a, const levelPlayer_c & l) {
   // we succeeded, when the ant has vanished, then it went out of the door
-  for (size_t y = 0; y < l.levelY(); y++)
-    for (size_t x = 0; x < l.levelX(); x++)
-      if (l.getDominoType(x, y) >= DominoTypeCrash0 &&
-          l.getDominoType(x, y) <= DominoTypeCrash5) {
-        return "";
-      }
 
-  return "Crashes didn't happen";
+  if (l.rubblePile())
+    return "";
+  else
+    return "Crashes didn't happen";
 }
 
 static std::string getDataDir(void)
@@ -161,37 +161,11 @@ static unsigned int getKeyMask(void) {
   return keyMask;
 }
 
-// make a play tick
-// return codes:
-// 0 nothing happened
-// 1 success
-// 2 too slow
-// 3 crashes
-// 4 not all dominos fell
-// 5 die
-// 6 trigger not last to fall
-// 7 trigger not flat on the ground
-//
-int playTick(levelPlayer_c & l, ant_c & a, graphics_c & gr, unsigned int keys)
+LevelState playTick(levelPlayer_c & l, ant_c & a, graphics_c & gr, unsigned int keys)
 {
-  int res = a.performAnimation(keys);
+  LevelState res = a.performAnimation(keys);
 
   gr.drawLevel();
-
-  if (l.triggerIsFalln() && !a.isVisible() && l.isExitDoorClosed() && (res == 0)) {
-
-    if (l.someTimeLeft())
-    {
-      return 1;
-    }
-    else
-    {
-      return 2;
-    }
-  }
-
-  if (!a.isLiving())
-    return 5;
 
   return res;
 }
@@ -386,7 +360,7 @@ int main(int argc, char * argv[]) {
   Uint32 ticks = SDL_GetTicks();
 
   window_c * window = 0; // the currently visible window
-  unsigned int failReason = 0;
+  LevelState failReason = LS_undecided;
   unsigned int failDelay = 0; // a counter to delay the fail window a bit after failing
 
   if (nextState == ST_MAIN)
@@ -974,7 +948,7 @@ int main(int argc, char * argv[]) {
           }
           else
           {
-            if (playTick(l, a, gr, rec.getEvent()))
+            if (playTick(l, a, gr, rec.getEvent()) != LS_undecided)
             {
               if (exitAfterReplay)
               {
@@ -1001,14 +975,14 @@ int main(int argc, char * argv[]) {
           if (l.levelInactive())
           {
             switch (failReason) {
-              case 1:
+              case LS_solved:
                 rec.save("sol");
                 solved.addLevel(l.getChecksum());
                 nextState = ST_SOLVED;
                 break;
-              case 0:
+              case LS_undecided:
                 break;
-              case 2:
+              case LS_solvedTime:
                 rec.save("time");
                 solved.addLevel(l.getChecksumNoTime());
                 nextState = ST_TIMEOUT;

@@ -840,7 +840,7 @@ listWindow_c * getSolvedWindow(surface_c & surf, graphicsN_c & gr) {
     return new listWindow_c(2, 3, 16, 6, surf, gr, _("Congratulations! You did it."), entries, false);
 }
 
-listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphicsN_c & gr) {
+listWindow_c * getFailedWindow(LevelState failReason, surface_c & surf, graphicsN_c & gr) {
     static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
@@ -851,12 +851,12 @@ listWindow_c * getFailedWindow(int failReason, surface_c & surf, graphicsN_c & g
 
     std::string title;
     switch (failReason) {
-      case 3: title = _("You failed: Some dominoes crashed"); break;
-      case 4: title = _("You failed: Not all dominoes fell"); break;
-      case 5: title = _("You failed: You died"); break;
-      case 6: title = _("You failed: Trigger was not last to fall"); break;
-      case 7: title = _("You failed: Trigger not flat on the ground"); break;
-      default: title = _("You failed... but I don't know why ...?"); break;
+      case LS_crashes        : title = _("You failed: Some dominoes crashed"); break;
+      case LS_someLeft       : title = _("You failed: Not all dominoes fell"); break;
+      case LS_died           : title = _("You failed: You died"); break;
+      case LS_triggerNotLast : title = _("You failed: Trigger was not last to fall"); break;
+      case LS_triggerNotFlat : title = _("You failed: Trigger not flat on the ground"); break;
+      default                : title = _("You failed... but I don't know why ...?"); break;
     }
 
     unsigned int w = (getTextWidth(FNT_BIG, title) + gr.blockX() - 1) / gr.blockX();
