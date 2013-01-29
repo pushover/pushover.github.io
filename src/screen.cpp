@@ -623,6 +623,10 @@ static std::vector<std::string> split(const std::string & text, char splitter)
 
 static std::string fribiditize(const std::string &text)
 {
+    // TODO this is hopelessly simple, we do need
+    // more ecomplex workings here: each line must be reordered independently
+    // ...
+
     FriBidiCharType base = FRIBIDI_TYPE_ON;
     FriBidiChar *logicalString = new FriBidiChar[text.length() + 1];
     FriBidiChar *visualString = new FriBidiChar[text.length() + 1];
