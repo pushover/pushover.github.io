@@ -123,11 +123,10 @@ static const unsigned char numDominos[DominoNumber] = {
 
 
 #define antDisplace (6*3)
-
-int getDominoYStart(void) { return 3*4; }
-int convertDominoX(int x) { return 5*x/2; }
-int convertDominoY(int y) { return 3*y; }
-int splitterY(void) { return 3*12; }
+#define dominoYStart (3*4)
+static int convertDominoX(int x) { return 5*x/2; }
+static int convertDominoY(int y) { return 3*y; }
+#define splitterY (3*12)
 
 graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   background = 0;
@@ -791,7 +790,7 @@ void graphicsN_c::drawDominos(void)
   // block. But painting the neighbors is only necessary, when they are not drawn on
   // their own anyway, so always check for !dirty of the "home-block" of each domino
 
-  int SpriteYPos = getDominoYStart();
+  int SpriteYPos = dominoYStart;
 
   for (size_t y = 0; y < level->levelY(); y++, SpriteYPos += blockY()/2) {
 
@@ -843,7 +842,7 @@ void graphicsN_c::drawDominos(void)
       {
         target->blit(dominos[level->getDominoExtra(x, y)][level->getDominoExtra(x, y)>=DominoTypeCrash0?0:7],
             SpriteXPos,
-            SpriteYPos-splitterY());
+            SpriteYPos-splitterY);
       }
 
       // paint the actual domino but take care of the special cases of the ascender domino
