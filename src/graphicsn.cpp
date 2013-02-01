@@ -712,6 +712,76 @@ void graphicsN_c::setPaintData(const levelData_c * l, const ant_c * a, surface_c
   if (!background) background = new surface_c(t->getIdentical());
 }
 
+uint16_t graphicsN_c::getPlatformImage(uint16_t x, uint16_t y)
+{
+  if (!level->getPlatform(x, y))
+  {
+    // our own tile contains no platform
+
+    // when the platform below us is empty -> paint nothing
+    if (y+1 > level->levelY() || !level->getPlatform(x, y+1)) return 0xFFFF;
+
+    // there is something below us, paint platform depending on the 2 neighbors
+    // of the platform below
+    if (x > 0 && level->getPlatform(x-1, y+1))
+      if (x+1 < level->levelX() && level->getPlatform(x+1, y+1))
+        return 2;
+      else
+        return 4;
+    else
+      if (x+1 < level->levelX() && level->getPlatform(x+1, y+1))
+        return 0;
+      else
+        return 30;
+  }
+  else
+  {
+    // our own tile contains a platform
+
+    if (y+1 > level->levelY() || !level->getPlatform(x, y+1))
+    {
+      // and the tile below us is empty, so draw tile according to
+      // our own neighbors
+
+      if (x > 0 && level->getPlatform(x-1, y))
+        if (x+1 < level->levelX() && level->getPlatform(x+1, y))
+          return 3;
+        else
+          return 5;
+      else
+        if (x+1 < level->levelX() && level->getPlatform(x+1, y))
+          return 1;
+        else
+          return 31;
+    }
+    else
+    {
+      // we have platform and below us is platform
+
+      if (level->getPlatform(x-1, y) && level->getPlatform(x+1, y+1) &&
+          !level->getPlatform(x-1, y+1) && !level->getPlatform(x+1, y)
+         )
+      {
+        // Step down
+        return 13;
+      }
+
+      if (!level->getPlatform(x-1, y) && !level->getPlatform(x+1, y+1) &&
+          level->getPlatform(x-1, y+1) && level->getPlatform(x+1, y)
+         )
+      {
+        // Step up
+        return 23;
+      }
+
+      // TODO there should be 8 cases, handle those
+      // they are not needed for the current levels but might be for future ones
+
+      return 0xFFFF;
+    }
+  }
+}
+
 void graphicsN_c::drawDominos(void)
 {
 
@@ -737,35 +807,11 @@ void graphicsN_c::drawDominos(void)
         if (x == level->getExitX() && y+1 == level->getExitY())
           background->blitBlock(fgTiles[curTheme][FG_DOORSTART+1+2*level->getExitState()], x*blockX(), y*blockY()/2);
 
-        // blit platforms
-        if (y+1 < level->levelY() && level->getPlatform(x, y+1))
+        // blit the platform images
         {
-          if (!level->getPlatform(x-1, y+1) && !level->getPlatform(x+1, y+1))
-            background->blitBlock(fgTiles[curTheme][30], x*blockX(), y*blockY()/2);
-
-          if (level->getPlatform(x-1, y+1) && !level->getPlatform(x+1, y+1))
-            background->blitBlock(fgTiles[curTheme][4], x*blockX(), y*blockY()/2);
-
-          if (!level->getPlatform(x-1, y+1) && level->getPlatform(x+1, y+1))
-            background->blitBlock(fgTiles[curTheme][0], x*blockX(), y*blockY()/2);
-
-          if (level->getPlatform(x-1, y+1) && level->getPlatform(x+1, y+1))
-            background->blitBlock(fgTiles[curTheme][2], x*blockX(), y*blockY()/2);
-        }
-
-        if (y > 0 && level->getPlatform(x, y))
-        {
-          if (!level->getPlatform(x-1, y) && !level->getPlatform(x+1, y))
-            background->blitBlock(fgTiles[curTheme][31], x*blockX(), y*blockY()/2);
-
-          if (level->getPlatform(x-1, y) && !level->getPlatform(x+1, y))
-            background->blitBlock(fgTiles[curTheme][5], x*blockX(), y*blockY()/2);
-
-          if (!level->getPlatform(x-1, y) && level->getPlatform(x+1, y))
-            background->blitBlock(fgTiles[curTheme][1], x*blockX(), y*blockY()/2);
-
-          if (level->getPlatform(x-1, y) && level->getPlatform(x+1, y))
-            background->blitBlock(fgTiles[curTheme][3], x*blockX(), y*blockY()/2);
+          uint16_t s = getPlatformImage(x, y);
+          if (s < fgTiles[curTheme].size())
+            background->blitBlock(fgTiles[curTheme][s], x*blockX(), y*blockY()/2);
         }
 
         background->gradient(blockX()*x, blockY()/2*y, blockX(), blockY()/2);

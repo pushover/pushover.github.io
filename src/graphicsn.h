@@ -69,6 +69,11 @@ class graphicsN_c : public graphics_c {
     void addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free = true);
     void getAnimation(AntAnimationState anim, pngLoader_c * png);
 
+    // get index into the fg tiles for the tile at position x, y
+    // values bigger than the size of fgTiles means leave empty
+    uint16_t getPlatformImage(uint16_t x, uint16_t y);
+
+
     std::string dataPath;
 
     int Min, Sec;   // number of minutes and seconds shown in display
