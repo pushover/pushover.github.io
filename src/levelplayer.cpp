@@ -34,6 +34,8 @@
 #include <sstream>
 #include <iomanip>
 
+#include <assert.h>
+
 void levelPlayer_c::load(const textsections_c & sections, const std::string & userString) {
 
   openDoorEntry = openDoorExit = false;
@@ -1467,285 +1469,299 @@ void levelPlayer_c::DTA_P(int x, int y) {
 
 void levelPlayer_c::callStateFunction(int type, int state, int x, int y) {
 
-  switch ((type-1)*17+state-1) {
 
+#define MX_ST 17
+
+  if (type == DominoTypeEmpty) return;
+
+  switch ((type-1)*MX_ST+state-1)
+  {
     // DominoTypeStandard
-    case 17*(DominoTypeStandard-1) +   0: DTA_1(x, y); break;
-    case 17*(DominoTypeStandard-1) +   1: DTA_2(x, y); break;
-    case 17*(DominoTypeStandard-1) +   2: DTA_3(x, y); break;
-    case 17*(DominoTypeStandard-1) +   3: DTA_4(x, y); break;
-    case 17*(DominoTypeStandard-1) +   4: DTA_4(x, y); break;
-    case 17*(DominoTypeStandard-1) +   5: DTA_4(x, y); break;
-    case 17*(DominoTypeStandard-1) +   6: DTA_4(x, y); break;
-    case 17*(DominoTypeStandard-1) +   7: DTA_E(x, y); break;
-    case 17*(DominoTypeStandard-1) +   8: DTA_4(x, y); break;
-    case 17*(DominoTypeStandard-1) +   9: DTA_4(x, y); break;
-    case 17*(DominoTypeStandard-1) +  10: DTA_4(x, y); break;
-    case 17*(DominoTypeStandard-1) +  11: DTA_4(x, y); break;
-    case 17*(DominoTypeStandard-1) +  12: DTA_I(x, y); break;
-    case 17*(DominoTypeStandard-1) +  13: DTA_J(x, y); break;
-    case 17*(DominoTypeStandard-1) +  14: DTA_K(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +   0: DTA_1(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +   1: DTA_2(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +   2: DTA_3(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +   3: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +   4: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +   5: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +   6: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +   7: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +   8: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +   9: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +  10: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +  11: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +  12: DTA_I(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +  13: DTA_J(x, y); break;
+    case MX_ST*(DominoTypeStandard-1) +  14: DTA_K(x, y); break;
 
               // DominoTypeStopper
-    case 17*(DominoTypeStopper -1) +   7: DTA_F(x, y); break;
+    case MX_ST*(DominoTypeStopper -1) +   7: DTA_F(x, y); break;
 
               // DominoTypeSplitter
-    case 17*(DominoTypeSplitter-1) +   1: DTA_C(x, y); break;
-    case 17*(DominoTypeSplitter-1) +   2: DTA_C(x, y); break;
-    case 17*(DominoTypeSplitter-1) +   3: DTA_4(x, y); break;
-    case 17*(DominoTypeSplitter-1) +   4: DTA_4(x, y); break;
-    case 17*(DominoTypeSplitter-1) +   5: DTA_4(x, y); break;
-    case 17*(DominoTypeSplitter-1) +   6: DTA_4(x, y); break;
-    case 17*(DominoTypeSplitter-1) +   7: DTA_F(x, y); break;
-    case 17*(DominoTypeSplitter-1) +   8: DTA_C(x, y); break;
-    case 17*(DominoTypeSplitter-1) +   9: DTA_C(x, y); break;
-    case 17*(DominoTypeSplitter-1) +  10: DTA_C(x, y); break;
-    case 17*(DominoTypeSplitter-1) +  11: DTA_C(x, y); break;
-    case 17*(DominoTypeSplitter-1) +  12: DTA_C(x, y); break;
-    case 17*(DominoTypeSplitter-1) +  13: DTA_C(x, y); break;
+    case MX_ST*(DominoTypeSplitter-1) +   0:              break;
+    case MX_ST*(DominoTypeSplitter-1) +   1: DTA_C(x, y); break;
+    case MX_ST*(DominoTypeSplitter-1) +   2: DTA_C(x, y); break;
+    case MX_ST*(DominoTypeSplitter-1) +   3: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeSplitter-1) +   4: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeSplitter-1) +   5: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeSplitter-1) +   6: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeSplitter-1) +   7: DTA_F(x, y); break;
+    case MX_ST*(DominoTypeSplitter-1) +   8: DTA_C(x, y); break;
+    case MX_ST*(DominoTypeSplitter-1) +   9: DTA_C(x, y); break;
+    case MX_ST*(DominoTypeSplitter-1) +  10: DTA_C(x, y); break;
+    case MX_ST*(DominoTypeSplitter-1) +  11: DTA_C(x, y); break;
+    case MX_ST*(DominoTypeSplitter-1) +  12: DTA_C(x, y); break;
+    case MX_ST*(DominoTypeSplitter-1) +  13: DTA_C(x, y); break;
 
               // DominoTypeExploder
-    case 17*(DominoTypeExploder-1) +   0: DTA_5(x, y); break;
-    case 17*(DominoTypeExploder-1) +   1: DTA_4(x, y); break;
-    case 17*(DominoTypeExploder-1) +   2: DTA_4(x, y); break;
-    case 17*(DominoTypeExploder-1) +   3: DTA_4(x, y); break;
-    case 17*(DominoTypeExploder-1) +   4: DTA_4(x, y); break;
-    case 17*(DominoTypeExploder-1) +   5: DTA_4(x, y); break;
-    case 17*(DominoTypeExploder-1) +   6: DTA_4(x, y); break;
-    case 17*(DominoTypeExploder-1) +   7: DTA_F(x, y); break;
+    case MX_ST*(DominoTypeExploder-1) +   0: DTA_5(x, y); break;
+    case MX_ST*(DominoTypeExploder-1) +   1: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeExploder-1) +   2: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeExploder-1) +   3: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeExploder-1) +   4: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeExploder-1) +   5: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeExploder-1) +   6: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeExploder-1) +   7: DTA_F(x, y); break;
 
               // DominoTypeDelay
-    case 17*(DominoTypeDelay-1) +   0: DTA_1(x, y); break;
-    case 17*(DominoTypeDelay-1) +   1: DTA_2(x, y); break;
-    case 17*(DominoTypeDelay-1) +   2: DTA_3(x, y); break;
-    case 17*(DominoTypeDelay-1) +   3: DTA_4(x, y); break;
-    case 17*(DominoTypeDelay-1) +   4: DTA_4(x, y); break;
-    case 17*(DominoTypeDelay-1) +   5: DTA_4(x, y); break;
-    case 17*(DominoTypeDelay-1) +   6: DTA_4(x, y); break;
-    case 17*(DominoTypeDelay-1) +   7: DTA_G(x, y); break;
-    case 17*(DominoTypeDelay-1) +   8: DTA_4(x, y); break;
-    case 17*(DominoTypeDelay-1) +   9: DTA_4(x, y); break;
-    case 17*(DominoTypeDelay-1) +  10: DTA_4(x, y); break;
-    case 17*(DominoTypeDelay-1) +  11: DTA_4(x, y); break;
-    case 17*(DominoTypeDelay-1) +  12: DTA_I(x, y); break;
-    case 17*(DominoTypeDelay-1) +  13: DTA_J(x, y); break;
-    case 17*(DominoTypeDelay-1) +  14: DTA_K(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +   0: DTA_1(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +   1: DTA_2(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +   2: DTA_3(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +   3: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +   4: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +   5: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +   6: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +   7: DTA_G(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +   8: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +   9: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +  10: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +  11: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +  12: DTA_I(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +  13: DTA_J(x, y); break;
+    case MX_ST*(DominoTypeDelay-1) +  14: DTA_K(x, y); break;
 
               // DominoTypeTumbler
-    case 17*(DominoTypeTumbler-1) +   0: DTA_6(x, y); break;
-    case 17*(DominoTypeTumbler-1) +   1: DTA_2(x, y); break;
-    case 17*(DominoTypeTumbler-1) +   2: DTA_3(x, y); break;
-    case 17*(DominoTypeTumbler-1) +   3: DTA_4(x, y); break;
-    case 17*(DominoTypeTumbler-1) +   4: DTA_4(x, y); break;
-    case 17*(DominoTypeTumbler-1) +   5: DTA_4(x, y); break;
-    case 17*(DominoTypeTumbler-1) +   6: DTA_4(x, y); break;
-    case 17*(DominoTypeTumbler-1) +   7: DTA_E(x, y); break;
-    case 17*(DominoTypeTumbler-1) +   8: DTA_4(x, y); break;
-    case 17*(DominoTypeTumbler-1) +   9: DTA_4(x, y); break;
-    case 17*(DominoTypeTumbler-1) +  10: DTA_4(x, y); break;
-    case 17*(DominoTypeTumbler-1) +  11: DTA_4(x, y); break;
-    case 17*(DominoTypeTumbler-1) +  12: DTA_I(x, y); break;
-    case 17*(DominoTypeTumbler-1) +  13: DTA_J(x, y); break;
-    case 17*(DominoTypeTumbler-1) +  14: DTA_L(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +   0: DTA_6(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +   1: DTA_2(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +   2: DTA_3(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +   3: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +   4: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +   5: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +   6: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +   7: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +   8: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +   9: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +  10: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +  11: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +  12: DTA_I(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +  13: DTA_J(x, y); break;
+    case MX_ST*(DominoTypeTumbler-1) +  14: DTA_L(x, y); break;
 
               // DominoTypeBridger
-    case 17*(DominoTypeBridger-1) +   0: DTA_7(x, y); break;
-    case 17*(DominoTypeBridger-1) +   1: DTA_2(x, y); break;
-    case 17*(DominoTypeBridger-1) +   2: DTA_3(x, y); break;
-    case 17*(DominoTypeBridger-1) +   3: DTA_4(x, y); break;
-    case 17*(DominoTypeBridger-1) +   4: DTA_4(x, y); break;
-    case 17*(DominoTypeBridger-1) +   5: DTA_4(x, y); break;
-    case 17*(DominoTypeBridger-1) +   6: DTA_4(x, y); break;
-    case 17*(DominoTypeBridger-1) +   7: DTA_E(x, y); break;
-    case 17*(DominoTypeBridger-1) +   8: DTA_4(x, y); break;
-    case 17*(DominoTypeBridger-1) +   9: DTA_4(x, y); break;
-    case 17*(DominoTypeBridger-1) +  10: DTA_4(x, y); break;
-    case 17*(DominoTypeBridger-1) +  11: DTA_4(x, y); break;
-    case 17*(DominoTypeBridger-1) +  12: DTA_I(x, y); break;
-    case 17*(DominoTypeBridger-1) +  13: DTA_J(x, y); break;
-    case 17*(DominoTypeBridger-1) +  14: DTA_M(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +   0: DTA_7(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +   1: DTA_2(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +   2: DTA_3(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +   3: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +   4: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +   5: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +   6: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +   7: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +   8: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +   9: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +  10: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +  11: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +  12: DTA_I(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +  13: DTA_J(x, y); break;
+    case MX_ST*(DominoTypeBridger-1) +  14: DTA_M(x, y); break;
 
               // DominoTypeVanish
-    case 17*(DominoTypeVanish-1) +   0: DTA_8(x, y); break;
-    case 17*(DominoTypeVanish-1) +   1: DTA_4(x, y); break;
-    case 17*(DominoTypeVanish-1) +   2: DTA_3(x, y); break;
-    case 17*(DominoTypeVanish-1) +   3: DTA_4(x, y); break;
-    case 17*(DominoTypeVanish-1) +   4: DTA_4(x, y); break;
-    case 17*(DominoTypeVanish-1) +   5: DTA_4(x, y); break;
-    case 17*(DominoTypeVanish-1) +   6: DTA_4(x, y); break;
-    case 17*(DominoTypeVanish-1) +   7: DTA_E(x, y); break;
-    case 17*(DominoTypeVanish-1) +   8: DTA_4(x, y); break;
-    case 17*(DominoTypeVanish-1) +   9: DTA_4(x, y); break;
-    case 17*(DominoTypeVanish-1) +  10: DTA_4(x, y); break;
-    case 17*(DominoTypeVanish-1) +  11: DTA_4(x, y); break;
-    case 17*(DominoTypeVanish-1) +  12: DTA_I(x, y); break;
-    case 17*(DominoTypeVanish-1) +  13: DTA_4(x, y); break;
-    case 17*(DominoTypeVanish-1) +  14: DTA_8(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +   0: DTA_8(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +   1: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +   2: DTA_3(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +   3: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +   4: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +   5: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +   6: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +   7: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +   8: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +   9: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +  10: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +  11: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +  12: DTA_I(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +  13: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeVanish-1) +  14: DTA_8(x, y); break;
 
               // DominoTypeTrigger
-    case 17*(DominoTypeTrigger-1) +   0: DTA_9(x, y); break;
-    case 17*(DominoTypeTrigger-1) +   1: DTA_2(x, y); break;
-    case 17*(DominoTypeTrigger-1) +   2: DTA_3(x, y); break;
-    case 17*(DominoTypeTrigger-1) +   3: DTA_4(x, y); break;
-    case 17*(DominoTypeTrigger-1) +   4: DTA_4(x, y); break;
-    case 17*(DominoTypeTrigger-1) +   5: DTA_4(x, y); break;
-    case 17*(DominoTypeTrigger-1) +   6: DTA_4(x, y); break;
-    case 17*(DominoTypeTrigger-1) +   7: DTA_E(x, y); break;
-    case 17*(DominoTypeTrigger-1) +   8: DTA_4(x, y); break;
-    case 17*(DominoTypeTrigger-1) +   9: DTA_4(x, y); break;
-    case 17*(DominoTypeTrigger-1) +  10: DTA_4(x, y); break;
-    case 17*(DominoTypeTrigger-1) +  11: DTA_4(x, y); break;
-    case 17*(DominoTypeTrigger-1) +  12: DTA_I(x, y); break;
-    case 17*(DominoTypeTrigger-1) +  13: DTA_J(x, y); break;
-    case 17*(DominoTypeTrigger-1) +  14: DTA_N(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +   0: DTA_9(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +   1: DTA_2(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +   2: DTA_3(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +   3: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +   4: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +   5: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +   6: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +   7: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +   8: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +   9: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +  10: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +  11: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +  12: DTA_I(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +  13: DTA_J(x, y); break;
+    case MX_ST*(DominoTypeTrigger-1) +  14: DTA_N(x, y); break;
 
               // DominoTypeAscender
-    case 17*(DominoTypeAscender-1) +   0: DTA_A(x, y); break;
-    case 17*(DominoTypeAscender-1) +   1: DTA_4(x, y); break;
-    case 17*(DominoTypeAscender-1) +   2: DTA_3(x, y); break;
-    case 17*(DominoTypeAscender-1) +   3: DTA_4(x, y); break;
-    case 17*(DominoTypeAscender-1) +   4: DTA_4(x, y); break;
-    case 17*(DominoTypeAscender-1) +   5: DTA_4(x, y); break;
-    case 17*(DominoTypeAscender-1) +   6: DTA_4(x, y); break;
-    case 17*(DominoTypeAscender-1) +   7: DTA_H(x, y); break;
-    case 17*(DominoTypeAscender-1) +   8: DTA_4(x, y); break;
-    case 17*(DominoTypeAscender-1) +   9: DTA_4(x, y); break;
-    case 17*(DominoTypeAscender-1) +  10: DTA_4(x, y); break;
-    case 17*(DominoTypeAscender-1) +  11: DTA_4(x, y); break;
-    case 17*(DominoTypeAscender-1) +  12: DTA_I(x, y); break;
-    case 17*(DominoTypeAscender-1) +  13: DTA_4(x, y); break;
-    case 17*(DominoTypeAscender-1) +  14: DTA_O(x, y); break;
-    case 17*(DominoTypeAscender-1) +  15: DTA_H(x, y); break;
-    case 17*(DominoTypeAscender-1) +  16: DTA_H(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +   0: DTA_A(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +   1: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +   2: DTA_3(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +   3: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +   4: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +   5: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +   6: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +   7: DTA_H(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +   8: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +   9: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +  10: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +  11: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +  12: DTA_I(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +  13: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +  14: DTA_O(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +  15: DTA_H(x, y); break;
+    case MX_ST*(DominoTypeAscender-1) +  16: DTA_H(x, y); break;
 
               // DominoTypeConnectedA
-    case 17*(DominoTypeConnectedA-1) +   0: DTA_1(x, y); break;
-    case 17*(DominoTypeConnectedA-1) +   1: DTA_2(x, y); break;
-    case 17*(DominoTypeConnectedA-1) +   2: DTA_3(x, y); break;
-    case 17*(DominoTypeConnectedA-1) +   3: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedA-1) +   4: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedA-1) +   5: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedA-1) +   6: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedA-1) +   7: DTA_E(x, y); break;
-    case 17*(DominoTypeConnectedA-1) +   8: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedA-1) +   9: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedA-1) +  10: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedA-1) +  11: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedA-1) +  12: DTA_I(x, y); break;
-    case 17*(DominoTypeConnectedA-1) +  13: DTA_J(x, y); break;
-    case 17*(DominoTypeConnectedA-1) +  14: DTA_K(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +   0: DTA_1(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +   1: DTA_2(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +   2: DTA_3(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +   3: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +   4: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +   5: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +   6: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +   7: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +   8: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +   9: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +  10: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +  11: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +  12: DTA_I(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +  13: DTA_J(x, y); break;
+    case MX_ST*(DominoTypeConnectedA-1) +  14: DTA_K(x, y); break;
 
               // DominoTypeConnectedA
-    case 17*(DominoTypeConnectedB-1) +   0: DTA_1(x, y); break;
-    case 17*(DominoTypeConnectedB-1) +   1: DTA_2(x, y); break;
-    case 17*(DominoTypeConnectedB-1) +   2: DTA_3(x, y); break;
-    case 17*(DominoTypeConnectedB-1) +   3: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedB-1) +   4: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedB-1) +   5: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedB-1) +   6: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedB-1) +   7: DTA_E(x, y); break;
-    case 17*(DominoTypeConnectedB-1) +   8: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedB-1) +   9: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedB-1) +  10: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedB-1) +  11: DTA_4(x, y); break;
-    case 17*(DominoTypeConnectedB-1) +  12: DTA_I(x, y); break;
-    case 17*(DominoTypeConnectedB-1) +  13: DTA_J(x, y); break;
-    case 17*(DominoTypeConnectedB-1) +  14: DTA_K(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +   0: DTA_1(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +   1: DTA_2(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +   2: DTA_3(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +   3: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +   4: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +   5: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +   6: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +   7: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +   8: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +   9: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +  10: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +  11: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +  12: DTA_I(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +  13: DTA_J(x, y); break;
+    case MX_ST*(DominoTypeConnectedB-1) +  14: DTA_K(x, y); break;
 
               // DominoTypeCounter1
-    case 17*(DominoTypeCounter1-1) +   0: DTA_1(x, y); break;
-    case 17*(DominoTypeCounter1-1) +   1: DTA_2(x, y); break;
-    case 17*(DominoTypeCounter1-1) +   2: DTA_3(x, y); break;
-    case 17*(DominoTypeCounter1-1) +   3: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter1-1) +   4: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter1-1) +   5: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter1-1) +   6: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter1-1) +   7: DTA_P(x, y); break;
-    case 17*(DominoTypeCounter1-1) +   8: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter1-1) +   9: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter1-1) +  10: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter1-1) +  11: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter1-1) +  12: DTA_I(x, y); break;
-    case 17*(DominoTypeCounter1-1) +  13: DTA_J(x, y); break;
-    case 17*(DominoTypeCounter1-1) +  14: DTA_K(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +   0: DTA_1(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +   1: DTA_2(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +   2: DTA_3(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +   3: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +   4: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +   5: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +   6: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +   7: DTA_P(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +   8: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +   9: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +  10: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +  11: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +  12: DTA_I(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +  13: DTA_J(x, y); break;
+    case MX_ST*(DominoTypeCounter1-1) +  14: DTA_K(x, y); break;
 
               // DominoTypeCounter2
-    case 17*(DominoTypeCounter2-1) +   0: DTA_1(x, y); break;
-    case 17*(DominoTypeCounter2-1) +   1: DTA_2(x, y); break;
-    case 17*(DominoTypeCounter2-1) +   2: DTA_3(x, y); break;
-    case 17*(DominoTypeCounter2-1) +   3: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter2-1) +   4: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter2-1) +   5: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter2-1) +   6: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter2-1) +   7: DTA_P(x, y); break;
-    case 17*(DominoTypeCounter2-1) +   8: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter2-1) +   9: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter2-1) +  10: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter2-1) +  11: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter2-1) +  12: DTA_I(x, y); break;
-    case 17*(DominoTypeCounter2-1) +  13: DTA_J(x, y); break;
-    case 17*(DominoTypeCounter2-1) +  14: DTA_K(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +   0: DTA_1(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +   1: DTA_2(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +   2: DTA_3(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +   3: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +   4: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +   5: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +   6: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +   7: DTA_P(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +   8: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +   9: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +  10: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +  11: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +  12: DTA_I(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +  13: DTA_J(x, y); break;
+    case MX_ST*(DominoTypeCounter2-1) +  14: DTA_K(x, y); break;
 
               // DominoTypeCounter3
-    case 17*(DominoTypeCounter3-1) +   0: DTA_1(x, y); break;
-    case 17*(DominoTypeCounter3-1) +   1: DTA_2(x, y); break;
-    case 17*(DominoTypeCounter3-1) +   2: DTA_3(x, y); break;
-    case 17*(DominoTypeCounter3-1) +   3: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter3-1) +   4: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter3-1) +   5: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter3-1) +   6: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter3-1) +   7: DTA_P(x, y); break;
-    case 17*(DominoTypeCounter3-1) +   8: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter3-1) +   9: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter3-1) +  10: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter3-1) +  11: DTA_4(x, y); break;
-    case 17*(DominoTypeCounter3-1) +  12: DTA_I(x, y); break;
-    case 17*(DominoTypeCounter3-1) +  13: DTA_J(x, y); break;
-    case 17*(DominoTypeCounter3-1) +  14: DTA_K(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +   0: DTA_1(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +   1: DTA_2(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +   2: DTA_3(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +   3: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +   4: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +   5: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +   6: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +   7: DTA_P(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +   8: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +   9: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +  10: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +  11: DTA_4(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +  12: DTA_I(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +  13: DTA_J(x, y); break;
+    case MX_ST*(DominoTypeCounter3-1) +  14: DTA_K(x, y); break;
 
               // DominoTypeCrash0
-    case 17*(DominoTypeCrash0-1) +   0: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash0-1) +   1: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash0-1) +   2: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash0-1) +   3: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash0-1) +   4: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash0-1) +   0: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash0-1) +   1: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash0-1) +   2: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash0-1) +   3: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash0-1) +   4: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash0-1) +   5:              break;
 
               // DominoTypeCrash1
-    case 17*(DominoTypeCrash1-1) +   0: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash1-1) +   1: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash1-1) +   2: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash1-1) +   3: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash1-1) +   4: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash1-1) +   0: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash1-1) +   1: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash1-1) +   2: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash1-1) +   3: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash1-1) +   4: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash1-1) +   5:              break;
 
               // DominoTypeCrash2
-    case 17*(DominoTypeCrash2-1) +   0: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash2-1) +   1: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash2-1) +   2: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash2-1) +   3: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash2-1) +   4: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash2-1) +   0: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash2-1) +   1: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash2-1) +   2: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash2-1) +   3: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash2-1) +   4: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash2-1) +   5:              break;
 
               // DominoTypeCrash3
-    case 17*(DominoTypeCrash3-1) +   0: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash3-1) +   1: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash3-1) +   2: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash3-1) +   3: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash3-1) +   4: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash3-1) +   0: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash3-1) +   1: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash3-1) +   2: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash3-1) +   3: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash3-1) +   4: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash3-1) +   5:              break;
 
               // DominoTypeCrash4
-    case 17*(DominoTypeCrash4-1) +   0: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash4-1) +   1: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash4-1) +   2: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash4-1) +   3: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash4-1) +   4: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash4-1) +   0: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash4-1) +   1: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash4-1) +   2: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash4-1) +   3: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash4-1) +   4: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash4-1) +   5:              break;
 
               // DominoTypeCrash5
-    case 17*(DominoTypeCrash5-1) +   0: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash5-1) +   1: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash5-1) +   2: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash5-1) +   3: DTA_E(x, y); break;
-    case 17*(DominoTypeCrash5-1) +   4: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash5-1) +   0: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash5-1) +   1: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash5-1) +   2: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash5-1) +   3: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash5-1) +   4: DTA_E(x, y); break;
+    case MX_ST*(DominoTypeCrash5-1) +   5:              break;
               // DominoTypeRiserCont
               // DominoTypeQuaver
+
+    default: assert(0);
   }
 }
 
