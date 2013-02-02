@@ -1467,302 +1467,80 @@ void levelPlayer_c::DTA_P(int x, int y) {
 
 }
 
-void levelPlayer_c::callStateFunction(int type, int state, int x, int y) {
-
-
-#define MX_ST 17
-
-  if (type == DominoTypeEmpty) return;
-
-  switch ((type-1)*MX_ST+state-1)
+void levelPlayer_c::DTA(int num, int x, int y)
+{
+  switch(num)
   {
-    // DominoTypeStandard
-    case MX_ST*(DominoTypeStandard-1) +   0: DTA_1(x, y); break;
-    case MX_ST*(DominoTypeStandard-1) +   1: DTA_2(x, y); break;
-    case MX_ST*(DominoTypeStandard-1) +   2: DTA_3(x, y); break;
-    case MX_ST*(DominoTypeStandard-1) +   3: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeStandard-1) +   4: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeStandard-1) +   5: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeStandard-1) +   6: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeStandard-1) +   7: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeStandard-1) +   8: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeStandard-1) +   9: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeStandard-1) +  10: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeStandard-1) +  11: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeStandard-1) +  12: DTA_I(x, y); break;
-    case MX_ST*(DominoTypeStandard-1) +  13: DTA_J(x, y); break;
-    case MX_ST*(DominoTypeStandard-1) +  14: DTA_K(x, y); break;
+    case  0:              break;
+    case  1: DTA_1(x, y); break;
+    case  2: DTA_2(x, y); break;
+    case  3: DTA_3(x, y); break;
+    case  4: DTA_4(x, y); break;
+    case  5: DTA_5(x, y); break;
+    case  6: DTA_6(x, y); break;
+    case  7: DTA_7(x, y); break;
+    case  8: DTA_8(x, y); break;
+    case  9: DTA_9(x, y); break;
+    case 10: DTA_A(x, y); break;
+    case 12: DTA_C(x, y); break;
+    case 14: DTA_E(x, y); break;
+    case 15: DTA_F(x, y); break;
+    case 16: DTA_G(x, y); break;
+    case 17: DTA_H(x, y); break;
+    case 18: DTA_I(x, y); break;
+    case 19: DTA_J(x, y); break;
+    case 20: DTA_K(x, y); break;
+    case 21: DTA_L(x, y); break;
+    case 22: DTA_M(x, y); break;
+    case 23: DTA_N(x, y); break;
+    case 24: DTA_O(x, y); break;
+    case 25: DTA_P(x, y); break;
 
-              // DominoTypeStopper
-    case MX_ST*(DominoTypeStopper -1) +   7: DTA_F(x, y); break;
-
-              // DominoTypeSplitter
-    case MX_ST*(DominoTypeSplitter-1) +   0:              break;
-    case MX_ST*(DominoTypeSplitter-1) +   1: DTA_C(x, y); break;
-    case MX_ST*(DominoTypeSplitter-1) +   2: DTA_C(x, y); break;
-    case MX_ST*(DominoTypeSplitter-1) +   3: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeSplitter-1) +   4: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeSplitter-1) +   5: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeSplitter-1) +   6: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeSplitter-1) +   7: DTA_F(x, y); break;
-    case MX_ST*(DominoTypeSplitter-1) +   8: DTA_C(x, y); break;
-    case MX_ST*(DominoTypeSplitter-1) +   9: DTA_C(x, y); break;
-    case MX_ST*(DominoTypeSplitter-1) +  10: DTA_C(x, y); break;
-    case MX_ST*(DominoTypeSplitter-1) +  11: DTA_C(x, y); break;
-    case MX_ST*(DominoTypeSplitter-1) +  12: DTA_C(x, y); break;
-    case MX_ST*(DominoTypeSplitter-1) +  13: DTA_C(x, y); break;
-
-              // DominoTypeExploder
-    case MX_ST*(DominoTypeExploder-1) +   0: DTA_5(x, y); break;
-    case MX_ST*(DominoTypeExploder-1) +   1: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeExploder-1) +   2: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeExploder-1) +   3: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeExploder-1) +   4: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeExploder-1) +   5: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeExploder-1) +   6: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeExploder-1) +   7: DTA_F(x, y); break;
-
-              // DominoTypeDelay
-    case MX_ST*(DominoTypeDelay-1) +   0: DTA_1(x, y); break;
-    case MX_ST*(DominoTypeDelay-1) +   1: DTA_2(x, y); break;
-    case MX_ST*(DominoTypeDelay-1) +   2: DTA_3(x, y); break;
-    case MX_ST*(DominoTypeDelay-1) +   3: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeDelay-1) +   4: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeDelay-1) +   5: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeDelay-1) +   6: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeDelay-1) +   7: DTA_G(x, y); break;
-    case MX_ST*(DominoTypeDelay-1) +   8: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeDelay-1) +   9: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeDelay-1) +  10: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeDelay-1) +  11: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeDelay-1) +  12: DTA_I(x, y); break;
-    case MX_ST*(DominoTypeDelay-1) +  13: DTA_J(x, y); break;
-    case MX_ST*(DominoTypeDelay-1) +  14: DTA_K(x, y); break;
-
-              // DominoTypeTumbler
-    case MX_ST*(DominoTypeTumbler-1) +   0: DTA_6(x, y); break;
-    case MX_ST*(DominoTypeTumbler-1) +   1: DTA_2(x, y); break;
-    case MX_ST*(DominoTypeTumbler-1) +   2: DTA_3(x, y); break;
-    case MX_ST*(DominoTypeTumbler-1) +   3: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTumbler-1) +   4: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTumbler-1) +   5: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTumbler-1) +   6: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTumbler-1) +   7: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeTumbler-1) +   8: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTumbler-1) +   9: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTumbler-1) +  10: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTumbler-1) +  11: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTumbler-1) +  12: DTA_I(x, y); break;
-    case MX_ST*(DominoTypeTumbler-1) +  13: DTA_J(x, y); break;
-    case MX_ST*(DominoTypeTumbler-1) +  14: DTA_L(x, y); break;
-
-              // DominoTypeBridger
-    case MX_ST*(DominoTypeBridger-1) +   0: DTA_7(x, y); break;
-    case MX_ST*(DominoTypeBridger-1) +   1: DTA_2(x, y); break;
-    case MX_ST*(DominoTypeBridger-1) +   2: DTA_3(x, y); break;
-    case MX_ST*(DominoTypeBridger-1) +   3: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeBridger-1) +   4: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeBridger-1) +   5: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeBridger-1) +   6: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeBridger-1) +   7: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeBridger-1) +   8: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeBridger-1) +   9: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeBridger-1) +  10: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeBridger-1) +  11: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeBridger-1) +  12: DTA_I(x, y); break;
-    case MX_ST*(DominoTypeBridger-1) +  13: DTA_J(x, y); break;
-    case MX_ST*(DominoTypeBridger-1) +  14: DTA_M(x, y); break;
-
-              // DominoTypeVanish
-    case MX_ST*(DominoTypeVanish-1) +   0: DTA_8(x, y); break;
-    case MX_ST*(DominoTypeVanish-1) +   1: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeVanish-1) +   2: DTA_3(x, y); break;
-    case MX_ST*(DominoTypeVanish-1) +   3: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeVanish-1) +   4: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeVanish-1) +   5: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeVanish-1) +   6: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeVanish-1) +   7: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeVanish-1) +   8: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeVanish-1) +   9: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeVanish-1) +  10: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeVanish-1) +  11: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeVanish-1) +  12: DTA_I(x, y); break;
-    case MX_ST*(DominoTypeVanish-1) +  13: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeVanish-1) +  14: DTA_8(x, y); break;
-
-              // DominoTypeTrigger
-    case MX_ST*(DominoTypeTrigger-1) +   0: DTA_9(x, y); break;
-    case MX_ST*(DominoTypeTrigger-1) +   1: DTA_2(x, y); break;
-    case MX_ST*(DominoTypeTrigger-1) +   2: DTA_3(x, y); break;
-    case MX_ST*(DominoTypeTrigger-1) +   3: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTrigger-1) +   4: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTrigger-1) +   5: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTrigger-1) +   6: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTrigger-1) +   7: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeTrigger-1) +   8: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTrigger-1) +   9: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTrigger-1) +  10: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTrigger-1) +  11: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeTrigger-1) +  12: DTA_I(x, y); break;
-    case MX_ST*(DominoTypeTrigger-1) +  13: DTA_J(x, y); break;
-    case MX_ST*(DominoTypeTrigger-1) +  14: DTA_N(x, y); break;
-
-              // DominoTypeAscender
-    case MX_ST*(DominoTypeAscender-1) +   0: DTA_A(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +   1: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +   2: DTA_3(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +   3: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +   4: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +   5: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +   6: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +   7: DTA_H(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +   8: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +   9: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +  10: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +  11: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +  12: DTA_I(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +  13: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +  14: DTA_O(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +  15: DTA_H(x, y); break;
-    case MX_ST*(DominoTypeAscender-1) +  16: DTA_H(x, y); break;
-
-              // DominoTypeConnectedA
-    case MX_ST*(DominoTypeConnectedA-1) +   0: DTA_1(x, y); break;
-    case MX_ST*(DominoTypeConnectedA-1) +   1: DTA_2(x, y); break;
-    case MX_ST*(DominoTypeConnectedA-1) +   2: DTA_3(x, y); break;
-    case MX_ST*(DominoTypeConnectedA-1) +   3: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedA-1) +   4: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedA-1) +   5: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedA-1) +   6: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedA-1) +   7: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeConnectedA-1) +   8: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedA-1) +   9: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedA-1) +  10: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedA-1) +  11: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedA-1) +  12: DTA_I(x, y); break;
-    case MX_ST*(DominoTypeConnectedA-1) +  13: DTA_J(x, y); break;
-    case MX_ST*(DominoTypeConnectedA-1) +  14: DTA_K(x, y); break;
-
-              // DominoTypeConnectedA
-    case MX_ST*(DominoTypeConnectedB-1) +   0: DTA_1(x, y); break;
-    case MX_ST*(DominoTypeConnectedB-1) +   1: DTA_2(x, y); break;
-    case MX_ST*(DominoTypeConnectedB-1) +   2: DTA_3(x, y); break;
-    case MX_ST*(DominoTypeConnectedB-1) +   3: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedB-1) +   4: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedB-1) +   5: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedB-1) +   6: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedB-1) +   7: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeConnectedB-1) +   8: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedB-1) +   9: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedB-1) +  10: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedB-1) +  11: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeConnectedB-1) +  12: DTA_I(x, y); break;
-    case MX_ST*(DominoTypeConnectedB-1) +  13: DTA_J(x, y); break;
-    case MX_ST*(DominoTypeConnectedB-1) +  14: DTA_K(x, y); break;
-
-              // DominoTypeCounter1
-    case MX_ST*(DominoTypeCounter1-1) +   0: DTA_1(x, y); break;
-    case MX_ST*(DominoTypeCounter1-1) +   1: DTA_2(x, y); break;
-    case MX_ST*(DominoTypeCounter1-1) +   2: DTA_3(x, y); break;
-    case MX_ST*(DominoTypeCounter1-1) +   3: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter1-1) +   4: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter1-1) +   5: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter1-1) +   6: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter1-1) +   7: DTA_P(x, y); break;
-    case MX_ST*(DominoTypeCounter1-1) +   8: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter1-1) +   9: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter1-1) +  10: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter1-1) +  11: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter1-1) +  12: DTA_I(x, y); break;
-    case MX_ST*(DominoTypeCounter1-1) +  13: DTA_J(x, y); break;
-    case MX_ST*(DominoTypeCounter1-1) +  14: DTA_K(x, y); break;
-
-              // DominoTypeCounter2
-    case MX_ST*(DominoTypeCounter2-1) +   0: DTA_1(x, y); break;
-    case MX_ST*(DominoTypeCounter2-1) +   1: DTA_2(x, y); break;
-    case MX_ST*(DominoTypeCounter2-1) +   2: DTA_3(x, y); break;
-    case MX_ST*(DominoTypeCounter2-1) +   3: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter2-1) +   4: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter2-1) +   5: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter2-1) +   6: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter2-1) +   7: DTA_P(x, y); break;
-    case MX_ST*(DominoTypeCounter2-1) +   8: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter2-1) +   9: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter2-1) +  10: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter2-1) +  11: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter2-1) +  12: DTA_I(x, y); break;
-    case MX_ST*(DominoTypeCounter2-1) +  13: DTA_J(x, y); break;
-    case MX_ST*(DominoTypeCounter2-1) +  14: DTA_K(x, y); break;
-
-              // DominoTypeCounter3
-    case MX_ST*(DominoTypeCounter3-1) +   0: DTA_1(x, y); break;
-    case MX_ST*(DominoTypeCounter3-1) +   1: DTA_2(x, y); break;
-    case MX_ST*(DominoTypeCounter3-1) +   2: DTA_3(x, y); break;
-    case MX_ST*(DominoTypeCounter3-1) +   3: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter3-1) +   4: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter3-1) +   5: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter3-1) +   6: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter3-1) +   7: DTA_P(x, y); break;
-    case MX_ST*(DominoTypeCounter3-1) +   8: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter3-1) +   9: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter3-1) +  10: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter3-1) +  11: DTA_4(x, y); break;
-    case MX_ST*(DominoTypeCounter3-1) +  12: DTA_I(x, y); break;
-    case MX_ST*(DominoTypeCounter3-1) +  13: DTA_J(x, y); break;
-    case MX_ST*(DominoTypeCounter3-1) +  14: DTA_K(x, y); break;
-
-              // DominoTypeCrash0
-    case MX_ST*(DominoTypeCrash0-1) +   0: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash0-1) +   1: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash0-1) +   2: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash0-1) +   3: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash0-1) +   4: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash0-1) +   5:              break;
-
-              // DominoTypeCrash1
-    case MX_ST*(DominoTypeCrash1-1) +   0: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash1-1) +   1: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash1-1) +   2: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash1-1) +   3: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash1-1) +   4: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash1-1) +   5:              break;
-
-              // DominoTypeCrash2
-    case MX_ST*(DominoTypeCrash2-1) +   0: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash2-1) +   1: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash2-1) +   2: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash2-1) +   3: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash2-1) +   4: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash2-1) +   5:              break;
-
-              // DominoTypeCrash3
-    case MX_ST*(DominoTypeCrash3-1) +   0: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash3-1) +   1: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash3-1) +   2: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash3-1) +   3: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash3-1) +   4: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash3-1) +   5:              break;
-
-              // DominoTypeCrash4
-    case MX_ST*(DominoTypeCrash4-1) +   0: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash4-1) +   1: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash4-1) +   2: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash4-1) +   3: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash4-1) +   4: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash4-1) +   5:              break;
-
-              // DominoTypeCrash5
-    case MX_ST*(DominoTypeCrash5-1) +   0: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash5-1) +   1: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash5-1) +   2: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash5-1) +   3: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash5-1) +   4: DTA_E(x, y); break;
-    case MX_ST*(DominoTypeCrash5-1) +   5:              break;
-              // DominoTypeRiserCont
-              // DominoTypeQuaver
-
-    default: assert(0);
+    default:
+      assert(0);
   }
+}
+
+void levelPlayer_c::callStateFunction(int type, int state, int x, int y)
+{
+  // This table contains the action functions to call for each domino type and each
+  // possible state of that domino
+  // each column stands for one domino
+  // the rows are the possible state
+  // 0 action means don't do anything
+  // 99 achtion means invalid state
+  static int action[18][DominoNumber] = {
+  //  DominoTypeEmpty,        DominoTypeTumbler,      DominoTypeConnectedB,   DominoTypeCrash2,
+  //      DominoTypeStandard,     DominoTypeBridger,      DominoTypeCounter1,     DominoTypeCrash3,
+  //          DominoTypeStopper,      DominoTypeVanish,       DominoTypeCounter2,     DominoTypeCrash4,
+  //              DominoTypeSplitter,     DominoTypeTrigger,      DominoTypeCounter3,     DominoTypeCrash5,
+  //                  DominoTypeExploder,     DominoTypeAscender,     DominoTypeCrash0,
+  //                      DominoTypeDelay,        DominoTypeConnectedA,   DominoTypeCrash1,
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // invalid state 0
+    { 99,  1, 99,  0,  5,  1,  6,  7,  8,  9, 10,  1,  1,  1,  1,  1, 14, 14, 14, 14, 14, 14 },
+    { 99,  2, 99, 12,  4,  2,  2,  2,  4,  2,  4,  2,  2,  2,  2,  2, 14, 14, 14, 14, 14, 14 },
+    { 99,  3, 99, 12,  4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3, 14, 14, 14, 14, 14, 14 },
+    { 99,  4, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 14, 14, 14, 14, 14, 14 }, // domino falling left
+    { 99,  4, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 14, 14, 14, 14, 14, 14 },
+    { 99,  4, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  0,  0,  0,  0,  0,  0 },
+    { 99,  4, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
+    { 99, 14, 15, 15, 15, 16, 14, 14, 14, 14, 17, 14, 14, 25, 25, 25, 99, 99, 99, 99, 99, 99 }, // domino standing vertically
+    { 99,  4, 99, 12, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
+    { 99,  4, 99, 12, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
+    { 99,  4, 99, 12, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
+    { 99,  4, 99, 12, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 }, // domino falling right
+    { 99, 18, 99, 12, 99, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 99, 99, 99, 99, 99, 99 },
+    { 99, 19, 99, 12, 99, 19, 19, 19,  4, 19,  4, 19, 19, 19, 19, 19, 99, 99, 99, 99, 99, 99 },
+    { 99, 20, 99, 99, 99, 20, 21, 22,  8, 23, 24, 20, 20, 20, 20, 20, 99, 99, 99, 99, 99, 99 },
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 17, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: hiding behind platform
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 17, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }  // ascender special: hiding behind platform
+  };
+
+  assert(type < DominoNumber);
+  assert(state < 18);
+  assert(action[state][type] != 99);
+
+  DTA(action[state][type], x, y);
 }
 
 void levelPlayer_c::performDominos(void) {

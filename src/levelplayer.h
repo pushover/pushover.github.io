@@ -41,6 +41,7 @@ class levelPlayer_c : public levelData_c {
 
     void DominoCrash(int x, int y, int type, int extra);
 
+    void DTA(int num, int x, int y);
     void DTA_1(int x, int y);
     void DTA_2(int x, int y);
     void DTA_3(int x, int y);
