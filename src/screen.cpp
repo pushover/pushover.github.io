@@ -485,6 +485,73 @@ static void u7(int x, int y, int f0, int f, int blx, int bly)
   }
 }
 
+static void u8(int x, int y, int f0, int f, int blx, int bly)
+{
+  if ((x+y) % 2)
+  {
+    return u3(x, y, f0, f, blx, bly);
+  }
+  else
+  {
+    return u7(x, y, f0, f, blx, bly);
+  }
+}
+
+static void u9(int x, int y, int f0, int f, int blx, int bly)
+{
+  if ((x+y) % 2)
+  {
+    return u1(x, y, f0, f, blx, bly);
+  }
+  else
+  {
+    return u2(x, y, f0, f, blx, bly);
+  }
+}
+
+static void uA(int x, int y, int f0, int f, int blx, int bly)
+{
+  int by = bly*y;
+  int bw = f*blx/256;
+  int bx = blx*x+blx-bw;
+  int bh = bly;
+
+  if (bw > 0){
+    rects[count].x=bx;
+    rects[count].y=by;
+    rects[count].w=bw;
+    rects[count].h=bh;
+    count++;
+  }
+}
+
+static void uB(int x, int y, int f0, int f, int blx, int bly) {
+  int bh = f*bly/256;
+  int by = bly*y+bly-bh;
+  int bx = blx*x;
+  int bw = blx;
+
+  if (bh > 0) {
+    rects[count].x=bx;
+    rects[count].y=by;
+    rects[count].w=bw;
+    rects[count].h=bh;
+    count++;
+  }
+}
+
+static void uC(int x, int y, int f0, int f, int blx, int bly) {
+  switch ((y % 2)*2 + (x%2))
+  {
+    case 0: return u1(x, y, f0, f, blx, bly);
+    case 1: return u2(x, y, f0, f, blx, bly);
+    case 2: return uB(x, y, f0, f, blx, bly);
+    case 3: return uA(x, y, f0, f, blx, bly);
+  }
+}
+
+
+
 bool screen_c::flipAnimate(void)
 {
   assert(video->w == 800 && video->h == 600);
@@ -500,17 +567,22 @@ bool screen_c::flipAnimate(void)
       case 3: f = f4; break;  // down up
       case 4: f = f5; break;  // left right
       case 5: f = f6; break;  // column wise half and half
-      default: f = f3; break;
+      default: assert(0); break;
     }
-    switch (rand()%7) {
-      case 0: u = u1; break;  // left --> right update
-      case 1: u = u2; break;  // up --> down update
-      case 2: u = u3; break;  // inside out update
-      case 3: u = u4; break;  // diffuse update
-      case 4: u = u5; break;  // PUSHOVER
-      case 5: u = u6; break;  // windmill
-      case 6: u = u7; break;  // outside in
-      default: u = u3; break;
+    switch (rand()%12) {
+      case  0: u = u1; break;  // left --> right update
+      case  1: u = u2; break;  // up --> down update
+      case  2: u = u3; break;  // inside out update
+      case  3: u = u4; break;  // diffuse update
+      case  4: u = u5; break;  // PUSHOVER
+      case  5: u = u6; break;  // windmill
+      case  6: u = u7; break;  // outside in
+      case  7: u = u8; break;  // checkerboard outside in inside out
+      case  8: u = u9; break;  // snakes (checkerboard up down, left right)
+      case  9: u = uA; break;  // right --> left
+      case 10: u = uB; break;  // down --> up
+      case 11: u = uC; break;  // big windmill
+      default: assert(0); break;
     }
   }
 
