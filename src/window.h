@@ -75,6 +75,7 @@ class helpWindow_c : public window_c {
 
   private:
     const levelData_c & level;
+    DominoType carried;
     const std::string & mission;
     std::vector<uint32_t> pages;
     uint32_t nextPage;
@@ -88,7 +89,7 @@ class helpWindow_c : public window_c {
 
   public:
 
-    helpWindow_c(const std::string & mission, const levelData_c & level, surface_c & s, graphicsN_c & g);
+    helpWindow_c(const std::string & mission, const levelData_c & level, DominoType carried, surface_c & s, graphicsN_c & g);
     bool handleEvent(const SDL_Event & event);
 
 };

@@ -205,7 +205,7 @@ class ant_c {
 
     int16_t getBlockX(void) const { return blockX; }
     int16_t getBlockY(void) const { return blockY; }
-    unsigned int getCarriedDomino(void) const { return carriedDomino; }
+    DominoType getCarriedDomino(void) const { return carriedDomino; }
     unsigned int getAnimation(void) const { return animation; }
     unsigned int getAnimationImage(void) const { return animationImage; }
 

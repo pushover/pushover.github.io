@@ -441,7 +441,7 @@ int main(int argc, char * argv[]) {
                 lwindowLevel = "";
                 break;
 
-            case ST_HELP:     window = new helpWindow_c(selectedMission, l, screen, gr);
+            case ST_HELP:     window = new helpWindow_c(selectedMission, l, a.getCarriedDomino(), screen, gr);
                               break;
 
             case ST_PREREPLAY:

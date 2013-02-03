@@ -233,7 +233,8 @@ void helpWindow_c::displayCurrentPage(void)
     bool dominoInLevel = false;
 
     for (int i = 0; i < dominoHelp[page].numDominos; i++)
-      if (levelContainsDomino(level, dominoHelp[page].dominos[i]))
+      if (   levelContainsDomino(level, dominoHelp[page].dominos[i])
+          || (carried == dominoHelp[page].dominos[i]))
       {
         dominoInLevel = true;
         break;
@@ -320,8 +321,8 @@ void helpWindow_c::displayCurrentPage(void)
   }
 }
 
-helpWindow_c::helpWindow_c(const std::string & m, const levelData_c & l, surface_c & su, graphicsN_c & gr) :
-  window_c(1, 1, 18, 11, su, gr), level(l), mission(m),
+helpWindow_c::helpWindow_c(const std::string & m, const levelData_c & l, DominoType c, surface_c & su, graphicsN_c & gr) :
+  window_c(1, 1, 18, 11, su, gr), level(l), carried(c), mission(m),
   s(su), g(gr)
 {
   pages.push_back(0);
