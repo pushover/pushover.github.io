@@ -75,6 +75,7 @@ class helpWindow_c : public window_c {
 
   private:
     const levelData_c & level;
+    const std::string & mission;
     std::vector<uint32_t> pages;
     uint32_t nextPage;
 
@@ -87,7 +88,7 @@ class helpWindow_c : public window_c {
 
   public:
 
-    helpWindow_c(const levelData_c & level, surface_c & s, graphicsN_c & g);
+    helpWindow_c(const std::string & mission, const levelData_c & level, surface_c & s, graphicsN_c & g);
     bool handleEvent(const SDL_Event & event);
 
 };
@@ -162,7 +163,7 @@ listWindow_c * getMainWindow(surface_c & surf, graphicsN_c & gr);
 listWindow_c * getConfigWindow(surface_c & surf, graphicsN_c & gr);
 listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, graphicsN_c & gr, const std::string & selection);
 listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & lname);
-listWindow_c * getQuitWindow(surface_c & surf, graphicsN_c & gr);
+listWindow_c * getQuitWindow(bool complete, surface_c & surf, graphicsN_c & gr);
 listWindow_c * getSolvedWindow(surface_c & surf, graphicsN_c & gr);
 listWindow_c * getFailedWindow(LevelState failReason, surface_c & surf, graphicsN_c & gr);
 listWindow_c * getTimeoutWindow(surface_c & surf, graphicsN_c & gr);

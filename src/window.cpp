@@ -182,13 +182,22 @@ void helpWindow_c::displayCurrentPage(void)
     par.box.y = ypos;
     par.box.x += 10;
     par.box.w -= 20;
+
+    std::string n;
+
+    if (mission != "")
+      n = std::string(_(mission.c_str())) + " / " + _(level.getName().c_str());
+    else
+      n = _(level.getName().c_str());
+
+
     if (rightToLeft())
     {
-      s.renderText(&par, _(level.getName().c_str()) + std::string(_("Level name: ")));
+      s.renderText(&par, n + std::string(_("Level name: ")));
     }
     else
     {
-      s.renderText(&par, std::string(_("Level name: ")) + _(level.getName().c_str()));
+      s.renderText(&par, std::string(_("Level name: ")) + n);
     }
     ypos += getFontHeight(FNT_SMALL);
 
@@ -309,7 +318,8 @@ void helpWindow_c::displayCurrentPage(void)
   }
 }
 
-helpWindow_c::helpWindow_c(const levelData_c & l, surface_c & su, graphicsN_c & gr) : window_c(1, 1, 18, 11, su, gr), level(l),
+helpWindow_c::helpWindow_c(const std::string & m, const levelData_c & l, surface_c & su, graphicsN_c & gr) :
+  window_c(1, 1, 18, 11, su, gr), level(l), mission(m),
   s(su), g(gr)
 {
   pages.push_back(0);
@@ -813,13 +823,13 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
     return new levelWindow_c(4, 0, 12, 12, surf, gr, _("Select Level"), entries, true, index);
 }
 
-listWindow_c * getQuitWindow(surface_c & surf, graphicsN_c & gr) {
-    static std::vector<listWindow_c::entry> entries;
+listWindow_c * getQuitWindow(bool complete, surface_c & surf, graphicsN_c & gr) {
+    std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
     {
         entries.push_back(listWindow_c::entry(_("Return to level")));
-        entries.push_back(listWindow_c::entry(_("Restart level")));
+        if (complete) entries.push_back(listWindow_c::entry(_("Restart level")));
         entries.push_back(listWindow_c::entry(_("Configuration")));
         entries.push_back(listWindow_c::entry(_("Return to menu")));
     }

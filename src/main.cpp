@@ -338,7 +338,7 @@ int main(int argc, char * argv[]) {
     {
       textsections_c sections(file, true);
       l.load(sections, "");
-      selectedMission = "Original";            // TODO we need to find out which levelset this file belongs to
+      selectedMission = "";            // TODO we need to find out which levelset this file belongs to
       gr.setPaintData(&l, &a, &screen);
       soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
 
@@ -427,7 +427,7 @@ int main(int argc, char * argv[]) {
             case ST_PROFILE_IN: window = getProfileInputWindow(screen, gr); break;
             case ST_PROFILE_DEL: window = getProfileSelector(solved, screen, gr); break;
             case ST_LEVELSET: window = getMissionWindow(*levelsetList, screen, gr, selectedMission); break;
-            case ST_QUIT:     window = getQuitWindow(screen, gr); break;
+            case ST_QUIT:     window = getQuitWindow(selectedMission != "", screen, gr); break;
             case ST_LEVELCONF:
             case ST_CONFIG:   window = getConfigWindow(screen, gr); break;
             case ST_SOLVED:   window = getSolvedWindow(screen, gr); break;
@@ -441,7 +441,7 @@ int main(int argc, char * argv[]) {
                 lwindowLevel = "";
                 break;
 
-            case ST_HELP:     window = new helpWindow_c(l, screen, gr);
+            case ST_HELP:     window = new helpWindow_c(selectedMission, l, screen, gr);
                               break;
 
             case ST_PREREPLAY:
@@ -753,28 +753,52 @@ int main(int argc, char * argv[]) {
               gr.markAllDirty();
               if (window->isDone())
               {
-                switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                // there are 2 different versions of the quit window, one
+                // for normal level selection, one for selection with a command
+                // line argument
+
+                if (selectedMission != "")
                 {
-                  case 3:
-                    nextState = ST_LEVEL;
-                    soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
-                    lwindowLevel = l.getName();
-                    break;    // return to level list
-                  case 1:
-                          {       // restart level
-                            nextState = ST_PLAY;
-                            levelset_c ls = levelsetList->getLevelset(selectedMission);
-                            ls.loadLevel(l, l.getName(), solved.getUserString());
-                            a.initForLevel();
-                          }
-                          break;
-                  case 2:  // configuration
-                    nextState = ST_LEVELCONF;
-                    break;
-                  default:
-                  case 0:
-                    nextState = ST_PLAY;
-                    break;    // return to play
+                  switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                  {
+                    case 3:
+                      nextState = ST_LEVEL;
+                      soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
+                      lwindowLevel = l.getName();
+                      break;    // return to level list
+                    case 1:
+                      {       // restart level
+                        nextState = ST_PLAY;
+                        levelset_c ls = levelsetList->getLevelset(selectedMission);
+                        ls.loadLevel(l, l.getName(), solved.getUserString());
+                        a.initForLevel();
+                      }
+                      break;
+                    case 2:  // configuration
+                      nextState = ST_LEVELCONF;
+                      break;
+                    default:
+                    case 0:
+                      nextState = ST_PLAY;
+                      break;    // return to play
+                  }
+                }
+                else
+                {
+                  switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                  {
+                    case 2:
+                      nextState = ST_MAIN;
+                      soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
+                      break;    // return to main window
+                    case 1:  // configuration
+                      nextState = ST_LEVELCONF;
+                      break;
+                    default:
+                    case 0:
+                      nextState = ST_PLAY;
+                      break;    // return to play
+                  }
                 }
               }
             }
