@@ -160,13 +160,13 @@ void helpWindow_c::displayCurrentPage(void)
     par.box.y = ypos;
     par.box.h = (H()-2)/3*gr.blockY();
 
-    if (getTextHeight(&par, _(help.c_str())) > par.box.h) {
+    if (getTextHeight(&par, _(help)) > par.box.h) {
       par.font = FNT_SMALL;
     }
 
-    s.renderText(&par, _(help.c_str()));
+    s.renderText(&par, _(help));
 
-    ypos += getTextHeight(&par, _(help.c_str())) + 10;
+    ypos += getTextHeight(&par, _(help)) + 10;
 
     s.fillRect(par.box.x, ypos, par.box.w, 2, TXT_COL_R, TXT_COL_G, TXT_COL_B);
 
@@ -178,7 +178,7 @@ void helpWindow_c::displayCurrentPage(void)
     par.box.y = ypos;
     par.box.h = getFontHeight(FNT_SMALL);
     par.alignment = ALN_TEXT;
-    s.renderText(&par, _("Level information "));
+    s.renderText(&par, _("Level information"));
     ypos += getFontHeight(FNT_SMALL);
 
     par.box.y = ypos;
@@ -189,11 +189,11 @@ void helpWindow_c::displayCurrentPage(void)
 
     if (mission != "")
       //TRANSLATORS: this is the separator between the levelset and the levelname in the help window
-      n = std::string(_(mission.c_str())) + _(" / ") + _(level.getName().c_str());
+      n = std::string(_(mission)) + _(" / ") + _(level.getName());
     else
-      n = _(level.getName().c_str());
+      n = _(level.getName());
 
-    s.renderText(&par, std::string(_("Level name: ")) + n);
+    s.renderText(&par, std::string(_("Level name:")) + " " + n);
 
     ypos += getFontHeight(FNT_SMALL);
 
@@ -211,7 +211,7 @@ void helpWindow_c::displayCurrentPage(void)
       a += authors[i];
     }
 
-    s.renderText(&par, _("Level author: ") + a);
+    s.renderText(&par, std::string(_("Level author:")) + " " + a);
 
     ypos += getFontHeight(FNT_SMALL);
     ypos += 10;
@@ -810,17 +810,17 @@ listWindow_c * getMissionWindow(const levelsetList_c & ls, const solvedMap_c & s
       switch (MissionSolveState(ls.getLevelset(ls.getLevelsetNames()[i]), solv))
       {
         case 0:
-          f = std::string(_(_(ls.getLevelsetNames()[i].c_str()))) + "  \xE2\x96\xA1";
+          f = std::string(_(ls.getLevelsetNames()[i])) + "  \xE2\x96\xA1";
           entries.push_back(listWindow_c::entry(f));
           entries.rbegin()->sol = 0;
           break;
         case 1:
-          f = std::string(_(_(ls.getLevelsetNames()[i].c_str()))) + "  \xE2\x96\xA3";
+          f = std::string(_(ls.getLevelsetNames()[i])) + "  \xE2\x96\xA3";
           entries.push_back(listWindow_c::entry(f));
           entries.rbegin()->sol = 1;
           break;
         case 2:
-          f = std::string(_(_(ls.getLevelsetNames()[i].c_str()))) + "  \xE2\x96\xA0";
+          f = std::string(_(ls.getLevelsetNames()[i])) + "  \xE2\x96\xA0";
           entries.push_back(listWindow_c::entry(f));
           entries.rbegin()->sol = 2;
           break;
@@ -896,19 +896,19 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
 
         if (solv.solved(ls.getChecksum(e)))
         {
-            std::string f = std::string(_(e.c_str())) + "  \xE2\x96\xA0";
+            std::string f = std::string(_(e)) + "  \xE2\x96\xA0";
             entries.push_back(listWindow_c::entry(f));
             entries.rbegin()->sol = 2;
         }
         else if (solv.solved(ls.getChecksumNoTime(e)))
         {
-            std::string f = std::string(_(e.c_str())) + "  \xE2\x96\xA3";
+            std::string f = std::string(_(e)) + "  \xE2\x96\xA3";
             entries.push_back(listWindow_c::entry(f));
             entries.rbegin()->sol = 1;
         }
         else
         {
-            std::string f = std::string(_(e.c_str())) + "  \xE2\x96\xA1";
+            std::string f = std::string(_(e)) + "  \xE2\x96\xA1";
             entries.push_back(listWindow_c::entry(f));
             entries.rbegin()->sol = 0;
 

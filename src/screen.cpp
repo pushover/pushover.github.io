@@ -30,6 +30,8 @@
 #include <iostream>
 #include <vector>
 
+#include "libintl.h"
+
 #include <assert.h>
 
 screen_c::screen_c(const graphicsN_c & g) :
@@ -840,3 +842,14 @@ unsigned int getTextHeight(const fontParams_s * par, const std::string & t) {
 
   return height;
 }
+
+
+const std::string _(const std::string & x)
+{
+  return std::string(gettext(x.c_str()));
+}
+const char * _(const char * x)
+{
+  return gettext(x);
+}
+

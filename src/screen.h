@@ -26,7 +26,6 @@
 
 #include <string>
 
-#include "libintl.h"
 
 /* this is the display class, there is only one instance for this class and it contains
  * the complete screen
@@ -152,7 +151,9 @@ class screen_c : public surface_c {
 };
 
 // used for internationalization to mark strings to translate
-#define _(x) gettext(x)
+const std::string _(const std::string & x);
+const char * _(const char *x);
+
 
 #endif
 
