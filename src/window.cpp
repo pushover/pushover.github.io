@@ -34,6 +34,8 @@
 #include <stdexcept>
 #include <libintl.h>
 
+#include <assert.h>
+
 // Colour for normal text
 #define TXT_COL_R 112
 #define TXT_COL_G 39
@@ -715,19 +717,118 @@ listWindow_c * getConfigWindow(surface_c & surf, graphicsN_c & gr) {
     return new listWindow_c(3, 2, 14, 9, surf, gr, _("Configuration"), entries, true);
 }
 
-listWindow_c * getMissionWindow(const levelsetList_c & ls, surface_c & surf, graphicsN_c & gr, const std::string & selection) {
+static int MissionSolveState(const levelset_c & ls, const solvedMap_c & solv)
+{
+    bool allSolved = true;
+    bool noneSolved = true;
+
+    for (unsigned int i = 0; i < ls.getLevelNames().size(); i++)
+    {
+        std::string e = ls.getLevelNames()[i];
+
+        if (solv.solved(ls.getChecksum(e)))
+        {
+            noneSolved = false;
+        }
+        else if (solv.solved(ls.getChecksumNoTime(e)))
+        {
+            noneSolved = false;
+        }
+        else
+        {
+            allSolved = false;
+        }
+    }
+
+    if (noneSolved) return 0;
+    if (allSolved) return 2;
+    return 1;
+}
+
+class missionWindow_c : public listWindow_c
+{
+
+  public:
+
+    missionWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
+        const std::string & t, const std::vector<entry> & e, bool esc, int initial) :
+      listWindow_c(x, y, w, h, s, gr, t, e, esc, initial)
+    {
+      redraw();
+    }
+
+    void redraw(void)
+    {
+      listWindow_c::redraw();
+
+      fontParams_s par;
+
+      par.font = FNT_SMALL;
+      par.alignment = ALN_TEXT;
+      par.box.y = (Y()+H()-1)*gr.blockY();
+      par.box.w = gr.blockX()*(W()-2)-30;
+      par.box.h = 10;
+      par.shadow = false;
+
+      std::string text[3] = {
+        //TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
+        _("not started"),
+        //TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
+        _("partially done"),
+        //TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
+        _("done")
+      };
+
+      par.box.x = gr.blockX()*(X()+1 + X()+W()-1)/2 -
+          (getTextWidth(FNT_SMALL, text[0]) + getTextWidth(FNT_SMALL, text[1]) + getTextWidth(FNT_SMALL, text[2]) + 30)/2;
+
+      par.color.r = TXT_COL_R; par.color.g = TXT_COL_G; par.color.b = TXT_COL_B;
+      surf.renderText(&par, text[0]);
+      par.box.x += getTextWidth(FNT_SMALL, text[0])+15;
+
+      par.color.r = SO1_COL_R; par.color.g = SO1_COL_G; par.color.b = SO1_COL_B;
+      surf.renderText(&par, text[1]);
+      par.box.x += getTextWidth(FNT_SMALL, text[1])+15;
+
+      par.color.r = SOL_COL_R; par.color.g = SOL_COL_G; par.color.b = SOL_COL_B;
+      surf.renderText(&par, text[2]);
+    }
+};
+
+listWindow_c * getMissionWindow(const levelsetList_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & selection) {
     std::vector<listWindow_c::entry> entries;
 
     int index = 0;
+    std::string f;
 
     for (unsigned int i = 0; i < ls.getLevelsetNames().size(); i++)
     {
       if (selection == ls.getLevelsetNames()[i])
         index = i;
-      entries.push_back(listWindow_c::entry(_(ls.getLevelsetNames()[i].c_str())));
+
+      switch (MissionSolveState(ls.getLevelset(ls.getLevelsetNames()[i]), solv))
+      {
+        case 0:
+          f = std::string(_(_(ls.getLevelsetNames()[i].c_str()))) + "  \xE2\x96\xA1";
+          entries.push_back(listWindow_c::entry(f));
+          entries.rbegin()->sol = 0;
+          break;
+        case 1:
+          f = std::string(_(_(ls.getLevelsetNames()[i].c_str()))) + "  \xE2\x96\xA3";
+          entries.push_back(listWindow_c::entry(f));
+          entries.rbegin()->sol = 1;
+          break;
+        case 2:
+          f = std::string(_(_(ls.getLevelsetNames()[i].c_str()))) + "  \xE2\x96\xA0";
+          entries.push_back(listWindow_c::entry(f));
+          entries.rbegin()->sol = 2;
+          break;
+        default:
+          assert(0);
+      }
     }
 
-    return new listWindow_c(4, 2, 12, 9, surf, gr, _("Select Levelset"), entries, true, index);
+    return new missionWindow_c(4, 2, 12, 9, surf, gr, _("Select Levelset"), entries, true, index);
 }
 
 class levelWindow_c : public listWindow_c

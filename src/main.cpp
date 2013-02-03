@@ -426,7 +426,7 @@ int main(int argc, char * argv[]) {
             case ST_PROFILE:  window = getProfileWindow(solved, screen, gr); break;
             case ST_PROFILE_IN: window = getProfileInputWindow(screen, gr); break;
             case ST_PROFILE_DEL: window = getProfileSelector(solved, screen, gr); break;
-            case ST_LEVELSET: window = getMissionWindow(*levelsetList, screen, gr, selectedMission); break;
+            case ST_LEVELSET: window = getMissionWindow(*levelsetList, solved, screen, gr, selectedMission); break;
             case ST_QUIT:     window = getQuitWindow(selectedMission != "", screen, gr); break;
             case ST_LEVELCONF:
             case ST_CONFIG:   window = getConfigWindow(screen, gr); break;
