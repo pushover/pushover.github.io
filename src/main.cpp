@@ -72,7 +72,7 @@ static void check_record(const std::string & rec_path, levelsetList_c & levelset
   count++;
 }
 
-void check(int argn, char * argv[], std::string checker(const ant_c & a, const levelPlayer_c & l)) {
+bool check(int argn, char * argv[], std::string checker(const ant_c & a, const levelPlayer_c & l)) {
   levelsetList_c levelsetList;
   levelsetList.load("levels", "");
 
@@ -101,6 +101,7 @@ void check(int argn, char * argv[], std::string checker(const ant_c & a, const l
   }
 
   std::cout << failed << " out of " << count << " tests failed\n";
+  return failed == 0;
 }
 
 std::string checker1(const ant_c & a, const levelPlayer_c & l)
@@ -218,20 +219,17 @@ int main(int argc, char * argv[]) {
   // separately
   if (argc >= 3 && strcmp(argv[1], "-c") == 0)   // the must complete tests
   {
-    check(argc-2, argv+2, checker1);
-    return 0;
+    return check(argc-2, argv+2, checker1) ? 0 : 1;
   }
 
   if (argc >= 3 && strcmp(argv[1], "-y") == 0)   // the must fail tests
   {
-    check(argc-2, argv+2, checker2);
-    return 0;
+    return check(argc-2, argv+2, checker2) ? 0 : 1;
   }
 
   if (argc >= 3 && strcmp(argv[1], "-x") == 0)   // the must crash tests
   {
-    check(argc-2, argv+2, checker3);
-    return 0;
+    return check(argc-2, argv+2, checker3) ? 0 : 1;
   }
 
   bool fullscreen = false;
