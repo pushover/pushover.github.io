@@ -625,9 +625,8 @@ static std::vector<std::string> split(const std::string & text, char splitter)
 
 static std::string fribiditize(const std::string &text)
 {
-    // TODO this is hopelessly simple, we do need
-    // more ecomplex workings here: each line must be reordered independently
-    // ...
+    // TODO this will probably fail, as soon as mixed left right and right left
+    // text happens....
 
     FriBidiCharType base = FRIBIDI_TYPE_ON;
     FriBidiChar *logicalString = new FriBidiChar[text.length() + 1];
