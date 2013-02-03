@@ -593,8 +593,12 @@ int main(int argc, char * argv[]) {
                   solved.addUser(dynamic_cast<InputWindow_c*>(window)->getText());
                   delete levelsetList;
                   levelsetList = loadAllLevels(datadir, solved.getUserString());
+                  nextState = ST_MAIN;
                 }
-                nextState = ST_MAIN;
+                else
+                {
+                  nextState = ST_PROFILE;
+                }
               }
             }
             break;
