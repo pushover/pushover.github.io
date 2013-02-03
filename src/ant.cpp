@@ -133,6 +133,7 @@ void ant_c::initForLevel(void) {
   direction = 1;
   pushDelay = 0;
   downChecker = false;
+  triggerNotLast = false;
 
   finalAnimationPlayed = levelFail = levelSuccess = false;
 }
@@ -163,12 +164,16 @@ LevelState ant_c::performAnimation(unsigned int keyMask)
 
   trigger = trigger ? level.triggerIsFalln() : false;
 
+  if (trigger && !level.dominosFalln())
+    triggerNotLast = true;
+
   // check, whether we open the exit door we can close it
   // again, when something unexpected happens
   if (   trigger
       && !level.rubblePile()
       && !level.dominosStanding()
       && isVisible()
+      && !triggerNotLast
      )
   {
     level.openExitDoor(true);
@@ -178,10 +183,10 @@ LevelState ant_c::performAnimation(unsigned int keyMask)
     level.openExitDoor(false);
   }
 
-  // check, if we want to play the jubilation or shruggint animation
+  // check, if we want to play the jubilation or shrugging animation
   if (trigger)
   {
-    if (!level.rubblePile() && level.dominosFalln() && carriedDomino == DominoTypeEmpty && isLiving())
+    if (!level.rubblePile() && level.dominosFalln() && carriedDomino == DominoTypeEmpty && isLiving() && !triggerNotLast)
     {
       levelSuccess = true;
     }
@@ -213,6 +218,9 @@ LevelState ant_c::performAnimation(unsigned int keyMask)
 
       if (level.dominosStanding())
         return LS_someLeft;
+
+      if (triggerNotLast)
+        return LS_triggerNotLast;
     }
   }
 

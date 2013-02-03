@@ -183,9 +183,8 @@ class ant_c {
     // it is shown in these 2 variables
     bool levelFail, levelSuccess;
 
-    // has the level been checked for completion, that is
-    // only done once, once a trigger has fallen
-    bool finishCheckDone;
+    // set, when the trigger is falln, but something else still moving
+    bool triggerNotLast;
 
   public:
 
