@@ -130,7 +130,8 @@ static int convertDominoY(int y) { return 3*y; }
 #define splitterY (3*12)
 
 
-#define RISER_CONT_START 22
+#define CARRIED_DOMINO_START 17
+#define RISER_CONT_START 25
 
 
 graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
@@ -139,12 +140,9 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   level = 0;
 
   dominos.resize(DominoNumber);
-  carriedDominos.resize(DominoNumber);
 
   for (unsigned int i = 0; i < DominoNumber; i++) {
     dominos[i].resize(60);  // TODO right number
-    carriedDominos[i].resize(DominoTypeLastNormal+1);
-    carriedDominos[i][0] = 0;
   }
 
   antImages.resize((int)AntAnimNothing);
@@ -186,6 +184,7 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
 
       png.getPart(v);
 
+      assert(dominos[DominoTypeAscender][RISER_CONT_START+j] == 0);
       dominos[DominoTypeAscender][RISER_CONT_START+j] = v;
       png.skipLines(2);
     }
@@ -229,40 +228,26 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   {
     pngLoader_c png(dataPath+"/data/carried.png");
 
-    for (unsigned int i = 0; i < 7; i++) {
+    for (unsigned int i = 0; i < 11; i++) {
       for (unsigned int j = 1; j <= DominoTypeLastNormal; j++) {
-        SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 55, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-        SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
-        png.getPart(v);
+        if (i < 2 || i > 5)
+        {
+          SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 55, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+          SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
-        carriedDominos[i][j] = v;
-      }
-    }
+          png.getPart(v);
 
-    // copy some surfaces surfaces
-    for (unsigned int i = 7; i < 10; i++) {
-      for (unsigned int j = 1; j <= DominoTypeLastNormal; j++) {
-        carriedDominos[i][j] = carriedDominos[i-1][j];
+          int k = i;
+          if (i > 5) k = i - 4;
 
-      }
-    }
-
-    for (unsigned int i = 10; i < 12; i++) {
-      for (unsigned int j = 1; j <= DominoTypeLastNormal; j++) {
-        carriedDominos[i][j] = carriedDominos[i&1][j];
-      }
-    }
-
-    // load the final surfaces
-    for (unsigned int i = 12; i < 16; i++) {
-      for (unsigned int j = 1; j <= DominoTypeLastNormal; j++) {
-        SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 55, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-        SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-        png.getPart(v);
-
-        carriedDominos[i][j] = v;
+          assert(dominos[j][CARRIED_DOMINO_START + k] == 0);
+          dominos[j][CARRIED_DOMINO_START + k] = v;
+        }
+        else
+        {
+          png.skipLines(55);
+        }
       }
     }
   }
@@ -319,16 +304,6 @@ graphicsN_c::~graphicsN_c(void) {
     for (unsigned int j = 0; j < antImages[i].size(); j++)
       if (antImages[i][j].free)
         SDL_FreeSurface(antImages[i][j].v);
-
-  for (unsigned int i = 0; i < 7; i++)
-    for (unsigned int j = 0; j < carriedDominos[i].size(); j++)
-      if (carriedDominos[i][j])
-        SDL_FreeSurface(carriedDominos[i][j]);
-
-  for (unsigned int i = 12; i < carriedDominos.size(); i++)
-    for (unsigned int j = 0; j < carriedDominos[i].size(); j++)
-      if (carriedDominos[i][j])
-        SDL_FreeSurface(carriedDominos[i][j]);
 
   for (unsigned int j = 0; j < boxBlocks.size(); j++)
     SDL_FreeSurface(boxBlocks[j]);
@@ -488,6 +463,30 @@ signed int getMoveOffsetX(unsigned int animation, unsigned int image) { return 5
 signed int getMoveOffsetY(unsigned int animation, unsigned int image) { return 3*moveOffsets[animation][4*image+1]; }
 signed int getMoveImage(unsigned int animation, unsigned int image) { return moveOffsets[animation][4*image+2]; }
 
+uint16_t carr2idx(uint16_t d)
+{
+  switch (d)
+  {
+    case 0:  return CARRIED_DOMINO_START+0;  // AntAnimCarryLeft,
+    case 1:  return CARRIED_DOMINO_START+1;  // AntAnimCarryRight,
+    case 2:  return CARRIED_DOMINO_START+0;  // AntAnimCarryUpLeft,
+    case 3:  return CARRIED_DOMINO_START+1;  // AntAnimCarryUpRight,
+    case 4:  return CARRIED_DOMINO_START+0;  // AntAnimCarryDownLeft,
+    case 5:  return CARRIED_DOMINO_START+1;  // AntAnimCarryDownRight,
+    case 6:  return CARRIED_DOMINO_START+2;  // AntAnimCarryLadder1,
+    case 7:  return CARRIED_DOMINO_START+2;  // AntAnimCarryLadder2,
+    case 8:  return CARRIED_DOMINO_START+2;  // AntAnimCarryLadder3,
+    case 9:  return CARRIED_DOMINO_START+2;  // AntAnimCarryLadder4,
+    case 10: return CARRIED_DOMINO_START+0;  // AntAnimCarryStopLeft,
+    case 11: return CARRIED_DOMINO_START+1;  // AntAnimCarryStopRight,
+    case 12: return CARRIED_DOMINO_START+3;
+    case 13: return CARRIED_DOMINO_START+4;
+    case 14: return CARRIED_DOMINO_START+5;
+    case 15: return CARRIED_DOMINO_START+6;
+    default: assert(0);
+  }
+}
+
 
 void graphicsN_c::drawAnt(void)
 {
@@ -540,7 +539,7 @@ void graphicsN_c::drawAnt(void)
       }
       else
       {
-        target->blit(carriedDominos[img-32][ant->getCarriedDomino()], x, y);
+        target->blit(dominos[ant->getCarriedDomino()][carr2idx(img-32)], x, y);
       }
     }
     if (ant->getAnimation() >= AntAnimCarryLeft && ant->getAnimation() <= AntAnimCarryStopRight)
@@ -548,7 +547,7 @@ void graphicsN_c::drawAnt(void)
       /* put the domino image of the carried domino */
       int a = ant->getAnimation() - AntAnimCarryLeft;
 
-      target->blit(carriedDominos[a][ant->getCarriedDomino()],
+      target->blit(dominos[ant->getCarriedDomino()][carr2idx(a)],
           (ant->getBlockX()-2)*blockX()+getCarryOffsetX(a, ant->getAnimationImage()),
           (ant->getBlockY())*blockY()/2+antImages[ant->getAnimation()][ant->getAnimationImage()].ofs+antDisplace+getCarryOffsetY(a, ant->getAnimationImage()));
 

@@ -98,7 +98,6 @@ class graphicsN_c : public graphics_c {
     std::vector<std::vector<SDL_Surface *> > fgTiles;
 
     std::vector<std::vector<SDL_Surface *> > dominos;
-    std::vector<std::vector<SDL_Surface *> > carriedDominos;
 
     std::vector<SDL_Surface *> boxBlocks;
 
