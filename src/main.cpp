@@ -46,9 +46,12 @@
 
 static void check_record(const std::string & rec_path, levelsetList_c & levelsetList,
                          unsigned int & count, unsigned int & failed,
+                         std::set<std::pair<std::string, std::string> > & uncheckedLevels,
                          std::string checker(const ant_c & a, const levelPlayer_c & l)) {
   recorder_c rec;
   rec.load(rec_path);
+
+  uncheckedLevels.erase(make_pair(rec.getLevelsetName(), rec.getLevelName()));
 
   levelPlayer_c l;
   levelsetList.getLevelset(rec.getLevelsetName()).loadLevel(l, rec.getLevelName(), "");
@@ -72,12 +75,20 @@ static void check_record(const std::string & rec_path, levelsetList_c & levelset
   count++;
 }
 
-bool check(int argn, char * argv[], std::string checker(const ant_c & a, const levelPlayer_c & l)) {
+bool check(int argn, char * argv[], std::string checker(const ant_c & a, const levelPlayer_c & l), bool allowUncheckedLevels) {
   levelsetList_c levelsetList;
   levelsetList.load("levels", "");
 
   unsigned int count = 0;
   unsigned int failed = 0;
+
+  std::set<std::pair<std::string, std::string> > uncheckedLevels;
+  for (unsigned int i = 0; i < levelsetList.getLevelsetNames().size(); i++) {
+    const levelset_c & levelset = levelsetList.getLevelset(levelsetList.getLevelsetNames()[i]);
+    for (unsigned int j = 0; j < levelset.getLevelNames().size(); j++) {
+        uncheckedLevels.insert(make_pair(levelset.getName(), levelset.getLevelNames()[j]));
+    }
+  }
 
   for (int i = 0; i < argn; i++)
   {
@@ -91,17 +102,23 @@ bool check(int argn, char * argv[], std::string checker(const ant_c & a, const l
       for (std::vector<std::string>::const_iterator j = entries.begin(); j != entries.end(); j++) {
         const std::string & filename = *j;
         if (filename.size() > 0 && filename[0] != '.')
-          check_record(path + '/' + filename, levelsetList, count, failed, checker);
+          check_record(path + '/' + filename, levelsetList, count, failed, uncheckedLevels, checker);
       }
     }
     else
     {
-      check_record(path, levelsetList, count, failed, checker);
+      check_record(path, levelsetList, count, failed, uncheckedLevels, checker);
     }
   }
 
-  std::cout << failed << " out of " << count << " tests failed\n";
-  return failed == 0;
+  if (!allowUncheckedLevels) {
+    for (std::set<std::pair<std::string, std::string> >::const_iterator i = uncheckedLevels.begin(); i != uncheckedLevels.end(); i++) {
+      std::cout << "Missing recording for level: " << i->first << " / " << i->second << "\n";
+    }
+  }
+
+  std::cout << failed << " out of " << count << " tests failed, " << uncheckedLevels.size() << " levels unchecked\n";
+  return failed == 0 && (allowUncheckedLevels || uncheckedLevels.empty());
 }
 
 std::string checkerFinish(const ant_c & a, const levelPlayer_c & l)
@@ -219,17 +236,17 @@ int main(int argc, char * argv[]) {
   // separately
   if (argc >= 3 && strcmp(argv[1], "-c") == 0)   // the "must finish" tests
   {
-    return check(argc-2, argv+2, checkerFinish) ? 0 : 1;
+    return check(argc-2, argv+2, checkerFinish, false) ? 0 : 1;
   }
 
   if (argc >= 3 && strcmp(argv[1], "-y") == 0)   // the "must fail" tests
   {
-    return check(argc-2, argv+2, checkerFail) ? 0 : 1;
+    return check(argc-2, argv+2, checkerFail, true) ? 0 : 1;
   }
 
   if (argc >= 3 && strcmp(argv[1], "-x") == 0)   // the "must crash" tests
   {
-    return check(argc-2, argv+2, checkerCrash) ? 0 : 1;
+    return check(argc-2, argv+2, checkerCrash, true) ? 0 : 1;
   }
 
   bool fullscreen = false;
