@@ -658,11 +658,8 @@ bool rightToLeft(void)
   return strcmp(_("left to right"), "right to left") == 0;
 }
 
-unsigned int surface_c::renderText(const fontParams_s * par, const std::string & t1)
+unsigned int surface_c::renderText(const fontParams_s * par, const std::string & t)
 {
-
-  std::string t = fribiditize(t1);
-
   // make some safety checks, empty strings are not output
   bool onlySpace = true;
   for (size_t i = 0; i < t.length(); i++)
@@ -698,13 +695,15 @@ unsigned int surface_c::renderText(const fontParams_s * par, const std::string &
     while (word < words.size())
     {
       int w;
-      TTF_SizeUTF8(fonts[par->font], (curLine+words[word]).c_str(), &w, 0);
+      TTF_SizeUTF8(fonts[par->font], fribiditize(curLine+words[word]).c_str(), &w, 0);
 
       if (w > par->box.w) break;
 
       curLine = curLine + " " + words[word];
       word++;
     }
+
+    curLine = fribiditize(curLine);
 
     SDL_Surface * vv = TTF_RenderUTF8_Blended(fonts[par->font], curLine.c_str(), par->color);
     SDL_Surface * vb = NULL;
