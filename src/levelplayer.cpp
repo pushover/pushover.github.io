@@ -157,7 +157,6 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
     case DominoTypeCrash3:
     case DominoTypeCrash4:
     case DominoTypeCrash5:
-    case DominoTypeRiserCont:
       break;
 
       // the following stones must not fall against the push direction

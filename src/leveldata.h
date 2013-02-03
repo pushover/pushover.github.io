@@ -51,7 +51,6 @@ typedef enum {
   DominoTypeCrash3,         // all yellow little pile
   DominoTypeCrash4,         // mixed little pile
   DominoTypeCrash5,         // all red little pile
-  DominoTypeRiserCont,
   DominoNumber
 } DominoType;
 

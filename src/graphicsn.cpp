@@ -120,7 +120,6 @@ static const unsigned char numDominos[DominoNumber] = {
   6,    // DominoTypeCrash3,
   6,    // DominoTypeCrash4,
   6,    // DominoTypeCrash5,
-  8,    // DominoTypeRiserCont,
 };
 
 
@@ -129,6 +128,10 @@ static const unsigned char numDominos[DominoNumber] = {
 static int convertDominoX(int x) { return 5*x/2; }
 static int convertDominoY(int y) { return 3*y; }
 #define splitterY (3*12)
+
+
+#define RISER_CONT_START 22
+
 
 graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   background = 0;
@@ -139,7 +142,7 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   carriedDominos.resize(DominoNumber);
 
   for (unsigned int i = 0; i < DominoNumber; i++) {
-    dominos[i].resize(numDominos[i]);
+    dominos[i].resize(60);  // TODO right number
     carriedDominos[i].resize(DominoTypeLastNormal+1);
     carriedDominos[i][0] = 0;
   }
@@ -174,6 +177,18 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
         dominos[i][j] = v;
         png.skipLines(2);
       }
+
+    // load 8 additional riser cont images
+    for (unsigned int j = 0; j < 8; j++) {
+
+      SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 58, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+      SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+      png.getPart(v);
+
+      dominos[DominoTypeAscender][RISER_CONT_START+j] = v;
+      png.skipLines(2);
+    }
   }
 
   // load the ant images
@@ -902,7 +917,7 @@ void graphicsN_c::drawDominos(void)
       if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoExtra(x, y) == 0x60 &&
           level->getDominoState(x, y) < 16 && level->getDominoState(x, y) != 8)
       {
-        target->blit(dominos[DominoTypeRiserCont][StoneImageOffset[level->getDominoState(x, y)-1]],
+        target->blit(dominos[DominoTypeAscender][RISER_CONT_START+StoneImageOffset[level->getDominoState(x, y)-1]],
             SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]),
             SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
       }
@@ -911,14 +926,14 @@ void graphicsN_c::drawDominos(void)
       { // this is the case of the ascender domino completely horizontal and with the plank it is below not existing
         // so we see the above face of the domino. Normally there is a wall above us so we only see
         // the front face of the domino
-        target->blit(dominos[DominoTypeRiserCont][StoneImageOffset[level->getDominoState(x, y)-1]],
+        target->blit(dominos[DominoTypeAscender][RISER_CONT_START+StoneImageOffset[level->getDominoState(x, y)-1]],
             SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]+6),
             SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
       }
       else if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoState(x, y) == 15 && level->getDominoExtra(x, y) == 0 &&
           !level->getPlatform(x+1, y-3))
       {
-        target->blit(dominos[DominoTypeRiserCont][StoneImageOffset[level->getDominoState(x, y)-1]],
+        target->blit(dominos[DominoTypeAscender][RISER_CONT_START+StoneImageOffset[level->getDominoState(x, y)-1]],
             SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]-2),
             SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
       }
