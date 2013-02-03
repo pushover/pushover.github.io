@@ -66,7 +66,7 @@ static void check_record(const std::string & rec_path, levelsetList_c & levelset
 
   const std::string error = checker(a, l);
   if (!error.empty()) {
-    std::cout << rec_path << " " << error << std::endl;
+    std::cout << rec_path << " (" << rec.getLevelsetName() << " / " << rec.getLevelName() << "): " << error << std::endl;
     failed++;
   }
   count++;
