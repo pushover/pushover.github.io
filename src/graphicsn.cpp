@@ -345,6 +345,7 @@ void graphicsN_c::getAnimation(AntAnimationState anim, pngLoader_c * png) {
   }
 }
 
+
 static signed int offsets[12][16] = {
   {     -7, -3,  -8, -3, -11, -3, -14, -3, -16, -3, -20, -3,                   // AntAnimCarryLeft,
   }, {   5, -3,   6, -3,   9, -3,  12, -3,  14, -3,  18, -3,                   // AntAnimCarryRight,
@@ -500,7 +501,7 @@ void graphicsN_c::drawAnt(void)
     // repaint the ladders
     for (unsigned int y = 0; y < level->levelY(); y++)
       for (unsigned int x = 0; x < level->levelX(); x++) {
-        //      if (dirty.isDirty(x, y))
+        if (dirty.isDirty(x, y))
         {
           if (level->getLadder(x, y))
           {

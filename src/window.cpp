@@ -80,6 +80,7 @@ window_c::window_c(unsigned char x_, unsigned char y_, unsigned char w_, unsigne
   done = false;
 
   gr.markAllDirty();
+  gr.drawLevel();
 }
 
 void window_c::clearInside(void) {
