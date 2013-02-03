@@ -1028,9 +1028,9 @@ void graphicsN_c::findDirtyBlocks(void)
          )
       {
         for (int i = 0; i < 3; i++)
-          for (int j = 0; j < 4; j++)
+          for (int j = 0; j < 5; j++)
           {
-            dirty.markDirty(x-1+i, y-3+j);
+            dirty.markDirty(x-1+i, y-4+j);
           }
 
         l2.setDominoType(x, y, level->getDominoType(x, y));
