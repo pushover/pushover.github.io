@@ -104,7 +104,7 @@ bool check(int argn, char * argv[], std::string checker(const ant_c & a, const l
   return failed == 0;
 }
 
-std::string checker1(const ant_c & a, const levelPlayer_c & l)
+std::string checkerFinish(const ant_c & a, const levelPlayer_c & l)
 {
     if (a.isVisible())
       return "Ant still visible";
@@ -119,7 +119,7 @@ std::string checker1(const ant_c & a, const levelPlayer_c & l)
     return "";
 }
 
-std::string checker2(const ant_c & a, const levelPlayer_c & l) {
+std::string checkerFail(const ant_c & a, const levelPlayer_c & l) {
 
     if (a.isVisible() == true || !l.dominosFalln() || l.rubblePile())
       return "";
@@ -127,7 +127,7 @@ std::string checker2(const ant_c & a, const levelPlayer_c & l) {
       return "Level not Failed";
 }
 
-std::string checker3(const ant_c & a, const levelPlayer_c & l) {
+std::string checkerCrash(const ant_c & a, const levelPlayer_c & l) {
   // we succeeded, when the ant has vanished, then it went out of the door
 
   if (l.rubblePile())
@@ -217,19 +217,19 @@ int main(int argc, char * argv[]) {
 
   // filter out the no graphic cases, they are special and will be treated
   // separately
-  if (argc >= 3 && strcmp(argv[1], "-c") == 0)   // the must complete tests
+  if (argc >= 3 && strcmp(argv[1], "-c") == 0)   // the "must finish" tests
   {
-    return check(argc-2, argv+2, checker1) ? 0 : 1;
+    return check(argc-2, argv+2, checkerFinish) ? 0 : 1;
   }
 
-  if (argc >= 3 && strcmp(argv[1], "-y") == 0)   // the must fail tests
+  if (argc >= 3 && strcmp(argv[1], "-y") == 0)   // the "must fail" tests
   {
-    return check(argc-2, argv+2, checker2) ? 0 : 1;
+    return check(argc-2, argv+2, checkerFail) ? 0 : 1;
   }
 
-  if (argc >= 3 && strcmp(argv[1], "-x") == 0)   // the must crash tests
+  if (argc >= 3 && strcmp(argv[1], "-x") == 0)   // the "must crash" tests
   {
-    return check(argc-2, argv+2, checker3) ? 0 : 1;
+    return check(argc-2, argv+2, checkerCrash) ? 0 : 1;
   }
 
   bool fullscreen = false;
