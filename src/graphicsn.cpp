@@ -32,6 +32,8 @@
 #include <string.h>
 #include <iostream>
 
+#include <assert.h>
+
 static const int antOffsets[] = {
   0, 0, 0, 0, 0, 0,                                                 // 6,        // AntAnimWalkLeft,
   0, 0, 0, 0, 0, 0,                                                 // 6,        // AntAnimWalkRight,
@@ -482,8 +484,8 @@ void graphicsN_c::drawAnt(void)
      )
   {
     // repaint the ladders
-    for (unsigned int y = 0; y < 25; y++)
-      for (unsigned int x = 0; x < 20; x++) {
+    for (unsigned int y = 0; y < level->levelY(); y++)
+      for (unsigned int x = 0; x < level->levelX(); x++) {
         //      if (dirty.isDirty(x, y))
         {
           if (level->getLadder(x, y))
@@ -554,9 +556,9 @@ void graphicsN_c::drawAnt(void)
   if (ant->getAnimation() >= AntAnimXXX1 && ant->getAnimation() <= AntAnimXXX4) return;
 
   // repaint the ladders
-  for (unsigned int y = 0; y < 25; y++)
-    for (unsigned int x = 0; x < 20; x++) {
-      //      if (dirty.isDirty(x, y))
+  for (unsigned int y = 0; y < level->levelY(); y++)
+    for (unsigned int x = 0; x < level->levelX(); x++) {
+      if (dirty.isDirty(x, y))
       {
         if (level->getLadder(x, y))
         {
@@ -698,6 +700,9 @@ void graphicsN_c::setPaintData(const levelData_c * l, const ant_c * a, surface_c
   target = t;
 
   setTheme(level->getTheme());
+
+  assert(l->levelX() == 20);
+  assert(l->levelY() == 25);
 
   dirtybg.markAllDirty();
   dirty.markAllDirty();
@@ -867,14 +872,14 @@ void graphicsN_c::drawDominos(void)
             SpriteYPos+convertDominoY(level->getDominoYOffset(x-1, y)));
       }
 
-      if (y < 25 && !dirty.isDirty(x, y+1) && level->getDominoType(x, y+1) != DominoTypeEmpty)
+      if (y < level->levelY() && !dirty.isDirty(x, y+1) && level->getDominoType(x, y+1) != DominoTypeEmpty)
       {
         target->blit(dominos[level->getDominoType(x, y+1)][level->getDominoState(x, y+1)-1],
             SpriteXPos,
             SpriteYPos+convertDominoY(level->getDominoYOffset(x, y+1))+blockY()/2);
       }
 
-      if (y < 24 && !dirty.isDirty(x, y+2) && level->getDominoType(x, y+2) != DominoTypeEmpty)
+      if (y+2 < level->levelY() && !dirty.isDirty(x, y+2) && level->getDominoType(x, y+2) != DominoTypeEmpty)
       {
         target->blit(dominos[level->getDominoType(x, y+2)][level->getDominoState(x, y+2)-1],
             SpriteXPos,
@@ -923,7 +928,7 @@ void graphicsN_c::drawDominos(void)
       }
 
       // paint the right neighbor if it is leaning in our direction
-      if (x < 19 && y < 25 && !dirty.isDirty(x+1, y+1) && level->getDominoType(x+1, y+1) != DominoTypeEmpty &&
+      if (x+1 < level->levelX() && y+1 < level->levelY() && !dirty.isDirty(x+1, y+1) && level->getDominoType(x+1, y+1) != DominoTypeEmpty &&
           (level->getDominoState(x+1, y+1) < 8 ||
            (level->getDominoType(x+1, y+1) == DominoTypeSplitter && level->getDominoState(x+1, y+1) != 8) ||
            level->getDominoType(x+1, y+1) >= DominoTypeCrash0))
@@ -933,7 +938,7 @@ void graphicsN_c::drawDominos(void)
             SpriteYPos+convertDominoY(level->getDominoYOffset(x+1, y+1))+blockY()/2);
       }
 
-      if (x < 19 && !dirty.isDirty(x+1, y) && level->getDominoType(x+1, y) != DominoTypeEmpty &&
+      if (x+1 < level->levelX() && !dirty.isDirty(x+1, y) && level->getDominoType(x+1, y) != DominoTypeEmpty &&
           (level->getDominoState(x+1, y) < 8 ||
            (level->getDominoType(x+1, y) == DominoTypeSplitter && level->getDominoState(x+1, y) != 8) ||
            level->getDominoType(x+1, y) >= DominoTypeCrash0))
@@ -943,7 +948,7 @@ void graphicsN_c::drawDominos(void)
             SpriteYPos+convertDominoY(level->getDominoYOffset(x+1, y)));
       }
 
-      if (y+1 >= level->levelY()) continue;
+      if (y+2 >= level->levelY()) continue;
 
       if (!dirty.isDirty(x, y+2) && level->getDominoType(x, y+2) == DominoTypeAscender)
       {
@@ -959,7 +964,7 @@ void graphicsN_c::drawDominos(void)
             SpriteYPos+convertDominoY(level->getDominoYOffset(x-1, y+2))+blockY());
       }
 
-      if (x < 19 && !dirty.isDirty(x+1, y+2) && level->getDominoType(x+1, y+2) == DominoTypeAscender)
+      if (x+1 < level->levelX() && !dirty.isDirty(x+1, y+2) && level->getDominoType(x+1, y+2) == DominoTypeAscender)
       {
         target->blit(dominos[level->getDominoType(x+1, y+2)][level->getDominoState(x+1, y+2)-1],
             SpriteXPos+blockX(),
