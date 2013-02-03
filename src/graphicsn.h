@@ -71,7 +71,7 @@ class graphicsN_c : public graphics_c {
 
     // get index into the fg tiles for the tile at position x, y
     // values bigger than the size of fgTiles means leave empty
-    uint16_t getPlatformImage(uint16_t x, uint16_t y);
+    uint16_t getPlatformImage(size_t x, size_t y);
 
 
     std::string dataPath;

@@ -719,7 +719,7 @@ void graphicsN_c::setPaintData(const levelData_c * l, const ant_c * a, surface_c
   if (!background) background = new surface_c(t->getIdentical());
 }
 
-uint16_t graphicsN_c::getPlatformImage(uint16_t x, uint16_t y)
+uint16_t graphicsN_c::getPlatformImage(size_t x, size_t y)
 {
   if (!level->getPlatform(x, y))
   {
