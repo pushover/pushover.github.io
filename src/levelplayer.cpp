@@ -1340,15 +1340,18 @@ void levelPlayer_c::DTA_6(int x, int y) {
     }
     else
     {
-      setDominoType(x-1, y, getDominoType(x, y));
-      setDominoState(x-1, y, 0xE);
-      setDominoDir(x-1, y, getDominoDir(x, y));
-      setDominoYOffset(x-1, y, 2);
+      if (x > 0)
+      {
+        setDominoType(x-1, y, getDominoType(x, y));
+        setDominoState(x-1, y, 0xE);
+        setDominoDir(x-1, y, getDominoDir(x, y));
+        setDominoYOffset(x-1, y, 2);
 
-      if (getPlatform(x-1, y+2))
-        setDominoExtra(x-1, y, 0x40);
-      else
-        setDominoExtra(x-1, y, 0x70);
+        if (getPlatform(x-1, y+2))
+          setDominoExtra(x-1, y, 0x40);
+        else
+          setDominoExtra(x-1, y, 0x70);
+      }
 
       soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
 
@@ -1398,15 +1401,18 @@ void levelPlayer_c::DTA_L(int x, int y) {
     }
     else
     {
-      setDominoType(x+1, y, getDominoType(x, y));
-      setDominoState(x+1, y, 2);
-      setDominoDir(x+1, y, getDominoDir(x, y));
-      setDominoYOffset(x+1, y, -2);
+      if ((size_t)(x+1) < levelX())
+      {
+        setDominoType(x+1, y, getDominoType(x, y));
+        setDominoState(x+1, y, 2);
+        setDominoDir(x+1, y, getDominoDir(x, y));
+        setDominoYOffset(x+1, y, -2);
 
-      if (getPlatform(x+1, y+2))
-        setDominoExtra(x+1, y, 0x40);
-      else
-        setDominoExtra(x+1, y, 0x70);
+        if (getPlatform(x+1, y+2))
+          setDominoExtra(x+1, y, 0x40);
+        else
+          setDominoExtra(x+1, y, 0x70);
+      }
 
       soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
 
