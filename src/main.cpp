@@ -222,7 +222,7 @@ int main(int argc, char * argv[]) {
     return 0;
   }
 
-  if (argc >= 3 && strcmp(argv[1], "-y") == 0)   // the must complete tests
+  if (argc >= 3 && strcmp(argv[1], "-y") == 0)   // the must fail tests
   {
     check(argc-2, argv+2, checker2);
     return 0;
