@@ -850,7 +850,11 @@ void graphicsN_c::drawDominos(void)
 
   static int XposOffset[] = {-16, -16,  0,-16,  0,  0, 0, 0, 0,  0, 0, 16,  0, 16, 16, 0};
   static int YposOffset[] = { -8,  -6,  0, -4,  0, -2, 0, 0, 0, -2, 0, -4,  0, -6, -8, 0};
-  static int StoneImageOffset[] = {  7, 6, 0, 5, 0, 4, 0, 0, 0, 3, 0, 2, 0, 1, 0, 0};
+  static int StoneImageOffset[] = {
+    RISER_CONT_START+7, RISER_CONT_START+6, RISER_CONT_START+0, RISER_CONT_START+5,
+    RISER_CONT_START+0, RISER_CONT_START+4, RISER_CONT_START+0, RISER_CONT_START+0,
+    RISER_CONT_START+0, RISER_CONT_START+3, RISER_CONT_START+0, RISER_CONT_START+2,
+    RISER_CONT_START+0, RISER_CONT_START+1, RISER_CONT_START+0, RISER_CONT_START+0 };
 
   // the idea behind this code is to repaint the dirty blocks. Dominos that are actually
   // within neighbor block must be repaint, too, when they might reach into the actual
@@ -916,7 +920,7 @@ void graphicsN_c::drawDominos(void)
       if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoExtra(x, y) == 0x60 &&
           level->getDominoState(x, y) < 16 && level->getDominoState(x, y) != 8)
       {
-        target->blit(dominos[DominoTypeAscender][RISER_CONT_START+StoneImageOffset[level->getDominoState(x, y)-1]],
+        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)-1]],
             SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]),
             SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
       }
@@ -925,14 +929,14 @@ void graphicsN_c::drawDominos(void)
       { // this is the case of the ascender domino completely horizontal and with the plank it is below not existing
         // so we see the above face of the domino. Normally there is a wall above us so we only see
         // the front face of the domino
-        target->blit(dominos[DominoTypeAscender][RISER_CONT_START+StoneImageOffset[level->getDominoState(x, y)-1]],
+        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)-1]],
             SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]+6),
             SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
       }
       else if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoState(x, y) == 15 && level->getDominoExtra(x, y) == 0 &&
           !level->getPlatform(x+1, y-3))
       {
-        target->blit(dominos[DominoTypeAscender][RISER_CONT_START+StoneImageOffset[level->getDominoState(x, y)-1]],
+        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)-1]],
             SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]-2),
             SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
       }
