@@ -796,6 +796,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
       DominoCrash(x, y+2, getDominoType(x, y), getDominoExtra(x, y));
     }
 
+    // this sets the Ascender turning over again
     if (getDominoType(x, y+2) == DominoTypeAscender)
     {
       if (getDominoState(x, y+2) == 1)
@@ -804,7 +805,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
         setDominoType(x-1, y+4, DominoTypeAscender);
         setDominoDir(x-1, y+4, -1);
         setDominoExtra(x-1, y+4, 0x00);
-        setDominoYOffset(x-1, y+4, getDominoYOffset(x, y+1)-16);
+        setDominoYOffset(x-1, y+4, getDominoYOffset(x, y+2)-16);
         removeDomino(x, y+2);
       }
       if (getDominoState(x, y+2) == 15)
@@ -813,7 +814,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
         setDominoType(x+1, y+4, DominoTypeAscender);
         setDominoDir(x+1, y+4, 1);
         setDominoExtra(x+1, y+4, 0x00);
-        setDominoYOffset(x+1, y+4, getDominoYOffset(x, y+1)-16);
+        setDominoYOffset(x+1, y+4, getDominoYOffset(x, y+2)-16);
         removeDomino(x, y+2);
       }
     }
