@@ -699,6 +699,8 @@ void graphicsN_c::setPaintData(const levelData_c * l, const ant_c * a, surface_c
   ant = a;
   target = t;
 
+  if (!level) return;
+
   setTheme(level->getTheme());
 
   assert(l->levelX() == 20);
@@ -1113,12 +1115,18 @@ void graphicsN_c::findDirtyBlocks(void)
 
 void graphicsN_c::drawLevel(void) {
 
-  if (!level || !ant || !target) return;
+  if (!target) return;
+
+  if (!level)
+  {
+    target->fillRect(0, 0, resolutionX(), resolutionY(), 0, 0, 0);
+    return;
+  }
 
   findDirtyBlocks();
 
   drawDominos();
-  drawAnt();
+  if (ant) drawAnt();
 
   if (Min != -1)
   {

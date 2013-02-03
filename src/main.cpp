@@ -352,6 +352,7 @@ int main(int argc, char * argv[]) {
   else
   {
     nextState = ST_PROFILE_INIT;
+    gr.setPaintData(0, 0, &screen);
   }
 
 
