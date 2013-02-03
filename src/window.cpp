@@ -795,19 +795,19 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
         if (solv.solved(ls.getChecksum(e)))
         {
             std::string f = std::string(_(e.c_str())) + "  \xE2\x96\xA0";
-            entries.push_back(listWindow_c::entry(_(f.c_str())));
+            entries.push_back(listWindow_c::entry(f));
             entries.rbegin()->sol = 2;
         }
         else if (solv.solved(ls.getChecksumNoTime(e)))
         {
             std::string f = std::string(_(e.c_str())) + "  \xE2\x96\xA3";
-            entries.push_back(listWindow_c::entry(_(f.c_str())));
+            entries.push_back(listWindow_c::entry(f));
             entries.rbegin()->sol = 1;
         }
         else
         {
             std::string f = std::string(_(e.c_str())) + "  \xE2\x96\xA1";
-            entries.push_back(listWindow_c::entry(_(f.c_str())));
+            entries.push_back(listWindow_c::entry(f));
             entries.rbegin()->sol = 0;
 
             if (index == -1)
