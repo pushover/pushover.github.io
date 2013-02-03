@@ -114,11 +114,11 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
   /* Author section */
   if (sections.hasSection("Author"))
   {
-    author = sections.getSingleLine("Author");
+    author = sections.getSingleSection("Author");
   }
   else
   {
-    author = "unknown";
+    author.push_back("unknown");
   }
 
   /* Time section (time format is M:SS) */
@@ -499,6 +499,11 @@ void levelData_c::save(std::ostream & stream) const
 {
   unsigned int timeSeconds = timeLeft/18;
 
+  std::string authors;
+
+  for (size_t i = 0; i < author.size(); i++)
+    authors += "| " + author[i] + "\n";
+
   stream <<
   textsections_c::firstLine << "\n"
   "\n"
@@ -509,7 +514,7 @@ void levelData_c::save(std::ostream & stream) const
   "| " << name << "\n"
   "\n"
   "Author\n"
-  "| " << author << "\n"
+  << authors <<
   "\n"
   "Theme\n"
   "| " << theme << "\n"

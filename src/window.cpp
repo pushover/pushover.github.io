@@ -188,30 +188,30 @@ void helpWindow_c::displayCurrentPage(void)
     std::string n;
 
     if (mission != "")
-      n = std::string(_(mission.c_str())) + " / " + _(level.getName().c_str());
+      //TRANSLATORS: this is the separator between the levelset and the levelname in the help window
+      n = std::string(_(mission.c_str())) + _(" / ") + _(level.getName().c_str());
     else
       n = _(level.getName().c_str());
 
+    s.renderText(&par, std::string(_("Level name: ")) + n);
 
-    if (rightToLeft())
-    {
-      s.renderText(&par, n + std::string(_("Level name: ")));
-    }
-    else
-    {
-      s.renderText(&par, std::string(_("Level name: ")) + n);
-    }
     ypos += getFontHeight(FNT_SMALL);
 
     par.box.y = ypos;
-    if (rightToLeft())
+
+    std::vector<std::string> authors = level.getAuthor();
+
+    std::string a;
+
+    for (size_t i = 0; i < authors.size(); i++)
     {
-      s.renderText(&par, level.getAuthor() + _("Level author: "));
+      //TRANSLATORS: this is the separator that is placed between the different authors in the autor list in the help window
+      if (a != "") a = a + _(", ");
+
+      a += authors[i];
     }
-    else
-    {
-      s.renderText(&par, _("Level author: ") + level.getAuthor());
-    }
+
+    s.renderText(&par, _("Level author: ") + a);
 
     ypos += getFontHeight(FNT_SMALL);
     ypos += 10;
