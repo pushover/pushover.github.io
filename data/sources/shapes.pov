@@ -462,17 +462,7 @@
     texture { TxtY }
   }
   intersection {
-    box { <-W/2-my, H/3, 1*D/7> <W/2+my, 2*H/3, 2*D/7> }
-    object { Edges }
-    texture { TxtR }
-  }
-  intersection {
-    box { <-W/2-my, H/3, 3*D/7> <W/2+my, 2*H/3, 4*D/7> }
-    object { Edges }
-    texture { TxtR }
-  }
-  intersection {
-    box { <-W/2-my, H/3, 5*D/7> <W/2+my, 2*H/3, 6*D/7> }
+    box { <-W/2-my, H/3, 1*D/5> <W/2+my, 2*H/3, 4*D/5> }
     object { Edges }
     texture { TxtR }
   }
@@ -528,6 +518,14 @@
     #case (14)
       Domino14
       #break;
+    #case (15)
+      Domino15
+      #break;
+    #case (16)
+      Domino16
+      #break;
+    #case (17)
+      Domino17
+      #break;
   #end
 #end
-
