@@ -245,14 +245,14 @@
 18 4 42 data/domino0907.png
 #
 # Acender Cont
-18 4 62 data/domino0900.png
-18 4 62 data/domino0901.png
-18 4 62 data/domino0903.png
-18 4 62 data/domino0905.png
-18 4 62 data/domino0909.png
-18 4 62 data/domino0911.png
-18 4 62 data/domino0913.png
-18 4 62 data/domino0900.png
+19 4 54 data/domino0900.png
+14 4 54 data/domino0901.png
+-1 4 54 data/domino0903.png
+21 4 54 data/domino0905.png
+19 4 54 data/domino0909.png
+27 5 54 data/domino0911.png
+7 4 54 data/domino0913.png
+34 4 54 data/domino0900.png
 #
 # Ascender Domino Carried Images
 10 8 62 data/carried063.png
@@ -402,16 +402,16 @@
 18 4 62 crashes/crash06.png
 #
 # Crash 2
-19 4 54 crashes/crash07.png
-14 4 54 crashes/crash08.png
--1 4 54 crashes/crash09.png
-21 4 54 crashes/crash10.png
-19 4 54 crashes/crash11.png
-27 5 54 crashes/crash12.png
+18 4 62 crashes/crash07.png
+18 4 62 crashes/crash08.png
+18 4 62 crashes/crash09.png
+18 4 62 crashes/crash10.png
+18 4 62 crashes/crash11.png
+18 4 62 crashes/crash12.png
 #
 # Crash 3
-7 4 54 crashes/crash13.png
-34 4 54 crashes/crash14.png
+18 4 62 crashes/crash13.png
+18 4 62 crashes/crash14.png
 18 4 62 crashes/crash15.png
 18 4 62 crashes/crash16.png
 18 4 62 crashes/crash17.png
