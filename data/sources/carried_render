@@ -1,3 +1,1 @@
-pushd data
-~/Programme/povray-3.6/povray ../carried.pov +w165 +h55 +R5 +a +UA -KFI0 -KFF105 -KI0 -KF105 -L.. +SF0 +EF114 +D
-popd
+~/Programme/povray-3.6/povray carried.ini
