@@ -113,8 +113,6 @@ int main(int argn, char *args[]) {
 
     SDL_FillRect(out, &r, SDL_MapRGB(out->format, 0, 0, 0));
 
-    printf("%i %i %i %s\n", images[i].xs, images[i].ys, images[i].yclip, images[i].file);
-
     r.y += gap;
   }
 
