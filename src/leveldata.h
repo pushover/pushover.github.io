@@ -54,6 +54,31 @@ typedef enum {
   DominoNumber
 } DominoType;
 
+
+// the following defines put down some basic numbers for the
+// possible domino states... each domino stat is supposed
+// to have exactly one meaning.. even though some
+// dominos might not use all of them.. e.g. the exploder
+// will have no state except for the upright one and
+// some explostions
+
+// the following defines represent single states
+#define DO_ST_INVALID  0
+#define DO_ST_LEFT     1  // the state which represents the domino falln completely to the left
+#define DO_ST_UPRIGHT  8  // domino standing completely vertical
+#define DO_ST_RIGHT   15  // domino falln completely to the right
+
+// the following defines represent groups of states, the _E appendix is always the last entry of the group
+#define DO_ST_FALLING    1  // stands for the initial state of the normally falling dominos
+#define DO_ST_FALLING_E 15  // final of the falling states
+
+// TODO right now the special ascender states interfere here, so later on
+
+#define DO_ST_EXPLODE   18  // exploder start state, representing the finished explosion
+#define DO_ST_EXPLODE_E 24  // exploder end state, representing the starting explosion
+
+
+
 class levelData_c {
 
   private:

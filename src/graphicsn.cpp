@@ -103,14 +103,16 @@ static const int antOffsets[] = {
 
 #define FALLING_DOMINO_START 0   // 15 images
 #define RISER_SPECIAL_START 15   // 2 images
-#define CARRIED_DOMINO_START 17  // 7 images
 #define RISER_CONT_START 24      // 8 images
+
+
+#define CARRIED_DOMINO_START 100  // 7 images
 
 // this array defines for all domino images of a certain comino
 // in which array position they are supposed to go
 // finalizing entry is -1
 // drop image is done with -2
-static const int8_t dominoImages[DominoNumber][35] = {
+static const int8_t dominoImages[DominoNumber][135] = {
 
   /* DominoTypeEmpty      */ { -1 },
   /* DominoTypeStandard   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
@@ -122,7 +124,9 @@ static const int8_t dominoImages[DominoNumber][35] = {
   /* DominoTypeSplitter   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeExploder   */ { 0, 1, 2, 3, 4, 5, 6, 7,
+  /* DominoTypeExploder   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    DO_ST_EXPLODE+0, DO_ST_EXPLODE+1, DO_ST_EXPLODE+2,
+    DO_ST_EXPLODE+3, DO_ST_EXPLODE+4, DO_ST_EXPLODE+5, DO_ST_EXPLODE+6,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
   /* DominoTypeDelay      */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
@@ -551,7 +555,7 @@ void graphicsN_c::drawAnt(void)
       {
         // the ant normaly toppled the domino slightly over then lifting it up, but those
         // images don't exist with some dominos, so we stay with the vertical image
-        if (img != 7 && (ant->getCarriedDomino() == DominoTypeSplitter || ant->getCarriedDomino() == DominoTypeExploder || ant->getCarriedDomino() == DominoTypeAscender))
+        if (img != 7 && (ant->getCarriedDomino() == DominoTypeSplitter || ant->getCarriedDomino() == DominoTypeAscender))
         {
           img = 7;
         }
