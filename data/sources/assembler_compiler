@@ -1,1 +1,0 @@
-g++ assembler.cpp -I /usr/include/SDL -lpng -lSDL -lSDL_image -o assembler

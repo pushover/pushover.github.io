@@ -480,3 +480,54 @@
 
 #declare DominoRightPlane = box { <-100, -100, -100> <W/2, 100, 100> }
 #declare DominoLeftPlane =  box { <-W/2, -100, -100> <100, 100, 100> }
+
+#macro Domino(num)
+  #switch(num)
+    #case (0)
+      Domino0
+      #break;
+    #case (1)
+      Domino1
+      #break;
+    #case (2)
+      Domino2
+      #break;
+    #case (3)
+      Domino3
+      #break;
+    #case (4)
+      Domino4
+      #break;
+    #case (5)
+      Domino5
+      #break;
+    #case (6)
+      Domino6
+      #break;
+    #case (7)
+      Domino7
+      #break;
+    #case (8)
+      Domino8
+      #break;
+    #case (9)
+      Domino9
+      #break;
+    #case (10)
+      Domino10
+      #break;
+    #case (11)
+      Domino11
+      #break;
+    #case (12)
+      Domino12
+      #break;
+    #case (13)
+      Domino13
+      #break;
+    #case (14)
+      Domino14
+      #break;
+  #end
+#end
+

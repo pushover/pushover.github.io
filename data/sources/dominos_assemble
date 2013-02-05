@@ -1,4 +1,3 @@
-./assembler_compiler
+g++ assembler.cpp -I /usr/include/SDL -lpng -lSDL -lSDL_image -o assembler
 ./assembler dominos.png 58 2 200 dominos.lst
-
-
+rm assembler
