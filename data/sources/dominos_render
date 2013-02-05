@@ -1,5 +1,4 @@
-pushd data
-povray ../domino.pov +w165 +h55 +R5 +a +UA +KFI0 +KFF156 +KI0 +KF156 +L.. +SF0 +EF164
-popd
+~/Programme/povray-3.6/povray domino.ini
+#povray domino.ini
 
 

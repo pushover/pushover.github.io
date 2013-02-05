@@ -33,7 +33,6 @@ dist_doc_DATA = \
 nobase_dist_pkgdata_DATA = \
   data/ant.png \
   data/dominos.png \
-  data/carried.png \
   data/box.png \
   data/01_StandardFalling.ogg \
   data/02_StopperHit.ogg \

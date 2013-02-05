@@ -23,22 +23,30 @@
 
 
 #switch(clock)
-  #range(0*15,0*15+14)
+  #range(0,14)
     // normal stone
     object {
       Domino0
-      PlaceDominoStone(clock-7-0*15)
+      PlaceDominoStone(clock-7-0)
     }
     #break
-  #range(1*15,1*15+14)
+  #range(100,114)
     // blocker ... well it doesn't fall, but still
     object {
       Domino1
-      PlaceDominoStone(clock-7-1*15)
+      PlaceDominoStone(clock-7-100)
     }
     #break
-  #range(2*15,2*15+14-1)
-    // splitter, has only 14 images, and the angles of the
+  #range(200, 214)
+    // splitter, first the normal stuff
+    object {
+      Domino2
+      PlaceDominoStone(clock-7-200)
+    }
+    #break
+  #range(215,215+13)
+
+    // special splitter images, has only 14 images, and the angles of the
     // stones are given by an array
     // TODO the lower end overlaps outside of the other stone, which
     // looks ugly, therw we need to cut off the corners
@@ -46,133 +54,112 @@
       intersection {
         object {
           Domino2
-          PlaceDominoStone( 7-SplitPos[2*(clock-2*15)+0])
+          PlaceDominoStone( 7-SplitPos[2*(clock-215)+0])
         }
         object {
           DominoLeftPlane
-          PlaceDominoStone(-7+SplitPos[2*(clock-2*15)+1])
+          PlaceDominoStone(-7+SplitPos[2*(clock-215)+1])
           translate x*0.5
         }
       }
       intersection {
         object {
           Domino2
-          PlaceDominoStone(-7+SplitPos[2*(clock-2*15)+1])
+          PlaceDominoStone(-7+SplitPos[2*(clock-215)+1])
         }
         object {
           DominoRightPlane
-          PlaceDominoStone( 7-SplitPos[2*(clock-2*15)+0])
+          PlaceDominoStone( 7-SplitPos[2*(clock-215)+0])
           translate -x*0.5
         }
       }
     }
     #break
-  #range(3*15-1,3*15-1)
-    // exploder, only one image
+  #range(300,314)
+    // exploder, only one image, but we still need them all
     object {
       Domino3
-      PlaceDominoStone(0)
+      PlaceDominoStone(clock-7-300)
     }
     #break
-  #range(3*15,3*15+14)
+  #range(400,414)
     // delay
     object {
       Domino4
-      PlaceDominoStone(clock-7-3*15)
+      PlaceDominoStone(clock-7-400)
     }
     #break
-  #range(4*15-1,4*15+14)
+  #range(500,514)
     // tumbler
     object {
       Domino5
-      PlaceDominoStone(clock-7-4*15)
+      PlaceDominoStone(clock-7-500)
     }
     #break
-  #range(5*15-1,5*15+14)
+  #range(600,614)
     // bridgle builder
     object {
       Domino6
-      PlaceDominoStone(clock-7-5*15)
+      PlaceDominoStone(clock-7-600)
     }
     #break
-  #range(6*15-1,6*15+14)
+  #range(700,714)
     // vanisher
     object {
       Domino7
-      PlaceDominoStone(clock-7-6*15)
+      PlaceDominoStone(clock-7-700)
     }
     #break
-  #range(7*15-1,7*15+14)
+  #range(800,814)
     // trigger
     object {
       Domino8
-      PlaceDominoStone(clock-7-7*15)
+      PlaceDominoStone(clock-7-800)
     }
     #break
-  #range(8*15-1,8*15+14)
+  #range(900,914)
     // raiser the raiser will be resorted by the
     // assembly script, it will also be cropped and what not
     // ...
     object {
       Domino9
-      PlaceDominoStone(clock-7-8*15)
+      PlaceDominoStone(clock-7-900)
     }
     #break
-  #range(9*15-1,9*15+14)
-    // connector
+  #range(1000,1014)
+    // connectorA
     object {
       Domino10
-      PlaceDominoStone(clock-7-9*15)
+      PlaceDominoStone(clock-7-1000)
     }
     #break
-  #range(10*15-1,10*15+14)
-    // connector
+  #range(1100,1114)
+    // connectorB
     object {
       Domino11
-      PlaceDominoStone(clock-7-10*15)
+      PlaceDominoStone(clock-7-1100)
     }
     #break
 
-  #range(11*15-1,11*15+14)
-    // connector
+  #range(1200,1214)
+    // counter1
     object {
       Domino12
-      PlaceDominoStone(clock-7-11*15)
+      PlaceDominoStone(clock-7-1200)
     }
     #break
-  #range(12*15-1,12*15+14)
-    // connector
+  #range(1300,1314)
+    // counter2
     object {
       Domino13
-      PlaceDominoStone(clock-7-12*15)
+      PlaceDominoStone(clock-7-1300)
     }
     #break
-  #range(13*15-1,13*15+14)
-    // connector
+  #range(1400,1414)
+    // counter3
     object {
       Domino14
-      PlaceDominoStone(clock-7-13*15)
-    }
-    #break
-  #range(14*15-1,14*15+14)
-    // connector
-    object {
-      Domino15
-      PlaceDominoStone(clock-7-14*15)
-    }
-    #break
-  #range(15*15-1,15*15+14)
-    // connector
-    object {
-      Domino16
-      PlaceDominoStone(clock-7-15*15)
-    }
-    #break
-  #range(16*15-1,16*15+14)
-    // connector
-    object {
-      Domino17
-      PlaceDominoStone(clock-7-16*15)
+      PlaceDominoStone(clock-7-1400)
     }
     #break
 #end

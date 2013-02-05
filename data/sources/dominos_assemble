@@ -1,25 +1,4 @@
-./assembler_compiler -DDOMINOS
-
-./assembler dominos.png 58 2 18 4 200 data/domino00?.png data/domino01?.png data/domino02?.png data/domino03?.png \
-   data/domino040.png data/domino041.png data/domino042.png data/domino043.png explosions/*.png \
-   data/domino044.png data/domino045.png data/domino046.png data/domino047.png data/domino048.png data/domino049.png \
-   data/domino05?.png data/domino06?.png data/domino07?.png data/domino08?.png data/domino09?.png data/domino10?.png \
-   data/domino11?.png \
-   data/domino120.png data/domino133.png data/domino132.png data/domino131.png data/domino130.png data/domino129.png \
-   data/domino128.png data/domino127.png data/domino126.png data/domino125.png data/domino124.png data/domino123.png \
-   data/domino122.png data/domino121.png data/domino134.png \
-   data/domino127.png data/domino127.png \
-   data/domino135.png data/domino136.png data/domino137.png data/domino138.png data/domino139.png data/domino140.png data/domino141.png \
-   data/domino142.png data/domino143.png data/domino144.png data/domino145.png data/domino146.png data/domino147.png data/domino148.png data/domino149.png \
-   data/domino150.png data/domino151.png data/domino152.png data/domino153.png data/domino154.png data/domino155.png data/domino156.png \
-   data/domino157.png data/domino158.png data/domino159.png data/domino160.png data/domino161.png data/domino162.png data/domino163.png data/domino164.png \
-   data/domino165.png data/domino166.png data/domino167.png data/domino168.png data/domino169.png data/domino170.png data/domino171.png \
-   data/domino172.png data/domino173.png data/domino174.png data/domino175.png data/domino176.png data/domino177.png data/domino178.png data/domino179.png \
-   data/domino180.png data/domino181.png data/domino182.png data/domino183.png data/domino184.png data/domino185.png data/domino186.png \
-   data/domino187.png data/domino188.png data/domino189.png data/domino190.png data/domino191.png data/domino192.png data/domino193.png data/domino194.png \
-   data/domino195.png data/domino196.png data/domino197.png data/domino198.png data/domino199.png data/domino200.png data/domino201.png \
-   data/domino202.png data/domino203.png data/domino204.png data/domino205.png data/domino206.png data/domino207.png data/domino208.png data/domino209.png \
-   crashes/crash*.png \
-   data/domino120.png data/domino121.png data/domino123.png data/domino125.png data/domino129.png data/domino131.png data/domino133.png data/domino120.png
+./assembler_compiler
+./assembler dominos.png 58 2 200 dominos.lst
 
 

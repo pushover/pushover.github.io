@@ -34,105 +34,145 @@
 
 #include <assert.h>
 
+// the following array contains the y offset to use for the different
+// images of the different ant animation images
+// each row represents one animation, the comment shows how many
+// images the animation has and which animation it is
 static const int antOffsets[] = {
-  0, 0, 0, 0, 0, 0,                                                 // 6,        // AntAnimWalkLeft,
-  0, 0, 0, 0, 0, 0,                                                 // 6,        // AntAnimWalkRight,
-  0, 0, -9, -30, -24, -24,                                          // 6,        // AntAnimJunpUpLeft,
-  0, 0, -9, -27, -24, -24,                                          // 6,        // AntAnimJunpUpRight,
-  3, 18, 24, 24,                                                    // 4,        // AntAnimJunpDownLeft,
-  3, 18, 24, 24,                                                    // 4,        // AntAnimJunpDownRight,
-  0, -12, -12, -24, -24, -36, -36, -48,                             // 8,        // AntAnimLadder1,
-  0, -12, -12, -24, -24, -36, -36, -48,                             // 8,        // AntAnimLadder2,
-  0, 12, 12, 24, 24, 36, 36, 48,                                    // 8,        // AntAnimLadder3,
-  0, 12, 12, 24, 24, 36, 36, 48,                                    // 8,        // AntAnimLadder4,
-  0, 0, 0, 0, 0, 0,                                                 // 6,        // AntAnimCarryLeft,
-  0, 0, 0, 0, 0, 0,                                                 // 6,        // AntAnimCarryRight,
-  0, 0, 0, -12, -24, -24,                                           // 6,        // AntAnimCarryUpLeft,
-  0, 0, 0, -12, -24, -24,                                           // 6,        // AntAnimCarryUpRight,
-  6, 15, 24, 24, 24, 24,                                            // 6,        // AntAnimCarryDownLeft,
-  6, 15, 24, 24, 24, 24,                                            // 6,        // AntAnimCarryDownRight,
-  0, -12, -12, -24, -24, -36, -36, -48,                             // 8,        // AntAnimCarryLadder1,
-  0, -12, -12, -24, -24, -36, -36, -48,                             // 8,        // AntAnimCarryLadder2,
-  0, 12, 12, 24, 24, 36, 36, 48,                                    // 8,        // AntAnimCarryLadder3,
-  0, 12, 12, 24, 24, 36, 36, 48,                                    // 8,        // AntAnimCarryLadder4,
-  0,                                                                // 1,        // AntAnimCarryStopLeft,
-  3,                                                                // 1,        // AntAnimCarryStopRight,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      // 15,       // AntAnimPullOutLeft,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      // 15,       // AntAnimPullOutRight,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                   // 16,       // AntAnimPushInLeft,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                   // 16,       // AntAnimPushInRight,
-  0, 0,                                                             // 2,        // AntAnimXXX1,          // 2,        // AntAnimXXX4,
-  0, 0,                                                             // 2,        // AntAnimXXX2,          // 2,        // AntAnimXXX3,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 24, 33,                         // 13,       // AntAnimLoosingDominoRight,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 24, 33,             // 17,       // AntAnimLoosingDominoLeft,
-  0,                                                                // 1,        // AntAnimStop,
-  0, 0,                                                             // 2,        // AntAnimTapping,
-  0, 0, 0, 0, 0, 0,                                                 // 6,        // AntAnimYawning,
-  0, 0, 0, 0, 0, 0, -6,                                             // 7,        // AntAnimEnterLeft,
-  0, 0, 0, 0, 0, 0, -6,                                             // 7,        // AntAnimEnterRight,
-  -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, 0, 0,                     // 12,       // AntAnimPushLeft,
-  -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, 0, 0,                     // 12,       // AntAnimPushRight,
-  -6, -6, -6, -6, -6, -6, -6, -6,                                   // 8,        // AntAnimPushStopperLeft,     // 8,        // AntAnimPushDelayLeft,
-  -6, -6, -6, -6, -6, -6, -6, -6,                                   // 8,        // AntAnimPushStopperRight,    // 8,        // AntAnimPushDelayRight,
-  -6, -6, -6, -6,                                                   // 4,        // AntAnimPushRiserLeft,
-  -6, -6, -6, -6,                                                   // 4,        // AntAnimPushRiserRight,
-  0, 0, 0, 9, 18, 27,                                               // 6,        // AntAnimSuddenFallRight,
-  0, 0, 0, 9, 18, 27,                                               // 6,        // AntAnimSuddenFallLeft,
-  0, 12, 24, 36,                                                    // 4,        // AntAnimFalling,
-  0, 0, 0,                                                          // 3,        // AntAnimInFrontOfExploder,    // 1,        // AntAnimInFrontOfExploderWait,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      // 15,       // AntAnimLanding,
-  -6, -6,                                                           // 2,        // AntAnimGhost1,
-  0, -12, -24, -36,                                                 // 4,        // AntAnimGhost2,
-  -18, -15, -15, -6, -6, 0, 0,                                      // 7,        // AntAnimLeaveDoorEnterLevel,
-  0, 0, 0,                                                          // 3,        // AntAnimStepAsideAfterEnter,
-  0, 0, -6, -6, -12, -12, -18,                                      // 7,        // AntAnimEnterDoor,
-  0, 0, 0, 0,                                                       // 4,        // AntAnimXXX9,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                  // 11,       // AntAnimStruggingAgainsFallLeft,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                  // 11,       // AntAnimStruggingAgainsFallRight,
-  0, 0, 0, 0, 0, 0, 0, 0,                                           // 8,        // AntAnimVictory,
-  0, 0, 0, 0, 0, 0, 0, 0,                                           // 8,        // AntAnimShrugging,
-  0, 0, 0, 0, 0, 0, 0, 0,                                           // 8,        // AntAnimNoNo,
-  0,                                                                // 1,        // AntAnimXXXA,
-  0,                                                                // 1,        // AntAnimDominoDying,
-  -24, -12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0                         // 13        // AntAnimLandDying,
+  0, 0, 0, 0, 0, 0,                                                 // 6,   AntAnimWalkLeft,
+  0, 0, 0, 0, 0, 0,                                                 // 6,   AntAnimWalkRight,
+  0, 0, -9, -30, -24, -24,                                          // 6,   AntAnimJunpUpLeft,
+  0, 0, -9, -27, -24, -24,                                          // 6,   AntAnimJunpUpRight,
+  3, 18, 24, 24,                                                    // 4,   AntAnimJunpDownLeft,
+  3, 18, 24, 24,                                                    // 4,   AntAnimJunpDownRight,
+  0, -12, -12, -24, -24, -36, -36, -48,                             // 8,   AntAnimLadder1,
+  0, -12, -12, -24, -24, -36, -36, -48,                             // 8,   AntAnimLadder2,
+  0, 12, 12, 24, 24, 36, 36, 48,                                    // 8,   AntAnimLadder3,
+  0, 12, 12, 24, 24, 36, 36, 48,                                    // 8,   AntAnimLadder4,
+  0, 0, 0, 0, 0, 0,                                                 // 6,   AntAnimCarryLeft,
+  0, 0, 0, 0, 0, 0,                                                 // 6,   AntAnimCarryRight,
+  0, 0, 0, -12, -24, -24,                                           // 6,   AntAnimCarryUpLeft,
+  0, 0, 0, -12, -24, -24,                                           // 6,   AntAnimCarryUpRight,
+  6, 15, 24, 24, 24, 24,                                            // 6,   AntAnimCarryDownLeft,
+  6, 15, 24, 24, 24, 24,                                            // 6,   AntAnimCarryDownRight,
+  0, -12, -12, -24, -24, -36, -36, -48,                             // 8,   AntAnimCarryLadder1,
+  0, -12, -12, -24, -24, -36, -36, -48,                             // 8,   AntAnimCarryLadder2,
+  0, 12, 12, 24, 24, 36, 36, 48,                                    // 8,   AntAnimCarryLadder3,
+  0, 12, 12, 24, 24, 36, 36, 48,                                    // 8,   AntAnimCarryLadder4,
+  0,                                                                // 1,   AntAnimCarryStopLeft,
+  3,                                                                // 1,   AntAnimCarryStopRight,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      // 15,  AntAnimPullOutLeft,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      // 15,  AntAnimPullOutRight,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                   // 16,  AntAnimPushInLeft,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                   // 16,  AntAnimPushInRight,
+  0, 0,                                                             // 2,   AntAnimXXX1,               // 2,  AntAnimXXX4,
+  0, 0,                                                             // 2,   AntAnimXXX2,               // 2,  AntAnimXXX3,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 24, 33,                         // 13,  AntAnimLoosingDominoRight,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 24, 33,             // 17,  AntAnimLoosingDominoLeft,
+  0,                                                                // 1,   AntAnimStop,
+  0, 0,                                                             // 2,   AntAnimTapping,
+  0, 0, 0, 0, 0, 0,                                                 // 6,   AntAnimYawning,
+  0, 0, 0, 0, 0, 0, -6,                                             // 7,   AntAnimEnterLeft,
+  0, 0, 0, 0, 0, 0, -6,                                             // 7,   AntAnimEnterRight,
+  -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, 0, 0,                     // 12,  AntAnimPushLeft,
+  -6, -6, -6, -6, -6, -6, -6, -6, -6, -6, 0, 0,                     // 12,  AntAnimPushRight,
+  -6, -6, -6, -6, -6, -6, -6, -6,                                   // 8,   AntAnimPushStopperLeft,    // 8,  AntAnimPushDelayLeft,
+  -6, -6, -6, -6, -6, -6, -6, -6,                                   // 8,   AntAnimPushStopperRight,   // 8,  AntAnimPushDelayRight,
+  -6, -6, -6, -6,                                                   // 4,   AntAnimPushRiserLeft,
+  -6, -6, -6, -6,                                                   // 4,   AntAnimPushRiserRight,
+  0, 0, 0, 9, 18, 27,                                               // 6,   AntAnimSuddenFallRight,
+  0, 0, 0, 9, 18, 27,                                               // 6,   AntAnimSuddenFallLeft,
+  0, 12, 24, 36,                                                    // 4,   AntAnimFalling,
+  0, 0, 0,                                                          // 3,   AntAnimInFrontOfExploder,  // 1,  AntAnimInFrontOfExploderWait,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      // 15,  AntAnimLanding,
+  -6, -6,                                                           // 2,   AntAnimGhost1,
+  0, -12, -24, -36,                                                 // 4,   AntAnimGhost2,
+  -18, -15, -15, -6, -6, 0, 0,                                      // 7,   AntAnimLeaveDoorEnterLevel,
+  0, 0, 0,                                                          // 3,   AntAnimStepAsideAfterEnter,
+  0, 0, -6, -6, -12, -12, -18,                                      // 7,   AntAnimEnterDoor,
+  0, 0, 0, 0,                                                       // 4,   AntAnimXXX9,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                  // 11,  AntAnimStruggingAgainsFallLeft,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                                  // 11,  AntAnimStruggingAgainsFallRight,
+  0, 0, 0, 0, 0, 0, 0, 0,                                           // 8,   AntAnimVictory,
+  0, 0, 0, 0, 0, 0, 0, 0,                                           // 8,   AntAnimShrugging,
+  0, 0, 0, 0, 0, 0, 0, 0,                                           // 8,   AntAnimNoNo,
+  0,                                                                // 1,   AntAnimXXXA,
+  0,                                                                // 1,   AntAnimDominoDying,
+  -24, -12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0                         // 13   AntAnimLandDying,
 };
 
-static const unsigned char numDominos[DominoNumber] = {
-  0,    // DominoTypeEmpty
-  15,   // DominoTypeStandard,
-  15,   // DominoTypeStopper,
-  14,   // DominoTypeSplitter,
-  8,    // DominoTypeExploder,
-  15,   // DominoTypeDelay,
-  15,   // DominoTypeTumbler,
-  15,   // DominoTypeBridger,
-  15,   // DominoTypeVanish,
-  15,   // DominoTypeTrigger,
-  17,   // DominoTypeAscender,
-  15,   // DominoTypeConnectedA,
-  15,   // DominoTypeConnectedB,
-  15,   // DominoTypeCounter1,
-  15,   // DominoTypeCounter2,
-  15,   // DominoTypeCounter3,
-  6,    // DominoTypeCrash0,
-  6,    // DominoTypeCrash1,
-  6,    // DominoTypeCrash2,
-  6,    // DominoTypeCrash3,
-  6,    // DominoTypeCrash4,
-  6,    // DominoTypeCrash5,
-};
+#define FALLING_DOMINO_START 0   // 15 images
+#define RISER_SPECIAL_START 15   // 2 images
+#define CARRIED_DOMINO_START 17  // 7 images
+#define RISER_CONT_START 24      // 8 images
 
+// this array defines for all domino images of a certain comino
+// in which array position they are supposed to go
+// finalizing entry is -1
+// drop image is done with -2
+static const int8_t dominoImages[DominoNumber][35] = {
+
+  /* DominoTypeEmpty      */ { -1 },
+  /* DominoTypeStandard   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
+  /* DominoTypeStopper    */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
+  /* DominoTypeSplitter   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
+  /* DominoTypeExploder   */ { 0, 1, 2, 3, 4, 5, 6, 7,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
+  /* DominoTypeDelay      */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
+  /* DominoTypeTumbler    */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
+  /* DominoTypeBridger    */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
+  /* DominoTypeVanish     */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
+  /* DominoTypeTrigger    */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
+  /* DominoTypeAscender   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+    RISER_CONT_START+0, RISER_CONT_START+1, RISER_CONT_START+2, RISER_CONT_START+3,
+    RISER_CONT_START+4, RISER_CONT_START+5, RISER_CONT_START+6, RISER_CONT_START+7, -1,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6 },
+  /* DominoTypeConnectedA */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
+  /* DominoTypeConnectedB */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
+  /* DominoTypeCounter1   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
+  /* DominoTypeCounter2   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
+  /* DominoTypeCounter3   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
+    CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
+  /* DominoTypeCrash0     */ { 0, 1, 2, 3, 4, 5, -1 },
+  /* DominoTypeCrash1     */ { 0, 1, 2, 3, 4, 5, -1 },
+  /* DominoTypeCrash2     */ { 0, 1, 2, 3, 4, 5, -1 },
+  /* DominoTypeCrash3     */ { 0, 1, 2, 3, 4, 5, -1 },
+  /* DominoTypeCrash4     */ { 0, 1, 2, 3, 4, 5, -1 },
+  /* DominoTypeCrash5     */ { 0, 1, 2, 3, 4, 5, -1 }
+};
 
 #define antDisplace (6*3)
 #define dominoYStart (3*4)
 static int convertDominoX(int x) { return 5*x/2; }
 static int convertDominoY(int y) { return 3*y; }
 #define splitterY (3*12)
-
-
-#define CARRIED_DOMINO_START 17
-#define RISER_CONT_START 25
-
 
 graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   background = 0;
@@ -160,33 +200,40 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
 
   // all domino sprites are in a PNG image load the image and then copy
   // the information to the destination sprites
-
   {
     pngLoader_c png(dataPath+"/data/dominos.png");
 
-    for (unsigned int i = 1; i < DominoNumber; i++)
-      for (unsigned int j = 0; j < numDominos[i]; j++) {
+    uint16_t domino = 0;
+    uint16_t dominoIndex = 0;
+
+    while (true)
+    {
+      while (domino < DominoNumber && dominoImages[domino][dominoIndex] == -1)
+      {
+        domino++;
+        dominoIndex = 0;
+      }
+
+      if (domino >= DominoNumber) break;
+
+      if (dominoImages[domino][dominoIndex] == -2)
+      {
+        png.skipLines(60);
+      }
+      else
+      {
 
         SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 58, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
         SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
         png.getPart(v);
 
-        dominos[i][j] = v;
+        assert(dominos[domino][dominoImages[domino][dominoIndex]] == 0);
+        dominos[domino][dominoImages[domino][dominoIndex]] = v;
         png.skipLines(2);
+
+        dominoIndex++;
       }
-
-    // load 8 additional riser cont images
-    for (unsigned int j = 0; j < 8; j++) {
-
-      SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 58, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-      SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-      png.getPart(v);
-
-      assert(dominos[DominoTypeAscender][RISER_CONT_START+j] == 0);
-      dominos[DominoTypeAscender][RISER_CONT_START+j] = v;
-      png.skipLines(2);
     }
   }
 
@@ -223,33 +270,6 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
 
     for (unsigned int i = 51; i <= 65; i++)
       getAnimation((AntAnimationState)i, &png);
-  }
-
-  {
-    pngLoader_c png(dataPath+"/data/carried.png");
-
-    for (unsigned int i = 0; i < 11; i++) {
-      for (unsigned int j = 1; j <= DominoTypeLastNormal; j++) {
-
-        if (i < 2 || i > 5)
-        {
-          SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 55, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-          SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-          png.getPart(v);
-
-          int k = i;
-          if (i > 5) k = i - 4;
-
-          assert(dominos[j][CARRIED_DOMINO_START + k] == 0);
-          dominos[j][CARRIED_DOMINO_START + k] = v;
-        }
-        else
-        {
-          png.skipLines(55);
-        }
-      }
-    }
   }
 
   {
