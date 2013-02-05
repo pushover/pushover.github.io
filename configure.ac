@@ -48,7 +48,7 @@ PKG_CHECK_EXISTS([SDL_mixer], [SDL_MIXER="SDL_mixer >= 1.2.0"],
 PKG_CHECK_EXISTS([SDL_ttf], [SDL_TTF="SDL_ttf >= 2.0.0"],
     [AC_CHECK_LIB([SDL_ttf], [main], [], [AC_MSG_ERROR([Unable to find SDL_ttf.])])])
 
-PKG_CHECK_MODULES([DEPS], [$ZLIB libpng >= 1.2.40 sdl >= 1.2.0 $SDL_MIXER $SDL_TTF $LUA >= 5.1])
+PKG_CHECK_MODULES([DEPS], [$ZLIB libpng >= 1.2.27 sdl >= 1.2.0 $SDL_MIXER $SDL_TTF $LUA >= 5.0])
 CPPFLAGS="$CPPFLAGS $DEPS_CFLAGS"
 LIBS="$LIBS $DEPS_LIBS"
 
