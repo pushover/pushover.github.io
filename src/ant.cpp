@@ -1206,7 +1206,7 @@ bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
   if (((size_t)(x+1) < level.levelX()) && level.getDominoType(x+1, y) != DominoTypeEmpty && level.getDominoState(x+1, y) < 8)
     return false;
 
-  if ((x >  0) && level.getDominoType(x-1, y) != DominoTypeEmpty && level.getDominoState(x-1, y) > 8)
+  if ((x >  0) && level.getDominoType(x-1, y) != DominoTypeEmpty && level.getDominoState(x-1, y) > 8 && level.getDominoState(x-1, y) < 16)
     return false;
 
   // no other reason to not place the domino

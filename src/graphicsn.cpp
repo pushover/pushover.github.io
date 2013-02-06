@@ -121,12 +121,14 @@ static const int8_t dominoImages[DominoNumber][135] = {
   /* DominoTypeStopper    */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeSplitter   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+  /* DominoTypeSplitter   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+    DO_ST_SPLIT+6-1, DO_ST_SPLIT+5-1, DO_ST_SPLIT+4-1, DO_ST_SPLIT+3-1, DO_ST_SPLIT+2-1, DO_ST_SPLIT+1-1, DO_ST_SPLIT+0-1,
+    DO_ST_SPLIT+7-1, DO_ST_SPLIT+8-1, DO_ST_SPLIT+9-1, DO_ST_SPLIT+10-1, DO_ST_SPLIT+11-1, DO_ST_SPLIT+12-1,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
   /* DominoTypeExploder   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-    DO_ST_EXPLODE+0, DO_ST_EXPLODE+1, DO_ST_EXPLODE+2,
-    DO_ST_EXPLODE+3, DO_ST_EXPLODE+4, DO_ST_EXPLODE+5, DO_ST_EXPLODE+6,
+    DO_ST_EXPLODE+0-1, DO_ST_EXPLODE+1-1, DO_ST_EXPLODE+2-1,
+    DO_ST_EXPLODE+3-1, DO_ST_EXPLODE+4-1, DO_ST_EXPLODE+5-1, DO_ST_EXPLODE+6-1,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
   /* DominoTypeDelay      */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
@@ -555,7 +557,7 @@ void graphicsN_c::drawAnt(void)
       {
         // the ant normaly toppled the domino slightly over then lifting it up, but those
         // images don't exist with some dominos, so we stay with the vertical image
-        if (img != 7 && (ant->getCarriedDomino() == DominoTypeSplitter || ant->getCarriedDomino() == DominoTypeAscender))
+        if (img != 7 && ant->getCarriedDomino() == DominoTypeAscender)
         {
           img = 7;
         }

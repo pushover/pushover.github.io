@@ -98,7 +98,7 @@ void levelPlayer_c::putDownDomino(int x, int y, DominoType domino, bool pushin) 
     else
       DominoCrash(x, y, domino, 0x70);
   }
-  else if (x > 0 && (getDominoType(x-1, y) != DominoTypeEmpty) && (getDominoState(x-1, y) >= 12))
+  else if (x > 0 && (getDominoType(x-1, y) != DominoTypeEmpty) && (getDominoState(x-1, y) >= 12) && (getDominoState(x-1, y) <= 15))
   { // there is no domino in our place but the left neighbor is falling towards us
     DominoCrash(x, y, domino, 0);
   }
@@ -202,7 +202,7 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
       if (getDominoState(x, y) == 8) {
         soundSystem_c::instance()->startSound(soundSystem_c::SE_SPLITTER);
         setDominoDir(x, y, -1);
-        setDominoState(x, y, getDominoState(x, y)-1);
+        setDominoState(x, y, DO_ST_SPLIT);
       }
       break;
 
@@ -412,10 +412,12 @@ void levelPlayer_c::DTA_2(int x, int y) {
   // if this is not the case or it is no splitter fall further
   if (x < 2 ||
       getDominoType(x-2, y) != DominoTypeSplitter ||
-      (getDominoState(x-2, y) != 1 &&
-       getDominoState(x-2, y) != 10 &&
-       getDominoState(x-2, y) != 12 &&
-       getDominoState(x-2, y) != 13))
+      (getDominoState(x-2, y) != DO_ST_SPLIT+5 &&
+       getDominoState(x-2, y) != DO_ST_SPLIT+6 &&
+       getDominoState(x-2, y) != DO_ST_SPLIT+7 &&
+       getDominoState(x-2, y) != DO_ST_SPLIT+8 &&
+       getDominoState(x-2, y) != DO_ST_SPLIT+10 &&
+       getDominoState(x-2, y) != DO_ST_SPLIT+11))
   {
     DTA_4(x, y);
   }
@@ -458,10 +460,12 @@ void levelPlayer_c::DTA_J(int x, int y) {
   // if this is not the case or it is no splitter fall further
   if ((size_t)(x+2) >= levelX() ||
       getDominoType(x+2, y) != DominoTypeSplitter ||
-      (getDominoState(x+2, y) != 1 &&
-       getDominoState(x+2, y) != 9 &&
-       getDominoState(x+2, y) != 11 &&
-       getDominoState(x+2, y) != 14))
+      (getDominoState(x+2, y) != DO_ST_SPLIT+5 &&
+       getDominoState(x+2, y) != DO_ST_SPLIT+6 &&
+       getDominoState(x+2, y) != DO_ST_SPLIT+7 &&
+       getDominoState(x+2, y) != DO_ST_SPLIT+8 &&
+       getDominoState(x+2, y) != DO_ST_SPLIT+9 &&
+       getDominoState(x+2, y) != DO_ST_SPLIT+12))
   {
     DTA_4(x, y);
   }
@@ -865,15 +869,13 @@ void levelPlayer_c::DTA_C(int x, int y) {
   // this table contains the positions of the 2 splitter halves
   // for each splitter state, 8 = vertical, 1 = horizontal
   static const int SplitterLookup[] = {
-    0, 0,
-    1, 1,
-    2, 2,
-    3, 3,
-    4, 4,
-    5, 5,
-    6, 6,
     7, 7,
-    8, 8,
+    6, 6,
+    5, 5,
+    4, 4,
+    3, 3,
+    2, 2,
+    1, 1,
     2, 1,
     1, 2,
     3, 1,
@@ -884,8 +886,11 @@ void levelPlayer_c::DTA_C(int x, int y) {
 
   // first find the positions of the 2 halves for the
   // current state
-  int a = SplitterLookup[getDominoState(x, y)*2+1];
-  int b = SplitterLookup[getDominoState(x, y)*2];
+
+  int i = 2*(getDominoState(x, y)-DO_ST_SPLIT);
+
+  int a = SplitterLookup[i+1];
+  int b = SplitterLookup[i];
 
   // calculate the new position of the left halve
   if (a == 3)
@@ -905,6 +910,10 @@ void levelPlayer_c::DTA_C(int x, int y) {
     }
   }
   else if (a == 2 && getDominoType(x-1, y) == 0)
+  {
+    a--;
+  }
+  else if (a > 3)
   {
     a--;
   }
@@ -928,15 +937,19 @@ void levelPlayer_c::DTA_C(int x, int y) {
   {
     b--;
   }
+  else if (b > 3)
+  {
+    b--;
+  }
 
   // now find the new state of the splitter domino
-  for (int i = 0; i < 15; i++)
+  for (int i = 0; i < 13; i++)
   {
     if (SplitterLookup[2*i+1] == a && SplitterLookup[2*i] == b)
     {
       if (getDominoState(x, y) != i)
       {
-        setDominoState(x, y, i);
+        setDominoState(x, y, i+DO_ST_SPLIT);
       }
       return;
     }
@@ -1522,7 +1535,7 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y)
   // the rows are the possible state
   // 0 action means don't do anything
   // 99 achtion means invalid state
-  static int action[25][DominoNumber] = {
+  static int action[38][DominoNumber] = {
   //  DominoTypeEmpty,        DominoTypeTumbler,      DominoTypeConnectedB,   DominoTypeCrash2,
   //      DominoTypeStandard,     DominoTypeBridger,      DominoTypeCounter1,     DominoTypeCrash3,
   //          DominoTypeStopper,      DominoTypeVanish,       DominoTypeCounter2,     DominoTypeCrash4,
@@ -1530,20 +1543,20 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y)
   //                  DominoTypeExploder,     DominoTypeAscender,     DominoTypeCrash0,
   //                      DominoTypeDelay,        DominoTypeConnectedA,   DominoTypeCrash1,
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // invalid state 0
-    { 99,  1, 99,  0, 99,  1,  6,  7,  8,  9, 10,  1,  1,  1,  1,  1, 14, 14, 14, 14, 14, 14 },
-    { 99,  2, 99, 12, 99,  2,  2,  2,  4,  2,  4,  2,  2,  2,  2,  2, 14, 14, 14, 14, 14, 14 },
-    { 99,  3, 99, 12, 99,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3, 14, 14, 14, 14, 14, 14 },
-    { 99,  4, 99,  4, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 14, 14, 14, 14, 14, 14 }, // domino falling left
-    { 99,  4, 99,  4, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 14, 14, 14, 14, 14, 14 },
-    { 99,  4, 99,  4, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  0,  0,  0,  0,  0,  0 },
-    { 99,  4, 99,  4, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
+    { 99,  1, 99, 99, 99,  1,  6,  7,  8,  9, 10,  1,  1,  1,  1,  1, 14, 14, 14, 14, 14, 14 },
+    { 99,  2, 99, 99, 99,  2,  2,  2,  4,  2,  4,  2,  2,  2,  2,  2, 14, 14, 14, 14, 14, 14 },
+    { 99,  3, 99, 99, 99,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3, 14, 14, 14, 14, 14, 14 },
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 14, 14, 14, 14, 14, 14 }, // domino falling left
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 14, 14, 14, 14, 14, 14 },
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  0,  0,  0,  0,  0,  0 },
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
     { 99, 14, 15, 15, 15, 16, 14, 14, 14, 14, 17, 14, 14, 25, 25, 25, 99, 99, 99, 99, 99, 99 }, // domino standing vertically
-    { 99,  4, 99, 12, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
-    { 99,  4, 99, 12, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
-    { 99,  4, 99, 12, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
-    { 99,  4, 99, 12, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 }, // domino falling right
-    { 99, 18, 99, 12, 99, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 99, 99, 99, 99, 99, 99 },
-    { 99, 19, 99, 12, 99, 19, 19, 19,  4, 19,  4, 19, 19, 19, 19, 19, 99, 99, 99, 99, 99, 99 },
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 }, // domino falling right
+    { 99, 18, 99, 99, 99, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 99, 99, 99, 99, 99, 99 },
+    { 99, 19, 99, 99, 99, 19, 19, 19,  4, 19,  4, 19, 19, 19, 19, 19, 99, 99, 99, 99, 99, 99 },
     { 99, 20, 99, 99, 99, 20, 21, 22,  8, 23, 24, 20, 20, 20, 20, 20, 99, 99, 99, 99, 99, 99 },
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 17, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: hiding behind platform
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 17, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: hiding behind platform
@@ -1554,10 +1567,23 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y)
     { 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 },
     { 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 },
     { 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // explostion, explostion started
+    { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
+    { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
+    { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
+    { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
+    { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
+    { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
+    { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
+    { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
+    { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
+    { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
+    { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
+    { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
+    { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
   };
 
   assert(type < DominoNumber);
-  assert(state < 25);
+  assert(state < 38);
   assert(action[state][type] != 99);
 
   DTA(action[state][type], x, y);

@@ -77,6 +77,8 @@ typedef enum {
 #define DO_ST_EXPLODE   18  // exploder start state, representing the finished explosion
 #define DO_ST_EXPLODE_E 24  // exploder end state, representing the starting explosion
 
+#define DO_ST_SPLIT   25   // first of the non standard splitter states
+#define DO_ST_SPLIT_E 37   // last of the non standard splitter states
 
 
 class levelData_c {
