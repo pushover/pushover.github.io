@@ -348,16 +348,6 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
   return retVal;
 }
 
-
-// the 2 trigger fallen functions. They just call the
-// normal domino fallen function and additionally set the trigger bit
-void levelPlayer_c::DTA_9(int x, int y) {
-  DTA_1(x, y);
-}
-void levelPlayer_c::DTA_N(int x, int y) {
-  DTA_K(x, y);
-}
-
 // this is for the stopper, splitter and exploder dominos, when they
 // are falling after being lost when going over the edge
 // we check, if we are still falling and only handle the falling case
@@ -1506,7 +1496,6 @@ void levelPlayer_c::DTA(int num, int x, int y)
     case  6: DTA_6(x, y); break;
     case  7: DTA_7(x, y); break;
     case  8: DTA_8(x, y); break;
-    case  9: DTA_9(x, y); break;
     case 10: DTA_A(x, y); break;
     case 12: DTA_C(x, y); break;
     case 14: DTA_E(x, y); break;
@@ -1518,7 +1507,6 @@ void levelPlayer_c::DTA(int num, int x, int y)
     case 20: DTA_K(x, y); break;
     case 21: DTA_L(x, y); break;
     case 22: DTA_M(x, y); break;
-    case 23: DTA_N(x, y); break;
     case 24: DTA_O(x, y); break;
     case 25: DTA_P(x, y); break;
 
@@ -1543,7 +1531,7 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y)
   //                  DominoTypeExploder,     DominoTypeAscender,     DominoTypeCrash0,
   //                      DominoTypeDelay,        DominoTypeConnectedA,   DominoTypeCrash1,
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // invalid state 0
-    { 99,  1, 99, 99, 99,  1,  6,  7,  8,  9, 10,  1,  1,  1,  1,  1, 14, 14, 14, 14, 14, 14 },
+    { 99,  1, 99, 99, 99,  1,  6,  7,  8,  1, 10,  1,  1,  1,  1,  1, 14, 14, 14, 14, 14, 14 },
     { 99,  2, 99, 99, 99,  2,  2,  2,  4,  2,  4,  2,  2,  2,  2,  2, 14, 14, 14, 14, 14, 14 },
     { 99,  3, 99, 99, 99,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3, 14, 14, 14, 14, 14, 14 },
     { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 14, 14, 14, 14, 14, 14 }, // domino falling left
@@ -1557,7 +1545,7 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y)
     { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 }, // domino falling right
     { 99, 18, 99, 99, 99, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 99, 99, 99, 99, 99, 99 },
     { 99, 19, 99, 99, 99, 19, 19, 19,  4, 19,  4, 19, 19, 19, 19, 19, 99, 99, 99, 99, 99, 99 },
-    { 99, 20, 99, 99, 99, 20, 21, 22,  8, 23, 24, 20, 20, 20, 20, 20, 99, 99, 99, 99, 99, 99 },
+    { 99, 20, 99, 99, 99, 20, 21, 22,  8, 20, 24, 20, 20, 20, 20, 20, 99, 99, 99, 99, 99, 99 },
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 17, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: hiding behind platform
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 17, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: hiding behind platform
     { 99, 99, 99, 99,  5, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // explosion, explosion ended
