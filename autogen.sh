@@ -10,3 +10,9 @@ sed -n '/^\(Hint\|Name\)$/,/^[^|]/ s,^| \(.*\)$,_("\1"),p' levels/*/*.level >po/
 
 autoreconf -i -s
 ./configure "$@"
+
+# regenerate the domino.png file, this requires povray
+cd data/sources
+./dominos_render
+./dominos_assemble
+mv dominos.png ..
