@@ -457,9 +457,9 @@ static signed int moveOffsets[10][64] = {
    -2,  0, DO_ST_UPRIGHT, 0,
    -2,  0, DO_ST_UPRIGHT, 0,
    -2, -1, DO_ST_UPRIGHT+2, 0,
-    0, -3, 32, 0,    // image 0 (carry left)
-   -1, -3, 32, 0,
-   -4, -3, 32, 0,
+    0, -3, 32+CARRIED_DOMINO_START+0, 0,
+   -1, -3, 32+CARRIED_DOMINO_START+0, 0,
+   -4, -3, 32+CARRIED_DOMINO_START+0, 0,
   }, { // AntAnimPullOutRight
     0, -2, DO_ST_UPRIGHT, 0,
     0, -2, DO_ST_UPRIGHT, 0,
@@ -473,16 +473,16 @@ static signed int moveOffsets[10][64] = {
    -2,  0, DO_ST_UPRIGHT, 0,
    -2,  0, DO_ST_UPRIGHT, 0,
    -2, -1, DO_ST_UPRIGHT-2, 0,
-   -3, -3, 33, 0,    // image 1 (carry right)
-   -2, -3, 33, 0,
-   -1, -3, 33, 0,
+   -3, -3, 32+CARRIED_DOMINO_START+1, 0,
+   -2, -3, 32+CARRIED_DOMINO_START+1, 0,
+   -1, -3, 32+CARRIED_DOMINO_START+1, 0,
   }, {  // AntAnimPushInLeft,
-   -7, -3, 32, 0,
-   -8, -3, 32, 0,
-  -11, -3, 32, 0,
-  -14, -3, 32, 0,
-  -17, -3, 32, 0,
-  -17, -1, 32, 0,
+   -7, -3, 32+CARRIED_DOMINO_START+0, 0,
+   -8, -3, 32+CARRIED_DOMINO_START+0, 0,
+  -11, -3, 32+CARRIED_DOMINO_START+0, 0,
+  -14, -3, 32+CARRIED_DOMINO_START+0, 0,
+  -17, -3, 32+CARRIED_DOMINO_START+0, 0,
+  -17, -1, 32+CARRIED_DOMINO_START+0, 0,
   -18,  0, DO_ST_UPRIGHT+2, 0,
   -18,  0, DO_ST_UPRIGHT, 0,
   -18,  0, DO_ST_UPRIGHT, 0,
@@ -494,12 +494,12 @@ static signed int moveOffsets[10][64] = {
   -16, -2, DO_ST_UPRIGHT, 0,
   -16, -2, DO_ST_UPRIGHT, 0,
   }, {  // AntAnimPushInRight,
-    5, -3, 33, 0,
-    6, -3, 33, 0,
-   10, -2, 33, 0,
-   11, -3, 33, 0,
-   14, -3, 33, 0,
-   14, -1, 33, 0,
+    5, -3, 32+CARRIED_DOMINO_START+1, 0,
+    6, -3, 32+CARRIED_DOMINO_START+1, 0,
+   10, -2, 32+CARRIED_DOMINO_START+1, 0,
+   11, -3, 32+CARRIED_DOMINO_START+1, 0,
+   14, -3, 32+CARRIED_DOMINO_START+1, 0,
+   14, -1, 32+CARRIED_DOMINO_START+1, 0,
    14,  0, DO_ST_UPRIGHT-2, 0,
    14,  0, DO_ST_UPRIGHT, 0,
    14,  0, DO_ST_UPRIGHT, 0,
@@ -510,20 +510,28 @@ static signed int moveOffsets[10][64] = {
    16, -2, DO_ST_UPRIGHT, 0,
    16, -2, DO_ST_UPRIGHT, 0,
    16, -2, DO_ST_UPRIGHT, 0,
-  }, {  0, -3, 44, 0,  0, -3, 45, 0,     //AntAnimXXX1
-  }, { -3, -3, 46, 0, -3, -3, 47, 0,     //AntAnimXXX2
-  }, {  0, -3, 45, 0,  0, -3, 44, 0,     //AntAnimXXX3
-  }, { -3, -3, 47, 0, -3, -3, 46, 0,     //AntAnimXXX4
+  }, {  //AntAnimXXX1
+     0, -3, 32+CARRIED_DOMINO_START+3, 0,
+     0, -3, 32+CARRIED_DOMINO_START+4, 0,
+  }, { //AntAnimXXX2
+    -3, -3, 32+CARRIED_DOMINO_START+5, 0,
+    -3, -3, 32+CARRIED_DOMINO_START+6, 0,
+  }, { //AntAnimXXX3
+     0, -3, 32+CARRIED_DOMINO_START+4, 0,
+     0, -3, 32+CARRIED_DOMINO_START+3, 0,
+  }, { //AntAnimXXX4
+    -3, -3, 32+CARRIED_DOMINO_START+6, 0,
+    -3, -3, 32+CARRIED_DOMINO_START+5, 0,
   }, { //AntAnimLoosingDominoRight
     16, -3, DO_ST_UPRIGHT, 0,
     16, -3, DO_ST_UPRIGHT, 0,
     16, -3, DO_ST_UPRIGHT, 0,
     16, -3, DO_ST_UPRIGHT, 0,
   }, { //AntAnimLoosingDominoLeft
-    -7, -3, 32, 0,
-    -8, -3, 32, 0,
-   -11, -3, 32, 0,
-   -14, -3, 32, 0,
+    -7, -3, 32+CARRIED_DOMINO_START+0, 0,
+    -8, -3, 32+CARRIED_DOMINO_START+0, 0,
+   -11, -3, 32+CARRIED_DOMINO_START+0, 0,
+   -14, -3, 32+CARRIED_DOMINO_START+0, 0,
      0, -3, DO_ST_UPRIGHT, 0,
      0, -3, DO_ST_UPRIGHT, 0,
      0, -3, DO_ST_UPRIGHT, 0,
@@ -611,7 +619,7 @@ void graphicsN_c::drawAnt(void)
       }
       else
       {
-        target->blit(dominos[ant->getCarriedDomino()][carr2idx(img-32)], x, y);
+        target->blit(dominos[ant->getCarriedDomino()][img-32], x, y);
       }
     }
     if (ant->getAnimation() >= AntAnimCarryLeft && ant->getAnimation() <= AntAnimCarryStopRight)
