@@ -1523,7 +1523,7 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y)
   // the rows are the possible state
   // 0 action means don't do anything
   // 99 achtion means invalid state
-  static int action[38][DominoNumber] = {
+  static int action[DO_ST_NUM][DominoNumber] = {
   //  DominoTypeEmpty,        DominoTypeTumbler,      DominoTypeConnectedB,   DominoTypeCrash2,
   //      DominoTypeStandard,     DominoTypeBridger,      DominoTypeCounter1,     DominoTypeCrash3,
   //          DominoTypeStopper,      DominoTypeVanish,       DominoTypeCounter2,     DominoTypeCrash4,
@@ -1571,7 +1571,7 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y)
   };
 
   assert(type < DominoNumber);
-  assert(state < 38);
+  assert(state < DO_ST_NUM);
   assert(action[state][type] != 99);
 
   DTA(action[state][type], x, y);

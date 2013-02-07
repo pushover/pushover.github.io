@@ -101,12 +101,10 @@ static const int antOffsets[] = {
   -24, -12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0                         // 13   AntAnimLandDying,
 };
 
-#define FALLING_DOMINO_START 0   // 15 images
-#define RISER_SPECIAL_START 15   // 2 images
 #define RISER_CONT_START 24      // 8 images
 
 
-#define CARRIED_DOMINO_START 100  // 7 images
+#define CARRIED_DOMINO_START DO_ST_NUM  // 7 images
 
 // this array defines for all domino images of a certain comino
 // in which array position they are supposed to go
@@ -115,63 +113,110 @@ static const int antOffsets[] = {
 static const int8_t dominoImages[DominoNumber][135] = {
 
   /* DominoTypeEmpty      */ { -1 },
-  /* DominoTypeStandard   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  /* DominoTypeStandard   */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeStopper    */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  /* DominoTypeStopper    */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeSplitter   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-    DO_ST_SPLIT+6-1, DO_ST_SPLIT+5-1, DO_ST_SPLIT+4-1, DO_ST_SPLIT+3-1, DO_ST_SPLIT+2-1, DO_ST_SPLIT+1-1, DO_ST_SPLIT+0-1,
-    DO_ST_SPLIT+7-1, DO_ST_SPLIT+8-1, DO_ST_SPLIT+9-1, DO_ST_SPLIT+10-1, DO_ST_SPLIT+11-1, DO_ST_SPLIT+12-1,
+  /* DominoTypeSplitter   */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
+    DO_ST_SPLIT+6, DO_ST_SPLIT+5, DO_ST_SPLIT+4, DO_ST_SPLIT+3, DO_ST_SPLIT+2, DO_ST_SPLIT+1, DO_ST_SPLIT+0,
+    DO_ST_SPLIT+7, DO_ST_SPLIT+8, DO_ST_SPLIT+9, DO_ST_SPLIT+10, DO_ST_SPLIT+11, DO_ST_SPLIT+12,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeExploder   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-    DO_ST_EXPLODE+0-1, DO_ST_EXPLODE+1-1, DO_ST_EXPLODE+2-1,
-    DO_ST_EXPLODE+3-1, DO_ST_EXPLODE+4-1, DO_ST_EXPLODE+5-1, DO_ST_EXPLODE+6-1,
+  /* DominoTypeExploder   */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
+    DO_ST_EXPLODE+0, DO_ST_EXPLODE+1, DO_ST_EXPLODE+2,
+    DO_ST_EXPLODE+3, DO_ST_EXPLODE+4, DO_ST_EXPLODE+5, DO_ST_EXPLODE+6,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeDelay      */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  /* DominoTypeDelay      */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeTumbler    */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  /* DominoTypeTumbler    */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeBridger    */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  /* DominoTypeBridger    */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeVanish     */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  /* DominoTypeVanish     */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeTrigger    */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  /* DominoTypeTrigger    */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeAscender   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+  /* DominoTypeAscender   */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
+
+    DO_ST_FALLING+15, DO_ST_FALLING+16,
     RISER_CONT_START+0, RISER_CONT_START+1, RISER_CONT_START+2, RISER_CONT_START+3,
     RISER_CONT_START+4, RISER_CONT_START+5, RISER_CONT_START+6, RISER_CONT_START+7,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeConnectedA */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  /* DominoTypeConnectedA */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeConnectedB */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  /* DominoTypeConnectedB */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeCounter1   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  /* DominoTypeCounter1   */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeCounter2   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  /* DominoTypeCounter2   */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeCounter3   */ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+  /* DominoTypeCounter3   */ {
+    DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
+    DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
+    DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeCrash0     */ { 0, 1, 2, 3, 4, 5, -1 },
-  /* DominoTypeCrash1     */ { 0, 1, 2, 3, 4, 5, -1 },
-  /* DominoTypeCrash2     */ { 0, 1, 2, 3, 4, 5, -1 },
-  /* DominoTypeCrash3     */ { 0, 1, 2, 3, 4, 5, -1 },
-  /* DominoTypeCrash4     */ { 0, 1, 2, 3, 4, 5, -1 },
-  /* DominoTypeCrash5     */ { 0, 1, 2, 3, 4, 5, -1 }
+  /* DominoTypeCrash0     */ { 1, 2, 3, 4, 5, 6, -1 },
+  /* DominoTypeCrash1     */ { 1, 2, 3, 4, 5, 6, -1 },
+  /* DominoTypeCrash2     */ { 1, 2, 3, 4, 5, 6, -1 },
+  /* DominoTypeCrash3     */ { 1, 2, 3, 4, 5, 6, -1 },
+  /* DominoTypeCrash4     */ { 1, 2, 3, 4, 5, 6, -1 },
+  /* DominoTypeCrash5     */ { 1, 2, 3, 4, 5, 6, -1 }
 };
 
 #define antDisplace (6*3)
@@ -400,34 +445,34 @@ static signed int moveOffsets[10][64] = {
   // the 4th value is unused
 
   { // AntAnimPullOutLeft
-    0, -2, 7, 0,
-    0, -2, 7, 0,
-    0, -2, 7, 0,
-   -1, -1, 7, 0,
-   -2,  0, 7, 0,
-   -2,  0, 7, 0,
-   -2,  0, 7, 0,
-   -2,  0, 7, 0,
-   -2,  0, 7, 0,
-   -2,  0, 7, 0,
-   -2,  0, 7, 0,
-   -2, -1, 9, 0,
+    0, -2, DO_ST_UPRIGHT, 0,
+    0, -2, DO_ST_UPRIGHT, 0,
+    0, -2, DO_ST_UPRIGHT, 0,
+   -1, -1, DO_ST_UPRIGHT, 0,
+   -2,  0, DO_ST_UPRIGHT, 0,
+   -2,  0, DO_ST_UPRIGHT, 0,
+   -2,  0, DO_ST_UPRIGHT, 0,
+   -2,  0, DO_ST_UPRIGHT, 0,
+   -2,  0, DO_ST_UPRIGHT, 0,
+   -2,  0, DO_ST_UPRIGHT, 0,
+   -2,  0, DO_ST_UPRIGHT, 0,
+   -2, -1, DO_ST_UPRIGHT+2, 0,
     0, -3, 32, 0,    // image 0 (carry left)
    -1, -3, 32, 0,
    -4, -3, 32, 0,
   }, { // AntAnimPullOutRight
-    0, -2, 7, 0,
-    0, -2, 7, 0,
-    0, -2, 7, 0,
-   -1, -1, 7, 0,
-   -2,  0, 7, 0,
-   -2,  0, 7, 0,
-   -2,  0, 7, 0,
-   -2,  0, 7, 0,
-   -2,  0, 7, 0,
-   -2,  0, 7, 0,
-   -2,  0, 7, 0,
-   -2, -1, 5, 0,
+    0, -2, DO_ST_UPRIGHT, 0,
+    0, -2, DO_ST_UPRIGHT, 0,
+    0, -2, DO_ST_UPRIGHT, 0,
+   -1, -1, DO_ST_UPRIGHT, 0,
+   -2,  0, DO_ST_UPRIGHT, 0,
+   -2,  0, DO_ST_UPRIGHT, 0,
+   -2,  0, DO_ST_UPRIGHT, 0,
+   -2,  0, DO_ST_UPRIGHT, 0,
+   -2,  0, DO_ST_UPRIGHT, 0,
+   -2,  0, DO_ST_UPRIGHT, 0,
+   -2,  0, DO_ST_UPRIGHT, 0,
+   -2, -1, DO_ST_UPRIGHT-2, 0,
    -3, -3, 33, 0,    // image 1 (carry right)
    -2, -3, 33, 0,
    -1, -3, 33, 0,
@@ -438,16 +483,16 @@ static signed int moveOffsets[10][64] = {
   -14, -3, 32, 0,
   -17, -3, 32, 0,
   -17, -1, 32, 0,
-  -18,  0,  9, 0,
-  -18,  0,  7, 0,
-  -18,  0,  7, 0,
-  -18,  0,  7, 0,
-  -18,  0,  7, 0,
-  -18,  0,  7, 0,
-  -17, -1,  7, 0,
-  -16, -2,  7, 0,
-  -16, -2,  7, 0,
-  -16, -2,  7, 0,
+  -18,  0, DO_ST_UPRIGHT+2, 0,
+  -18,  0, DO_ST_UPRIGHT, 0,
+  -18,  0, DO_ST_UPRIGHT, 0,
+  -18,  0, DO_ST_UPRIGHT, 0,
+  -18,  0, DO_ST_UPRIGHT, 0,
+  -18,  0, DO_ST_UPRIGHT, 0,
+  -17, -1, DO_ST_UPRIGHT, 0,
+  -16, -2, DO_ST_UPRIGHT, 0,
+  -16, -2, DO_ST_UPRIGHT, 0,
+  -16, -2, DO_ST_UPRIGHT, 0,
   }, {  // AntAnimPushInRight,
     5, -3, 33, 0,
     6, -3, 33, 0,
@@ -455,34 +500,34 @@ static signed int moveOffsets[10][64] = {
    11, -3, 33, 0,
    14, -3, 33, 0,
    14, -1, 33, 0,
-   14,  0,  5, 0,
-   14,  0,  7, 0,
-   14,  0,  7, 0,
-   14,  0,  7, 0,
-   14,  0,  7, 0,
-   14,  0,  7, 0,
-   15, -1,  7, 0,
-   16, -2,  7, 0,
-   16, -2,  7, 0,
-   16, -2,  7, 0,
+   14,  0, DO_ST_UPRIGHT-2, 0,
+   14,  0, DO_ST_UPRIGHT, 0,
+   14,  0, DO_ST_UPRIGHT, 0,
+   14,  0, DO_ST_UPRIGHT, 0,
+   14,  0, DO_ST_UPRIGHT, 0,
+   14,  0, DO_ST_UPRIGHT, 0,
+   15, -1, DO_ST_UPRIGHT, 0,
+   16, -2, DO_ST_UPRIGHT, 0,
+   16, -2, DO_ST_UPRIGHT, 0,
+   16, -2, DO_ST_UPRIGHT, 0,
   }, {  0, -3, 44, 0,  0, -3, 45, 0,     //AntAnimXXX1
   }, { -3, -3, 46, 0, -3, -3, 47, 0,     //AntAnimXXX2
   }, {  0, -3, 45, 0,  0, -3, 44, 0,     //AntAnimXXX3
   }, { -3, -3, 47, 0, -3, -3, 46, 0,     //AntAnimXXX4
   }, { //AntAnimLoosingDominoRight
-    16, -3, 7, 0,
-    16, -3, 7, 0,
-    16, -3, 7, 0,
-    16, -3, 7, 0,
+    16, -3, DO_ST_UPRIGHT, 0,
+    16, -3, DO_ST_UPRIGHT, 0,
+    16, -3, DO_ST_UPRIGHT, 0,
+    16, -3, DO_ST_UPRIGHT, 0,
   }, { //AntAnimLoosingDominoLeft
     -7, -3, 32, 0,
     -8, -3, 32, 0,
    -11, -3, 32, 0,
    -14, -3, 32, 0,
-     0, -3,  7, 0,
-     0, -3,  7, 0,
-     0, -3,  7, 0,
-     0, -3,  7, 0,
+     0, -3, DO_ST_UPRIGHT, 0,
+     0, -3, DO_ST_UPRIGHT, 0,
+     0, -3, DO_ST_UPRIGHT, 0,
+     0, -3, DO_ST_UPRIGHT, 0,
   }
 };
 
@@ -557,9 +602,9 @@ void graphicsN_c::drawAnt(void)
       {
         // the ant normaly toppled the domino slightly over then lifting it up, but those
         // images don't exist with some dominos, so we stay with the vertical image
-        if (img != 7 && ant->getCarriedDomino() == DominoTypeAscender)
+        if (img != DO_ST_UPRIGHT && ant->getCarriedDomino() == DominoTypeAscender)
         {
-          img = 7;
+          img = DO_ST_UPRIGHT;
         }
 
         target->blit(dominos[ant->getCarriedDomino()][img], x, y);
@@ -875,9 +920,10 @@ void graphicsN_c::drawDominos(void)
       if (dirty.isDirty(x, y))
         target->copy(*background, x*blockX(), y*blockY()/2, blockX(), blockY()/2);
 
-  static int XposOffset[] = {-16, -16,  0,-16,  0,  0, 0, 0, 0,  0, 0, 16,  0, 16, 16, 0};
-  static int YposOffset[] = { -8,  -6,  0, -4,  0, -2, 0, 0, 0, -2, 0, -4,  0, -6, -8, 0};
+  static int XposOffset[] = { 0, -16, -16,  0,-16,  0,  0, 0, 0, 0,  0, 0, 16,  0, 16, 16, 0};
+  static int YposOffset[] = { 0, -8,  -6,  0, -4,  0, -2, 0, 0, 0, -2, 0, -4,  0, -6, -8, 0};
   static int StoneImageOffset[] = {
+    0,
     RISER_CONT_START+7, RISER_CONT_START+6, RISER_CONT_START+0, RISER_CONT_START+5,
     RISER_CONT_START+0, RISER_CONT_START+4, RISER_CONT_START+0, RISER_CONT_START+0,
     RISER_CONT_START+0, RISER_CONT_START+3, RISER_CONT_START+0, RISER_CONT_START+2,
@@ -904,7 +950,7 @@ void graphicsN_c::drawDominos(void)
            (level->getDominoType(x-1, y+1) == DominoTypeSplitter && level->getDominoState(x-1, y+1) != 8) ||
            level->getDominoState(x-1, y+1) >= DominoTypeCrash0))
       {
-        target->blit(dominos[level->getDominoType(x-1, y+1)][level->getDominoState(x-1, y+1)-1],
+        target->blit(dominos[level->getDominoType(x-1, y+1)][level->getDominoState(x-1, y+1)],
             SpriteXPos-blockX(),
             SpriteYPos+convertDominoY(level->getDominoYOffset(x-1, y+1))+blockY()/2);
       }
@@ -914,21 +960,21 @@ void graphicsN_c::drawDominos(void)
            (level->getDominoType(x-1, y) == DominoTypeSplitter && level->getDominoState(x-1, y) != 8) ||
            level->getDominoType(x-1, y) >= DominoTypeCrash0))
       {
-        target->blit(dominos[level->getDominoType(x-1, y)][level->getDominoState(x-1, y)-1],
+        target->blit(dominos[level->getDominoType(x-1, y)][level->getDominoState(x-1, y)],
             SpriteXPos-blockX(),
             SpriteYPos+convertDominoY(level->getDominoYOffset(x-1, y)));
       }
 
       if (y < level->levelY() && !dirty.isDirty(x, y+1) && level->getDominoType(x, y+1) != DominoTypeEmpty)
       {
-        target->blit(dominos[level->getDominoType(x, y+1)][level->getDominoState(x, y+1)-1],
+        target->blit(dominos[level->getDominoType(x, y+1)][level->getDominoState(x, y+1)],
             SpriteXPos,
             SpriteYPos+convertDominoY(level->getDominoYOffset(x, y+1))+blockY()/2);
       }
 
       if (y+2 < level->levelY() && !dirty.isDirty(x, y+2) && level->getDominoType(x, y+2) != DominoTypeEmpty)
       {
-        target->blit(dominos[level->getDominoType(x, y+2)][level->getDominoState(x, y+2)-1],
+        target->blit(dominos[level->getDominoType(x, y+2)][level->getDominoState(x, y+2)],
             SpriteXPos,
             SpriteYPos+convertDominoY(level->getDominoYOffset(x, y+2))+blockY());
       }
@@ -938,7 +984,7 @@ void graphicsN_c::drawDominos(void)
           level->getDominoState(x, y) == 6 &&
           level->getDominoExtra(x, y) != 0)
       {
-        target->blit(dominos[level->getDominoExtra(x, y)][level->getDominoExtra(x, y)>=DominoTypeCrash0?0:7],
+        target->blit(dominos[level->getDominoExtra(x, y)][level->getDominoExtra(x, y)>=DominoTypeCrash0?DO_ST_LEFT:DO_ST_UPRIGHT],
             SpriteXPos,
             SpriteYPos-splitterY);
       }
@@ -947,29 +993,29 @@ void graphicsN_c::drawDominos(void)
       if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoExtra(x, y) == 0x60 &&
           level->getDominoState(x, y) < 16 && level->getDominoState(x, y) != 8)
       {
-        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)-1]],
-            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]),
-            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
+        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)]],
+            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)]),
+            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)]+level->getDominoYOffset(x, y)));
       }
       else if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoState(x, y) == 1 && level->getDominoExtra(x, y) == 0 &&
           !level->getPlatform(x-1, y-3))
       { // this is the case of the ascender domino completely horizontal and with the plank it is below not existing
         // so we see the above face of the domino. Normally there is a wall above us so we only see
         // the front face of the domino
-        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)-1]],
-            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]+6),
-            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
+        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)]],
+            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)]+6),
+            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)]+level->getDominoYOffset(x, y)));
       }
       else if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoState(x, y) == 15 && level->getDominoExtra(x, y) == 0 &&
           !level->getPlatform(x+1, y-3))
       {
-        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)-1]],
-            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-1]-2),
-            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-1]+level->getDominoYOffset(x, y)));
+        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)]],
+            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)]-2),
+            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)]+level->getDominoYOffset(x, y)));
       }
       else if (level->getDominoType(x, y) != DominoTypeEmpty)
       {
-        target->blit(dominos[level->getDominoType(x, y)][level->getDominoState(x, y)-1],
+        target->blit(dominos[level->getDominoType(x, y)][level->getDominoState(x, y)],
             SpriteXPos,
             SpriteYPos+convertDominoY(level->getDominoYOffset(x, y)));
       }
@@ -980,7 +1026,7 @@ void graphicsN_c::drawDominos(void)
            (level->getDominoType(x+1, y+1) == DominoTypeSplitter && level->getDominoState(x+1, y+1) != 8) ||
            level->getDominoType(x+1, y+1) >= DominoTypeCrash0))
       {
-        target->blit(dominos[level->getDominoType(x+1, y+1)][level->getDominoState(x+1, y+1)-1],
+        target->blit(dominos[level->getDominoType(x+1, y+1)][level->getDominoState(x+1, y+1)],
             SpriteXPos+blockX(),
             SpriteYPos+convertDominoY(level->getDominoYOffset(x+1, y+1))+blockY()/2);
       }
@@ -990,7 +1036,7 @@ void graphicsN_c::drawDominos(void)
            (level->getDominoType(x+1, y) == DominoTypeSplitter && level->getDominoState(x+1, y) != 8) ||
            level->getDominoType(x+1, y) >= DominoTypeCrash0))
       {
-        target->blit(dominos[level->getDominoType(x+1, y)][level->getDominoState(x+1, y)-1],
+        target->blit(dominos[level->getDominoType(x+1, y)][level->getDominoState(x+1, y)],
             SpriteXPos+blockX(),
             SpriteYPos+convertDominoY(level->getDominoYOffset(x+1, y)));
       }
@@ -999,21 +1045,21 @@ void graphicsN_c::drawDominos(void)
 
       if (!dirty.isDirty(x, y+2) && level->getDominoType(x, y+2) == DominoTypeAscender)
       {
-        target->blit(dominos[level->getDominoType(x, y+2)][level->getDominoState(x, y+2)-1],
+        target->blit(dominos[level->getDominoType(x, y+2)][level->getDominoState(x, y+2)],
             SpriteXPos,
             SpriteYPos+convertDominoY(level->getDominoYOffset(x, y+2))+blockY());
       }
 
       if (x > 0 && !dirty.isDirty(x-1, y+2) && level->getDominoType(x-1, y+2) == DominoTypeAscender)
       {
-        target->blit(dominos[level->getDominoType(x-1, y+2)][level->getDominoState(x-1, y+2)-1],
+        target->blit(dominos[level->getDominoType(x-1, y+2)][level->getDominoState(x-1, y+2)],
             SpriteXPos-blockX(),
             SpriteYPos+convertDominoY(level->getDominoYOffset(x-1, y+2))+blockY());
       }
 
       if (x+1 < level->levelX() && !dirty.isDirty(x+1, y+2) && level->getDominoType(x+1, y+2) == DominoTypeAscender)
       {
-        target->blit(dominos[level->getDominoType(x+1, y+2)][level->getDominoState(x+1, y+2)-1],
+        target->blit(dominos[level->getDominoType(x+1, y+2)][level->getDominoState(x+1, y+2)],
             SpriteXPos+blockX(),
             SpriteYPos+convertDominoY(level->getDominoYOffset(x+1, y+2))+blockY());
       }
@@ -1022,14 +1068,14 @@ void graphicsN_c::drawDominos(void)
 
       if (!dirty.isDirty(x, y+2) && level->getDominoType(x, y+2) != DominoTypeEmpty)
       {
-        target->blit(dominos[level->getDominoType(x, y+2)][level->getDominoState(x, y+2)-1],
+        target->blit(dominos[level->getDominoType(x, y+2)][level->getDominoState(x, y+2)],
             SpriteXPos,
             SpriteYPos+convertDominoY(level->getDominoYOffset(x, y+2))+blockY());
       }
 
       if (x > 0 && !dirty.isDirty(x-1, y+2) && level->getDominoType(x-1, y+2) != DominoTypeEmpty)
       {
-        target->blit(dominos[level->getDominoType(x-1, y+2)][level->getDominoState(x-1, y+2)-1],
+        target->blit(dominos[level->getDominoType(x-1, y+2)][level->getDominoState(x-1, y+2)],
             SpriteXPos-blockX(),
             SpriteYPos+convertDominoY(level->getDominoYOffset(x-1, y+2))+blockY());
       }
@@ -1040,7 +1086,7 @@ void graphicsN_c::drawDominos(void)
 
       if (level->getDominoType(x+1, y+2) == DominoTypeEmpty) continue;
 
-      target->blit(dominos[level->getDominoType(x+1, y+2)][level->getDominoState(x+1, y+2)-1],
+      target->blit(dominos[level->getDominoType(x+1, y+2)][level->getDominoState(x+1, y+2)],
           SpriteXPos+blockX(),
           SpriteYPos+convertDominoY(level->getDominoYOffset(x+1, y+2))+blockY());
     }
