@@ -1182,10 +1182,10 @@ void graphicsN_c::findDirtyBlocks(void)
           level->getDominoYOffset(x, y) != l2.getDominoYOffset(x, y)
          )
       {
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 3; i++)
           for (int j = 0; j < 5; j++)
           {
-            dirty.markDirty(x-2+i, y-4+j);
+            dirty.markDirty(x-1+i, y-3+j);
           }
 
         l2.setDominoType(x, y, level->getDominoType(x, y));
