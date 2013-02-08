@@ -17,13 +17,13 @@
 18 4 62 data/domino0014.png
 #
 # Standard Domino Carried Images
-10 8 62 data/domino0090.png
-16 8 54 data/domino0091.png
-6 2 54  data/domino0092.png
-19 9 54 data/domino0093.png
-11 9 54 data/domino0094.png
-14 7 54 data/domino0095.png
-18 6 54 data/domino0096.png
+10 4 62 data/domino0090.png
+16 4 54 data/domino0091.png
+6 -2 54 data/domino0092.png
+19 3 54 data/domino0093.png
+11 5 54 data/domino0094.png
+14 3 54 data/domino0095.png
+18 2 54 data/domino0096.png
 #
 # Blocker
 18 4 62 data/domino0100.png
@@ -43,13 +43,13 @@
 18 4 62 data/domino0114.png
 #
 # Blocker Domino Carried Images
-10 8 62 data/domino0190.png
-16 8 54 data/domino0191.png
-6 2 54  data/domino0192.png
-19 7 54 data/domino0193.png
-11 9 54 data/domino0194.png
-14 7 54 data/domino0195.png
-18 6 54 data/domino0196.png
+10 4 62 data/domino0190.png
+16 4 54 data/domino0191.png
+6 -2 54 data/domino0192.png
+19 3 54 data/domino0193.png
+11 5 54 data/domino0194.png
+14 3 54 data/domino0195.png
+18 2 54 data/domino0196.png
 #
 # Splitter
 18 4 62 data/domino0200.png
@@ -82,13 +82,13 @@
 18 4 62 data/domino0228.png
 #
 # Splitter Domino Carried Images
-10 8 62 data/domino0290.png
-16 8 54 data/domino0291.png
-6 2 54  data/domino0292.png
-19 7 54 data/domino0293.png
-11 9 54 data/domino0294.png
-14 7 54 data/domino0295.png
-18 6 54 data/domino0296.png
+10 4 62 data/domino0290.png
+16 4 54 data/domino0291.png
+6 -2 54 data/domino0292.png
+19 3 54 data/domino0293.png
+11 5 54 data/domino0294.png
+14 3 54 data/domino0295.png
+18 2 54 data/domino0296.png
 #
 # Exploder
 18 4 62 data/domino0300.png
@@ -115,13 +115,13 @@
 18 4 62 explosions/expl06.png
 #
 # Exploder Domino Carried Images
-10 8 62 data/domino0390.png
-16 8 54 data/domino0391.png
-6 2 54  data/domino0392.png
-19 7 54 data/domino0393.png
-11 9 54 data/domino0394.png
-14 7 54 data/domino0395.png
-18 6 54 data/domino0396.png
+10 4 62 data/domino0390.png
+16 4 54 data/domino0391.png
+6 -2 54 data/domino0392.png
+19 3 54 data/domino0393.png
+11 5 54 data/domino0394.png
+14 3 54 data/domino0395.png
+18 2 54 data/domino0396.png
 #
 # Delay
 18 4 62 data/domino0400.png
@@ -141,13 +141,13 @@
 18 4 62 data/domino0414.png
 #
 # Delay Domino Carried Images
-10 8 62 data/domino0490.png
-16 8 54 data/domino0491.png
-6 2 54  data/domino0492.png
-19 7 54 data/domino0493.png
-11 9 54 data/domino0494.png
-14 7 54 data/domino0495.png
-18 6 54 data/domino0496.png
+10 4 62 data/domino0490.png
+16 4 54 data/domino0491.png
+6 -2 54 data/domino0492.png
+19 3 54 data/domino0493.png
+11 5 54 data/domino0494.png
+14 3 54 data/domino0495.png
+18 2 54 data/domino0496.png
 #
 # Tumbler
 18 4 62 data/domino0500.png
@@ -167,13 +167,13 @@
 18 4 62 data/domino0514.png
 #
 # Tumbler Domino Carried Images
-10 8 62 data/domino0590.png
-16 8 54 data/domino0591.png
-6 2 54  data/domino0592.png
-19 7 54 data/domino0593.png
-11 9 54 data/domino0594.png
-14 7 54 data/domino0595.png
-18 6 54 data/domino0596.png
+10 4 62 data/domino0590.png
+16 4 54 data/domino0591.png
+6 -2 54 data/domino0592.png
+19 3 54 data/domino0593.png
+11 5 54 data/domino0594.png
+14 3 54 data/domino0595.png
+18 2 54 data/domino0596.png
 #
 # Bridger
 18 4 62 data/domino0600.png
@@ -193,13 +193,13 @@
 18 4 62 data/domino0614.png
 #
 # Bridger Domino Carried Images
-10 8 62 data/domino0690.png
-16 8 54 data/domino0691.png
-6 2 54  data/domino0692.png
-19 7 54 data/domino0693.png
-11 9 54 data/domino0694.png
-14 7 54 data/domino0695.png
-18 6 54 data/domino0696.png
+10 4 62 data/domino0690.png
+16 4 54 data/domino0691.png
+6 -2 54 data/domino0692.png
+19 3 54 data/domino0693.png
+11 5 54 data/domino0694.png
+14 3 54 data/domino0695.png
+18 2 54 data/domino0696.png
 #
 # Vanisher
 18 4 62 data/domino0700.png
@@ -219,13 +219,13 @@
 18 4 62 data/domino0714.png
 #
 # Vanish Domino Carried Images
-10 8 62 data/domino0790.png
-16 8 54 data/domino0791.png
-6 2 54  data/domino0792.png
-19 7 54 data/domino0793.png
-11 9 54 data/domino0794.png
-14 7 54 data/domino0795.png
-18 6 54 data/domino0796.png
+10 4 62 data/domino0790.png
+16 4 54 data/domino0791.png
+6 -2 54 data/domino0792.png
+19 3 54 data/domino0793.png
+11 5 54 data/domino0794.png
+14 3 54 data/domino0795.png
+18 2 54 data/domino0796.png
 #
 # Trigger
 18 4 62 data/domino0800.png
@@ -245,13 +245,13 @@
 18 4 62 data/domino0814.png
 #
 # Trigger Domino Carried Images
-10 8 62 data/domino0890.png
-16 8 54 data/domino0891.png
-6 2 54  data/domino0892.png
-19 7 54 data/domino0893.png
-11 9 54 data/domino0894.png
-14 7 54 data/domino0895.png
-18 6 54 data/domino0896.png
+10 4 62 data/domino0890.png
+16 4 54 data/domino0891.png
+6 -2 54 data/domino0892.png
+19 3 54 data/domino0893.png
+11 5 54 data/domino0894.png
+14 3 54 data/domino0895.png
+18 2 54 data/domino0896.png
 #
 # Ascender
 18 4 62 data/domino0900.png
@@ -298,13 +298,13 @@
 34 4 54 data/domino0900.png
 #
 # Ascender Domino Carried Images
-10 8 62 data/domino0990.png
-16 8 54 data/domino0991.png
-6 2 54  data/domino0992.png
-19 7 54 data/domino0993.png
-11 9 54 data/domino0994.png
-14 7 54 data/domino0995.png
-18 6 54 data/domino0996.png
+10 4 62 data/domino0990.png
+16 4 54 data/domino0991.png
+6 -2 54 data/domino0992.png
+19 3 54 data/domino0993.png
+11 5 54 data/domino0994.png
+14 3 54 data/domino0995.png
+18 2 54 data/domino0996.png
 #
 # Connected A
 18 4 62 data/domino1000.png
@@ -324,13 +324,13 @@
 18 4 62 data/domino1014.png
 #
 # ConnectedA Domino Carried Images
-10 8 62 data/domino1090.png
-16 8 54 data/domino1091.png
-6 2 54  data/domino1092.png
-19 7 54 data/domino1093.png
-11 9 54 data/domino1094.png
-14 7 54 data/domino1095.png
-18 6 54 data/domino1096.png
+10 4 62 data/domino1090.png
+16 4 54 data/domino1091.png
+6 -2 54 data/domino1092.png
+19 3 54 data/domino1093.png
+11 5 54 data/domino1094.png
+14 3 54 data/domino1095.png
+18 2 54 data/domino1096.png
 #
 # Connected B
 18 4 62 data/domino1100.png
@@ -350,13 +350,13 @@
 18 4 62 data/domino1114.png
 #
 # ConnectedB Domino Carried Images
-10 8 62 data/domino1190.png
-16 8 54 data/domino1191.png
-6 2 54  data/domino1192.png
-19 7 54 data/domino1193.png
-11 9 54 data/domino1194.png
-14 7 54 data/domino1195.png
-18 6 54 data/domino1196.png
+10 4 62 data/domino1190.png
+16 4 54 data/domino1191.png
+6 -2 54 data/domino1192.png
+19 3 54 data/domino1193.png
+11 5 54 data/domino1194.png
+14 3 54 data/domino1195.png
+18 2 54 data/domino1196.png
 #
 # Counter 1
 18 4 62 data/domino1200.png
@@ -376,13 +376,13 @@
 18 4 62 data/domino1214.png
 #
 # Counter1 Domino Carried Images
-10 8 62 data/domino1290.png
-16 8 54 data/domino1291.png
-6 2 54  data/domino1292.png
-19 7 54 data/domino1293.png
-11 9 54 data/domino1294.png
-14 7 54 data/domino1295.png
-18 6 54 data/domino1296.png
+10 4 62 data/domino1290.png
+16 4 54 data/domino1291.png
+6 -2 54 data/domino1292.png
+19 3 54 data/domino1293.png
+11 5 54 data/domino1294.png
+14 3 54 data/domino1295.png
+18 2 54 data/domino1296.png
 #
 # Counter 2
 18 4 62 data/domino1300.png
@@ -402,13 +402,13 @@
 18 4 62 data/domino1314.png
 #
 # Counter2 Domino Carried Images
-10 8 62 data/domino1390.png
-16 8 54 data/domino1391.png
-6 2 54  data/domino1392.png
-19 7 54 data/domino1393.png
-11 9 54 data/domino1394.png
-14 7 54 data/domino1395.png
-18 6 54 data/domino1396.png
+10 4 62 data/domino1390.png
+16 4 54 data/domino1391.png
+6 -2 54 data/domino1392.png
+19 3 54 data/domino1393.png
+11 5 54 data/domino1394.png
+14 3 54 data/domino1395.png
+18 2 54 data/domino1396.png
 #
 # Counter 3
 18 4 62 data/domino1400.png
@@ -428,13 +428,13 @@
 18 4 62 data/domino1414.png
 #
 # Counter3 Domino Carried Images
-10 8 62 data/domino1490.png
-16 8 54 data/domino1491.png
-6 2 54  data/domino1492.png
-19 7 54 data/domino1493.png
-11 9 54 data/domino1494.png
-14 7 54 data/domino1495.png
-18 6 54 data/domino1496.png
+10 4 62 data/domino1490.png
+16 4 54 data/domino1491.png
+6 -2 54 data/domino1492.png
+19 3 54 data/domino1493.png
+11 5 54 data/domino1494.png
+14 3 54 data/domino1495.png
+18 2 54 data/domino1496.png
 #
 # Crash 1
 18 4 62 crashes/crash01.png
