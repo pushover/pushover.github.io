@@ -657,7 +657,7 @@ void levelData_c::print(void) {
       printf("%x", level[y][x].dominoType);
     printf("  ");
     for (unsigned int x = 0; x < 20; x++)
-      printf("%x", level[y][x].dominoState);
+      printf("%2x", level[y][x].dominoState);
     printf("  ");
     for (unsigned int x = 0; x < 20; x++)
       printf("%c", directions[level[y][x].dominoDir+1]);
