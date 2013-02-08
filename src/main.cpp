@@ -280,6 +280,11 @@ int main(int argc, char * argv[]) {
   ant_c a(l);
   solvedMap_c solved;
   std::string lwindowLevel = "";  // when it contains a valid levelname, the level is selected when the levelwindow is opened the next time
+#ifdef DEBUG
+  bool debug_fastforward = false;
+  bool debug_singlestep = false;
+  bool debug_play = true;
+#endif
 
   // prepare the list of levelsets
   levelsetList_c * levelsetList = loadAllLevels(datadir, "");
@@ -391,6 +396,9 @@ int main(int argc, char * argv[]) {
       // wait for the right amount of time for the next frame
       if (!exitAfterReplay)
       {
+#ifdef DEBUG
+        if (!debug_fastforward)
+#endif
         ticks += 1000/18;
         if (SDL_GetTicks() < ticks)
           SDL_Delay(ticks-SDL_GetTicks());
@@ -497,6 +505,13 @@ int main(int argc, char * argv[]) {
           break;
         }
 
+#ifdef DEBUG
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F2)         gr.togglegrid();
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F3)         debug_fastforward = true;
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4)         debug_singlestep = true;
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F5)         debug_play = true;
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F6)         l.print();
+#endif
         switch (currentState) {
 
           case ST_MAIN:
@@ -958,8 +973,32 @@ int main(int argc, char * argv[]) {
         }
       }
 
-      // do the handling of the current state
+#ifdef DEBUG
+      if (currentState == ST_PLAY || currentState == ST_REPLAY)
+      {
+        if (debug_singlestep)
+        {
+          debug_singlestep = false;
+          debug_play = false;
+          debug_fastforward = false;
+        }
+        else if (debug_play)
+        {
+          debug_fastforward = false;
+          debug_singlestep = false;
+        }
+        else if (debug_fastforward)
+        {
+          debug_play = false;
+        }
+        else
+        {
+          continue;
+        }
+      }
+#endif
 
+      // do the handling of the current state
       switch (currentState) {
 
         case ST_PREPLAY:

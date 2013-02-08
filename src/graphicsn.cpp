@@ -238,6 +238,10 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   ant = 0;
   level = 0;
 
+#ifdef DEBUG
+  grid = false;
+#endif
+
   dominos.resize(DominoNumber);
 
   for (unsigned int i = 0; i < DominoNumber; i++) {
@@ -1281,6 +1285,19 @@ void graphicsN_c::drawLevel(void) {
   drawLadders(true);
   drawAnt();
   drawLadders(false);
+
+#ifdef DEBUG
+  if (grid && target)
+    for (size_t y = 0; y < level->levelY(); y++)
+      for (size_t x = 0; x < level->levelX(); x++)
+        if (dirty.isDirty(x, y))
+        {
+          target->fillRect(x*blockX(), y*blockY()/2, blockX(), 1, 128, 128, 128);
+          target->fillRect(x*blockX(), (y+1)*blockY()/2-1, blockX(), 1, 128, 128, 128);
+          target->fillRect(x*blockX(), y*blockY()/2, 1, blockY()/2, 128, 128, 128);
+          target->fillRect((x+1)*blockX()-1, y*blockY()/2, 1, blockY()/2, 128, 128, 128);
+        }
+#endif
 
   if (Min != -1)
   {

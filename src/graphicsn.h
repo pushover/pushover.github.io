@@ -60,6 +60,11 @@ class graphicsN_c : public graphics_c {
     // get domino animation image
     SDL_Surface * getHelpDominoImage(unsigned int domino) { return dominos[domino][DO_ST_UPRIGHT]; }
 
+#ifdef DEBUG
+    void togglegrid(void) { grid = ! grid; }
+    bool grid;
+#endif
+
   private:
 
     // add an image to a specific ant animation, the new image is added at the end
