@@ -113,10 +113,11 @@ class graphicsN_c : public graphics_c {
 
     void setTheme(const std::string & name);
 
-    virtual void drawAnt(void);
 
     /* draw the changed stuff into the target surface */
     void drawDominos(void);
+    void drawLadders(bool before);
+    void drawAnt(void);
 
     void markDirty(int x, int y) { dirty.markDirty(x, y); }
     void markDirtyBg(int x, int y) { dirtybg.markDirty(x, y); dirty.markDirty(x, y); }

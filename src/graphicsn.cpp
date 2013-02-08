@@ -640,75 +640,74 @@ static int16_t getCarryAnimationIndex(AntAnimationState a)
   }
 }
 
+static bool antOnLadder(AntAnimationState a)
+{
+  switch (a)
+  {
+    case AntAnimLadder1:
+    case AntAnimLadder2:
+    case AntAnimLadder3:
+    case AntAnimLadder4:
+    case AntAnimCarryLadder1:
+    case AntAnimCarryLadder2:
+    case AntAnimCarryLadder3:
+    case AntAnimCarryLadder4:
+    case AntAnimXXX1:
+    case AntAnimXXX2:
+    case AntAnimXXX3:
+    case AntAnimXXX4:
+      return true;
+    default:
+      return false;
+  }
+}
+
+void graphicsN_c::drawLadders(bool before)
+{
+  // the problem with the ladders is that we sometimes need to
+  // draw them behind and sometimes before the ant, depending on its
+  // animation... when on the ladder the ladder needs to be behind the ant
+  // otherwise in front
+  // that is why this function is called once bafore and once after drawing the ant
+  // the argument is true, when called before the ant drawing
+  if (before == antOnLadder(ant->getAnimation()))
+    for (unsigned int y = 0; y < level->levelY(); y++)
+      for (unsigned int x = 0; x < level->levelX(); x++)
+        if (dirty.isDirty(x, y))
+          if (level->getLadder(x, y))
+            target->blitBlock(fgTiles[curTheme][8], x*blockX(), y*blockY()/2);
+}
+
 
 void graphicsN_c::drawAnt(void)
 {
-
-  if (   !ant->isVisible()
-      ||(ant->getAnimation() >= AntAnimLadder1 && ant->getAnimation() <= AntAnimLadder4)
-      ||(ant->getAnimation() >= AntAnimCarryLadder1 && ant->getAnimation() <= AntAnimCarryLadder4)
-      || (ant->getAnimation() >= AntAnimXXX1 && ant->getAnimation() <= AntAnimXXX4)
-     )
+  if (ant && ant->isVisible())
   {
-    // repaint the ladders
-    for (unsigned int y = 0; y < level->levelY(); y++)
-      for (unsigned int x = 0; x < level->levelX(); x++) {
-        if (dirty.isDirty(x, y))
-        {
-          if (level->getLadder(x, y))
-          {
-            target->blitBlock(fgTiles[curTheme][8], x*blockX(), y*blockY()/2);
-          }
-        }
-      }
-  }
-
-  if (!ant->isVisible()) return;
-
-  if (ant->getCarriedDomino() != 0)
-  {
-    int16_t a = getCarryAnimationIndex(ant->getAnimation());
-
-    if (a >= 0)
+    if (ant->getCarriedDomino() != 0)
     {
-      int x = (ant->getBlockX()-2)*blockX();
-      int y = (ant->getBlockY())*blockY()/2+antImages[ant->getAnimation()][ant->getAnimationImage()].ofs+antDisplace;
+      int16_t a = getCarryAnimationIndex(ant->getAnimation());
 
-      y += getMoveOffsetY(a, ant->getAnimationImage());
-      x += getMoveOffsetX(a, ant->getAnimationImage());
-
-      int img = getMoveImage(a, ant->getAnimationImage());
-
-      target->blit(dominos[ant->getCarriedDomino()][img], x, y);
-    }
-  }
-
-  if (antImages[ant->getAnimation()][ant->getAnimationImage()].v)
-  {
-    target->blit(
-        antImages[ant->getAnimation()][ant->getAnimationImage()].v, ant->getBlockX()*blockX()-45,
-        (ant->getBlockY())*blockY()/2+antImages[ant->getAnimation()][ant->getAnimationImage()].ofs+antDisplace+3);
-  }
-
-  /* what comes now, is to put the ladders back in front of the ant,
-   * we don't need to do that, if the ant is on the ladder
-   */
-
-  if (ant->getAnimation() >= AntAnimLadder1 && ant->getAnimation() <= AntAnimLadder4) return;
-  if (ant->getAnimation() >= AntAnimCarryLadder1 && ant->getAnimation() <= AntAnimCarryLadder4) return;
-  if (ant->getAnimation() >= AntAnimXXX1 && ant->getAnimation() <= AntAnimXXX4) return;
-
-  // repaint the ladders
-  for (unsigned int y = 0; y < level->levelY(); y++)
-    for (unsigned int x = 0; x < level->levelX(); x++) {
-      if (dirty.isDirty(x, y))
+      if (a >= 0)
       {
-        if (level->getLadder(x, y))
-        {
-          target->blitBlock(fgTiles[curTheme][8], x*blockX(), y*blockY()/2);
-        }
+        int x = (ant->getBlockX()-2)*blockX();
+        int y = (ant->getBlockY())*blockY()/2+antImages[ant->getAnimation()][ant->getAnimationImage()].ofs+antDisplace;
+
+        y += getMoveOffsetY(a, ant->getAnimationImage());
+        x += getMoveOffsetX(a, ant->getAnimationImage());
+
+        int img = getMoveImage(a, ant->getAnimationImage());
+
+        target->blit(dominos[ant->getCarriedDomino()][img], x, y);
       }
     }
+
+    if (antImages[ant->getAnimation()][ant->getAnimationImage()].v)
+    {
+      target->blit(
+          antImages[ant->getAnimation()][ant->getAnimationImage()].v, ant->getBlockX()*blockX()-45,
+          (ant->getBlockY())*blockY()/2+antImages[ant->getAnimation()][ant->getAnimationImage()].ofs+antDisplace+3);
+    }
+  }
 }
 
 void graphicsN_c::setTheme(const std::string & name)
@@ -1273,7 +1272,9 @@ void graphicsN_c::drawLevel(void) {
   findDirtyBlocks();
 
   drawDominos();
-  if (ant) drawAnt();
+  drawLadders(true);
+  drawAnt();
+  drawLadders(false);
 
   if (Min != -1)
   {
