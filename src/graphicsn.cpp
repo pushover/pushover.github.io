@@ -419,7 +419,7 @@ void graphicsN_c::getAnimation(AntAnimationState anim, pngLoader_c * png) {
 }
 
 
-static signed int moveOffsets[22][64] =
+static int16_t moveOffsets[22][16*3] =
 {
   // This array defines for the ant animations where and which image of a domino to draw
   // This is required for the animations where the ant carries a domino, because in those
