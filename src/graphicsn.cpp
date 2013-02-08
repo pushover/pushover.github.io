@@ -101,10 +101,10 @@ static const int antOffsets[] = {
   -24, -12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0                         // 13   AntAnimLandDying,
 };
 
-#define RISER_CONT_START 24      // 8 images
 
 
 #define CARRIED_DOMINO_START DO_ST_NUM  // 7 images
+#define RISER_CONT_START (CARRIED_DOMINO_START+7)      // 8 images
 
 // this array defines for all domino images of a certain comino
 // in which array position they are supposed to go
@@ -175,8 +175,10 @@ static const int8_t dominoImages[DominoNumber][135] = {
     DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
     DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
     DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
-
-    DO_ST_FALLING+15, DO_ST_FALLING+16,
+    DO_ST_ASCENDER+0, DO_ST_ASCENDER+1, DO_ST_ASCENDER+2, DO_ST_ASCENDER+3, DO_ST_ASCENDER+4,
+    DO_ST_ASCENDER+5, DO_ST_ASCENDER+6, DO_ST_ASCENDER+7, DO_ST_ASCENDER+8, DO_ST_ASCENDER+9,
+    DO_ST_ASCENDER+10, DO_ST_ASCENDER+11, DO_ST_ASCENDER+12, DO_ST_ASCENDER+13, DO_ST_ASCENDER+14,
+    DO_ST_ASCENDER+15, DO_ST_ASCENDER+16,
     RISER_CONT_START+0, RISER_CONT_START+1, RISER_CONT_START+2, RISER_CONT_START+3,
     RISER_CONT_START+4, RISER_CONT_START+5, RISER_CONT_START+6, RISER_CONT_START+7,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
@@ -233,7 +235,7 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   dominos.resize(DominoNumber);
 
   for (unsigned int i = 0; i < DominoNumber; i++) {
-    dominos[i].resize(60);  // TODO right number
+    dominos[i].resize(80);  // TODO right number
   }
 
   antImages.resize((int)AntAnimNothing);
@@ -457,9 +459,9 @@ static signed int moveOffsets[10][64] = {
    -2,  0, DO_ST_UPRIGHT, 0,
    -2,  0, DO_ST_UPRIGHT, 0,
    -2, -1, DO_ST_UPRIGHT+2, 0,
-    0, -3, 32+CARRIED_DOMINO_START+0, 0,
-   -1, -3, 32+CARRIED_DOMINO_START+0, 0,
-   -4, -3, 32+CARRIED_DOMINO_START+0, 0,
+    0, -3, CARRIED_DOMINO_START+0, 0,
+   -1, -3, CARRIED_DOMINO_START+0, 0,
+   -4, -3, CARRIED_DOMINO_START+0, 0,
   }, { // AntAnimPullOutRight
     0, -2, DO_ST_UPRIGHT, 0,
     0, -2, DO_ST_UPRIGHT, 0,
@@ -473,16 +475,16 @@ static signed int moveOffsets[10][64] = {
    -2,  0, DO_ST_UPRIGHT, 0,
    -2,  0, DO_ST_UPRIGHT, 0,
    -2, -1, DO_ST_UPRIGHT-2, 0,
-   -3, -3, 32+CARRIED_DOMINO_START+1, 0,
-   -2, -3, 32+CARRIED_DOMINO_START+1, 0,
-   -1, -3, 32+CARRIED_DOMINO_START+1, 0,
+   -3, -3, CARRIED_DOMINO_START+1, 0,
+   -2, -3, CARRIED_DOMINO_START+1, 0,
+   -1, -3, CARRIED_DOMINO_START+1, 0,
   }, {  // AntAnimPushInLeft,
-   -7, -3, 32+CARRIED_DOMINO_START+0, 0,
-   -8, -3, 32+CARRIED_DOMINO_START+0, 0,
-  -11, -3, 32+CARRIED_DOMINO_START+0, 0,
-  -14, -3, 32+CARRIED_DOMINO_START+0, 0,
-  -17, -3, 32+CARRIED_DOMINO_START+0, 0,
-  -17, -1, 32+CARRIED_DOMINO_START+0, 0,
+   -7, -3, CARRIED_DOMINO_START+0, 0,
+   -8, -3, CARRIED_DOMINO_START+0, 0,
+  -11, -3, CARRIED_DOMINO_START+0, 0,
+  -14, -3, CARRIED_DOMINO_START+0, 0,
+  -17, -3, CARRIED_DOMINO_START+0, 0,
+  -17, -1, CARRIED_DOMINO_START+0, 0,
   -18,  0, DO_ST_UPRIGHT+2, 0,
   -18,  0, DO_ST_UPRIGHT, 0,
   -18,  0, DO_ST_UPRIGHT, 0,
@@ -494,12 +496,12 @@ static signed int moveOffsets[10][64] = {
   -16, -2, DO_ST_UPRIGHT, 0,
   -16, -2, DO_ST_UPRIGHT, 0,
   }, {  // AntAnimPushInRight,
-    5, -3, 32+CARRIED_DOMINO_START+1, 0,
-    6, -3, 32+CARRIED_DOMINO_START+1, 0,
-   10, -2, 32+CARRIED_DOMINO_START+1, 0,
-   11, -3, 32+CARRIED_DOMINO_START+1, 0,
-   14, -3, 32+CARRIED_DOMINO_START+1, 0,
-   14, -1, 32+CARRIED_DOMINO_START+1, 0,
+    5, -3, CARRIED_DOMINO_START+1, 0,
+    6, -3, CARRIED_DOMINO_START+1, 0,
+   10, -2, CARRIED_DOMINO_START+1, 0,
+   11, -3, CARRIED_DOMINO_START+1, 0,
+   14, -3, CARRIED_DOMINO_START+1, 0,
+   14, -1, CARRIED_DOMINO_START+1, 0,
    14,  0, DO_ST_UPRIGHT-2, 0,
    14,  0, DO_ST_UPRIGHT, 0,
    14,  0, DO_ST_UPRIGHT, 0,
@@ -511,27 +513,27 @@ static signed int moveOffsets[10][64] = {
    16, -2, DO_ST_UPRIGHT, 0,
    16, -2, DO_ST_UPRIGHT, 0,
   }, {  //AntAnimXXX1
-     0, -3, 32+CARRIED_DOMINO_START+3, 0,
-     0, -3, 32+CARRIED_DOMINO_START+4, 0,
+     0, -3, CARRIED_DOMINO_START+3, 0,
+     0, -3, CARRIED_DOMINO_START+4, 0,
   }, { //AntAnimXXX2
-    -3, -3, 32+CARRIED_DOMINO_START+5, 0,
-    -3, -3, 32+CARRIED_DOMINO_START+6, 0,
+    -3, -3, CARRIED_DOMINO_START+5, 0,
+    -3, -3, CARRIED_DOMINO_START+6, 0,
   }, { //AntAnimXXX3
-     0, -3, 32+CARRIED_DOMINO_START+4, 0,
-     0, -3, 32+CARRIED_DOMINO_START+3, 0,
+     0, -3, CARRIED_DOMINO_START+4, 0,
+     0, -3, CARRIED_DOMINO_START+3, 0,
   }, { //AntAnimXXX4
-    -3, -3, 32+CARRIED_DOMINO_START+6, 0,
-    -3, -3, 32+CARRIED_DOMINO_START+5, 0,
+    -3, -3, CARRIED_DOMINO_START+6, 0,
+    -3, -3, CARRIED_DOMINO_START+5, 0,
   }, { //AntAnimLoosingDominoRight
     16, -3, DO_ST_UPRIGHT, 0,
     16, -3, DO_ST_UPRIGHT, 0,
     16, -3, DO_ST_UPRIGHT, 0,
     16, -3, DO_ST_UPRIGHT, 0,
   }, { //AntAnimLoosingDominoLeft
-    -7, -3, 32+CARRIED_DOMINO_START+0, 0,
-    -8, -3, 32+CARRIED_DOMINO_START+0, 0,
-   -11, -3, 32+CARRIED_DOMINO_START+0, 0,
-   -14, -3, 32+CARRIED_DOMINO_START+0, 0,
+    -7, -3, CARRIED_DOMINO_START+0, 0,
+    -8, -3, CARRIED_DOMINO_START+0, 0,
+   -11, -3, CARRIED_DOMINO_START+0, 0,
+   -14, -3, CARRIED_DOMINO_START+0, 0,
      0, -3, DO_ST_UPRIGHT, 0,
      0, -3, DO_ST_UPRIGHT, 0,
      0, -3, DO_ST_UPRIGHT, 0,
@@ -606,21 +608,7 @@ void graphicsN_c::drawAnt(void)
 
       int img = getMoveImage(a, ant->getAnimationImage());
 
-      if (img < 32)
-      {
-        // the ant normaly toppled the domino slightly over then lifting it up, but those
-        // images don't exist with some dominos, so we stay with the vertical image
-        if (img != DO_ST_UPRIGHT && ant->getCarriedDomino() == DominoTypeAscender)
-        {
-          img = DO_ST_UPRIGHT;
-        }
-
-        target->blit(dominos[ant->getCarriedDomino()][img], x, y);
-      }
-      else
-      {
-        target->blit(dominos[ant->getCarriedDomino()][img-32], x, y);
-      }
+      target->blit(dominos[ant->getCarriedDomino()][img], x, y);
     }
     if (ant->getAnimation() >= AntAnimCarryLeft && ant->getAnimation() <= AntAnimCarryStopRight)
     {
@@ -928,10 +916,9 @@ void graphicsN_c::drawDominos(void)
       if (dirty.isDirty(x, y))
         target->copy(*background, x*blockX(), y*blockY()/2, blockX(), blockY()/2);
 
-  static int XposOffset[] = { 0, -16, -16,  0,-16,  0,  0, 0, 0, 0,  0, 0, 16,  0, 16, 16, 0};
-  static int YposOffset[] = { 0, -8,  -6,  0, -4,  0, -2, 0, 0, 0, -2, 0, -4,  0, -6, -8, 0};
+  static int XposOffset[] = { -16, -16,  0,-16,  0,  0, 0, 0, 0,  0, 0, 16,  0, 16, 16, 0};
+  static int YposOffset[] = { -8,  -6,  0, -4,  0, -2, 0, 0, 0, -2, 0, -4,  0, -6, -8, 0};
   static int StoneImageOffset[] = {
-    0,
     RISER_CONT_START+7, RISER_CONT_START+6, RISER_CONT_START+0, RISER_CONT_START+5,
     RISER_CONT_START+0, RISER_CONT_START+4, RISER_CONT_START+0, RISER_CONT_START+0,
     RISER_CONT_START+0, RISER_CONT_START+3, RISER_CONT_START+0, RISER_CONT_START+2,
@@ -999,27 +986,27 @@ void graphicsN_c::drawDominos(void)
 
       // paint the actual domino but take care of the special cases of the ascender domino
       if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoExtra(x, y) == 0x60 &&
-          level->getDominoState(x, y) < 16 && level->getDominoState(x, y) != 8)
+          level->getDominoState(x, y) < DO_ST_ASCENDER+15 && level->getDominoState(x, y) != DO_ST_UPRIGHT && level->getDominoState(x, y) != DO_ST_ASCENDER+7)
       {
-        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)]],
-            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)]),
-            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)]+level->getDominoYOffset(x, y)));
+        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]],
+            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]),
+            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]+level->getDominoYOffset(x, y)));
       }
-      else if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoState(x, y) == 1 && level->getDominoExtra(x, y) == 0 &&
+      else if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoState(x, y) == DO_ST_ASCENDER && level->getDominoExtra(x, y) == 0 &&
           !level->getPlatform(x-1, y-3))
       { // this is the case of the ascender domino completely horizontal and with the plank it is below not existing
         // so we see the above face of the domino. Normally there is a wall above us so we only see
         // the front face of the domino
-        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)]],
-            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)]+6),
-            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)]+level->getDominoYOffset(x, y)));
+        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]],
+            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]+6),
+            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]+level->getDominoYOffset(x, y)));
       }
-      else if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoState(x, y) == 15 && level->getDominoExtra(x, y) == 0 &&
+      else if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoState(x, y) == DO_ST_ASCENDER+14 && level->getDominoExtra(x, y) == 0 &&
           !level->getPlatform(x+1, y-3))
       {
-        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)]],
-            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)]-2),
-            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)]+level->getDominoYOffset(x, y)));
+        target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]],
+            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]-2),
+            SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]+level->getDominoYOffset(x, y)));
       }
       else if (level->getDominoType(x, y) != DominoTypeEmpty)
       {

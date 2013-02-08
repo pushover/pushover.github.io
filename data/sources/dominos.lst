@@ -245,15 +245,30 @@
 18 4 62 data/domino0814.png
 #
 # Trigger Domino Carried Images
-10 8 62 data/domino0990.png
-16 8 54 data/domino0991.png
-6 2 54  data/domino0992.png
-19 7 54 data/domino0993.png
-11 9 54 data/domino0994.png
-14 7 54 data/domino0995.png
-18 6 54 data/domino0996.png
+10 8 62 data/domino0890.png
+16 8 54 data/domino0891.png
+6 2 54  data/domino0892.png
+19 7 54 data/domino0893.png
+11 9 54 data/domino0894.png
+14 7 54 data/domino0895.png
+18 6 54 data/domino0896.png
 #
 # Ascender
+18 4 62 data/domino0900.png
+18 4 62 data/domino0901.png
+18 4 62 data/domino0902.png
+18 4 62 data/domino0903.png
+18 4 62 data/domino0904.png
+18 4 62 data/domino0905.png
+18 4 62 data/domino0906.png
+18 4 62 data/domino0907.png
+18 4 62 data/domino0908.png
+18 4 62 data/domino0909.png
+18 4 62 data/domino0910.png
+18 4 62 data/domino0911.png
+18 4 62 data/domino0912.png
+18 4 62 data/domino0913.png
+18 4 62 data/domino0914.png
 18 -28 36 data/domino0900.png
 -22 -20 36 data/domino0913.png
 -13 -6 36 data/domino0912.png

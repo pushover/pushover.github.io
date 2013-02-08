@@ -241,7 +241,7 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
       // we return false then pushing the riser, because it will rise
       // and the domino has to wait
     case DominoTypeAscender:
-      if (getDominoState(x, y) == 16) {
+      if (getDominoState(x, y) == DO_ST_ASCENDER+15) {
         setDominoDir(x, y, dir);
       }
       else
@@ -394,7 +394,10 @@ void levelPlayer_c::DTA_2(int x, int y) {
 
   // if here is a domino 2 to the left of us and that domino has fallen down
   // far enough to the right, we can't fall farther
-  if (x >= 2 && getDominoType(x-2, y) != 0 && getDominoState(x-2, y) > 13)
+  if (x >= 2 && getDominoType(x-2, y) != 0 &&
+      ((getDominoState(x-2, y) > 13 && getDominoState(x-2, y) <= 15) ||
+       (getDominoState(x-2, y) > DO_ST_ASCENDER+12 && getDominoState(x-2, y) <= DO_ST_ASCENDER+14))
+     )
     return;
 
   // if the domino is a splitter, we need to check, if it is in one of the
@@ -485,10 +488,10 @@ void levelPlayer_c::DTA_4(int x, int y) {
   setDominoState(x, y, getDominoState(x, y)+getDominoDir(x, y));
 
   if (getDominoType(x, y) == DominoTypeAscender &&
-      getDominoState(x, y) == 8 &&
+      getDominoState(x, y) == DO_ST_ASCENDER+7 &&
       getDominoYOffset(x, y) == -10)
   {
-    setDominoState(x, y, 16);
+    setDominoState(x, y, DO_ST_ASCENDER+15);
   }
 
   if (getDominoState(x, y) == 8 && ((size_t)(y+1) >= levelY() || !getPlatform(x, y+1)) && (getDominoExtra(x, y) == 0x40 || getDominoExtra(x, y) == 0x70))
@@ -799,18 +802,18 @@ void levelPlayer_c::DTA_E(int x, int y) {
     // this sets the Ascender turning over again
     if (getDominoType(x, y+2) == DominoTypeAscender)
     {
-      if (getDominoState(x, y+2) == 1)
+      if (getDominoState(x, y+2) == DO_ST_ASCENDER)
       {
-        setDominoState(x-1, y+4, 14);
+        setDominoState(x-1, y+4, DO_ST_ASCENDER+13);
         setDominoType(x-1, y+4, DominoTypeAscender);
         setDominoDir(x-1, y+4, -1);
         setDominoExtra(x-1, y+4, 0x00);
         setDominoYOffset(x-1, y+4, getDominoYOffset(x, y+2)-16);
         removeDomino(x, y+2);
       }
-      if (getDominoState(x, y+2) == 15)
+      if (getDominoState(x, y+2) == DO_ST_ASCENDER+14)
       {
-        setDominoState(x+1, y+4, 2);
+        setDominoState(x+1, y+4, DO_ST_ASCENDER+1);
         setDominoType(x+1, y+4, DominoTypeAscender);
         setDominoDir(x+1, y+4, 1);
         setDominoExtra(x+1, y+4, 0x00);
@@ -999,7 +1002,7 @@ void levelPlayer_c::DTA_A(int x, int y) {
       {
         setDominoExtra(x-1, y, 0x60);
         setDominoType(x-1, y, DominoTypeAscender);
-        setDominoState(x-1, y, 14);
+        setDominoState(x-1, y, DO_ST_ASCENDER+13);
         setDominoDir(x-1, y, -1);
         setDominoYOffset(x-1, y, getDominoYOffset(x, y)-2);
       }
@@ -1016,7 +1019,7 @@ void levelPlayer_c::DTA_A(int x, int y) {
         {
           setDominoExtra(x-1, y-2, 0x60);
           setDominoType(x-1, y-2, DominoTypeAscender);
-          setDominoState(x-1, y-2, 14);
+          setDominoState(x-1, y-2, DO_ST_ASCENDER+13);
           setDominoDir(x-1, y-2, -1);
           setDominoYOffset(x-1, y-2, getDominoYOffset(x, y)+14);
         }
@@ -1040,7 +1043,7 @@ void levelPlayer_c::DTA_A(int x, int y) {
     {
       setDominoExtra(x, y+2-a, 0x60);
       setDominoType(x, y+2-a, DominoTypeAscender);
-      setDominoState(x, y+2-a, 8);
+      setDominoState(x, y+2-a, DO_ST_ASCENDER+7);
       setDominoDir(x, y+2-a, -1);
       setDominoYOffset(x, y+2-a, 0);
     }
@@ -1091,7 +1094,7 @@ void levelPlayer_c::DTA_O(int x, int y) {
       {
         setDominoExtra(x+1, y, 0x60);
         setDominoType(x+1, y, DominoTypeAscender);
-        setDominoState(x+1, y, 2);
+        setDominoState(x+1, y, DO_ST_ASCENDER+1);
         setDominoDir(x+1, y, 1);
         setDominoYOffset(x+1, y, getDominoYOffset(x, y)-2);
       }
@@ -1108,7 +1111,7 @@ void levelPlayer_c::DTA_O(int x, int y) {
         {
           setDominoExtra(x+1, y-2, 0x60);
           setDominoType(x+1, y-2, DominoTypeAscender);
-          setDominoState(x+1, y-2, 2);
+          setDominoState(x+1, y-2, DO_ST_ASCENDER+1);
           setDominoDir(x+1, y-2, 1);
           setDominoYOffset(x+1, y-2, getDominoYOffset(x, y)+14);
         }
@@ -1132,7 +1135,7 @@ void levelPlayer_c::DTA_O(int x, int y) {
     {
       setDominoExtra(x, y+2-a, 0x60);
       setDominoType(x, y+2-a, DominoTypeAscender);
-      setDominoState(x, y+2-a, 8);
+      setDominoState(x, y+2-a, DO_ST_ASCENDER+7);
       setDominoDir(x, y+2-a, 1);
       setDominoYOffset(x, y+2-a, 0);
     }
@@ -1175,7 +1178,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
     {
       if (getPlatform(x, y-3) && getPlatform(x, y-1))
       {
-        setDominoState(x, y, 16);
+        setDominoState(x, y, DO_ST_ASCENDER+15);
         setDominoExtra(x, y, 0x50);
 
         return;
@@ -1185,7 +1188,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
     {
       if (getPlatform(x, y-3) && getPlatform(x, y-2))
       {
-        setDominoState(x, y, 16);
+        setDominoState(x, y, DO_ST_ASCENDER+15);
         setDominoExtra(x, y, 0x50);
         return;
       }
@@ -1196,7 +1199,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
       {
         if (getPlatform(x, y-3))
         {
-          setDominoState(x, y, 16);
+          setDominoState(x, y, DO_ST_ASCENDER+15);
           setDominoExtra(x, y, 0);
 
           return;
@@ -1210,7 +1213,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
           setDominoExtra(x, y-1, 0x60);
           setDominoYOffset(x, y-1, -4);
           setDominoDir(x, y-1, getDominoDir(x, y));
-          setDominoState(x, y-1, 8);
+          setDominoState(x, y-1, DO_ST_UPRIGHT);
           setDominoType(x, y-1, DominoTypeAscender);
         }
         else
@@ -1228,7 +1231,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
     {
       if (getPlatform(x, y-3))
       {
-        setDominoState(x, y, 16);
+        setDominoState(x, y, DO_ST_ASCENDER+15);
       }
     }
 
@@ -1236,7 +1239,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
     {
       if (getPlatform(x, y-3))
       {
-        setDominoState(x, y, 17);
+        setDominoState(x, y, DO_ST_ASCENDER+16);
       }
     }
 
@@ -1250,8 +1253,8 @@ void levelPlayer_c::DTA_H(int x, int y) {
   if (riserDir != 0)
   {
     // first reset to middle position
-    if (getDominoState(x, y) == 16)
-      setDominoState(x, y, 8);
+    if (getDominoState(x, y) == DO_ST_ASCENDER+15)
+      setDominoState(x, y, DO_ST_ASCENDER+7);
 
     // then move it
     DTA_4(x, y);
@@ -1531,23 +1534,21 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y)
   //                  DominoTypeExploder,     DominoTypeAscender,     DominoTypeCrash0,
   //                      DominoTypeDelay,        DominoTypeConnectedA,   DominoTypeCrash1,
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // invalid state 0
-    { 99,  1, 99, 99, 99,  1,  6,  7,  8,  1, 10,  1,  1,  1,  1,  1, 14, 14, 14, 14, 14, 14 },
-    { 99,  2, 99, 99, 99,  2,  2,  2,  4,  2,  4,  2,  2,  2,  2,  2, 14, 14, 14, 14, 14, 14 },
-    { 99,  3, 99, 99, 99,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3, 14, 14, 14, 14, 14, 14 },
-    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 14, 14, 14, 14, 14, 14 }, // domino falling left
-    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 14, 14, 14, 14, 14, 14 },
-    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  0,  0,  0,  0,  0,  0 },
-    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
+    { 99,  1, 99, 99, 99,  1,  6,  7,  8,  1, 99,  1,  1,  1,  1,  1, 14, 14, 14, 14, 14, 14 },
+    { 99,  2, 99, 99, 99,  2,  2,  2,  4,  2, 99,  2,  2,  2,  2,  2, 14, 14, 14, 14, 14, 14 },
+    { 99,  3, 99, 99, 99,  3,  3,  3,  3,  3, 99,  3,  3,  3,  3,  3, 14, 14, 14, 14, 14, 14 },
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4, 99,  4,  4,  4,  4,  4, 14, 14, 14, 14, 14, 14 }, // domino falling left
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4, 99,  4,  4,  4,  4,  4, 14, 14, 14, 14, 14, 14 },
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4, 99,  4,  4,  4,  4,  4,  0,  0,  0,  0,  0,  0 },
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4, 99,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
     { 99, 14, 15, 15, 15, 16, 14, 14, 14, 14, 17, 14, 14, 25, 25, 25, 99, 99, 99, 99, 99, 99 }, // domino standing vertically
-    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
-    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
-    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
-    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 }, // domino falling right
-    { 99, 18, 99, 99, 99, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 99, 99, 99, 99, 99, 99 },
-    { 99, 19, 99, 99, 99, 19, 19, 19,  4, 19,  4, 19, 19, 19, 19, 19, 99, 99, 99, 99, 99, 99 },
-    { 99, 20, 99, 99, 99, 20, 21, 22,  8, 20, 24, 20, 20, 20, 20, 20, 99, 99, 99, 99, 99, 99 },
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 17, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: hiding behind platform
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 17, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: hiding behind platform
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4, 99,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4, 99,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4, 99,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 },
+    { 99,  4, 99, 99, 99,  4,  4,  4,  4,  4, 99,  4,  4,  4,  4,  4, 99, 99, 99, 99, 99, 99 }, // domino falling right
+    { 99, 18, 99, 99, 99, 18, 18, 18, 18, 18, 99, 18, 18, 18, 18, 18, 99, 99, 99, 99, 99, 99 },
+    { 99, 19, 99, 99, 99, 19, 19, 19,  4, 19, 99, 19, 19, 19, 19, 19, 99, 99, 99, 99, 99, 99 },
+    { 99, 20, 99, 99, 99, 20, 21, 22,  8, 20, 99, 20, 20, 20, 20, 20, 99, 99, 99, 99, 99, 99 },
     { 99, 99, 99, 99,  5, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // explosion, explosion ended
     { 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 },
     { 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 },
@@ -1568,6 +1569,23 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y)
     { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
     { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
     { 99, 99, 99, 12, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // Splitter states...
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 10, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,  3, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 17, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 18, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 24, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 17, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: hiding behind platform
+    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 17, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: hiding behind platform
   };
 
   assert(type < DominoNumber);

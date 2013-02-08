@@ -67,7 +67,7 @@ typedef enum {
 #define DO_ST_LEFT     1  // the state which represents the domino falln completely to the left
 #define DO_ST_UPRIGHT  8  // domino standing completely vertical
 #define DO_ST_RIGHT   15  // domino falln completely to the right
-#define DO_ST_NUM     38  // number of different state
+#define DO_ST_NUM     53  // number of different state
 
 // the following defines represent groups of states, the _E appendix is always the last entry of the group
 #define DO_ST_FALLING    1  // stands for the initial state of the normally falling dominos
@@ -75,11 +75,14 @@ typedef enum {
 
 // TODO right now the special ascender states interfere here, so later on
 
-#define DO_ST_EXPLODE   18  // exploder start state, representing the finished explosion
-#define DO_ST_EXPLODE_E 24  // exploder end state, representing the starting explosion
+#define DO_ST_EXPLODE   16  // exploder start state, representing the finished explosion
+#define DO_ST_EXPLODE_E 22  // exploder end state, representing the starting explosion
 
-#define DO_ST_SPLIT   25   // first of the non standard splitter states
-#define DO_ST_SPLIT_E 37   // last of the non standard splitter states
+#define DO_ST_SPLIT   23   // first of the non standard splitter states
+#define DO_ST_SPLIT_E 35   // last of the non standard splitter states
+
+#define DO_ST_ASCENDER   36
+#define DO_ST_ASCENDER_E 52
 
 
 class levelData_c {
