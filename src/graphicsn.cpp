@@ -1045,8 +1045,7 @@ void graphicsN_c::drawDominos(void)
       }
 
       // paint the splitting domino for the splitter
-      if (level->getDominoType(x, y) == DominoTypeSplitter &&
-          level->getDominoState(x, y) == 6 &&
+      if (level->getDominoState(x, y) == DO_ST_SPLIT+1 &&
           level->getDominoExtra(x, y) != 0)
       {
         target->blit(dominos[level->getDominoExtra(x, y)][level->getDominoExtra(x, y)>=DominoTypeCrash0?DO_ST_LEFT:DO_ST_UPRIGHT],
