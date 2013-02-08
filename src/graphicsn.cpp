@@ -419,153 +419,224 @@ void graphicsN_c::getAnimation(AntAnimationState anim, pngLoader_c * png) {
 }
 
 
-static signed int offsets[12][16] = {
-  {     -7, -3,  -8, -3, -11, -3, -14, -3, -16, -3, -20, -3,                   // AntAnimCarryLeft,
-  }, {   5, -3,   6, -3,   9, -3,  12, -3,  14, -3,  18, -3,                   // AntAnimCarryRight,
-  }, {  -4, -3,  -6, -5,  -7, -7, -11, -5, -16, -4, -20, -3,                   // AntAnimCarryUpLeft,
-  }, {   2, -3,   4, -5,   5, -7,   9, -5,  14, -4,  18, -3,                   // AntAnimCarryUpRight,
-  }, { -12, -3, -16, -4, -19, -1, -19,  0, -19,  0, -20, -1,                   // AntAnimCarryDownLeft,
-  }, {   9, -3,  13, -4,  16, -1,  16,  0,  16,  0,  17, -1,                   // AntAnimCarryDownRight,
-  }, {  -8, -3,  -8, -2,  -7, -3,  -7, -2,  -8, -3,  -8, -2, -7, -3, -7, -2,   // AntAnimCarryLadder1,
-  }, {  -8, -3,  -8, -2,  -7, -3,  -7, -2,  -8, -3,  -8, -2, -7, -3, -7, -2,   // AntAnimCarryLadder2,
-  }, {  -7, -2,  -7, -3,  -8, -2,  -8, -3,  -7, -2,  -7, -3, -8, -2, -8, -3,   // AntAnimCarryLadder3,
-  }, {  -7, -2,  -7, -3,  -8, -2,  -8, -3,  -7, -2,  -7, -3, -8, -2, -8, -3,   // AntAnimCarryLadder4,
-  }, {  -5, -3,                                                                // AntAnimCarryStopLeft,
-  }, {   5, -3,                                                                // AntAnimCarryStopRight,
-  }
-};
-
-signed int getCarryOffsetX(unsigned int animation, unsigned int image) { return 5*offsets[animation][2*image+0]/2; }
-signed int getCarryOffsetY(unsigned int animation, unsigned int image) { return 3*offsets[animation][2*image+1]+3; }
-
-static signed int moveOffsets[10][64] = {
-
-  // this is a bit complicated:
-  // first 2 values are x and y coordinates, they are added to the normal block positions of the domino
-  // the 3rd value is the domino to paint, a value less than 32 is a normal domino, it is the domino state to use (7 is straight up...)
-  //     a value starting from 32 on is a carried domino image, use that image number...
-  // the 4th value is unused
-
-  { // AntAnimPullOutLeft
-    0, -2, DO_ST_UPRIGHT, 0,
-    0, -2, DO_ST_UPRIGHT, 0,
-    0, -2, DO_ST_UPRIGHT, 0,
-   -1, -1, DO_ST_UPRIGHT, 0,
-   -2,  0, DO_ST_UPRIGHT, 0,
-   -2,  0, DO_ST_UPRIGHT, 0,
-   -2,  0, DO_ST_UPRIGHT, 0,
-   -2,  0, DO_ST_UPRIGHT, 0,
-   -2,  0, DO_ST_UPRIGHT, 0,
-   -2,  0, DO_ST_UPRIGHT, 0,
-   -2,  0, DO_ST_UPRIGHT, 0,
-   -2, -1, DO_ST_UPRIGHT+2, 0,
-    0, -2, CARRIED_DOMINO_START+0, 0,
-   -1, -2, CARRIED_DOMINO_START+0, 0,
-   -4, -2, CARRIED_DOMINO_START+0, 0,
-  }, { // AntAnimPullOutRight
-    0, -2, DO_ST_UPRIGHT, 0,
-    0, -2, DO_ST_UPRIGHT, 0,
-    0, -2, DO_ST_UPRIGHT, 0,
-   -1, -1, DO_ST_UPRIGHT, 0,
-   -2,  0, DO_ST_UPRIGHT, 0,
-   -2,  0, DO_ST_UPRIGHT, 0,
-   -2,  0, DO_ST_UPRIGHT, 0,
-   -2,  0, DO_ST_UPRIGHT, 0,
-   -2,  0, DO_ST_UPRIGHT, 0,
-   -2,  0, DO_ST_UPRIGHT, 0,
-   -2,  0, DO_ST_UPRIGHT, 0,
-   -2, -1, DO_ST_UPRIGHT-2, 0,
-   -3, -2, CARRIED_DOMINO_START+1, 0,
-   -2, -2, CARRIED_DOMINO_START+1, 0,
-   -1, -2, CARRIED_DOMINO_START+1, 0,
-  }, {  // AntAnimPushInLeft,
-   -7, -2, CARRIED_DOMINO_START+0, 0,
-   -8, -2, CARRIED_DOMINO_START+0, 0,
-  -11, -2, CARRIED_DOMINO_START+0, 0,
-  -14, -2, CARRIED_DOMINO_START+0, 0,
-  -17, -2, CARRIED_DOMINO_START+0, 0,
-  -17,  0, CARRIED_DOMINO_START+0, 0,
-  -18,  0, DO_ST_UPRIGHT+2, 0,
-  -18,  0, DO_ST_UPRIGHT, 0,
-  -18,  0, DO_ST_UPRIGHT, 0,
-  -18,  0, DO_ST_UPRIGHT, 0,
-  -18,  0, DO_ST_UPRIGHT, 0,
-  -18,  0, DO_ST_UPRIGHT, 0,
-  -17, -1, DO_ST_UPRIGHT, 0,
-  -16, -2, DO_ST_UPRIGHT, 0,
-  -16, -2, DO_ST_UPRIGHT, 0,
-  -16, -2, DO_ST_UPRIGHT, 0,
-  }, {  // AntAnimPushInRight,
-    5, -2, CARRIED_DOMINO_START+1, 0,
-    6, -2, CARRIED_DOMINO_START+1, 0,
-   10, -1, CARRIED_DOMINO_START+1, 0,
-   11, -2, CARRIED_DOMINO_START+1, 0,
-   14, -2, CARRIED_DOMINO_START+1, 0,
-   14,  0, CARRIED_DOMINO_START+1, 0,
-   14,  0, DO_ST_UPRIGHT-2, 0,
-   14,  0, DO_ST_UPRIGHT, 0,
-   14,  0, DO_ST_UPRIGHT, 0,
-   14,  0, DO_ST_UPRIGHT, 0,
-   14,  0, DO_ST_UPRIGHT, 0,
-   14,  0, DO_ST_UPRIGHT, 0,
-   15, -1, DO_ST_UPRIGHT, 0,
-   16, -2, DO_ST_UPRIGHT, 0,
-   16, -2, DO_ST_UPRIGHT, 0,
-   16, -2, DO_ST_UPRIGHT, 0,
-  }, {  //AntAnimXXX1
-     0, -2, CARRIED_DOMINO_START+3, 0,
-     0, -2, CARRIED_DOMINO_START+4, 0,
-  }, { //AntAnimXXX2
-    -3, -2, CARRIED_DOMINO_START+5, 0,
-    -3, -2, CARRIED_DOMINO_START+6, 0,
-  }, { //AntAnimXXX3
-     0, -2, CARRIED_DOMINO_START+4, 0,
-     0, -2, CARRIED_DOMINO_START+3, 0,
-  }, { //AntAnimXXX4
-    -3, -2, CARRIED_DOMINO_START+6, 0,
-    -3, -2, CARRIED_DOMINO_START+5, 0,
-  }, { //AntAnimLoosingDominoRight
-    16, -3, DO_ST_UPRIGHT, 0,
-    16, -3, DO_ST_UPRIGHT, 0,
-    16, -3, DO_ST_UPRIGHT, 0,
-    16, -3, DO_ST_UPRIGHT, 0,
-  }, { //AntAnimLoosingDominoLeft
-    -7, -2, CARRIED_DOMINO_START+0, 0,
-    -8, -2, CARRIED_DOMINO_START+0, 0,
-   -11, -2, CARRIED_DOMINO_START+0, 0,
-   -14, -2, CARRIED_DOMINO_START+0, 0,
-     0, -3, DO_ST_UPRIGHT, 0,
-     0, -3, DO_ST_UPRIGHT, 0,
-     0, -3, DO_ST_UPRIGHT, 0,
-     0, -3, DO_ST_UPRIGHT, 0,
-  }
-};
-
-signed int getMoveOffsetX(unsigned int animation, unsigned int image) { return 5*moveOffsets[animation][4*image+0]/2; }
-signed int getMoveOffsetY(unsigned int animation, unsigned int image) { return 3*moveOffsets[animation][4*image+1]; }
-signed int getMoveImage(unsigned int animation, unsigned int image) { return moveOffsets[animation][4*image+2]; }
-
-uint16_t carr2idx(uint16_t d)
+static signed int moveOffsets[22][64] =
 {
-  switch (d)
+  // This array defines for the ant animations where and which image of a domino to draw
+  // This is required for the animations where the ant carries a domino, because in those
+  // animations the domino is not drawn with the level
+  // the table contains entrys for each ant animation where the ant carries
+  // a domino the following information:
+  // - an x and y offset to add to the ann position
+  // - the domino image to draw
+  {    // AntAnimCarryLeft,        6
+     -7, -2, CARRIED_DOMINO_START+0,
+     -8, -2, CARRIED_DOMINO_START+0,
+    -11, -2, CARRIED_DOMINO_START+0,
+    -14, -2, CARRIED_DOMINO_START+0,
+    -16, -2, CARRIED_DOMINO_START+0,
+    -20, -2, CARRIED_DOMINO_START+0,
+  }, { // AntAnimCarryRight,       6
+      5, -2, CARRIED_DOMINO_START+1,
+      6, -2, CARRIED_DOMINO_START+1,
+      9, -2, CARRIED_DOMINO_START+1,
+     12, -2, CARRIED_DOMINO_START+1,
+     14, -2, CARRIED_DOMINO_START+1,
+     18, -2, CARRIED_DOMINO_START+1,
+  }, { // AntAnimCarryUpLeft,      6
+     -4, -2, CARRIED_DOMINO_START+0,
+     -6, -4, CARRIED_DOMINO_START+0,
+     -7, -6, CARRIED_DOMINO_START+0,
+    -11, -4, CARRIED_DOMINO_START+0,
+    -16, -3, CARRIED_DOMINO_START+0,
+    -20, -2, CARRIED_DOMINO_START+0,
+  }, { // AntAnimCarryUpRight,     6
+      2, -2, CARRIED_DOMINO_START+1,
+      4, -4, CARRIED_DOMINO_START+1,
+      5, -6, CARRIED_DOMINO_START+1,
+      9, -4, CARRIED_DOMINO_START+1,
+     14, -3, CARRIED_DOMINO_START+1,
+     18, -2, CARRIED_DOMINO_START+1,
+  }, { // AntAnimCarryDownLeft,    6
+    -12, -2, CARRIED_DOMINO_START+0,
+    -16, -3, CARRIED_DOMINO_START+0,
+    -19,  0, CARRIED_DOMINO_START+0,
+    -19,  1, CARRIED_DOMINO_START+0,
+    -19,  1, CARRIED_DOMINO_START+0,
+    -20,  0, CARRIED_DOMINO_START+0,
+  }, { // AntAnimCarryDownRight,   6
+      9, -2, CARRIED_DOMINO_START+1,
+     13, -3, CARRIED_DOMINO_START+1,
+     16,  0, CARRIED_DOMINO_START+1,
+     16,  1, CARRIED_DOMINO_START+1,
+     16,  1, CARRIED_DOMINO_START+1,
+     17,  0, CARRIED_DOMINO_START+1,
+  }, { // AntAnimCarryLadder1,     8
+     -8, -2, CARRIED_DOMINO_START+2,
+     -8, -1, CARRIED_DOMINO_START+2,
+     -7, -2, CARRIED_DOMINO_START+2,
+     -7, -1, CARRIED_DOMINO_START+2,
+     -8, -2, CARRIED_DOMINO_START+2,
+     -8, -1, CARRIED_DOMINO_START+2,
+     -7, -2, CARRIED_DOMINO_START+2,
+     -7, -1, CARRIED_DOMINO_START+2,
+  }, { // AntAnimCarryLadder2,     8
+     -8, -2, CARRIED_DOMINO_START+2,
+     -8, -1, CARRIED_DOMINO_START+2,
+     -7, -2, CARRIED_DOMINO_START+2,
+     -7, -1, CARRIED_DOMINO_START+2,
+     -8, -2, CARRIED_DOMINO_START+2,
+     -8, -1, CARRIED_DOMINO_START+2,
+     -7, -2, CARRIED_DOMINO_START+2,
+     -7, -1, CARRIED_DOMINO_START+2,
+  }, { // AntAnimCarryLadder3,     8
+     -7, -1, CARRIED_DOMINO_START+2,
+     -7, -2, CARRIED_DOMINO_START+2,
+     -8, -1, CARRIED_DOMINO_START+2,
+     -8, -2, CARRIED_DOMINO_START+2,
+     -7, -1, CARRIED_DOMINO_START+2,
+     -7, -2, CARRIED_DOMINO_START+2,
+     -8, -1, CARRIED_DOMINO_START+2,
+     -8, -2, CARRIED_DOMINO_START+2,
+  }, { // AntAnimCarryLadder4,     8
+     -7, -1, CARRIED_DOMINO_START+2,
+     -7, -2, CARRIED_DOMINO_START+2,
+     -8, -1, CARRIED_DOMINO_START+2,
+     -8, -2, CARRIED_DOMINO_START+2,
+     -7, -1, CARRIED_DOMINO_START+2,
+     -7, -2, CARRIED_DOMINO_START+2,
+     -8, -1, CARRIED_DOMINO_START+2,
+     -8, -2, CARRIED_DOMINO_START+2,
+  }, { // AntAnimCarryStopLeft,    1
+     -5, -2, CARRIED_DOMINO_START+0,
+  }, { // AntAnimCarryStopRight,   1
+      5, -2, CARRIED_DOMINO_START+1,
+  }, { // AntAnimPullOutLeft       15
+      0, -2, DO_ST_UPRIGHT,
+      0, -2, DO_ST_UPRIGHT,
+      0, -2, DO_ST_UPRIGHT,
+     -1, -1, DO_ST_UPRIGHT,
+     -2,  0, DO_ST_UPRIGHT,
+     -2,  0, DO_ST_UPRIGHT,
+     -2,  0, DO_ST_UPRIGHT,
+     -2,  0, DO_ST_UPRIGHT,
+     -2,  0, DO_ST_UPRIGHT,
+     -2,  0, DO_ST_UPRIGHT,
+     -2,  0, DO_ST_UPRIGHT,
+     -2, -1, DO_ST_UPRIGHT+2,
+      0, -2, CARRIED_DOMINO_START+0,
+     -1, -2, CARRIED_DOMINO_START+0,
+     -4, -2, CARRIED_DOMINO_START+0,
+  }, { // AntAnimPullOutRight      15
+      0, -2, DO_ST_UPRIGHT,
+      0, -2, DO_ST_UPRIGHT,
+      0, -2, DO_ST_UPRIGHT,
+     -1, -1, DO_ST_UPRIGHT,
+     -2,  0, DO_ST_UPRIGHT,
+     -2,  0, DO_ST_UPRIGHT,
+     -2,  0, DO_ST_UPRIGHT,
+     -2,  0, DO_ST_UPRIGHT,
+     -2,  0, DO_ST_UPRIGHT,
+     -2,  0, DO_ST_UPRIGHT,
+     -2,  0, DO_ST_UPRIGHT,
+     -2, -1, DO_ST_UPRIGHT-2,
+     -3, -2, CARRIED_DOMINO_START+1,
+     -2, -2, CARRIED_DOMINO_START+1,
+     -1, -2, CARRIED_DOMINO_START+1,
+  }, {  // AntAnimPushInLeft,      16
+     -7, -2, CARRIED_DOMINO_START+0,
+     -8, -2, CARRIED_DOMINO_START+0,
+    -11, -2, CARRIED_DOMINO_START+0,
+    -14, -2, CARRIED_DOMINO_START+0,
+    -17, -2, CARRIED_DOMINO_START+0,
+    -17,  0, CARRIED_DOMINO_START+0,
+    -18,  0, DO_ST_UPRIGHT+2,
+    -18,  0, DO_ST_UPRIGHT,
+    -18,  0, DO_ST_UPRIGHT,
+    -18,  0, DO_ST_UPRIGHT,
+    -18,  0, DO_ST_UPRIGHT,
+    -18,  0, DO_ST_UPRIGHT,
+    -17, -1, DO_ST_UPRIGHT,
+    -16, -2, DO_ST_UPRIGHT,
+    -16, -2, DO_ST_UPRIGHT,
+    -16, -2, DO_ST_UPRIGHT,
+  }, {  // AntAnimPushInRight,     16
+      5, -2, CARRIED_DOMINO_START+1,
+      6, -2, CARRIED_DOMINO_START+1,
+     10, -1, CARRIED_DOMINO_START+1,
+     11, -2, CARRIED_DOMINO_START+1,
+     14, -2, CARRIED_DOMINO_START+1,
+     14,  0, CARRIED_DOMINO_START+1,
+     14,  0, DO_ST_UPRIGHT-2,
+     14,  0, DO_ST_UPRIGHT,
+     14,  0, DO_ST_UPRIGHT,
+     14,  0, DO_ST_UPRIGHT,
+     14,  0, DO_ST_UPRIGHT,
+     14,  0, DO_ST_UPRIGHT,
+     15, -1, DO_ST_UPRIGHT,
+     16, -2, DO_ST_UPRIGHT,
+     16, -2, DO_ST_UPRIGHT,
+     16, -2, DO_ST_UPRIGHT,
+  }, {  //AntAnimXXX1              2
+      0, -2, CARRIED_DOMINO_START+3,
+      0, -2, CARRIED_DOMINO_START+4,
+  }, { //AntAnimXXX2               2
+     -3, -2, CARRIED_DOMINO_START+5,
+     -3, -2, CARRIED_DOMINO_START+6,
+  }, { //AntAnimXXX3               2
+      0, -2, CARRIED_DOMINO_START+4,
+      0, -2, CARRIED_DOMINO_START+3,
+  }, { //AntAnimXXX4               2
+     -3, -2, CARRIED_DOMINO_START+6,
+     -3, -2, CARRIED_DOMINO_START+5,
+  }, { //AntAnimLoosingDominoRight 13
+     16, -3, DO_ST_UPRIGHT,
+     16, -3, DO_ST_UPRIGHT,
+     16, -3, DO_ST_UPRIGHT,
+     16, -3, DO_ST_UPRIGHT, // after this image the domino is put down and no longer in the hand of the ant
+  }, { //AntAnimLoosingDominoLeft  17
+     -7, -2, CARRIED_DOMINO_START+0,
+     -8, -2, CARRIED_DOMINO_START+0,
+    -11, -2, CARRIED_DOMINO_START+0,
+    -14, -2, CARRIED_DOMINO_START+0,
+      0, -3, DO_ST_UPRIGHT,
+      0, -3, DO_ST_UPRIGHT,
+      0, -3, DO_ST_UPRIGHT,
+      0, -3, DO_ST_UPRIGHT, // after this image the domino is put down and no longer in the hand of the ant
+  }
+};
+
+signed int getMoveOffsetX(unsigned int animation, unsigned int image) { return 5*moveOffsets[animation][3*image+0]/2; }
+signed int getMoveOffsetY(unsigned int animation, unsigned int image) { return 3*moveOffsets[animation][3*image+1]; }
+signed int getMoveImage(unsigned int animation, unsigned int image) { return moveOffsets[animation][3*image+2]; }
+
+// this function calculates the indes to use for the table above
+static int16_t getCarryAnimationIndex(AntAnimationState a)
+{
+  switch (a)
   {
-    case 0:  return CARRIED_DOMINO_START+0;  // AntAnimCarryLeft,
-    case 1:  return CARRIED_DOMINO_START+1;  // AntAnimCarryRight,
-    case 2:  return CARRIED_DOMINO_START+0;  // AntAnimCarryUpLeft,
-    case 3:  return CARRIED_DOMINO_START+1;  // AntAnimCarryUpRight,
-    case 4:  return CARRIED_DOMINO_START+0;  // AntAnimCarryDownLeft,
-    case 5:  return CARRIED_DOMINO_START+1;  // AntAnimCarryDownRight,
-    case 6:  return CARRIED_DOMINO_START+2;  // AntAnimCarryLadder1,
-    case 7:  return CARRIED_DOMINO_START+2;  // AntAnimCarryLadder2,
-    case 8:  return CARRIED_DOMINO_START+2;  // AntAnimCarryLadder3,
-    case 9:  return CARRIED_DOMINO_START+2;  // AntAnimCarryLadder4,
-    case 10: return CARRIED_DOMINO_START+0;  // AntAnimCarryStopLeft,
-    case 11: return CARRIED_DOMINO_START+1;  // AntAnimCarryStopRight,
-    case 12: return CARRIED_DOMINO_START+3;
-    case 13: return CARRIED_DOMINO_START+4;
-    case 14: return CARRIED_DOMINO_START+5;
-    case 15: return CARRIED_DOMINO_START+6;
-    default: assert(0);
+    case AntAnimCarryLeft         : return 0;
+    case AntAnimCarryRight        : return 1;
+    case AntAnimCarryUpLeft       : return 2;
+    case AntAnimCarryUpRight      : return 3;
+    case AntAnimCarryDownLeft     : return 4;
+    case AntAnimCarryDownRight    : return 5;
+    case AntAnimCarryLadder1      : return 6;
+    case AntAnimCarryLadder2      : return 7;
+    case AntAnimCarryLadder3      : return 8;
+    case AntAnimCarryLadder4      : return 9;
+    case AntAnimCarryStopLeft     : return 10;
+    case AntAnimCarryStopRight    : return 11;
+    case AntAnimPullOutLeft       : return 12;
+    case AntAnimPullOutRight      : return 13;
+    case AntAnimPushInLeft        : return 14;
+    case AntAnimPushInRight       : return 15;
+    case AntAnimXXX1              : return 16;
+    case AntAnimXXX2              : return 17;
+    case AntAnimXXX3              : return 18;
+    case AntAnimXXX4              : return 19;
+    case AntAnimLoosingDominoRight: return 20;
+    case AntAnimLoosingDominoLeft : return 21;
+    default                       : return -1;
   }
 }
 
@@ -596,10 +667,10 @@ void graphicsN_c::drawAnt(void)
 
   if (ant->getCarriedDomino() != 0)
   {
-    if (ant->getAnimation() >= AntAnimPullOutLeft && ant->getAnimation() <= AntAnimLoosingDominoLeft)
-    {
-      int a = ant->getAnimation() - AntAnimPullOutLeft;
+    int16_t a = getCarryAnimationIndex(ant->getAnimation());
 
+    if (a >= 0)
+    {
       int x = (ant->getBlockX()-2)*blockX();
       int y = (ant->getBlockY())*blockY()/2+antImages[ant->getAnimation()][ant->getAnimationImage()].ofs+antDisplace;
 
@@ -609,16 +680,6 @@ void graphicsN_c::drawAnt(void)
       int img = getMoveImage(a, ant->getAnimationImage());
 
       target->blit(dominos[ant->getCarriedDomino()][img], x, y);
-    }
-    if (ant->getAnimation() >= AntAnimCarryLeft && ant->getAnimation() <= AntAnimCarryStopRight)
-    {
-      /* put the domino image of the carried domino */
-      int a = ant->getAnimation() - AntAnimCarryLeft;
-
-      target->blit(dominos[ant->getCarriedDomino()][carr2idx(a)],
-          (ant->getBlockX()-2)*blockX()+getCarryOffsetX(a, ant->getAnimationImage()),
-          (ant->getBlockY())*blockY()/2+antImages[ant->getAnimation()][ant->getAnimationImage()].ofs+antDisplace+getCarryOffsetY(a, ant->getAnimationImage()));
-
     }
   }
 
