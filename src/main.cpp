@@ -400,7 +400,7 @@ int main(int argc, char * argv[]) {
         if (!debug_fastforward)
 #endif
         ticks += 1000/18;
-        if (SDL_GetTicks() < ticks)
+        while (SDL_GetTicks() < ticks)
           SDL_Delay(ticks-SDL_GetTicks());
       }
 
