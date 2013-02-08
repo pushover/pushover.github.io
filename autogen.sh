@@ -13,6 +13,6 @@ autoreconf -i -s
 
 # regenerate the domino.png file, this requires povray
 cd data/sources
-./dominos_render
-./dominos_assemble
+sh ./dominos_render
+sh ./dominos_assemble
 mv dominos.png ..
