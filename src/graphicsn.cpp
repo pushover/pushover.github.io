@@ -213,12 +213,18 @@ static const int8_t dominoImages[DominoNumber][135] = {
     DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
-  /* DominoTypeCrash0     */ { 1, 2, 3, 4, 5, 6, -1 },
-  /* DominoTypeCrash1     */ { 1, 2, 3, 4, 5, 6, -1 },
-  /* DominoTypeCrash2     */ { 1, 2, 3, 4, 5, 6, -1 },
-  /* DominoTypeCrash3     */ { 1, 2, 3, 4, 5, 6, -1 },
-  /* DominoTypeCrash4     */ { 1, 2, 3, 4, 5, 6, -1 },
-  /* DominoTypeCrash5     */ { 1, 2, 3, 4, 5, 6, -1 }
+  /* DominoTypeCrash0     */ {
+    DO_ST_CRASH+0, DO_ST_CRASH+1, DO_ST_CRASH+2, DO_ST_CRASH+3, DO_ST_CRASH+4, DO_ST_CRASH+5, -1 },
+  /* DominoTypeCrash1     */ {
+    DO_ST_CRASH+0, DO_ST_CRASH+1, DO_ST_CRASH+2, DO_ST_CRASH+3, DO_ST_CRASH+4, DO_ST_CRASH+5, -1 },
+  /* DominoTypeCrash2     */ {
+    DO_ST_CRASH+0, DO_ST_CRASH+1, DO_ST_CRASH+2, DO_ST_CRASH+3, DO_ST_CRASH+4, DO_ST_CRASH+5, -1 },
+  /* DominoTypeCrash3     */ {
+    DO_ST_CRASH+0, DO_ST_CRASH+1, DO_ST_CRASH+2, DO_ST_CRASH+3, DO_ST_CRASH+4, DO_ST_CRASH+5, -1 },
+  /* DominoTypeCrash4     */ {
+    DO_ST_CRASH+0, DO_ST_CRASH+1, DO_ST_CRASH+2, DO_ST_CRASH+3, DO_ST_CRASH+4, DO_ST_CRASH+5, -1 },
+  /* DominoTypeCrash5     */ {
+    DO_ST_CRASH+0, DO_ST_CRASH+1, DO_ST_CRASH+2, DO_ST_CRASH+3, DO_ST_CRASH+4, DO_ST_CRASH+5, -1 },
 };
 
 #define antDisplace (6*3)
