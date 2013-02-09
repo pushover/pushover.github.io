@@ -5,20 +5,12 @@ foreground = {
  1, 2,  -- FgElementPlatformStart
  2, 2,  -- FgElementPlatformMiddle
  3, 2,  -- FgElementPlatformEnd
- 6, 2,  -- FgElementPlatformLadderDown
- 6, 3,  -- FgElementLadder
- 6, 4,  -- FgElementPlatformLadderUp
- 7, 4,  -- FgElementPlatformStep1
- 8, 4,  -- FgElementPlatformStep2
- 7, 5,  -- FgElementPlatformStep3
- 8, 5,  -- FgElementPlatformStep4
- 11, 3, -- FgElementPlatformStep5
- 12, 3, -- FgElementPlatformStep6
- 13, 3, -- FgElementPlatformStep7
- 14, 3, -- FgElementPlatformStep8
- 9, 2,  -- FgElementLadderMiddle
  1, 4,  -- FgElementPlatformStrip
- 9, 1,  -- FgElementLadder2
+ 7, 4,  -- FgElementPlatformStep1
+ 12, 3, -- FgElementPlatformStep6
+
+ 6, 3,  -- FgElementLadder
+
  18, 0, -- FgElementDoor0
  19, 0, -- FgElementDoor1
  20, 0, -- FgElementDoor2

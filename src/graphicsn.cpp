@@ -233,6 +233,21 @@ static int convertDominoX(int x) { return 5*x/2; }
 static int convertDominoY(int y) { return 3*y; }
 #define splitterY (3*12)
 
+
+// The following defines are used to index into the fg element array
+#define FG_PLAT_START_TOP 0
+#define FG_PLAT_START_BOTTOM 1
+#define FG_PLAT_TOP 2
+#define FG_PLAT_BOTTOM 3
+#define FG_PLAT_END_TOP 4
+#define FG_PLAT_END_BOTTOM 5
+#define FG_PLAT_STRIP_TOP 6
+#define FG_PLAT_STRIP_BOTTOM 7
+#define FG_STEP_DOWN 9
+#define FG_STEP_UP 11
+#define FG_DOORSTART 14
+#define FG_LADDER_IDX 12
+
 graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   background = 0;
   ant = 0;
@@ -685,7 +700,7 @@ void graphicsN_c::drawLadders(bool before)
       for (unsigned int x = 0; x < level->levelX(); x++)
         if (dirty.isDirty(x, y))
           if (level->getLadder(x, y))
-            target->blitBlock(fgTiles[curTheme][8], x*blockX(), y*blockY()/2);
+            target->blitBlock(fgTiles[curTheme][FG_LADDER_IDX], x*blockX(), y*blockY()/2);
 }
 
 
@@ -843,8 +858,6 @@ void graphicsN_c::setTheme(const std::string & name)
 
 }
 
-#define FG_DOORSTART 34
-
 void graphicsN_c::setPaintData(const levelData_c * l, const ant_c * a, surface_c * t)
 {
   level = l;
@@ -884,14 +897,14 @@ uint16_t graphicsN_c::getPlatformImage(size_t x, size_t y)
     // of the platform below
     if (x > 0 && level->getPlatform(x-1, y+1))
       if (x+1 < level->levelX() && level->getPlatform(x+1, y+1))
-        return 2;
+        return FG_PLAT_TOP;
       else
-        return 4;
+        return FG_PLAT_END_TOP;
     else
       if (x+1 < level->levelX() && level->getPlatform(x+1, y+1))
-        return 0;
+        return FG_PLAT_START_TOP;
       else
-        return 30;
+        return FG_PLAT_STRIP_TOP;
   }
   else
   {
@@ -904,14 +917,14 @@ uint16_t graphicsN_c::getPlatformImage(size_t x, size_t y)
 
       if (x > 0 && level->getPlatform(x-1, y))
         if (x+1 < level->levelX() && level->getPlatform(x+1, y))
-          return 3;
+          return FG_PLAT_BOTTOM;
         else
-          return 5;
+          return FG_PLAT_END_BOTTOM;
       else
         if (x+1 < level->levelX() && level->getPlatform(x+1, y))
-          return 1;
+          return FG_PLAT_START_BOTTOM;
         else
-          return 31;
+          return FG_PLAT_STRIP_BOTTOM;
     }
     else
     {
@@ -922,7 +935,7 @@ uint16_t graphicsN_c::getPlatformImage(size_t x, size_t y)
          )
       {
         // Step down
-        return 13;
+        return FG_STEP_DOWN;
       }
 
       if (!level->getPlatform(x-1, y) && !level->getPlatform(x+1, y+1) &&
@@ -930,7 +943,7 @@ uint16_t graphicsN_c::getPlatformImage(size_t x, size_t y)
          )
       {
         // Step up
-        return 23;
+        return FG_STEP_UP;
       }
 
       // TODO there should be 8 cases, handle those

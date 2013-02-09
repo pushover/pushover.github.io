@@ -5,24 +5,16 @@ foreground = {
   0, 0,  -- FgElementPlatformStart
   0, 1,  -- FgElementPlatformMiddle
   0, 2,  -- FgElementPlatformEnd
-  0, 3,  -- FgElementPlatformLadderDown
-  0, 4,  -- FgElementLadder
-  0, 5,  -- FgElementPlatformLadderUp
-  0, 6,  -- FgElementPlatformStep1     
-  0, 7,  -- FgElementPlatformStep2     
-  0, 8,  -- FgElementPlatformStep3     
-  0, 9,  -- FgElementPlatformStep4     
-  0, 10,  -- FgElementPlatformStep5     
-  0, 11,  -- FgElementPlatformStep6     
-  0, 12,  -- FgElementPlatformStep7     
-  0, 13,  -- FgElementPlatformStep8
-  0, 16,  -- FgElementLadderMiddle      
   0, 17,  -- FgElementPlatformStrip
-  0, 18,  -- FgElementLadder2
-  0, 19,  -- FgElementDoor0             
-  0, 20,  -- FgElementDoor1             
+  0, 6,  -- FgElementPlatformStep1
+  0, 11,  -- FgElementPlatformStep6
+
+  0, 4,  -- FgElementLadder
+
+  0, 19,  -- FgElementDoor0
+  0, 20,  -- FgElementDoor1
   0, 21,  -- FgElementDoor2
-  0, 22,  -- FgElementDoor3              
+  0, 22,  -- FgElementDoor3
 }
 
 -- as many background tiles as you want.
