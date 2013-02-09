@@ -1347,6 +1347,7 @@ void graphicsN_c::drawLevel(void) {
     pars.box.x = 800-pars.box.w-10;
     pars.box.y = 600-pars.box.h-10;
     pars.shadow = 1;
+    pars.color.r = pars.color.g = 255; pars.color.b = 0;
 
     target->renderText(&pars, txt);
   }
