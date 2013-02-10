@@ -2,19 +2,15 @@
 -- the 22 foreground tiles
 
 foreground = {
- 1, 0,   -- FgElementPlatformStart
- 2, 0,   -- FgElementPlatformMiddle
- 3, 0,   -- FgElementPlatformEnd
- 18, 0,  -- FgElementPlatformStrip
- 7, 0,   -- FgElementPlatformStep1
- 12, 0,  -- FgElementPlatformStep6
-
- 5, 0,   -- FgElementLadder
-
- 20, 0,  -- FgElementDoor0
- 21, 0,  -- FgElementDoor1
- 22, 0,  -- FgElementDoor2
- 23, 0,  -- FgElementDoor3
+  0, 0,  -- Platforms 1
+  1, 0,  -- Platforms 2
+  2, 0,  -- Platforms 3
+  3, 0,  -- Platforms 4
+  4, 0,  -- Ladder
+  5, 0,  -- Door closed
+  6, 0,  -- ...
+  7, 0,  -- ...
+  8, 0,  -- Door open
 }
 
 -- as many background tiles as you want.

@@ -235,18 +235,9 @@ static int convertDominoY(int y) { return 3*y; }
 
 
 // The following defines are used to index into the fg element array
-#define FG_PLAT_START_TOP 0
-#define FG_PLAT_START_BOTTOM 1
-#define FG_PLAT_TOP 2
-#define FG_PLAT_BOTTOM 3
-#define FG_PLAT_END_TOP 4
-#define FG_PLAT_END_BOTTOM 5
-#define FG_PLAT_STRIP_TOP 6
-#define FG_PLAT_STRIP_BOTTOM 7
-#define FG_STEP_DOWN 9
-#define FG_STEP_UP 11
-#define FG_DOORSTART 14
-#define FG_LADDER_IDX 12
+#define FG_PLAT_IDX 0
+#define FG_LADDER_IDX 16  // 3 images, ladder top, section, bottom, 12, 24 and 12 pixel high
+#define FG_DOORSTART 19   // 4 doors each composed out of 2 halves, first top then bottom.. makes 8 images
 
 graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   background = 0;
@@ -699,8 +690,17 @@ void graphicsN_c::drawLadders(bool before)
     for (unsigned int y = 0; y < level->levelY(); y++)
       for (unsigned int x = 0; x < level->levelX(); x++)
         if (dirty.isDirty(x, y))
+        {
           if (level->getLadder(x, y))
-            target->blitBlock(fgTiles[curTheme][FG_LADDER_IDX], x*blockX(), y*blockY()/2);
+            target->blitBlock(fgTiles[curTheme][FG_LADDER_IDX+1], x*blockX(), y*blockY()/2);
+          else
+          {
+            if (y > 0 && level->getLadder(x, y-1))
+              target->blitBlock(fgTiles[curTheme][FG_LADDER_IDX+2], x*blockX(), y*blockY()/2);
+            if (y+1 < level->levelY() && level->getLadder(x, y+1))
+              target->blitBlock(fgTiles[curTheme][FG_LADDER_IDX+0], x*blockX(), y*blockY()/2+blockY()/4);
+          }
+        }
 }
 
 
@@ -793,27 +793,104 @@ void graphicsN_c::setTheme(const std::string & name)
 
         if (x < xBlocks)
         {
-          SDL_Surface * w1 = SDL_CreateRGBSurface(0, blockX(), blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-          SDL_SetAlpha(w1, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-          SDL_Surface * w2 = SDL_CreateRGBSurface(0, blockX(), blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-          SDL_SetAlpha(w2, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-          for (unsigned int y = 0; y < blockY()/2; y++)
+          if (0 <= i && i <= 3)
           {
-            memcpy((char*)w1->pixels+y*w1->pitch,
-                   (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
-                   w1->pitch);
-            memcpy((char*)w2->pixels+y*w2->pitch,
-                   (char*)v->pixels+(y+blockY()/2)*v->pitch+x*40*v->format->BytesPerPixel,
-                   w2->pitch);
+            // load a platform image, each platform image is plit into 4 parts each blockX/2 x blockY/2 in size
+            SDL_Surface * w1 = SDL_CreateRGBSurface(0, blockX()/2, blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+            SDL_SetAlpha(w1, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+            SDL_Surface * w2 = SDL_CreateRGBSurface(0, blockX()/2, blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+            SDL_SetAlpha(w2, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+            SDL_Surface * w3 = SDL_CreateRGBSurface(0, blockX()/2, blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+            SDL_SetAlpha(w3, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+            SDL_Surface * w4 = SDL_CreateRGBSurface(0, blockX()/2, blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+            SDL_SetAlpha(w4, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+            for (unsigned int y = 0; y < blockY()/2; y++)
+            {
+              memcpy((char*)w1->pixels+y*w1->pitch, (char*)v->pixels+(y+0*blockY()/2)*v->pitch+(x*40+ 0)*v->format->BytesPerPixel, w1->pitch);
+              memcpy((char*)w2->pixels+y*w2->pitch, (char*)v->pixels+(y+0*blockY()/2)*v->pitch+(x*40+20)*v->format->BytesPerPixel, w2->pitch);
+              memcpy((char*)w3->pixels+y*w3->pitch, (char*)v->pixels+(y+1*blockY()/2)*v->pitch+(x*40+ 0)*v->format->BytesPerPixel, w3->pitch);
+              memcpy((char*)w4->pixels+y*w4->pitch, (char*)v->pixels+(y+1*blockY()/2)*v->pitch+(x*40+20)*v->format->BytesPerPixel, w4->pitch);
+            }
+
+            if (FG_PLAT_IDX+16 >= fgTiles[curTheme].size())
+              fgTiles[curTheme].resize(FG_PLAT_IDX+16);
+
+            fgTiles[curTheme][FG_PLAT_IDX + 4*(i-0) + 0] = w1;
+            fgTiles[curTheme][FG_PLAT_IDX + 4*(i-0) + 1] = w2;
+            fgTiles[curTheme][FG_PLAT_IDX + 4*(i-0) + 2] = w3;
+            fgTiles[curTheme][FG_PLAT_IDX + 4*(i-0) + 3] = w4;
           }
+          else if (i == 4)
+          {
+            // load the ladder image, the ladder image is divided into 3 parts,
+            // the top 12 pixel, middle 24 pixels and the bottom 12 pixels
+            //
+            SDL_Surface * w1 = SDL_CreateRGBSurface(0, blockX(), blockY()/4, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+            SDL_SetAlpha(w1, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
-          if (2*i+1 >= fgTiles[curTheme].size())
-            fgTiles[curTheme].resize(2*i+2);
+            SDL_Surface * w2 = SDL_CreateRGBSurface(0, blockX(), blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+            SDL_SetAlpha(w2, SDL_SRCALPHA | SDL_RLEACCEL, 0);
 
-          fgTiles[curTheme][2*i] = w1;
-          fgTiles[curTheme][2*i+1] = w2;
+            SDL_Surface * w3 = SDL_CreateRGBSurface(0, blockX(), blockY()/4, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+            SDL_SetAlpha(w2, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+            for (unsigned int y = 0; y < blockY()/4; y++)
+            {
+              memcpy((char*)w1->pixels+y*w1->pitch,
+                  (char*)v->pixels+(y+0*blockY()/4)*v->pitch+x*40*v->format->BytesPerPixel,
+                  w1->pitch);
+
+              memcpy((char*)w2->pixels+y*w2->pitch,
+                  (char*)v->pixels+(y+1*blockY()/4)*v->pitch+x*40*v->format->BytesPerPixel,
+                  w2->pitch);
+
+              memcpy((char*)w2->pixels+(y+blockY()/4)*w2->pitch,
+                  (char*)v->pixels+(y+2*blockY()/4)*v->pitch+x*40*v->format->BytesPerPixel,
+                  w2->pitch);
+
+              memcpy((char*)w3->pixels+y*w3->pitch,
+                  (char*)v->pixels+(y+3*blockY()/4)*v->pitch+x*40*v->format->BytesPerPixel,
+                  w3->pitch);
+            }
+
+            if (FG_LADDER_IDX+3 >= fgTiles[curTheme].size())
+              fgTiles[curTheme].resize(FG_LADDER_IDX+3);
+
+            fgTiles[curTheme][FG_LADDER_IDX + 0] = w1;
+            fgTiles[curTheme][FG_LADDER_IDX + 1] = w2;
+            fgTiles[curTheme][FG_LADDER_IDX + 2] = w3;
+          }
+          else if (5 <= i && i <= 8)
+          {
+            // load door image, the door image is simply split
+            // into the 2 haves each 24 pixel high
+
+            SDL_Surface * w1 = SDL_CreateRGBSurface(0, blockX(), blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+            SDL_SetAlpha(w1, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+            SDL_Surface * w2 = SDL_CreateRGBSurface(0, blockX(), blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+            SDL_SetAlpha(w2, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+
+            for (unsigned int y = 0; y < blockY()/2; y++)
+            {
+              memcpy((char*)w1->pixels+y*w1->pitch,
+                  (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
+                  w1->pitch);
+              memcpy((char*)w2->pixels+y*w2->pitch,
+                  (char*)v->pixels+(y+blockY()/2)*v->pitch+x*40*v->format->BytesPerPixel,
+                  w2->pitch);
+            }
+
+            if (FG_DOORSTART+9 >= fgTiles[curTheme].size())
+              fgTiles[curTheme].resize(FG_DOORSTART+9);
+
+            fgTiles[curTheme][FG_DOORSTART + 2*(i-5) +0] = w1;
+            fgTiles[curTheme][FG_DOORSTART + 2*(i-5) +1] = w2;
+          }
         }
       }
     }
@@ -884,73 +961,33 @@ void graphicsN_c::setPaintData(const levelData_c * l, const ant_c * a, surface_c
   if (!background) background = new surface_c(t->getIdentical());
 }
 
-uint16_t graphicsN_c::getPlatformImage(size_t x, size_t y)
+void graphicsN_c::getPlatformImage(size_t x, size_t y, uint16_t out[])
 {
-  if (!level->getPlatform(x, y))
+  out[0] = out[1] = out[2] = out[3] = 99;
+
+  if (y+1 < level->levelY() && level->getPlatform(x, y+1))
   {
-    // our own tile contains no platform
+    if (x > 0 && level->getPlatform(x-1, y+1))                       out[0] = FG_PLAT_IDX+4;
+    else if (level->getPlatform(x-1, y) && level->getPlatform(x, y)) out[0] = FG_PLAT_IDX+10;
+    else                                                             out[0] = FG_PLAT_IDX+0;
+    if (x+1 < level->levelX() && level->getPlatform(x+1, y+1))       out[2] = FG_PLAT_IDX+1;
+    else                                                             out[2] = FG_PLAT_IDX+5;
 
-    // when the platform below us is empty -> paint nothing
-    if (y+1 > level->levelY() || !level->getPlatform(x, y+1)) return 0xFFFF;
-
-    // there is something below us, paint platform depending on the 2 neighbors
-    // of the platform below
-    if (x > 0 && level->getPlatform(x-1, y+1))
-      if (x+1 < level->levelX() && level->getPlatform(x+1, y+1))
-        return FG_PLAT_TOP;
-      else
-        return FG_PLAT_END_TOP;
-    else
-      if (x+1 < level->levelX() && level->getPlatform(x+1, y+1))
-        return FG_PLAT_START_TOP;
-      else
-        return FG_PLAT_STRIP_TOP;
+    if (level->getPlatform(x, y))
+    {
+      if (x > 0 && level->getPlatform(x-1, y))                       out[1] = FG_PLAT_IDX+12;
+      else                                                           out[1] = FG_PLAT_IDX+8;
+      if (x+1 >= level->levelX() || !level->getPlatform(x+1, y))     out[3] = FG_PLAT_IDX+13;
+      else if (level->getPlatform(x+1, y+1))                         out[3] = FG_PLAT_IDX+9;
+      else                                                           out[3] = FG_PLAT_IDX+11;
+    }
   }
-  else
+  else if (level->getPlatform(x, y))
   {
-    // our own tile contains a platform
-
-    if (y+1 > level->levelY() || !level->getPlatform(x, y+1))
-    {
-      // and the tile below us is empty, so draw tile according to
-      // our own neighbors
-
-      if (x > 0 && level->getPlatform(x-1, y))
-        if (x+1 < level->levelX() && level->getPlatform(x+1, y))
-          return FG_PLAT_BOTTOM;
-        else
-          return FG_PLAT_END_BOTTOM;
-      else
-        if (x+1 < level->levelX() && level->getPlatform(x+1, y))
-          return FG_PLAT_START_BOTTOM;
-        else
-          return FG_PLAT_STRIP_BOTTOM;
-    }
-    else
-    {
-      // we have platform and below us is platform
-
-      if (level->getPlatform(x-1, y) && level->getPlatform(x+1, y+1) &&
-          !level->getPlatform(x-1, y+1) && !level->getPlatform(x+1, y)
-         )
-      {
-        // Step down
-        return FG_STEP_DOWN;
-      }
-
-      if (!level->getPlatform(x-1, y) && !level->getPlatform(x+1, y+1) &&
-          level->getPlatform(x-1, y+1) && level->getPlatform(x+1, y)
-         )
-      {
-        // Step up
-        return FG_STEP_UP;
-      }
-
-      // TODO there should be 8 cases, handle those
-      // they are not needed for the current levels but might be for future ones
-
-      return 0xFFFF;
-    }
+    if (x > 0 && level->getPlatform(x-1, y))                         out[0] = FG_PLAT_IDX+6;
+    else                                                             out[0] = FG_PLAT_IDX+2;
+    if (x+1 < level->levelX() && level->getPlatform(x+1, y))         out[2] = FG_PLAT_IDX+3;
+    else                                                             out[2] = FG_PLAT_IDX+7;
   }
 }
 
@@ -981,9 +1018,19 @@ void graphicsN_c::drawDominos(void)
 
         // blit the platform images
         {
-          uint16_t s = getPlatformImage(x, y);
-          if (s < fgTiles[curTheme].size())
-            background->blitBlock(fgTiles[curTheme][s], x*blockX(), y*blockY()/2);
+          uint16_t s[4];
+
+          getPlatformImage(x, y, s);
+
+          if (s[0] < fgTiles[curTheme].size())
+            background->blitBlock(fgTiles[curTheme][s[0]], x*blockX(), y*blockY()/2);
+          if (s[1] < fgTiles[curTheme].size())
+            background->blitBlock(fgTiles[curTheme][s[1]], x*blockX(), y*blockY()/2);
+
+          if (s[2] < fgTiles[curTheme].size())
+            background->blitBlock(fgTiles[curTheme][s[2]], x*blockX()+blockX()/2, y*blockY()/2);
+          if (s[3] < fgTiles[curTheme].size())
+            background->blitBlock(fgTiles[curTheme][s[3]], x*blockX()+blockX()/2, y*blockY()/2);
         }
 
         background->gradient(blockX()*x, blockY()/2*y, blockX(), blockY()/2);
