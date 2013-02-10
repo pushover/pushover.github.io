@@ -175,11 +175,12 @@ void levelsetList_c::load(const std::string & path, const std::string & userStri
   for (std::vector<std::string>::const_iterator i = entries.begin(); i != entries.end(); i++) {
 
     const std::string & entryname = *i;
-    if (entryname.size() <= 0 || entryname[0] == '.')
+    if (entryname.size() <= 0 || entryname[0] == '.' || entryname == "tests")
       continue;
 
     levelset_c levelset(path + '/' + entryname, userString);
     const std::string & levelsetName = levelset.getName();
+
     if (!levelsets.insert(make_pair(levelsetName, levelset)).second)
       throw format_error("duplicate levelset name: " + levelsetName);
     sortHelper.push_back(make_pair(levelset.getPriority(), levelsetName));
