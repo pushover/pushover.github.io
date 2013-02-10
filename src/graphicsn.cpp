@@ -963,6 +963,34 @@ void graphicsN_c::setPaintData(const levelData_c * l, const ant_c * a, surface_c
 
 void graphicsN_c::getPlatformImage(size_t x, size_t y, uint16_t out[])
 {
+  // so what's the idea behind the whole level platform drawing mess???
+  // The 40x48 pixel tiles are divided into 4 smaller tiles, each 20x24 pixels
+  // Of these images we can stack up to 2 on top of one another to create the
+  // actual image
+  //
+  // This function will return in out those up to tiles for the 2 tiles side
+  // by side for the given 40x24 tile in x;y
+  //
+  // the 4 big tiles given in the theme file are names b0 - b3, the small
+  // tiles are s0-s3 in b0, s4-s7 in b1, and so on
+  //
+  // b0 and b1 contain the image for a start and an end of a platform
+  // the platform image is usualy 2 level tiles high. The tile above the
+  // platform contains some kind of planks, while the image at the platform
+  // position contains the front of the platform
+  //
+  // depending on whether the neighbor platforms are occupied the output is
+  // assembled out of the 4 columns os b0 and b1.
+  //
+  // When there is a platform directly above another platform the plans of
+  // the lower platform are overlaid with the front of the upper layer.
+  // The front of this upper layer may have a different appearance and this
+  // is put into the top row ob b2 and b3.
+  //
+  // The lower row of b2 contains 2 special cases. Have a look at the theme
+  // file for the aztecs in those images it is pretty clear what those
+  // images stand for (in connection with the conditions below
+
   out[0] = out[1] = out[2] = out[3] = 99;
 
   if (y+1 < level->levelY() && level->getPlatform(x, y+1))
