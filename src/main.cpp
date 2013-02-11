@@ -380,6 +380,10 @@ int main(int argc, char * argv[]) {
   bool exitProgram = false;
   Uint32 ticks = SDL_GetTicks();
 
+#ifdef DEBUG
+  uint32_t tick = 0;
+#endif
+
   window_c * window = 0; // the currently visible window
   LevelState failReason = LS_undecided;
   unsigned int failDelay = 0; // a counter to delay the fail window a bit after failing
@@ -475,6 +479,9 @@ int main(int argc, char * argv[]) {
                               break;
 
             case ST_PLAY:
+#ifdef DEBUG
+                              tick = 0;
+#endif
                               ticks = SDL_GetTicks();    // the flip might have taken some time too long
                               rec.setLevel(selectedMission, l.getName());
                               rec.reset();
@@ -510,7 +517,7 @@ int main(int argc, char * argv[]) {
         if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F3)         debug_fastforward = true;
         if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4)         debug_singlestep = true;
         if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F5)         debug_play = true;
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F6)         l.print();
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F6)         { printf("Tick: %i\n", tick); l.print(); }
 #endif
         switch (currentState) {
 
@@ -1031,6 +1038,9 @@ int main(int argc, char * argv[]) {
           }
           else
           {
+#ifdef DEBUG
+            tick++;
+#endif
             if (playTick(l, a, gr, rec.getEvent()) != LS_undecided)
             {
               if (exitAfterReplay)
@@ -1052,6 +1062,9 @@ int main(int argc, char * argv[]) {
           {
             unsigned int keyMask = getKeyMask();
             rec.addEvent(keyMask);
+#ifdef DEBUG
+            tick++;
+#endif
             failReason = playTick(l, a, gr, keyMask);
           }
 
