@@ -60,7 +60,7 @@ static const int antOffsets[] = {
   0, 12, 12, 24, 24, 36, 36, 48,                                    // 8,   AntAnimCarryLadder3,
   0, 12, 12, 24, 24, 36, 36, 48,                                    // 8,   AntAnimCarryLadder4,
   0,                                                                // 1,   AntAnimCarryStopLeft,
-  3,                                                                // 1,   AntAnimCarryStopRight,
+  0,                                                                // 1,   AntAnimCarryStopRight,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      // 15,  AntAnimPullOutLeft,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      // 15,  AntAnimPullOutRight,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                   // 16,  AntAnimPushInLeft,
