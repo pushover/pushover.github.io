@@ -467,6 +467,7 @@ void levelPlayer_c::DTA_J(int x, int y) {
 // normal falling case
 void levelPlayer_c::DTA_4(int x, int y) {
 
+  // TODO cruft, see comment below
   if (getDominoExtra(x, y) == 0x41 || getDominoExtra(x, y) == 0x71)
   {
     setDominoExtra(x, y, getDominoExtra(x, y)-1);
@@ -500,6 +501,12 @@ void levelPlayer_c::DTA_4(int x, int y) {
     {
       setDominoState(x, y+1, 8);
       setDominoType(x, y+1, getDominoType(x, y));
+
+      // TODO cruft: this makes the domino fall a bit slower... this is because
+      // in the original player the domino was not put down onto the
+      // next level until a bit later... but we do whick maked it
+      // make another animation step, but we want to prevent that so
+      // we add 1 here and subtract it on the next call see start of this function
       setDominoExtra(x, y+1, getDominoExtra(x, y)+1);
       setDominoDir(x, y+1, getDominoDir(x, y));
       setDominoYOffset(x, y+1, 0);
