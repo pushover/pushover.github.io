@@ -229,7 +229,6 @@ static const int8_t dominoImages[DominoNumber][135] = {
 
 #define antDisplace (6*3)
 #define dominoYStart (3*4)
-static int convertDominoX(int x) { return 5*x/2; }
 static int convertDominoY(int y) { return 3*y; }
 #define splitterY (3*12)
 
@@ -445,184 +444,184 @@ static int16_t moveOffsets[22][16*3] =
   // - an x and y offset to add to the ann position
   // - the domino image to draw
   {    // AntAnimCarryLeft,        6
-     -7, -2, CARRIED_DOMINO_START+0,
-     -8, -2, CARRIED_DOMINO_START+0,
-    -11, -2, CARRIED_DOMINO_START+0,
-    -14, -2, CARRIED_DOMINO_START+0,
-    -16, -2, CARRIED_DOMINO_START+0,
-    -20, -2, CARRIED_DOMINO_START+0,
+    -18, -6, CARRIED_DOMINO_START+0,
+    -20, -6, CARRIED_DOMINO_START+0,
+    -28, -6, CARRIED_DOMINO_START+0,
+    -35, -6, CARRIED_DOMINO_START+0,
+    -40, -6, CARRIED_DOMINO_START+0,
+    -50, -6, CARRIED_DOMINO_START+0,
   }, { // AntAnimCarryRight,       6
-      5, -2, CARRIED_DOMINO_START+1,
-      6, -2, CARRIED_DOMINO_START+1,
-      9, -2, CARRIED_DOMINO_START+1,
-     12, -2, CARRIED_DOMINO_START+1,
-     14, -2, CARRIED_DOMINO_START+1,
-     18, -2, CARRIED_DOMINO_START+1,
+     13, -6, CARRIED_DOMINO_START+1,
+     15, -6, CARRIED_DOMINO_START+1,
+     23, -6, CARRIED_DOMINO_START+1,
+     30, -6, CARRIED_DOMINO_START+1,
+     35, -6, CARRIED_DOMINO_START+1,
+     45, -6, CARRIED_DOMINO_START+1,
   }, { // AntAnimCarryUpLeft,      6
-     -4, -2, CARRIED_DOMINO_START+0,
-     -6, -4, CARRIED_DOMINO_START+0,
-     -7, -6, CARRIED_DOMINO_START+0,
-    -11, -4, CARRIED_DOMINO_START+0,
-    -16, -3, CARRIED_DOMINO_START+0,
-    -20, -2, CARRIED_DOMINO_START+0,
+    -10, -6, CARRIED_DOMINO_START+0,
+    -15,-12, CARRIED_DOMINO_START+0,
+    -18,-18, CARRIED_DOMINO_START+0,
+    -28,-12, CARRIED_DOMINO_START+0,
+    -40, -9, CARRIED_DOMINO_START+0,
+    -50, -6, CARRIED_DOMINO_START+0,
   }, { // AntAnimCarryUpRight,     6
-      2, -2, CARRIED_DOMINO_START+1,
-      4, -4, CARRIED_DOMINO_START+1,
       5, -6, CARRIED_DOMINO_START+1,
-      9, -4, CARRIED_DOMINO_START+1,
-     14, -3, CARRIED_DOMINO_START+1,
-     18, -2, CARRIED_DOMINO_START+1,
+     10,-12, CARRIED_DOMINO_START+1,
+     13,-18, CARRIED_DOMINO_START+1,
+     23,-12, CARRIED_DOMINO_START+1,
+     35, -9, CARRIED_DOMINO_START+1,
+     45, -6, CARRIED_DOMINO_START+1,
   }, { // AntAnimCarryDownLeft,    6
-    -12, -2, CARRIED_DOMINO_START+0,
-    -16, -3, CARRIED_DOMINO_START+0,
-    -19,  0, CARRIED_DOMINO_START+0,
-    -19,  1, CARRIED_DOMINO_START+0,
-    -19,  1, CARRIED_DOMINO_START+0,
-    -20,  0, CARRIED_DOMINO_START+0,
+    -30, -6, CARRIED_DOMINO_START+0,
+    -40, -9, CARRIED_DOMINO_START+0,
+    -48,  0, CARRIED_DOMINO_START+0,
+    -48,  3, CARRIED_DOMINO_START+0,
+    -48,  3, CARRIED_DOMINO_START+0,
+    -50,  0, CARRIED_DOMINO_START+0,
   }, { // AntAnimCarryDownRight,   6
-      9, -2, CARRIED_DOMINO_START+1,
-     13, -3, CARRIED_DOMINO_START+1,
-     16,  0, CARRIED_DOMINO_START+1,
-     16,  1, CARRIED_DOMINO_START+1,
-     16,  1, CARRIED_DOMINO_START+1,
-     17,  0, CARRIED_DOMINO_START+1,
+     23, -6, CARRIED_DOMINO_START+1,
+     33, -9, CARRIED_DOMINO_START+1,
+     40,  0, CARRIED_DOMINO_START+1,
+     40,  3, CARRIED_DOMINO_START+1,
+     40,  3, CARRIED_DOMINO_START+1,
+     43,  0, CARRIED_DOMINO_START+1,
   }, { // AntAnimCarryLadder1,     8
-     -8, -2, CARRIED_DOMINO_START+2,
-     -8, -1, CARRIED_DOMINO_START+2,
-     -7, -2, CARRIED_DOMINO_START+2,
-     -7, -1, CARRIED_DOMINO_START+2,
-     -8, -2, CARRIED_DOMINO_START+2,
-     -8, -1, CARRIED_DOMINO_START+2,
-     -7, -2, CARRIED_DOMINO_START+2,
-     -7, -1, CARRIED_DOMINO_START+2,
+    -20, -6, CARRIED_DOMINO_START+2,
+    -20, -3, CARRIED_DOMINO_START+2,
+    -18, -6, CARRIED_DOMINO_START+2,
+    -18, -3, CARRIED_DOMINO_START+2,
+    -20, -6, CARRIED_DOMINO_START+2,
+    -20, -3, CARRIED_DOMINO_START+2,
+    -18, -6, CARRIED_DOMINO_START+2,
+    -18, -3, CARRIED_DOMINO_START+2,
   }, { // AntAnimCarryLadder2,     8
-     -8, -2, CARRIED_DOMINO_START+2,
-     -8, -1, CARRIED_DOMINO_START+2,
-     -7, -2, CARRIED_DOMINO_START+2,
-     -7, -1, CARRIED_DOMINO_START+2,
-     -8, -2, CARRIED_DOMINO_START+2,
-     -8, -1, CARRIED_DOMINO_START+2,
-     -7, -2, CARRIED_DOMINO_START+2,
-     -7, -1, CARRIED_DOMINO_START+2,
+    -20, -6, CARRIED_DOMINO_START+2,
+    -20, -3, CARRIED_DOMINO_START+2,
+    -18, -6, CARRIED_DOMINO_START+2,
+    -18, -3, CARRIED_DOMINO_START+2,
+    -20, -6, CARRIED_DOMINO_START+2,
+    -20, -3, CARRIED_DOMINO_START+2,
+    -18, -6, CARRIED_DOMINO_START+2,
+    -18, -3, CARRIED_DOMINO_START+2,
   }, { // AntAnimCarryLadder3,     8
-     -7, -1, CARRIED_DOMINO_START+2,
-     -7, -2, CARRIED_DOMINO_START+2,
-     -8, -1, CARRIED_DOMINO_START+2,
-     -8, -2, CARRIED_DOMINO_START+2,
-     -7, -1, CARRIED_DOMINO_START+2,
-     -7, -2, CARRIED_DOMINO_START+2,
-     -8, -1, CARRIED_DOMINO_START+2,
-     -8, -2, CARRIED_DOMINO_START+2,
+    -18, -3, CARRIED_DOMINO_START+2,
+    -18, -6, CARRIED_DOMINO_START+2,
+    -20, -3, CARRIED_DOMINO_START+2,
+    -20, -6, CARRIED_DOMINO_START+2,
+    -18, -3, CARRIED_DOMINO_START+2,
+    -18, -6, CARRIED_DOMINO_START+2,
+    -20, -3, CARRIED_DOMINO_START+2,
+    -20, -6, CARRIED_DOMINO_START+2,
   }, { // AntAnimCarryLadder4,     8
-     -7, -1, CARRIED_DOMINO_START+2,
-     -7, -2, CARRIED_DOMINO_START+2,
-     -8, -1, CARRIED_DOMINO_START+2,
-     -8, -2, CARRIED_DOMINO_START+2,
-     -7, -1, CARRIED_DOMINO_START+2,
-     -7, -2, CARRIED_DOMINO_START+2,
-     -8, -1, CARRIED_DOMINO_START+2,
-     -8, -2, CARRIED_DOMINO_START+2,
+    -18, -3, CARRIED_DOMINO_START+2,
+    -18, -6, CARRIED_DOMINO_START+2,
+    -20, -3, CARRIED_DOMINO_START+2,
+    -20, -6, CARRIED_DOMINO_START+2,
+    -18, -3, CARRIED_DOMINO_START+2,
+    -18, -6, CARRIED_DOMINO_START+2,
+    -20, -3, CARRIED_DOMINO_START+2,
+    -20, -6, CARRIED_DOMINO_START+2,
   }, { // AntAnimCarryStopLeft,    1
-     -5, -2, CARRIED_DOMINO_START+0,
+    -13, -6, CARRIED_DOMINO_START+0,
   }, { // AntAnimCarryStopRight,   1
-      5, -2, CARRIED_DOMINO_START+1,
+     13, -6, CARRIED_DOMINO_START+1,
   }, { // AntAnimPullOutLeft       15
-      0, -2, DO_ST_UPRIGHT,
-      0, -2, DO_ST_UPRIGHT,
-      0, -2, DO_ST_UPRIGHT,
-     -1, -1, DO_ST_UPRIGHT,
-     -2,  0, DO_ST_UPRIGHT,
-     -2,  0, DO_ST_UPRIGHT,
-     -2,  0, DO_ST_UPRIGHT,
-     -2,  0, DO_ST_UPRIGHT,
-     -2,  0, DO_ST_UPRIGHT,
-     -2,  0, DO_ST_UPRIGHT,
-     -2,  0, DO_ST_UPRIGHT,
-     -2, -1, DO_ST_UPRIGHT+2,
-      0, -2, CARRIED_DOMINO_START+0,
-     -1, -2, CARRIED_DOMINO_START+0,
-     -4, -2, CARRIED_DOMINO_START+0,
+      0, -6, DO_ST_UPRIGHT,
+      0, -6, DO_ST_UPRIGHT,
+      0, -6, DO_ST_UPRIGHT,
+     -3, -3, DO_ST_UPRIGHT,
+     -5,  0, DO_ST_UPRIGHT,
+     -5,  0, DO_ST_UPRIGHT,
+     -5,  0, DO_ST_UPRIGHT,
+     -5,  0, DO_ST_UPRIGHT,
+     -5,  0, DO_ST_UPRIGHT,
+     -5,  0, DO_ST_UPRIGHT,
+     -5,  0, DO_ST_UPRIGHT,
+     -5, -3, DO_ST_UPRIGHT+2,
+      0, -6, CARRIED_DOMINO_START+0,
+     -3, -6, CARRIED_DOMINO_START+0,
+    -10, -6, CARRIED_DOMINO_START+0,
   }, { // AntAnimPullOutRight      15
-      0, -2, DO_ST_UPRIGHT,
-      0, -2, DO_ST_UPRIGHT,
-      0, -2, DO_ST_UPRIGHT,
-     -1, -1, DO_ST_UPRIGHT,
-     -2,  0, DO_ST_UPRIGHT,
-     -2,  0, DO_ST_UPRIGHT,
-     -2,  0, DO_ST_UPRIGHT,
-     -2,  0, DO_ST_UPRIGHT,
-     -2,  0, DO_ST_UPRIGHT,
-     -2,  0, DO_ST_UPRIGHT,
-     -2,  0, DO_ST_UPRIGHT,
-     -2, -1, DO_ST_UPRIGHT-2,
-     -3, -2, CARRIED_DOMINO_START+1,
-     -2, -2, CARRIED_DOMINO_START+1,
-     -1, -2, CARRIED_DOMINO_START+1,
+      0, -6, DO_ST_UPRIGHT,
+      0, -6, DO_ST_UPRIGHT,
+      0, -6, DO_ST_UPRIGHT,
+     -3, -3, DO_ST_UPRIGHT,
+     -5,  0, DO_ST_UPRIGHT,
+     -5,  0, DO_ST_UPRIGHT,
+     -5,  0, DO_ST_UPRIGHT,
+     -5,  0, DO_ST_UPRIGHT,
+     -5,  0, DO_ST_UPRIGHT,
+     -5,  0, DO_ST_UPRIGHT,
+     -5,  0, DO_ST_UPRIGHT,
+     -5, -3, DO_ST_UPRIGHT-2,
+     -8, -6, CARRIED_DOMINO_START+1,
+     -5, -6, CARRIED_DOMINO_START+1,
+     -3, -6, CARRIED_DOMINO_START+1,
   }, {  // AntAnimPushInLeft,      16
-     -7, -2, CARRIED_DOMINO_START+0,
-     -8, -2, CARRIED_DOMINO_START+0,
-    -11, -2, CARRIED_DOMINO_START+0,
-    -14, -2, CARRIED_DOMINO_START+0,
-    -17, -2, CARRIED_DOMINO_START+0,
-    -17,  0, CARRIED_DOMINO_START+0,
-    -18,  0, DO_ST_UPRIGHT+2,
-    -18,  0, DO_ST_UPRIGHT,
-    -18,  0, DO_ST_UPRIGHT,
-    -18,  0, DO_ST_UPRIGHT,
-    -18,  0, DO_ST_UPRIGHT,
-    -18,  0, DO_ST_UPRIGHT,
-    -17, -1, DO_ST_UPRIGHT,
-    -16, -2, DO_ST_UPRIGHT,
-    -16, -2, DO_ST_UPRIGHT,
-    -16, -2, DO_ST_UPRIGHT,
+    -18, -6, CARRIED_DOMINO_START+0,
+    -20, -6, CARRIED_DOMINO_START+0,
+    -28, -6, CARRIED_DOMINO_START+0,
+    -35, -6, CARRIED_DOMINO_START+0,
+    -43, -6, CARRIED_DOMINO_START+0,
+    -43,  0, CARRIED_DOMINO_START+0,
+    -45,  0, DO_ST_UPRIGHT+2,
+    -45,  0, DO_ST_UPRIGHT,
+    -45,  0, DO_ST_UPRIGHT,
+    -45,  0, DO_ST_UPRIGHT,
+    -45,  0, DO_ST_UPRIGHT,
+    -45,  0, DO_ST_UPRIGHT,
+    -43, -3, DO_ST_UPRIGHT,
+    -40, -6, DO_ST_UPRIGHT,
+    -40, -6, DO_ST_UPRIGHT,
+    -40, -6, DO_ST_UPRIGHT,
   }, {  // AntAnimPushInRight,     16
-      5, -2, CARRIED_DOMINO_START+1,
-      6, -2, CARRIED_DOMINO_START+1,
-     10, -1, CARRIED_DOMINO_START+1,
-     11, -2, CARRIED_DOMINO_START+1,
-     14, -2, CARRIED_DOMINO_START+1,
-     14,  0, CARRIED_DOMINO_START+1,
-     14,  0, DO_ST_UPRIGHT-2,
-     14,  0, DO_ST_UPRIGHT,
-     14,  0, DO_ST_UPRIGHT,
-     14,  0, DO_ST_UPRIGHT,
-     14,  0, DO_ST_UPRIGHT,
-     14,  0, DO_ST_UPRIGHT,
-     15, -1, DO_ST_UPRIGHT,
-     16, -2, DO_ST_UPRIGHT,
-     16, -2, DO_ST_UPRIGHT,
-     16, -2, DO_ST_UPRIGHT,
+     13, -6, CARRIED_DOMINO_START+1,
+     15, -6, CARRIED_DOMINO_START+1,
+     25, -3, CARRIED_DOMINO_START+1,
+     28, -6, CARRIED_DOMINO_START+1,
+     35, -6, CARRIED_DOMINO_START+1,
+     35,  0, CARRIED_DOMINO_START+1,
+     35,  0, DO_ST_UPRIGHT-2,
+     35,  0, DO_ST_UPRIGHT,
+     35,  0, DO_ST_UPRIGHT,
+     35,  0, DO_ST_UPRIGHT,
+     35,  0, DO_ST_UPRIGHT,
+     35,  0, DO_ST_UPRIGHT,
+     38, -3, DO_ST_UPRIGHT,
+     40, -6, DO_ST_UPRIGHT,
+     40, -6, DO_ST_UPRIGHT,
+     40, -6, DO_ST_UPRIGHT,
   }, {  //AntAnimXXX1              2
-      0, -2, CARRIED_DOMINO_START+3,
-      0, -2, CARRIED_DOMINO_START+4,
+      0, -6, CARRIED_DOMINO_START+3,
+      0, -6, CARRIED_DOMINO_START+4,
   }, { //AntAnimXXX2               2
-     -3, -2, CARRIED_DOMINO_START+5,
-     -3, -2, CARRIED_DOMINO_START+6,
+     -8, -6, CARRIED_DOMINO_START+5,
+     -8, -6, CARRIED_DOMINO_START+6,
   }, { //AntAnimXXX3               2
-      0, -2, CARRIED_DOMINO_START+4,
-      0, -2, CARRIED_DOMINO_START+3,
+      0, -6, CARRIED_DOMINO_START+4,
+      0, -6, CARRIED_DOMINO_START+3,
   }, { //AntAnimXXX4               2
-     -3, -2, CARRIED_DOMINO_START+6,
-     -3, -2, CARRIED_DOMINO_START+5,
+     -8, -6, CARRIED_DOMINO_START+6,
+     -8, -6, CARRIED_DOMINO_START+5,
   }, { //AntAnimLoosingDominoRight 13
-     16, -3, DO_ST_UPRIGHT,
-     16, -3, DO_ST_UPRIGHT,
-     16, -3, DO_ST_UPRIGHT,
-     16, -3, DO_ST_UPRIGHT, // after this image the domino is put down and no longer in the hand of the ant
+     40, -9, DO_ST_UPRIGHT,
+     40, -9, DO_ST_UPRIGHT,
+     40, -9, DO_ST_UPRIGHT,
+     40, -9, DO_ST_UPRIGHT, // after this image the domino is put down and no longer in the hand of the ant
   }, { //AntAnimLoosingDominoLeft  17
-     -7, -2, CARRIED_DOMINO_START+0,
-     -8, -2, CARRIED_DOMINO_START+0,
-    -11, -2, CARRIED_DOMINO_START+0,
-    -14, -2, CARRIED_DOMINO_START+0,
-      0, -3, DO_ST_UPRIGHT,
-      0, -3, DO_ST_UPRIGHT,
-      0, -3, DO_ST_UPRIGHT,
-      0, -3, DO_ST_UPRIGHT, // after this image the domino is put down and no longer in the hand of the ant
+    -18, -6, CARRIED_DOMINO_START+0,
+    -20, -6, CARRIED_DOMINO_START+0,
+    -28, -6, CARRIED_DOMINO_START+0,
+    -35, -6, CARRIED_DOMINO_START+0,
+      0, -9, DO_ST_UPRIGHT,
+      0, -9, DO_ST_UPRIGHT,
+      0, -9, DO_ST_UPRIGHT,
+      0, -9, DO_ST_UPRIGHT, // after this image the domino is put down and no longer in the hand of the ant
   }
 };
 
-signed int getMoveOffsetX(unsigned int animation, unsigned int image) { return 5*moveOffsets[animation][3*image+0]/2; }
-signed int getMoveOffsetY(unsigned int animation, unsigned int image) { return 3*moveOffsets[animation][3*image+1]; }
+signed int getMoveOffsetX(unsigned int animation, unsigned int image) { return moveOffsets[animation][3*image+0]; }
+signed int getMoveOffsetY(unsigned int animation, unsigned int image) { return moveOffsets[animation][3*image+1]; }
 signed int getMoveImage(unsigned int animation, unsigned int image) { return moveOffsets[animation][3*image+2]; }
 
 // this function calculates the indes to use for the table above
@@ -1064,7 +1063,6 @@ void graphicsN_c::drawDominos(void)
         background->gradient(blockX()*x, blockY()/2*y, blockX(), blockY()/2);
       }
     }
-
   }
   dirtybg.clearDirty();
 
@@ -1074,7 +1072,7 @@ void graphicsN_c::drawDominos(void)
       if (dirty.isDirty(x, y))
         target->copy(*background, x*blockX(), y*blockY()/2, blockX(), blockY()/2);
 
-  static int XposOffset[] = { -16, -16,  0,-16,  0,  0, 0, 0, 0,  0, 0, 16,  0, 16, 16, 0};
+  static int XposOffset[] = { -40, -40,  0,-40,  0,  0, 0, 0, 0,  0, 0, 40,  0, 40, 40, 0};
   static int YposOffset[] = { -8,  -6,  0, -4,  0, -2, 0, 0, 0, -2, 0, -4,  0, -6, -8, 0};
   static int StoneImageOffset[] = {
     RISER_CONT_START+7, RISER_CONT_START+6, RISER_CONT_START+0, RISER_CONT_START+5,
@@ -1146,7 +1144,7 @@ void graphicsN_c::drawDominos(void)
           level->getDominoState(x, y) < DO_ST_ASCENDER+15 && level->getDominoState(x, y) != DO_ST_UPRIGHT && level->getDominoState(x, y) != DO_ST_ASCENDER+7)
       {
         target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]],
-            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]),
+            SpriteXPos+XposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER],
             SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]+level->getDominoYOffset(x, y)));
       }
       else if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoState(x, y) == DO_ST_ASCENDER && level->getDominoExtra(x, y) == 0 &&
@@ -1155,14 +1153,14 @@ void graphicsN_c::drawDominos(void)
         // so we see the above face of the domino. Normally there is a wall above us so we only see
         // the front face of the domino
         target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]],
-            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]+6),
+            SpriteXPos+XposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]+15,
             SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]+level->getDominoYOffset(x, y)));
       }
       else if (level->getDominoType(x, y) == DominoTypeAscender && level->getDominoState(x, y) == DO_ST_ASCENDER+14 && level->getDominoExtra(x, y) == 0 &&
           !level->getPlatform(x+1, y-3))
       {
         target->blit(dominos[DominoTypeAscender][StoneImageOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]],
-            SpriteXPos+convertDominoX(XposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]-2),
+            SpriteXPos+XposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]-5,
             SpriteYPos+convertDominoY(YposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]+level->getDominoYOffset(x, y)));
       }
       else if (level->getDominoType(x, y) != DominoTypeEmpty)
