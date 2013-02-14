@@ -101,6 +101,13 @@ levelset_c::levelset_c(const std::string & path, const std::string & userString)
         /* Name section */
         name = sections.getSingleLine("Name");
 
+        /* description */
+        description = "";
+        if (sections.hasSection("Description"))
+        {
+          description = sections.getSingleLine("Description");
+        }
+
         /* Priority section */
         {
           std::istringstream priorityStream(sections.getSingleLine("Priority"));

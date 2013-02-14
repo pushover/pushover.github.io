@@ -100,11 +100,16 @@ class listWindow_c : public window_c {
   public:
     typedef struct entry {
         std::string text;
+        std::vector<std::string> details;
         bool highlight;
         int sol;  // 0 no normal color, 1 bit, yellow, 2 complete green
         bool line;
 
         entry(std::string t) : text(t), highlight(false), sol(0), line(false) {}
+
+
+        uint16_t height_details; // calculated value to store the hight of this entry.. used by light window
+        uint16_t height; // calculated value to store the hight of this entry.. used by light window
     } entry;
 
   private:
@@ -113,9 +118,6 @@ class listWindow_c : public window_c {
 
     unsigned int current;
     bool escape;  // escape works
-
-
-    unsigned int menuLines;
 
   public:
 

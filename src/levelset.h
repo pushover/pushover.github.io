@@ -34,6 +34,7 @@ class levelset_c {
   private:
 
     std::string name;
+    std::string description;
     unsigned int priority;
     std::vector<std::string> levelNames;
     std::map<std::string, std::string> checksums;
@@ -44,6 +45,7 @@ class levelset_c {
 
     levelset_c(const std::string & path, const std::string & userString);
     const std::string getName(void) const { return name; }
+    const std::string getDescription(void) const { return description; }
     const unsigned int getPriority(void) const { return priority; }
 
     const std::vector<std::string> & getLevelNames(void) const { return levelNames; }

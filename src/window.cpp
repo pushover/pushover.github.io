@@ -32,6 +32,7 @@
 #include <SDL.h>
 
 #include <stdexcept>
+#include <algorithm>
 #include <libintl.h>
 
 #include <assert.h>
@@ -472,64 +473,97 @@ void listWindow_c::redraw(void) {
   surf.fillRect(gr.blockX()*(x+1), ypos, gr.blockX()*(w-2), 2, TXT_COL_R, TXT_COL_G, TXT_COL_G);
   ypos += 20;
 
-  unsigned int lineH = getFontHeight(FNT_NORMAL);  // height of one entry line
+  unsigned int bestLine = 0xFFFF;
+  unsigned int bestCenter = 10000; // distance to center for the current best starting line
 
-  menuLines = (gr.blockY()*(y+h-1)-ypos) / lineH;
+  unsigned int center = (ypos + gr.blockY()*(y+h-2))/2;
+  int end = gr.blockY()*(y+h-1);
 
-  unsigned int line = 0;
+  unsigned int line = current;
 
+  // try to find the best starting line so that
+  // 1: the current entry is completely on screen
+  // 2: is is roughly in the middle of the screen
+  //
+  // for this check all view possibilitied that
+  // do contain the current entry by starting with the current
+  // entry and then starting one before that .. until the current
+  // entry is out at the bottom
   while (true)
   {
-    unsigned int ypos2 = ypos;
     unsigned int line2 = line;
+    int ypos2 = ypos;
+    bool found = false;
 
-    bool back = false;
+    unsigned int c = 0;
 
-    while (ypos2 + lineH < gr.blockY()*(y+h-1)) {
-
-      if (line2 >= entries.size())
-      {
-        if (line2 > (unsigned int)current)
-          back = true;
-        else
-        {
-          //list is empty
-        }
-        break;
-      }
-
-      if (line2 == (unsigned int)current && ypos2 < gr.blockY()*(y+h/2))
-      {
-        back = true;
-        break;
-      }
-
-      if (entries[line2].line)
-      {
-        ypos2 += lineH;
-      }
-
-      line2++;
-      ypos2 += lineH;
-    }
-
-    if (back)
+    while (line2 < entries.size())
     {
-      if (line > 0)
-        line--;
+      if (line2 == current)
+      {
+        ypos2 += entries[line2].height_details;
 
-      break;
+        if (ypos2 >= end)
+        {
+          line2--;
+          break;
+        }
+
+        c = ypos2-entries[line2].height_details/2;
+        found = true;
+      }
+      else
+      {
+        ypos2 += entries[line2].height;
+        if (ypos2 >= end)
+        {
+          line2--;
+          break;
+        }
+      }
+      line2++;
     }
 
-    line++;
+    unsigned int diff = abs(c-center);
+
+    if (line2 < entries.size())
+    {
+      if (found && (diff < bestCenter))
+      {
+        bestCenter = diff;
+        bestLine = line;
+      }
+    }
+    else
+    {
+      bestCenter = abs(c-center);
+      bestLine = line;
+    }
+
+    if (!found) break;
+    if (line == 0) break;
+
+    // next line above
+    line--;
   }
 
-  while (ypos + lineH < gr.blockY()*(y+h-1)) {
+  line = bestLine;
+
+  while (true) {
 
     if (line >= entries.size()) break;
 
+    if (line == current)
+    {
+      if (ypos + entries[line].height_details >= end) break;
+    }
+    else
+    {
+      if (ypos + entries[line].height >= end) break;
+    }
+
     par.font = FNT_NORMAL;
-    par.alignment = ALN_CENTER;
+    par.alignment = ALN_TEXT_CENTER;
 
     if (line == current)
     {
@@ -556,26 +590,32 @@ void listWindow_c::redraw(void) {
     par.box.x = gr.blockX()*(x+1);
     par.box.y = ypos;
     par.box.w = gr.blockX()*(w-2);
-    par.box.h = lineH;
+    par.box.h = entries[line].height;
 
-    if (!entries[line].line)
-    {
-      surf.renderText(&par, entries[line].text);
-    }
-    else
-    {
-      surf.renderText(&par, entries[line].text);
+    surf.renderText(&par, entries[line].text);
+    ypos += getTextHeight(&par, entries[line].text);
+    par.box.y = ypos;
 
-      if (entries[line].line)
+    if (line == current && entries[line].details.size() != 0)
+    {
+      par.font = FNT_SMALL;
+
+      for (size_t i = 0; i < entries[line].details.size(); i++)
       {
-        surf.fillRect(gr.blockX()*(x+1)+30, ypos+lineH+lineH/2, gr.blockX()*(w-2)-60, 2, SEP_COL_R, SEP_COL_G, SEP_COL_B);
-        ypos += lineH;
+        surf.renderText(&par, entries[line].details[i]);
+        ypos += getTextHeight(&par, entries[line].details[i]);
+        par.box.y = ypos;
       }
+    }
 
+    if (entries[line].line)
+    {
+      surf.fillRect(gr.blockX()*(x+1)+30, ypos+10/2, gr.blockX()*(w-2)-60, 2, SEP_COL_R, SEP_COL_G, SEP_COL_B);
+      ypos += 10;
+      par.box.y = ypos;
     }
 
     line++;
-    ypos += lineH;
   }
 }
 
@@ -583,6 +623,38 @@ listWindow_c::listWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_
     const std::string & t, const std::vector<entry> & e, bool esc, int initial)
   : window_c(x, y, w, h, s, gr), entries(e), title(t), current(initial), escape(esc)
 {
+  // calculate the hight of all entries
+  fontParams_s par;
+  par.alignment = ALN_CENTER;
+
+  for (size_t line = 0; line < entries.size(); line++)
+  {
+    par.font = FNT_NORMAL;
+    par.alignment = ALN_CENTER;
+
+    par.box.x = gr.blockX()*(x+1);
+    par.box.w = gr.blockX()*(w-2);
+
+    entries[line].height = getTextHeight(&par, entries[line].text);
+    entries[line].height_details = entries[line].height;
+
+    par.font = FNT_SMALL;
+    par.alignment = ALN_TEXT_CENTER;
+
+    for (size_t i = 0; i < entries[line].details.size(); i++)
+    {
+      entries[line].height_details += getTextHeight(&par, entries[line].details[i]);
+    }
+
+    par.alignment = ALN_CENTER;
+
+    if (entries[line].line)
+    {
+      entries[line].height += 10;
+      entries[line].height_details += 10;
+    }
+  }
+
   redraw();
 
 }
@@ -624,7 +696,7 @@ bool listWindow_c::handleEvent(const SDL_Event & event) {
     {
         if (current > 0)
         {
-            if (current > menuLines) current -= menuLines; else current = 0;
+            if (current > 10) current -= 10; else current = 0;
             redraw();
         }
     }
@@ -632,7 +704,7 @@ bool listWindow_c::handleEvent(const SDL_Event & event) {
     {
         if (current+1 < entries.size())
         {
-            if (current+menuLines < entries.size()) current += menuLines; else current = entries.size()-1;
+            if (current+10 < entries.size()) current += 10; else current = entries.size()-1;
             redraw();
         }
     }
@@ -797,6 +869,63 @@ class missionWindow_c : public listWindow_c
     }
 };
 
+class authorData {
+
+  public:
+    std::string name;
+    uint16_t cnt;
+
+    bool operator< (const authorData & b) const
+    {
+      return cnt > b.cnt;
+    }
+
+};
+
+static std::string collectAuthors(const levelset_c & ls)
+{
+  std::vector<authorData> authors;
+
+  for (size_t i = 0; i < ls.getLevelNames().size(); i++)
+  {
+    std::string e = ls.getLevelNames()[i];
+    levelData_c level;
+    ls.loadLevel(level, e, "");
+
+    for (size_t j = 0; j < level.getAuthor().size(); j++)
+    {
+      bool found = false;
+      for (size_t k = 0; k < authors.size(); k++)
+        if (authors[k].name == level.getAuthor()[j])
+        {
+          authors[k].cnt++;
+          found = true;
+          break;
+        }
+
+      if (!found)
+      {
+        authors.resize(authors.size()+1);
+        authors.back().name = level.getAuthor()[j];
+        authors.back().cnt = 1;
+      }
+    }
+  }
+
+  // sort authors by number of levels they designed
+  std::sort(authors.begin(), authors.end());
+
+  std::string res;
+
+  for (size_t i = 0; i < authors.size(); i++)
+  {
+    if (res != "") res += ", ";
+    res += authors[i].name;
+  }
+
+  return res;
+}
+
 listWindow_c * getMissionWindow(const levelsetList_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & selection) {
     std::vector<listWindow_c::entry> entries;
 
@@ -805,32 +934,37 @@ listWindow_c * getMissionWindow(const levelsetList_c & ls, const solvedMap_c & s
 
     for (unsigned int i = 0; i < ls.getLevelsetNames().size(); i++)
     {
-      if (selection == ls.getLevelsetNames()[i])
+      const std::string name = ls.getLevelsetNames()[i];
+
+
+      if (selection == name)
         index = i;
 
       switch (MissionSolveState(ls.getLevelset(ls.getLevelsetNames()[i]), solv))
       {
         case 0:
-          f = std::string(_(ls.getLevelsetNames()[i])) + "  \xE2\x96\xA1";
+          f = std::string(_(name)) + "  \xE2\x96\xA1";
           entries.push_back(listWindow_c::entry(f));
           entries.rbegin()->sol = 0;
           break;
         case 1:
-          f = std::string(_(ls.getLevelsetNames()[i])) + "  \xE2\x96\xA3";
+          f = std::string(_(name)) + "  \xE2\x96\xA3";
           entries.push_back(listWindow_c::entry(f));
           entries.rbegin()->sol = 1;
           break;
         case 2:
-          f = std::string(_(ls.getLevelsetNames()[i])) + "  \xE2\x96\xA0";
+          f = std::string(_(name)) + "  \xE2\x96\xA0";
           entries.push_back(listWindow_c::entry(f));
           entries.rbegin()->sol = 2;
           break;
         default:
           assert(0);
       }
+      entries.rbegin()->details.push_back(_("Description: ") + _(ls.getLevelset(name).getDescription()));
+      entries.rbegin()->details.push_back(_(" Authors: ") + collectAuthors(ls.getLevelset(name)));
     }
 
-    return new missionWindow_c(4, 2, 12, 9, surf, gr, _("Select Levelset"), entries, true, index);
+    return new missionWindow_c(3, 1, 14, 11, surf, gr, _("Select Levelset"), entries, true, index);
 }
 
 class levelWindow_c : public listWindow_c
