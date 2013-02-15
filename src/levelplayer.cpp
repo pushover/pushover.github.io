@@ -1425,7 +1425,7 @@ void levelPlayer_c::DTA_L(int x, int y) {
         setDominoType(x+1, y, getDominoType(x, y));
         setDominoState(x+1, y, 2);
         setDominoDir(x+1, y, getDominoDir(x, y));
-        setDominoYOffset(x+1, y, -2);
+        setDominoYOffset(x+1, y, 2);
 
         if (getPlatform(x+1, y+2))
           setDominoExtra(x+1, y, 0x40);
