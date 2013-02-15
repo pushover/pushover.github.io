@@ -1531,7 +1531,7 @@ void graphicsN_c::drawLevel(void) {
     bool tutdirty = false;
 
     for (int y = 0; y < tutorial_h; y++)
-      for (int x = 0; x < tutorial_w+1; x++)
+      for (int x = 0; x < tutorial_w; x++)
         if (dirty.isDirty(x+tutorial_x, y+tutorial_y))
           tutdirty = true;
 
