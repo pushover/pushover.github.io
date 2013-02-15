@@ -6,7 +6,10 @@ export DARCS_DONT_ESCAPE_ISPRINT=1
 darcs changes > ChangeLog
 
 echo po/*.po | sed 's,po/\([^ ]*\)\.po,\1,g' >po/LINGUAS
-sed -n '/^\(Hint\|Name\|Description\)$/,/^[^|]/ s,^| \(.*\)$,_("\1"),p' `find -name '*.level' | grep -v "levels/tests"` >po/leveltexts.txt
+sed -n '/^\(Hint\)$/,/^[^|]/ s,^| \(.*\)$,_("\1"),p' `find -name '*.level' | grep -v "levels/tests"` >po/leveltexts.txt
+sed -n '/^\(Name\)$/,/^[^|]/ s,^| \(.*\)$,_("\1"),p' `find -name '*.level' | grep -v "levels/tests"` >>po/leveltexts.txt
+sed -n '/^\(Description\)$/,/^[^|]/ s,^| \(.*\)$,_("\1"),p' `find -name '*.level' | grep -v "levels/tests"` >>po/leveltexts.txt
+sed -n '/^\(Tutorial\)$/,/^[^|]/ s,^| \(.*\)$,_("\1"),p' `find -name '*.level' | grep -v "levels/tests"` >>po/leveltexts.txt
 
 autoreconf -i -s
 ./configure "$@"

@@ -41,6 +41,12 @@ screen_c::screen_c(const graphicsN_c & g) :
   SDL_WM_SetCaption("Pushover", "Pushover");
 }
 
+surface_c::surface_c(uint16_t x, uint16_t y, uint8_t alpha)
+{
+  video = SDL_CreateRGBSurface(0, x, y, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+  SDL_SetAlpha(video, SDL_SRCALPHA | SDL_RLEACCEL, alpha);
+}
+
 screen_c::~screen_c(void) { }
 
 surface_c::~surface_c(void)
@@ -81,7 +87,22 @@ void surface_c::blit(SDL_Surface * s, int x, int y) {
   }
 }
 
-void surface_c::fillRect(int x, int y, int w, int h, int r, int g, int b) {
+void surface_c::blitBlock(const surface_c & s, int x, int y) {
+
+  if (s.video && video)
+  {
+    SDL_Rect dst;
+
+    dst.x = x;
+    dst.y = y;
+    dst.w = s.video->w;
+    dst.h = s.video->h;
+
+    SDL_BlitSurface(s.video, 0, video, &dst);
+  }
+}
+
+void surface_c::fillRect(int x, int y, int w, int h, int r, int g, int b, int a) {
   if (video)
   {
     SDL_Rect dst;
@@ -89,7 +110,7 @@ void surface_c::fillRect(int x, int y, int w, int h, int r, int g, int b) {
     dst.y = y;
     dst.w = w;
     dst.h = h;
-    SDL_FillRect(video, &dst, SDL_MapRGB(video->format, r, g, b));
+    SDL_FillRect(video, &dst, SDL_MapRGBA(video->format, r, g, b, a));
   }
 }
 

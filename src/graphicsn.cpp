@@ -242,6 +242,7 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   background = 0;
   ant = 0;
   level = 0;
+  tutorial = 0;
 
 #ifdef DEBUG
   grid = false;
@@ -395,6 +396,8 @@ graphicsN_c::~graphicsN_c(void) {
 
   for (unsigned int j = 0; j < boxBlocks.size(); j++)
     SDL_FreeSurface(boxBlocks[j]);
+
+  if (tutorial) delete tutorial;
 }
 
 void graphicsN_c::addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free) {
@@ -931,7 +934,6 @@ void graphicsN_c::setTheme(const std::string & name)
   }
 
   SDL_FreeSurface(v);
-
 }
 
 void graphicsN_c::setPaintData(const levelData_c * l, const ant_c * a, surface_c * t)
@@ -958,6 +960,9 @@ void graphicsN_c::setPaintData(const levelData_c * l, const ant_c * a, surface_c
   Min = Sec = -1;
 
   if (!background) background = new surface_c(t->getIdentical());
+
+  if (tutorial) delete tutorial;
+  tutorial = 0;
 }
 
 void graphicsN_c::getPlatformImage(size_t x, size_t y, uint16_t out[])
@@ -1354,6 +1359,92 @@ void graphicsN_c::findDirtyBlocks(void)
   Min = newMin;
 }
 
+void graphicsN_c::calcTutorial(void)
+{
+    fontParams_s pars;
+
+    pars.font = FNT_SMALL;
+    pars.alignment = ALN_TEXT;
+
+    pars.box.x = blockX()/2;
+    pars.box.y = blockY()/4;
+
+    pars.shadow = 0;
+
+    pars.color.r = 112;
+    pars.color.g = 39;
+    pars.color.b = 0;
+
+    uint16_t blx = 7;
+    bool found = false;
+
+    while (blx < level->levelX())
+    {
+      pars.box.w = blockX()*(blx-2);
+      pars.box.h = getFontHeight(pars.font);
+
+      uint16_t h = getTextHeight(&pars, _(level->getTutorial()));
+      uint16_t bly = 1+(h+blockY()/2-2)/(blockY()/2);
+
+      // find an empty space in the level with the given proportions
+      for (uint16_t y = 1; y < level->levelY()-bly; y++)
+        if (levelForegroundEmpty(*level, level->levelX()-blx, y-1, blx, bly+2))
+        {
+          found = true;
+          tutorial_x = level->levelX()-blx;
+          tutorial_y = y;
+          tutorial_w = blx;
+          tutorial_h = bly;
+
+          break;
+        }
+
+      if (!found)
+      {
+        for (uint16_t y = 1; y < level->levelY()-bly; y++)
+          if (levelForegroundEmpty(*level, 0, y-1, blx, bly+2))
+          {
+            found = true;
+            tutorial_x = 0;
+            tutorial_y = y;
+            tutorial_w = blx;
+            tutorial_h = bly;
+
+            break;
+          }
+      }
+
+      if (found) break;
+
+      blx++;
+    }
+
+    // last possibility... place upper right corner
+    if (!found)
+    {
+      blx = 7;
+
+      pars.box.w = blockX()*(blx-2);
+      pars.box.h = getFontHeight(pars.font);
+
+      uint16_t h = getTextHeight(&pars, _(level->getTutorial()));
+      uint16_t bly = 1+(h+blockY()/2-2)/(blockY()/2);
+
+      tutorial_x = level->levelX()-blx;
+      tutorial_y = 1;
+      tutorial_w = blx;
+      tutorial_h = bly;
+    }
+
+    tutorial = new surface_c((tutorial_w-1)*blockX(), (tutorial_h)*blockY()/2);
+
+    tutorial->fillRect(0, 0, (tutorial_w-1)*blockX()-0, (tutorial_h)*blockY()/2-0, 112, 39, 0);
+    tutorial->fillRect(2, 2, (tutorial_w-1)*blockX()-4, (tutorial_h)*blockY()/2-4, 168, 120, 80, 210);
+
+    pars.box.w = blockX()*(blx-2);
+    tutorial->renderText(&pars, _(level->getTutorial()));
+}
+
 void graphicsN_c::drawLevel(void) {
 
   if (!target) return;
@@ -1423,6 +1514,30 @@ void graphicsN_c::drawLevel(void) {
     pars.color.r = pars.color.g = 255; pars.color.b = 0;
 
     target->renderText(&pars, txt);
+  }
+
+  // redraw tutorial box
+
+  if (level->getTutorial() != "") {
+
+    if (!tutorial)
+    {
+      calcTutorial();
+    }
+
+    // check, if one of the blocks that the tutorial box overlaps
+    // is dirty
+
+    bool tutdirty = false;
+
+    for (int y = 0; y < tutorial_h; y++)
+      for (int x = 0; x < tutorial_w+1; x++)
+        if (dirty.isDirty(x+tutorial_x, y+tutorial_y))
+          tutdirty = true;
+
+
+    if (tutdirty)
+      target->blitBlock(*tutorial, tutorial_x*blockX()+blockX()/2, tutorial_y*blockY()/2);
   }
 }
 

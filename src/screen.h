@@ -101,14 +101,16 @@ class surface_c {
     SDL_Surface * getIdentical(void) const;
 
     surface_c(void) : video(0) {}
+    surface_c(uint16_t x, uint16_t y, uint8_t alpha = SDL_ALPHA_OPAQUE);
     surface_c(SDL_Surface * c) : video(c) {}
     ~surface_c(void);
 
     // blit the complete surface s so that the lower left corner of x is at x, y
     void blit(SDL_Surface * s, int x, int y);
     void blitBlock(SDL_Surface * s, int x, int y);
+    void blitBlock(const surface_c & s, int x, int y);
     void copy(surface_c & src, int x, int y, int w, int h);
-    void fillRect(int x, int y, int w, int h, int r, int g, int b);
+    void fillRect(int x, int y, int w, int h, int r, int g, int b, int a = SDL_ALPHA_OPAQUE);
 
     // render a given UFT-8 encoded text to the surface v into the given box
     // the text is automatically broken into lines and newlines within the

@@ -118,7 +118,17 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
   }
   else
   {
-    author.push_back("unknown");
+    author.push_back(_("unknown"));
+  }
+
+  // optional tutorial section
+  if (sections.hasSection("Tutorial"))
+  {
+    tutorial = sections.getSingleLine("Tutorial");
+  }
+  else
+  {
+    tutorial = "";
   }
 
   /* Time section (time format is M:SS) */
@@ -778,5 +788,24 @@ bool levelContainsDomino(const levelData_c & l, DominoType d)
         return true;
       }
   return false;
+}
+
+bool levelForegroundEmpty(const levelData_c & l, int16_t x, int16_t y, uint16_t w, uint16_t h)
+{
+  for (size_t yp = 0; yp < h; yp++)
+    for (size_t xp = 0; xp < w; xp++)
+    {
+      if (l.getPlatform(x+xp, y+yp) || l.getLadder(x+xp, y+yp) || l.getDominoType(x+xp, y+yp) != DominoTypeEmpty)
+        return false;
+      if (x+xp == l.getExitX() && y+yp == l.getExitY())
+        return false;
+      if (x+xp == l.getEntryX() && y+yp == l.getEntryY())
+        return false;
+      if (x+xp == l.getExitX() && y+yp+1 == l.getExitY())
+        return false;
+      if (x+xp == l.getEntryX() && y+yp+1 == l.getEntryY())
+        return false;
+    }
+  return true;
 }
 

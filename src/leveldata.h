@@ -25,6 +25,8 @@
 #include <string>
 #include <vector>
 
+#include <stdint.h>
+
 class textsections_c;
 
 typedef enum {
@@ -101,6 +103,7 @@ class levelData_c {
     std::string theme;
     std::string hint;
     std::vector<std::string> author;
+    std::string tutorial;
 
     std::string checksum;
     std::string checksumNoTime;
@@ -148,6 +151,7 @@ class levelData_c {
     const std::string getTheme(void) const { return theme; }
     const std::string getHint(void) const { return hint; }
     const std::vector<std::string> & getAuthor(void) const { return author; }
+    const std::string getTutorial(void) const { return tutorial; }
 
     int getTimeLeft(void) const { return timeLeft; }
     void timeTick(void) { timeLeft--; }
@@ -213,7 +217,7 @@ class levelData_c {
 };
 
 bool levelContainsDomino(const levelData_c & l, DominoType d);
-
+bool levelForegroundEmpty(const levelData_c & l, int16_t x, int16_t y, uint16_t w, uint16_t h);
 
 #endif
 

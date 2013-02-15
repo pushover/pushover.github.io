@@ -89,6 +89,13 @@ class graphicsN_c : public graphics_c {
     surface_c * background;
     surface_c * target;
 
+    // contains the box with the tutorial text, when
+    // calculated, otherwise the 0 ointer
+    surface_c * tutorial;
+    uint16_t tutorial_x, tutorial_y, tutorial_w, tutorial_h; // contains the position where to put tutorial box
+
+    void calcTutorial(void);
+
     const ant_c * ant;
     const levelData_c * level;
     levelData_c l2;  // level copy for dirty Block detection
