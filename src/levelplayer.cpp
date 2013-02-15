@@ -118,7 +118,10 @@ void levelPlayer_c::putDownDomino(int x, int y, DominoType domino, bool pushin) 
 
 void levelPlayer_c::fallingDomino(int x, int y) {
   if (getDominoType(x, y) == DominoTypeAscender)
+  {
     setDominoExtra(x, y, 0x60);
+    setDominoState(x, y, DO_ST_ASCENDER+7);
+  }
   else
     setDominoExtra(x, y, 0x70);
 
@@ -241,7 +244,7 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
       // we return false then pushing the riser, because it will rise
       // and the domino has to wait
     case DominoTypeAscender:
-      if (getDominoState(x, y) == DO_ST_ASCENDER+15) {
+      if (getDominoState(x, y) == DO_ST_ASCENDER+7) {
         setDominoDir(x, y, dir);
       }
       else
@@ -489,10 +492,10 @@ void levelPlayer_c::DTA_4(int x, int y) {
   setDominoState(x, y, getDominoState(x, y)+getDominoDir(x, y));
 
   if (getDominoType(x, y) == DominoTypeAscender &&
-      getDominoState(x, y) == DO_ST_ASCENDER+7 &&
+      getDominoState(x, y) == DO_ST_FALLING+7 &&
       getDominoYOffset(x, y) == -10)
   {
-    setDominoState(x, y, DO_ST_ASCENDER+15);
+    setDominoState(x, y, DO_ST_ASCENDER+7);
   }
 
   if (getDominoState(x, y) == 8 && ((size_t)(y+1) >= levelY() || !getPlatform(x, y+1)) && (getDominoExtra(x, y) == 0x40 || getDominoExtra(x, y) == 0x70))
@@ -1185,7 +1188,6 @@ void levelPlayer_c::DTA_H(int x, int y) {
     {
       if (getPlatform(x, y-3) && getPlatform(x, y-1))
       {
-        setDominoState(x, y, DO_ST_ASCENDER+15);
         setDominoExtra(x, y, 0x50);
 
         return;
@@ -1195,7 +1197,6 @@ void levelPlayer_c::DTA_H(int x, int y) {
     {
       if (getPlatform(x, y-3) && getPlatform(x, y-2))
       {
-        setDominoState(x, y, DO_ST_ASCENDER+15);
         setDominoExtra(x, y, 0x50);
         return;
       }
@@ -1206,7 +1207,6 @@ void levelPlayer_c::DTA_H(int x, int y) {
       {
         if (getPlatform(x, y-3))
         {
-          setDominoState(x, y, DO_ST_ASCENDER+15);
           setDominoExtra(x, y, 0);
 
           return;
@@ -1220,7 +1220,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
           setDominoExtra(x, y-1, 0x60);
           setDominoYOffset(x, y-1, -4);
           setDominoDir(x, y-1, getDominoDir(x, y));
-          setDominoState(x, y-1, DO_ST_UPRIGHT);
+          setDominoState(x, y-1, DO_ST_ASCENDER+7);
           setDominoType(x, y-1, DominoTypeAscender);
         }
         else
@@ -1234,22 +1234,6 @@ void levelPlayer_c::DTA_H(int x, int y) {
       return;
     }
 
-    if (getDominoYOffset(x, y) == -8 && y > 2)
-    {
-      if (getPlatform(x, y-3))
-      {
-        setDominoState(x, y, DO_ST_ASCENDER+15);
-      }
-    }
-
-    if (getDominoYOffset(x, y) == -6 && y > 2)
-    {
-      if (getPlatform(x, y-3))
-      {
-        setDominoState(x, y, DO_ST_ASCENDER+16);
-      }
-    }
-
     // normally raise the domino by 2 units
     setDominoYOffset(x, y, getDominoYOffset(x, y)-2);
 
@@ -1259,10 +1243,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
   // if the raiser had been pushed, set it loose
   if (riserDir != 0)
   {
-    // first reset to middle position
-    if (getDominoState(x, y) == DO_ST_ASCENDER+15)
-      setDominoState(x, y, DO_ST_ASCENDER+7);
-
+    setDominoState(x, y, DO_ST_ASCENDER+7);
     // then move it
     DTA_4(x, y);
   }
@@ -1286,17 +1267,20 @@ void levelPlayer_c::DTA_K(int x, int y)
     }
     else
     {
-      setDominoType(x+1, y, getDominoType(x, y));
-      setDominoState(x+1, y, 2);
-      setDominoDir(x+1, y, getDominoDir(x, y));
-      setDominoYOffset(x+1, y, 2);
+      if (x+1 < levelX())
+      {
+        setDominoType(x+1, y, getDominoType(x, y));
+        setDominoState(x+1, y, 2);
+        setDominoDir(x+1, y, getDominoDir(x, y));
+        setDominoYOffset(x+1, y, 2);
 
-      if (getPlatform(x+1, y+2))
-        setDominoExtra(x+1, y, 0x40);
-      else
-        setDominoExtra(x+1, y, 0x70);
+        if (getPlatform(x+1, y+2))
+          setDominoExtra(x+1, y, 0x40);
+        else
+          setDominoExtra(x+1, y, 0x70);
 
-      soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
+        soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
+      }
 
       removeDomino(x, y);
     }
@@ -1324,17 +1308,20 @@ void levelPlayer_c::DTA_1(int x, int y) {
     }
     else
     {
-      setDominoType(x-1, y, getDominoType(x, y));
-      setDominoState(x-1, y, 0xE);
-      setDominoDir(x-1, y, getDominoDir(x, y));
-      setDominoYOffset(x-1, y, 2);
+      if (x > 0)
+      {
+        setDominoType(x-1, y, getDominoType(x, y));
+        setDominoState(x-1, y, 0xE);
+        setDominoDir(x-1, y, getDominoDir(x, y));
+        setDominoYOffset(x-1, y, 2);
 
-      if (getPlatform(x-1, y+2))
-        setDominoExtra(x-1, y, 0x40);
-      else
-        setDominoExtra(x-1, y, 0x70);
+        if (getPlatform(x-1, y+2))
+          setDominoExtra(x-1, y, 0x40);
+        else
+          setDominoExtra(x-1, y, 0x70);
 
-      soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
+        soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
+      }
 
       removeDomino(x, y);
     }
@@ -1370,17 +1357,18 @@ void levelPlayer_c::DTA_6(int x, int y) {
           setDominoExtra(x-1, y, 0x40);
         else
           setDominoExtra(x-1, y, 0x70);
+
+        // TODO remainder of the old 2 block level code: when the tubler fell down a tile
+        // it was called again in the next row making one more step, we need to emulate that
+        // here
+        if (y % 2)
+          DTA_J(x-1, y);
       }
 
       soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
 
       removeDomino(x, y);
 
-      // TODO remainder of the old 2 block level code: when the tubler fell down a tile
-      // it was called again in the next row making one more step, we need to emulate that
-      // here
-      if (y % 2)
-        DTA_J(x-1, y);
     }
     return;
   }
@@ -1591,8 +1579,6 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y)
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 18, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,  4, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 24, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: ceiling flip
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 17, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: hiding behind platform
-    { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 17, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99 }, // ascender special: hiding behind platform
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 14, 14, 14, 14, 14, 14 }, // Crash
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 14, 14, 14, 14, 14, 14 }, // Crash
     { 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 14, 14, 14, 14, 14, 14 }, // Crash
