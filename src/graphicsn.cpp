@@ -1322,9 +1322,9 @@ void graphicsN_c::findDirtyBlocks(void)
     antImage = ant->getAnimationImage();
 
     for (int i = 0; i < 5; i++)
-      for (int j = 0; j < 9; j++)
+      for (int j = 0; j < 7; j++)
       {
-        dirty.markDirty(antX-2+i, antY-6+j);
+        dirty.markDirty(antX-2+i, antY-4+j);
       }
   }
 
