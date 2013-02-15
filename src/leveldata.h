@@ -205,6 +205,8 @@ class levelData_c {
     signed char   getDominoDir(unsigned int x, unsigned int y) const;
     unsigned char getDominoExtra(unsigned int x, unsigned int y) const;
     signed char getDominoYOffset(unsigned int x, unsigned int y) const;
+    bool dominoLeansLeft(unsigned int x, unsigned int y) const;
+    bool dominoLeansRight(unsigned int x, unsigned int y) const;
 
     void setDominoType(unsigned int x, unsigned int y, DominoType val);
     void setDominoState(unsigned int x, unsigned int y, int val);

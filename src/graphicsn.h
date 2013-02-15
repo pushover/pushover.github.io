@@ -78,6 +78,7 @@ class graphicsN_c : public graphics_c {
     // values bigger than the size of fgTiles means leave empty
     void getPlatformImage(size_t x, size_t y, uint16_t out[4]);
 
+    void drawDomino(uint16_t x, uint16_t y);
 
     std::string dataPath;
 

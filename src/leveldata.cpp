@@ -780,6 +780,44 @@ void levelData_c::setDominoYOffset(unsigned int x, unsigned int y, int val)
     assert(0);
 }
 
+bool levelData_c::dominoLeansLeft(unsigned int x, unsigned int y) const
+{
+  if (getDominoType(x, y) == DominoTypeEmpty)
+    return false;
+
+  int st = getDominoState(x, y);
+
+  if (st >= DO_ST_LEFT && st < DO_ST_UPRIGHT)
+    return true;
+  if (st >= DO_ST_SPLIT && st <= DO_ST_SPLIT_E)
+    return true;
+  if (st >= DO_ST_CRASH && st <= DO_ST_CRASH_E)
+    return true;
+  if (st >= DO_ST_ASCENDER && st < DO_ST_ASCENDER+7)
+    return true;
+
+  return false;
+}
+
+bool levelData_c::dominoLeansRight(unsigned int x, unsigned int y) const
+{
+  if (getDominoType(x, y) == DominoTypeEmpty)
+    return false;
+
+  int st = getDominoState(x, y);
+
+  if (st > DO_ST_UPRIGHT && st <= DO_ST_RIGHT)
+    return true;
+  if (st >= DO_ST_SPLIT && st <= DO_ST_SPLIT_E)
+    return true;
+  if (st >= DO_ST_CRASH && st <= DO_ST_CRASH_E)
+    return true;
+  if (st > DO_ST_ASCENDER+7 && st <= DO_ST_ASCENDER_E)
+    return true;
+
+  return false;
+}
+
 bool levelContainsDomino(const levelData_c & l, DominoType d)
 {
   for (size_t y = 0; y < l.levelY(); y++)
