@@ -1337,12 +1337,6 @@ void levelPlayer_c::DTA_6(int x, int y)
           setDominoExtra(x-1, y, 0x40);
         else
           setDominoExtra(x-1, y, 0x70);
-
-        // TODO remainder of the old 2 block level code: when the tubler fell down a tile
-        // it was called again in the next row making one more step, we need to emulate that
-        // here
-        if (y % 2)
-          DTA_J(x-1, y);
       }
 
       soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
