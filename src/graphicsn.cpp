@@ -175,12 +175,8 @@ static const int8_t dominoImages[DominoNumber][135] = {
     DO_ST_FALLING+0, DO_ST_FALLING+1, DO_ST_FALLING+2, DO_ST_FALLING+3, DO_ST_FALLING+4,
     DO_ST_FALLING+5, DO_ST_FALLING+6, DO_ST_FALLING+7, DO_ST_FALLING+8, DO_ST_FALLING+9,
     DO_ST_FALLING+10, DO_ST_FALLING+11, DO_ST_FALLING+12, DO_ST_FALLING+13, DO_ST_FALLING+14,
-    DO_ST_ASCENDER+0, DO_ST_ASCENDER+1, DO_ST_ASCENDER+2, DO_ST_ASCENDER+3, DO_ST_ASCENDER+4,
-    DO_ST_ASCENDER+5, DO_ST_ASCENDER+6, DO_ST_ASCENDER+7, DO_ST_ASCENDER+8, DO_ST_ASCENDER+9,
-    DO_ST_ASCENDER+10, DO_ST_ASCENDER+11, DO_ST_ASCENDER+12, DO_ST_ASCENDER+13, DO_ST_ASCENDER+14,
-    DO_ST_ASCENDER+15, DO_ST_ASCENDER+16,
-    RISER_CONT_START+0, RISER_CONT_START+1, RISER_CONT_START+2, RISER_CONT_START+3,
-    RISER_CONT_START+4, RISER_CONT_START+5, RISER_CONT_START+6, RISER_CONT_START+7,
+    -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2,
+    -2, -2, -2, -2, -2, -2, -2, -2,
     CARRIED_DOMINO_START+0, CARRIED_DOMINO_START+1, CARRIED_DOMINO_START+2, CARRIED_DOMINO_START+3,
     CARRIED_DOMINO_START+4, CARRIED_DOMINO_START+5, CARRIED_DOMINO_START+6, -1 },
   /* DominoTypeConnectedA */ {
@@ -300,9 +296,9 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
         assert(dominos[domino][dominoImages[domino][dominoIndex]] == 0);
         dominos[domino][dominoImages[domino][dominoIndex]] = v;
         png.skipLines(2);
-
-        dominoIndex++;
       }
+
+      dominoIndex++;
     }
   }
 
@@ -724,6 +720,7 @@ void graphicsN_c::drawAnt(void)
 
         int img = getMoveImage(a, ant->getAnimationImage());
 
+        assert(dominos[ant->getCarriedDomino()][img] != 0);
         target->blit(dominos[ant->getCarriedDomino()][img], x, y);
       }
     }
@@ -1039,7 +1036,12 @@ void graphicsN_c::drawDomino(uint16_t x, uint16_t y)
   int SpriteYPos = dominoYStart + y*blockY()/2;
   int SpriteXPos = -2*blockX() + x*blockX();
 
-  switch (level->getDominoState(x, y))
+  int ds = level->getDominoState(x, y);
+  int de = level->getDominoExtra(x, y);
+  int dx;
+  int dy;
+
+  switch (ds)
   {
     case DO_ST_ASCENDER+ 0:
     case DO_ST_ASCENDER+ 1:
@@ -1056,28 +1058,34 @@ void graphicsN_c::drawDomino(uint16_t x, uint16_t y)
     case DO_ST_ASCENDER+12:
     case DO_ST_ASCENDER+13:
     case DO_ST_ASCENDER+14:
-      target->blit(dominos[level->getDominoType(x, y)][StoneImageOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]],
-          SpriteXPos+XposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER],
-          SpriteYPos+YposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]+convertDominoY(level->getDominoYOffset(x, y)));
+      ds = StoneImageOffset[level->getDominoState(x, y)-DO_ST_ASCENDER];
+      dx = SpriteXPos+XposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER];
+      dy = SpriteYPos+YposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]+convertDominoY(level->getDominoYOffset(x, y));
       break;
 
     case DO_ST_SPLIT+1:
       // case, where the splitter just opened up
       // here we need to draw the splitting stone first
-      if (level->getDominoExtra(x, y) != 0)
+      if (de != 0)
       {
-        target->blit(dominos[level->getDominoExtra(x, y)][level->getDominoExtra(x, y)>=DominoTypeCrash0?DO_ST_LEFT:DO_ST_UPRIGHT],
-            SpriteXPos,
-            SpriteYPos-splitterY);
+        assert(dominos[de][de>=DominoTypeCrash0?DO_ST_CRASH:DO_ST_UPRIGHT]);
+        target->blit(dominos[de][de>=DominoTypeCrash0?DO_ST_CRASH:DO_ST_UPRIGHT], SpriteXPos, SpriteYPos-splitterY);
       }
       // fall through intentionally to paint actual domino
 
     default:
-      target->blit(dominos[level->getDominoType(x, y)][level->getDominoState(x, y)],
-          SpriteXPos,
-          SpriteYPos+convertDominoY(level->getDominoYOffset(x, y)));
+      dx = SpriteXPos;
+      dy = SpriteYPos+convertDominoY(level->getDominoYOffset(x, y));
       break;
   }
+
+  assert(dominos[dt][ds] != 0);
+  target->blit(dominos[dt][ds], dx, dy);
+}
+
+SDL_Surface * graphicsN_c::getHelpDominoImage(unsigned int domino) {
+  assert(dominos[domino][DO_ST_UPRIGHT] != 0);
+  return dominos[domino][DO_ST_UPRIGHT];
 }
 
 void graphicsN_c::drawDominos(void)
