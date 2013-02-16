@@ -505,6 +505,7 @@ void levelPlayer_c::DTA_4(int x, int y) {
       // next level until a bit later... but we do whick maked it
       // make another animation step, but we want to prevent that so
       // we add 1 here and subtract it on the next call see start of this function
+      // 30 recordings fail without this
       setDominoExtra(x, y+1, getDominoExtra(x, y)+1);
       setDominoDir(x, y+1, getDominoDir(x, y));
       setDominoYOffset(x, y+1, 0);
@@ -779,7 +780,8 @@ void levelPlayer_c::DTA_E(int x, int y) {
         // reaches that new tile. This results in a higher speed for the domino
         // the problem is now that that happens quite a bit more ofthen with
         // the new tiles that are only halve the hight so we need to
-        // move the domino back a bit so that is behaves identical in those caeses
+        // move the domino back a bit so that is behaves identical in those cases
+        // 32 recordings fail without this
         if (((y % 2) == 0) && (!getPlatform(x, y+2)))
           setDominoYOffset(x, y+1, -4);
         else
