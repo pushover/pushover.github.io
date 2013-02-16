@@ -1025,6 +1025,13 @@ void graphicsN_c::getPlatformImage(size_t x, size_t y, uint16_t out[])
 
 void graphicsN_c::drawDomino(uint16_t x, uint16_t y)
 {
+  static int XposOffset[] = { -40, -40, -31, -23, -10, -4, -2, 0, 2,  5, 10, 23,  31,  40,  40};
+  static int YposOffset[] = { -30, -21,  -9,  -4,   0,  0,  0, 0, 0,  0,  0, -4,  -9, -21, -30};
+  static int StoneImageOffset[] = {
+    DO_ST_FALLING+14, DO_ST_FALLING+13, DO_ST_FALLING+12, DO_ST_FALLING+11, DO_ST_FALLING+10,
+    DO_ST_FALLING+9, DO_ST_FALLING+8, DO_ST_FALLING+7, DO_ST_FALLING+6, DO_ST_FALLING+5,
+    DO_ST_FALLING+4, DO_ST_FALLING+3, DO_ST_FALLING+2, DO_ST_FALLING+1, DO_ST_FALLING+0 };
+
   DominoType dt = level->getDominoType(x, y);
 
   if (dt == DominoTypeEmpty) return;
@@ -1034,6 +1041,26 @@ void graphicsN_c::drawDomino(uint16_t x, uint16_t y)
 
   switch (level->getDominoState(x, y))
   {
+    case DO_ST_ASCENDER+ 0:
+    case DO_ST_ASCENDER+ 1:
+    case DO_ST_ASCENDER+ 2:
+    case DO_ST_ASCENDER+ 3:
+    case DO_ST_ASCENDER+ 4:
+    case DO_ST_ASCENDER+ 5:
+    case DO_ST_ASCENDER+ 6:
+    case DO_ST_ASCENDER+ 7:
+    case DO_ST_ASCENDER+ 8:
+    case DO_ST_ASCENDER+ 9:
+    case DO_ST_ASCENDER+10:
+    case DO_ST_ASCENDER+11:
+    case DO_ST_ASCENDER+12:
+    case DO_ST_ASCENDER+13:
+    case DO_ST_ASCENDER+14:
+      target->blit(dominos[level->getDominoType(x, y)][StoneImageOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]],
+          SpriteXPos+XposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER],
+          SpriteYPos+YposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]+convertDominoY(level->getDominoYOffset(x, y)));
+      break;
+
     case DO_ST_SPLIT+1:
       // case, where the splitter just opened up
       // here we need to draw the splitting stone first
