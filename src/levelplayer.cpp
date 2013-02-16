@@ -772,7 +772,15 @@ void levelPlayer_c::DTA_E(int x, int y) {
         setDominoType(x, y+1, getDominoType(x, y));
         setDominoState(x, y+1, getDominoState(x, y));
         setDominoDir(x, y+1, getDominoDir(x, y));
-        if (((y % 2) == 0) && ((size_t)(y+2) >= levelY() || !getPlatform(x, y+2)))
+
+        // TODO cruft, this is in here to ensure the same falling speed as
+        // in the original. Explanation: when a domino falls down one tile it
+        // gets processed again by the loop over the whole level when that loop
+        // reaches that new tile. This results in a higher speed for the domino
+        // the problem is now that that happens quite a bit more ofthen with
+        // the new tiles that are only halve the hight so we need to
+        // move the domino back a bit so that is behaves identical in those caeses
+        if (((y % 2) == 0) && (!getPlatform(x, y+2)))
           setDominoYOffset(x, y+1, -4);
         else
           setDominoYOffset(x, y+1, 0);
