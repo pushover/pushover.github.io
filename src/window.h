@@ -22,6 +22,7 @@
 #ifndef __WINDOW_H__
 #define __WINDOW_H__
 
+#include "leveldata.h"
 #include "ant.h"
 
 #include <string>
@@ -40,7 +41,6 @@
 
 class surface_c;
 class graphicsN_c;
-class levelData_c;
 
 class window_c {
 

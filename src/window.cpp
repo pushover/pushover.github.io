@@ -28,6 +28,7 @@
 #include "solvedmap.h"
 #include "leveldata.h"
 #include "config.h"
+#include "ant.h"
 
 #include <SDL.h>
 

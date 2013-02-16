@@ -21,6 +21,8 @@
 
 #include "pngloader.h"
 
+#include "screen.h"
+
 #include "../config.h"
 
 #include <iostream>

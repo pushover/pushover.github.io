@@ -75,14 +75,13 @@ typedef enum {
 #define DO_ST_FALLING    1  // stands for the initial state of the normally falling dominos
 #define DO_ST_FALLING_E 15  // final of the falling states
 
-// TODO right now the special ascender states interfere here, so later on
-
 #define DO_ST_EXPLODE   16  // exploder start state, representing the finished explosion
 #define DO_ST_EXPLODE_E 22  // exploder end state, representing the starting explosion
 
 #define DO_ST_SPLIT   23   // first of the non standard splitter states
 #define DO_ST_SPLIT_E 35   // last of the non standard splitter states
 
+// the states, where the domino clings to the ceiling
 #define DO_ST_ASCENDER   36
 #define DO_ST_ASCENDER_E 50
 

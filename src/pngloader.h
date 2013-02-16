@@ -27,7 +27,7 @@
  * in small portions
  */
 
-#include "screen.h"
+class surface_c;
 
 #include <png.h>
 #include <string>
