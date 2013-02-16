@@ -120,7 +120,7 @@ void levelPlayer_c::fallingDomino(int x, int y) {
   if (getDominoType(x, y) == DominoTypeAscender)
   {
     setDominoExtra(x, y, 0x60);
-    setDominoState(x, y, DO_ST_ASCENDER+7);
+    setDominoState(x, y, DO_ST_DOWNRIGHT);
   }
   else
   {
@@ -246,7 +246,7 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
       // we return false then pushing the riser, because it will rise
       // and the domino has to wait
     case DominoTypeAscender:
-      if (getDominoState(x, y) == DO_ST_ASCENDER+7) {
+      if (getDominoState(x, y) == DO_ST_DOWNRIGHT) {
         setDominoDir(x, y, dir);
       }
       else
@@ -401,7 +401,7 @@ void levelPlayer_c::DTA_2(int x, int y) {
   // far enough to the right, we can't fall farther
   if (getDominoType(x-2, y) != DominoTypeEmpty &&
       ((getDominoState(x-2, y) > DO_ST_UPRIGHT+5 && getDominoState(x-2, y) <= DO_ST_RIGHT) ||
-       (getDominoState(x-2, y) > DO_ST_ASCENDER+12 && getDominoState(x-2, y) <= DO_ST_ASCENDER+14))
+       (getDominoState(x-2, y) > DO_ST_DOWNRIGHT+5 && getDominoState(x-2, y) <= DO_ST_RIGHT_AS))
      )
     return;
 
@@ -497,7 +497,7 @@ void levelPlayer_c::DTA_4(int x, int y) {
       getDominoState(x, y) == DO_ST_FALLING+7 &&
       getDominoYOffset(x, y) == -10)
   {
-    setDominoState(x, y, DO_ST_ASCENDER+7);
+    setDominoState(x, y, DO_ST_DOWNRIGHT);
   }
 
   if (getDominoState(x, y) == DO_ST_UPRIGHT && !getPlatform(x, y+1) && (getDominoExtra(x, y) == 0x40 || getDominoExtra(x, y) == 0x70))
@@ -814,18 +814,18 @@ void levelPlayer_c::DTA_E(int x, int y) {
     // this sets the Ascender turning over again
     if (getDominoType(x, y+2) == DominoTypeAscender)
     {
-      if (getDominoState(x, y+2) == DO_ST_ASCENDER)
+      if (getDominoState(x, y+2) == DO_ST_LEFT_AS)
       {
-        setDominoState(x-1, y+4, DO_ST_ASCENDER+13);
+        setDominoState(x-1, y+4, DO_ST_RIGHT_AS-1);
         setDominoType(x-1, y+4, DominoTypeAscender);
         setDominoDir(x-1, y+4, -1);
         setDominoExtra(x-1, y+4, 0x00);
         setDominoYOffset(x-1, y+4, getDominoYOffset(x, y+2)-16);
         removeDomino(x, y+2);
       }
-      if (getDominoState(x, y+2) == DO_ST_ASCENDER+14)
+      if (getDominoState(x, y+2) == DO_ST_RIGHT_AS)
       {
-        setDominoState(x+1, y+4, DO_ST_ASCENDER+1);
+        setDominoState(x+1, y+4, DO_ST_LEFT_AS+1);
         setDominoType(x+1, y+4, DominoTypeAscender);
         setDominoDir(x+1, y+4, 1);
         setDominoExtra(x+1, y+4, 0x00);
@@ -1014,7 +1014,7 @@ void levelPlayer_c::DTA_A(int x, int y) {
       {
         setDominoExtra(x-1, y, 0x60);
         setDominoType(x-1, y, DominoTypeAscender);
-        setDominoState(x-1, y, DO_ST_ASCENDER+13);
+        setDominoState(x-1, y, DO_ST_RIGHT_AS-1);
         setDominoDir(x-1, y, -1);
         setDominoYOffset(x-1, y, getDominoYOffset(x, y)-2);
       }
@@ -1031,7 +1031,7 @@ void levelPlayer_c::DTA_A(int x, int y) {
         {
           setDominoExtra(x-1, y-2, 0x60);
           setDominoType(x-1, y-2, DominoTypeAscender);
-          setDominoState(x-1, y-2, DO_ST_ASCENDER+13);
+          setDominoState(x-1, y-2, DO_ST_RIGHT_AS-1);
           setDominoDir(x-1, y-2, -1);
           setDominoYOffset(x-1, y-2, getDominoYOffset(x, y)+14);
         }
@@ -1055,7 +1055,7 @@ void levelPlayer_c::DTA_A(int x, int y) {
     {
       setDominoExtra(x, y+2-a, 0x60);
       setDominoType(x, y+2-a, DominoTypeAscender);
-      setDominoState(x, y+2-a, DO_ST_ASCENDER+7);
+      setDominoState(x, y+2-a, DO_ST_DOWNRIGHT);
       setDominoDir(x, y+2-a, -1);
       setDominoYOffset(x, y+2-a, 0);
     }
@@ -1106,7 +1106,7 @@ void levelPlayer_c::DTA_O(int x, int y) {
       {
         setDominoExtra(x+1, y, 0x60);
         setDominoType(x+1, y, DominoTypeAscender);
-        setDominoState(x+1, y, DO_ST_ASCENDER+1);
+        setDominoState(x+1, y, DO_ST_LEFT_AS+1);
         setDominoDir(x+1, y, 1);
         setDominoYOffset(x+1, y, getDominoYOffset(x, y)-2);
       }
@@ -1123,7 +1123,7 @@ void levelPlayer_c::DTA_O(int x, int y) {
         {
           setDominoExtra(x+1, y-2, 0x60);
           setDominoType(x+1, y-2, DominoTypeAscender);
-          setDominoState(x+1, y-2, DO_ST_ASCENDER+1);
+          setDominoState(x+1, y-2, DO_ST_LEFT_AS+1);
           setDominoDir(x+1, y-2, 1);
           setDominoYOffset(x+1, y-2, getDominoYOffset(x, y)+14);
         }
@@ -1147,7 +1147,7 @@ void levelPlayer_c::DTA_O(int x, int y) {
     {
       setDominoExtra(x, y+2-a, 0x60);
       setDominoType(x, y+2-a, DominoTypeAscender);
-      setDominoState(x, y+2-a, DO_ST_ASCENDER+7);
+      setDominoState(x, y+2-a, DO_ST_DOWNRIGHT);
       setDominoDir(x, y+2-a, 1);
       setDominoYOffset(x, y+2-a, 0);
     }
@@ -1222,7 +1222,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
           setDominoExtra(x, y-1, 0x60);
           setDominoYOffset(x, y-1, -4);
           setDominoDir(x, y-1, getDominoDir(x, y));
-          setDominoState(x, y-1, DO_ST_ASCENDER+7);
+          setDominoState(x, y-1, DO_ST_DOWNRIGHT);
           setDominoType(x, y-1, DominoTypeAscender);
         }
         else
@@ -1245,7 +1245,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
   // if the raiser had been pushed, set it loose
   if (riserDir != 0)
   {
-    setDominoState(x, y, DO_ST_ASCENDER+7);
+    setDominoState(x, y, DO_ST_DOWNRIGHT);
     // then move it
     DTA_4(x, y);
   }
