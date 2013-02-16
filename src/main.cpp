@@ -453,52 +453,84 @@ int main(int argc, char * argv[]) {
           // now enter the new one
           switch (nextState) {
 
-            case ST_MAIN:     window = getMainWindow(screen, gr); break;
-            case ST_PROFILE_INIT:
-            case ST_PROFILE:  window = getProfileWindow(solved, screen, gr); break;
-            case ST_PROFILE_IN: window = getProfileInputWindow(screen, gr); break;
-            case ST_PROFILE_DEL: window = getProfileSelector(solved, screen, gr); break;
-            case ST_LEVELSET: window = getMissionWindow(*levelsetList, solved, screen, gr, selectedMission); break;
-            case ST_QUIT:     window = getQuitWindow(selectedMission != "", screen, gr); break;
-            case ST_LEVELCONF:
-            case ST_CONFIG:   window = getConfigWindow(screen, gr, conf, 0); break;
-            case ST_SOLVED:   window = getSolvedWindow(screen, gr); break;
-            case ST_ABOUT:    window = getAboutWindow(screen, gr); break;
-            case ST_FAILED:   window = getFailedWindow(failReason, screen, gr); break;
-            case ST_TIMEOUT:  window = getTimeoutWindow(screen, gr); break;
+            case ST_MAIN:
+              window = getMainWindow(screen, gr);
+              break;
 
+            case ST_PROFILE_INIT:
+            case ST_PROFILE:
+              window = getProfileWindow(solved, screen, gr);
+              break;
+
+            case ST_PROFILE_IN:
+              window = getProfileInputWindow(screen, gr);
+              break;
+
+            case ST_PROFILE_DEL:
+              window = getProfileSelector(solved, screen, gr);
+              break;
+
+            case ST_LEVELSET:
+              window = getMissionWindow(*levelsetList, solved, screen, gr, selectedMission);
+              break;
+
+            case ST_QUIT:
+              window = getQuitWindow(selectedMission != "", screen, gr);
+              break;
+
+            case ST_LEVELCONF:
+            case ST_CONFIG:
+              window = getConfigWindow(screen, gr, conf, 0);
+              break;
+
+            case ST_SOLVED:
+              window = getSolvedWindow(screen, gr);
+              break;
+
+            case ST_ABOUT:
+              window = getAboutWindow(screen, gr);
+              break;
+
+            case ST_FAILED:
+              window = getFailedWindow(failReason, screen, gr);
+              break;
+
+            case ST_TIMEOUT:
+              window = getTimeoutWindow(screen, gr);
+              break;
 
             case ST_LEVEL:
-                window = getLevelWindow(levelsetList->getLevelset(selectedMission), solved, screen, gr, lwindowLevel);
-                lwindowLevel = "";
-                break;
+              window = getLevelWindow(levelsetList->getLevelset(selectedMission), solved, screen, gr, lwindowLevel);
+              lwindowLevel = "";
+              break;
 
-            case ST_HELP:     window = new helpWindow_c(selectedMission, l, a.getCarriedDomino(), screen, gr);
-                              break;
+            case ST_HELP:
+              window = new helpWindow_c(selectedMission, l, a.getCarriedDomino(), screen, gr);
+              break;
 
             case ST_PREREPLAY:
             case ST_PREPLAY:
-                              gr.drawLevel();
-                              ticks = SDL_GetTicks();    // this might have taken some time so reinit the ticks
-                              break;
+              gr.drawLevel();
+              ticks = SDL_GetTicks();    // this might have taken some time so reinit the ticks
+              break;
 
             case ST_PLAY:
 #ifdef DEBUG
-                              tick = 0;
+              tick = 0;
 #endif
-                              ticks = SDL_GetTicks();    // the flip might have taken some time too long
-                              rec.setLevel(selectedMission, l.getName());
-                              rec.reset();
-                              break;
+              ticks = SDL_GetTicks();    // the flip might have taken some time too long
+              rec.setLevel(selectedMission, l.getName());
+              rec.reset();
+              break;
+
             case ST_INIT:
             case ST_REPLAY:
             case ST_FAILDELAY:
-                              break;
+              break;
 
             case ST_EXIT:
-                              exitProgram = true;
-                              break;
-
+              exitProgram = true;
+              break;
           }
 
           currentState = nextState;
