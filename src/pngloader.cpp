@@ -123,7 +123,9 @@ unsigned int pngLoader_c::getHeight(void) {
   return png_get_image_height(png_ptr, info_ptr);
 }
 
-void pngLoader_c::getPart(SDL_Surface * v) {
+void pngLoader_c::getPart(surface_c & v) {
+
+  if (!v.video) return;
 
   if (!png_ptr) return;
 
@@ -131,8 +133,8 @@ void pngLoader_c::getPart(SDL_Surface * v) {
     return;
   }
 
-  for (int i = 0; i < v->h; i++)
-    png_read_row(png_ptr, ((png_byte*)v->pixels) + i*v->pitch, 0);
+  for (int i = 0; i < v.video->h; i++)
+    png_read_row(png_ptr, ((png_byte*)v.video->pixels) + i*v.video->pitch, 0);
 }
 
 void pngLoader_c::skipLines(unsigned int lines) {

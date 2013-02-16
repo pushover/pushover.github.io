@@ -98,7 +98,7 @@ void window_c::clearInside(void) {
       if (j == 0) yp = 0;
       if (j+1 == h) yp = 2;
 
-      surf.blitBlock(gr.getBoxBlock(yp*3+xp), (x+i)*gr.blockX(), (y+j)*gr.blockY());
+      surf.blitBlock(*gr.getBoxBlock(yp*3+xp), (x+i)*gr.blockX(), (y+j)*gr.blockY());
     }
 }
 
@@ -290,7 +290,7 @@ void helpWindow_c::displayCurrentPage(void)
     s.fillRect(rlOffset+SX*column+TX+2, ypos+2, displaywidth-4, 75-4, TXT_COL_R, TXT_COL_G, TXT_COL_B);
 
     for (int i = 0; i < dominoHelp[page].numDominos; i++)
-      s.blitBlock(g.getHelpDominoImage(dominoHelp[page].dominos[i]),
+      s.blitBlock(*g.getHelpDominoImage(dominoHelp[page].dominos[i]),
           rlOffset+SX*column+TX-105+displaywidth/2+int(dominoHelp[page].spacing*(1.0*i-(dominoHelp[page].numDominos-1)*0.5)), ypos + 4);
 
     page++;

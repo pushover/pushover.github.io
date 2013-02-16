@@ -27,7 +27,8 @@
  * in small portions
  */
 
-#include <SDL.h>
+#include "screen.h"
+
 #include <png.h>
 #include <string>
 
@@ -54,7 +55,7 @@ class pngLoader_c {
      * image. The number of lines loaded is the height
      * of this surface
      */
-    void getPart(SDL_Surface * v);
+    void getPart(surface_c & v);
 
     void skipLines(unsigned int lines);
 };

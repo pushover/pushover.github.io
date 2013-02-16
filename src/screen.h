@@ -23,7 +23,6 @@
 #define __SCREEN_H__
 
 #include <SDL.h>
-
 #include <string>
 
 
@@ -34,6 +33,7 @@
  */
 
 class graphicsN_c;
+class pngLoader_c;
 
 /* the 3 available fonts, they are a fixed size and are supposed to contain
  * all the required letters
@@ -101,16 +101,15 @@ class surface_c {
     SDL_Surface * getIdentical(void) const;
 
     surface_c(void) : video(0) {}
-    surface_c(uint16_t x, uint16_t y, uint8_t alpha = SDL_ALPHA_OPAQUE);
+    surface_c(uint16_t x, uint16_t y, bool alpha = true);
     surface_c(SDL_Surface * c) : video(c) {}
     ~surface_c(void);
 
     // blit the complete surface s so that the lower left corner of x is at x, y
     // and nothing is drawn above the clip line
-    void blit(SDL_Surface * s, int x, int y, int clip = 0);
-    void blitBlock(SDL_Surface * s, int x, int y);
+    void blit(const surface_c & s, int x, int y, int clip = 0);
     void blitBlock(const surface_c & s, int x, int y);
-    void copy(surface_c & src, int x, int y, int w, int h);
+    void copy(const surface_c & src, int x, int y, int w, int h, int dx = 0, int dy = 0);
     void fillRect(int x, int y, int w, int h, int r, int g, int b, int a = SDL_ALPHA_OPAQUE);
 
     // render a given UFT-8 encoded text to the surface v into the given box
@@ -131,6 +130,8 @@ class surface_c {
 
     // apply the gradient within the given area
     void gradient(int x, int y, int w, int h);
+
+    friend class pngLoader_c;
 };
 
 class screen_c : public surface_c {

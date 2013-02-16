@@ -278,11 +278,8 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
       }
       else
       {
-
-        SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 58, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-        SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-        png.getPart(v);
+        surface_c * v = new surface_c(png.getWidth(), 58);
+        png.getPart(*v);
 
         assert(dominos[domino][dominoImages[domino][dominoIndex]] == 0);
         dominos[domino][dominoImages[domino][dominoIndex]] = v;
@@ -337,8 +334,7 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
       return;
     }
 
-    SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-    SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+    surface_c v(png.getWidth(), 48, false);
 
     for (int i = 0; i < 3; i++) {
 
@@ -346,13 +342,9 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
 
       for (int x = 0; x < 3; x++) {
 
-        SDL_Surface * w = SDL_CreateRGBSurface(0, 40, 48, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-        SDL_SetAlpha(w, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+        surface_c * w = new surface_c(40, 48);
 
-        for (unsigned int y = 0; y < 48; y++)
-          memcpy((char*)w->pixels+y*w->pitch,
-              (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
-              w->pitch);
+        w->copy(v, x*40, 0, 40, 48);
 
         boxBlocks.push_back(w);
       }
@@ -365,29 +357,29 @@ graphicsN_c::~graphicsN_c(void) {
 
   for (unsigned int i = 0; i < bgTiles.size(); i++)
     for (unsigned int j = 0; j < bgTiles[i].size(); j++)
-      SDL_FreeSurface(bgTiles[i][j]);
+      delete bgTiles[i][j];
 
   for (unsigned int i = 0; i < fgTiles.size(); i++)
     for (unsigned int j = 0; j < fgTiles[i].size(); j++)
-      SDL_FreeSurface(fgTiles[i][j]);
+      delete fgTiles[i][j];
 
   for (unsigned int i = 0; i < dominos.size(); i++)
     for (unsigned int j = 0; j < dominos[i].size(); j++)
       if (dominos[i][j])
-        SDL_FreeSurface(dominos[i][j]);
+        delete dominos[i][j];
 
   for (unsigned int i = 0; i < antImages.size(); i++)
     for (unsigned int j = 0; j < antImages[i].size(); j++)
       if (antImages[i][j].free)
-        SDL_FreeSurface(antImages[i][j].v);
+        delete antImages[i][j].v;
 
   for (unsigned int j = 0; j < boxBlocks.size(); j++)
-    SDL_FreeSurface(boxBlocks[j]);
+    delete boxBlocks[j];
 
   if (tutorial) delete tutorial;
 }
 
-void graphicsN_c::addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free) {
+void graphicsN_c::addAnt(unsigned int anim, unsigned int img, signed char yOffset, surface_c * v, bool free) {
 
   antSprite s;
   s.v = v;
@@ -403,23 +395,12 @@ void graphicsN_c::getAnimation(AntAnimationState anim, pngLoader_c * png) {
 
   for (unsigned int j = 0; j < ant_c::getAntImages(anim); j++) {
 
-    SDL_Surface * v = SDL_CreateRGBSurface(0, png->getWidth(), 75, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-    SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+    surface_c * v = new surface_c(png->getWidth(), 75);
+    png->getPart(*v);
+    v->fillRect(0, 0, 1, 75, 0, 0, 0, SDL_ALPHA_TRANSPARENT);
 
-    png->getPart(v);
-
-    int ofs = antOffsets[antOffsetPos++];
-
-    SDL_Rect dst;
-
-    dst.x = 0;
-    dst.y = 0;
-    dst.w = 1;
-    dst.h = 75;
-
-    SDL_FillRect(v, &dst, SDL_MapRGBA(v->format, 0, 0, 0, 0));
-
-    addAnt(anim, j, ofs, v);
+    addAnt(anim, j, antOffsets[antOffsetPos], v);
+    antOffsetPos++;
   }
 }
 
@@ -681,13 +662,13 @@ void graphicsN_c::drawLadders(bool before)
         if (dirty.isDirty(x, y))
         {
           if (level->getLadder(x, y))
-            target->blitBlock(fgTiles[curTheme][FG_LADDER_IDX+1], x*blockX(), y*blockY()/2);
+            target->blitBlock(*fgTiles[curTheme][FG_LADDER_IDX+1], x*blockX(), y*blockY()/2);
           else
           {
             if (y > 0 && level->getLadder(x, y-1))
-              target->blitBlock(fgTiles[curTheme][FG_LADDER_IDX+2], x*blockX(), y*blockY()/2);
+              target->blitBlock(*fgTiles[curTheme][FG_LADDER_IDX+2], x*blockX(), y*blockY()/2);
             if (y+1 < level->levelY() && level->getLadder(x, y+1))
-              target->blitBlock(fgTiles[curTheme][FG_LADDER_IDX+0], x*blockX(), y*blockY()/2+blockY()/4);
+              target->blitBlock(*fgTiles[curTheme][FG_LADDER_IDX+0], x*blockX(), y*blockY()/2+blockY()/4);
           }
         }
 }
@@ -712,14 +693,13 @@ void graphicsN_c::drawAnt(void)
         int img = getMoveImage(a, ant->getAnimationImage());
 
         assert(dominos[ant->getCarriedDomino()][img] != 0);
-        target->blit(dominos[ant->getCarriedDomino()][img], x, y);
+        target->blit(*dominos[ant->getCarriedDomino()][img], x, y);
       }
     }
 
     if (antImages[ant->getAnimation()][ant->getAnimationImage()].v)
     {
-      target->blit(
-          antImages[ant->getAnimation()][ant->getAnimationImage()].v, ant->getBlockX()*blockX()-45,
+      target->blit(*antImages[ant->getAnimation()][ant->getAnimationImage()].v, ant->getBlockX()*blockX()-45,
           (ant->getBlockY())*blockY()/2+antImages[ant->getAnimation()][ant->getAnimationImage()].ofs+antDisplace+3);
     }
   }
@@ -750,8 +730,7 @@ void graphicsN_c::setTheme(const std::string & name)
 
   pngLoader_c png(dataPath+"/themes/"+name+".png");
 
-  SDL_Surface * v = SDL_CreateRGBSurface(0, png.getWidth(), blockY(), 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-  SDL_SetAlpha(v, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+  surface_c v(png.getWidth(), blockY(), false);
 
   unsigned int xBlocks = png.getWidth()/blockX();
   unsigned int yBlocks = png.getHeight()/blockY();
@@ -786,25 +765,15 @@ void graphicsN_c::setTheme(const std::string & name)
           if (0 <= i && i <= 3)
           {
             // load a platform image, each platform image is plit into 4 parts each blockX/2 x blockY/2 in size
-            SDL_Surface * w1 = SDL_CreateRGBSurface(0, blockX()/2, blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-            SDL_SetAlpha(w1, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+            surface_c * w1 = new surface_c(blockX()/2, blockY()/2);
+            surface_c * w2 = new surface_c(blockX()/2, blockY()/2);
+            surface_c * w3 = new surface_c(blockX()/2, blockY()/2);
+            surface_c * w4 = new surface_c(blockX()/2, blockY()/2);
 
-            SDL_Surface * w2 = SDL_CreateRGBSurface(0, blockX()/2, blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-            SDL_SetAlpha(w2, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-            SDL_Surface * w3 = SDL_CreateRGBSurface(0, blockX()/2, blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-            SDL_SetAlpha(w3, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-            SDL_Surface * w4 = SDL_CreateRGBSurface(0, blockX()/2, blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-            SDL_SetAlpha(w4, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-            for (unsigned int y = 0; y < blockY()/2; y++)
-            {
-              memcpy((char*)w1->pixels+y*w1->pitch, (char*)v->pixels+(y+0*blockY()/2)*v->pitch+(x*40+ 0)*v->format->BytesPerPixel, w1->pitch);
-              memcpy((char*)w2->pixels+y*w2->pitch, (char*)v->pixels+(y+0*blockY()/2)*v->pitch+(x*40+20)*v->format->BytesPerPixel, w2->pitch);
-              memcpy((char*)w3->pixels+y*w3->pitch, (char*)v->pixels+(y+1*blockY()/2)*v->pitch+(x*40+ 0)*v->format->BytesPerPixel, w3->pitch);
-              memcpy((char*)w4->pixels+y*w4->pitch, (char*)v->pixels+(y+1*blockY()/2)*v->pitch+(x*40+20)*v->format->BytesPerPixel, w4->pitch);
-            }
+            w1->copy(v, x*blockX()           ,          0, blockX()/2, blockY()/2);
+            w2->copy(v, x*blockX()+blockX()/2,          0, blockX()/2, blockY()/2);
+            w3->copy(v, x*blockX()           , blockY()/2, blockX()/2, blockY()/2);
+            w4->copy(v, x*blockX()+blockX()/2, blockY()/2, blockX()/2, blockY()/2);
 
             if (FG_PLAT_IDX+16 >= fgTiles[curTheme].size())
               fgTiles[curTheme].resize(FG_PLAT_IDX+16);
@@ -819,33 +788,13 @@ void graphicsN_c::setTheme(const std::string & name)
             // load the ladder image, the ladder image is divided into 3 parts,
             // the top 12 pixel, middle 24 pixels and the bottom 12 pixels
             //
-            SDL_Surface * w1 = SDL_CreateRGBSurface(0, blockX(), blockY()/4, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-            SDL_SetAlpha(w1, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+            surface_c * w1 = new surface_c(blockX(), blockY()/4);
+            surface_c * w2 = new surface_c(blockX(), blockY()/2);
+            surface_c * w3 = new surface_c(blockX(), blockY()/4);
 
-            SDL_Surface * w2 = SDL_CreateRGBSurface(0, blockX(), blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-            SDL_SetAlpha(w2, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-            SDL_Surface * w3 = SDL_CreateRGBSurface(0, blockX(), blockY()/4, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-            SDL_SetAlpha(w2, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-            for (unsigned int y = 0; y < blockY()/4; y++)
-            {
-              memcpy((char*)w1->pixels+y*w1->pitch,
-                  (char*)v->pixels+(y+0*blockY()/4)*v->pitch+x*40*v->format->BytesPerPixel,
-                  w1->pitch);
-
-              memcpy((char*)w2->pixels+y*w2->pitch,
-                  (char*)v->pixels+(y+1*blockY()/4)*v->pitch+x*40*v->format->BytesPerPixel,
-                  w2->pitch);
-
-              memcpy((char*)w2->pixels+(y+blockY()/4)*w2->pitch,
-                  (char*)v->pixels+(y+2*blockY()/4)*v->pitch+x*40*v->format->BytesPerPixel,
-                  w2->pitch);
-
-              memcpy((char*)w3->pixels+y*w3->pitch,
-                  (char*)v->pixels+(y+3*blockY()/4)*v->pitch+x*40*v->format->BytesPerPixel,
-                  w3->pitch);
-            }
+            w1->copy(v, x*blockX(),            0, blockX(), blockY()/4);
+            w2->copy(v, x*blockX(),   blockY()/4, blockX(), blockY()/2);
+            w3->copy(v, x*blockX(), 3*blockY()/4, blockX(), blockY()/4);
 
             if (FG_LADDER_IDX+3 >= fgTiles[curTheme].size())
               fgTiles[curTheme].resize(FG_LADDER_IDX+3);
@@ -859,21 +808,11 @@ void graphicsN_c::setTheme(const std::string & name)
             // load door image, the door image is simply split
             // into the 2 haves each 24 pixel high
 
-            SDL_Surface * w1 = SDL_CreateRGBSurface(0, blockX(), blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-            SDL_SetAlpha(w1, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+            surface_c * w1 = new surface_c(blockX(), blockY()/2);
+            surface_c * w2 = new surface_c(blockX(), blockY()/2);
 
-            SDL_Surface * w2 = SDL_CreateRGBSurface(0, blockX(), blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-            SDL_SetAlpha(w2, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-            for (unsigned int y = 0; y < blockY()/2; y++)
-            {
-              memcpy((char*)w1->pixels+y*w1->pitch,
-                  (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
-                  w1->pitch);
-              memcpy((char*)w2->pixels+y*w2->pitch,
-                  (char*)v->pixels+(y+blockY()/2)*v->pitch+x*40*v->format->BytesPerPixel,
-                  w2->pitch);
-            }
+            w1->copy(v, x*blockX(),          0, blockX(), blockY()/2);
+            w2->copy(v, x*blockX(), blockY()/2, blockX(), blockY()/2);
 
             if (FG_DOORSTART+9 >= fgTiles[curTheme].size())
               fgTiles[curTheme].resize(FG_DOORSTART+9);
@@ -893,21 +832,11 @@ void graphicsN_c::setTheme(const std::string & name)
 
         if (x < xBlocks)
         {
-          SDL_Surface * w1 = SDL_CreateRGBSurface(0, blockX(), blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-          SDL_SetAlpha(w1, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+          surface_c * w1 = new surface_c(blockX(), blockY()/2);
+          surface_c * w2 = new surface_c(blockX(), blockY()/2);
 
-          SDL_Surface * w2 = SDL_CreateRGBSurface(0, blockX(), blockY()/2, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-          SDL_SetAlpha(w2, SDL_SRCALPHA | SDL_RLEACCEL, 0);
-
-          for (unsigned int y = 0; y < blockY()/2; y++)
-          {
-            memcpy((char*)w1->pixels+y*w1->pitch,
-                   (char*)v->pixels+y*v->pitch+x*40*v->format->BytesPerPixel,
-                   w1->pitch);
-            memcpy((char*)w2->pixels+y*w2->pitch,
-                   (char*)v->pixels+(y+blockY()/2)*v->pitch+x*40*v->format->BytesPerPixel,
-                   w2->pitch);
-          }
+          w1->copy(v, x*blockX(),          0, blockX(), blockY()/2);
+          w2->copy(v, x*blockX(), blockY()/2, blockX(), blockY()/2);
 
           if (2*i+1 >= bgTiles[curTheme].size())
             bgTiles[curTheme].resize(2*i+2);
@@ -920,8 +849,6 @@ void graphicsN_c::setTheme(const std::string & name)
 
     yPos++;
   }
-
-  SDL_FreeSurface(v);
 }
 
 void graphicsN_c::setPaintData(const levelData_c * l, const ant_c * a, surface_c * t)
@@ -1074,7 +1001,7 @@ void graphicsN_c::drawDomino(uint16_t x, uint16_t y)
       if (de != 0)
       {
         assert(dominos[de][de>=DominoTypeCrash0?DO_ST_CRASH:DO_ST_UPRIGHT]);
-        target->blit(dominos[de][de>=DominoTypeCrash0?DO_ST_CRASH:DO_ST_UPRIGHT], SpriteXPos, SpriteYPos-splitterY);
+        target->blit(*dominos[de][de>=DominoTypeCrash0?DO_ST_CRASH:DO_ST_UPRIGHT], SpriteXPos, SpriteYPos-splitterY);
       }
       // fall through intentionally to paint actual domino
 
@@ -1085,10 +1012,10 @@ void graphicsN_c::drawDomino(uint16_t x, uint16_t y)
   }
 
   assert(dominos[dt][ds] != 0);
-  target->blit(dominos[dt][ds], dx, dy, dc);
+  target->blit(*dominos[dt][ds], dx, dy, dc);
 }
 
-SDL_Surface * graphicsN_c::getHelpDominoImage(unsigned int domino) {
+const surface_c * graphicsN_c::getHelpDominoImage(unsigned int domino) {
   assert(dominos[domino][DO_ST_UPRIGHT] != 0);
   return dominos[domino][DO_ST_UPRIGHT];
 }
@@ -1105,18 +1032,18 @@ void graphicsN_c::drawDominos(void)
       if (dirtybg.isDirty(x, y))
       {
         for (unsigned char b = 0; b < level->getNumBgLayer(); b++)
-          background->blitBlock(bgTiles[curTheme][level->getBg(x, y, b)], x*blockX(), y*blockY()/2);
+          background->blitBlock(*(bgTiles[curTheme][level->getBg(x, y, b)]), x*blockX(), y*blockY()/2);
 
         // blit the doors
         if (x == level->getEntryX() && y+2 == level->getEntryY())
-          background->blitBlock(fgTiles[curTheme][FG_DOORSTART+0+2*level->getEntryState()], x*blockX(), y*blockY()/2);
+          background->blitBlock(*fgTiles[curTheme][FG_DOORSTART+0+2*level->getEntryState()], x*blockX(), y*blockY()/2);
         if (x == level->getEntryX() && y+1 == level->getEntryY())
-          background->blitBlock(fgTiles[curTheme][FG_DOORSTART+1+2*level->getEntryState()], x*blockX(), y*blockY()/2);
+          background->blitBlock(*fgTiles[curTheme][FG_DOORSTART+1+2*level->getEntryState()], x*blockX(), y*blockY()/2);
 
         if (x == level->getExitX() && y+2 == level->getExitY())
-          background->blitBlock(fgTiles[curTheme][FG_DOORSTART+0+2*level->getExitState()], x*blockX(), y*blockY()/2);
+          background->blitBlock(*fgTiles[curTheme][FG_DOORSTART+0+2*level->getExitState()], x*blockX(), y*blockY()/2);
         if (x == level->getExitX() && y+1 == level->getExitY())
-          background->blitBlock(fgTiles[curTheme][FG_DOORSTART+1+2*level->getExitState()], x*blockX(), y*blockY()/2);
+          background->blitBlock(*fgTiles[curTheme][FG_DOORSTART+1+2*level->getExitState()], x*blockX(), y*blockY()/2);
 
         // blit the platform images
         {
@@ -1125,14 +1052,14 @@ void graphicsN_c::drawDominos(void)
           getPlatformImage(x, y, s);
 
           if (s[0] < fgTiles[curTheme].size())
-            background->blitBlock(fgTiles[curTheme][s[0]], x*blockX(), y*blockY()/2);
+            background->blitBlock(*fgTiles[curTheme][s[0]], x*blockX(), y*blockY()/2);
           if (s[1] < fgTiles[curTheme].size())
-            background->blitBlock(fgTiles[curTheme][s[1]], x*blockX(), y*blockY()/2);
+            background->blitBlock(*fgTiles[curTheme][s[1]], x*blockX(), y*blockY()/2);
 
           if (s[2] < fgTiles[curTheme].size())
-            background->blitBlock(fgTiles[curTheme][s[2]], x*blockX()+blockX()/2, y*blockY()/2);
+            background->blitBlock(*fgTiles[curTheme][s[2]], x*blockX()+blockX()/2, y*blockY()/2);
           if (s[3] < fgTiles[curTheme].size())
-            background->blitBlock(fgTiles[curTheme][s[3]], x*blockX()+blockX()/2, y*blockY()/2);
+            background->blitBlock(*fgTiles[curTheme][s[3]], x*blockX()+blockX()/2, y*blockY()/2);
         }
 
         background->gradient(blockX()*x, blockY()/2*y, blockX(), blockY()/2);
@@ -1145,7 +1072,7 @@ void graphicsN_c::drawDominos(void)
   for (unsigned int y = 0; y < level->levelY(); y++)
     for (unsigned int x = 0; x < level->levelX(); x++)
       if (dirty.isDirty(x, y))
-        target->copy(*background, x*blockX(), y*blockY()/2, blockX(), blockY()/2);
+        target->copy(*background, x*blockX(), y*blockY()/2, blockX(), blockY()/2, x*blockX(), y*blockY()/2);
 
 
   // the idea behind this code is to repaint the dirty blocks. Dominos that are actually

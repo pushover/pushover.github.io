@@ -56,9 +56,9 @@ class graphicsN_c : public graphics_c {
 
     void drawLevel(void);
 
-    SDL_Surface * getBoxBlock(unsigned int num) { return boxBlocks[num]; }
+    surface_c * getBoxBlock(unsigned int num) { return boxBlocks[num]; }
     // get domino animation image
-    SDL_Surface * getHelpDominoImage(unsigned int domino);
+    const surface_c * getHelpDominoImage(unsigned int domino);
 
 #ifdef DEBUG
     void togglegrid(void) { grid = ! grid; }
@@ -71,7 +71,7 @@ class graphicsN_c : public graphics_c {
     // you must also provide an y-offset used when animating to displace the image
     // if free is false it is assumed that the surface is used elsewhere and not freed
     // on deletion of object
-    void addAnt(unsigned int anim, unsigned int img, signed char yOffset, SDL_Surface * v, bool free = true);
+    void addAnt(unsigned int anim, unsigned int img, signed char yOffset, surface_c * v, bool free = true);
     void getAnimation(AntAnimationState anim, pngLoader_c * png);
 
     // get index into the fg tiles for the tile at position x, y
@@ -107,15 +107,15 @@ class graphicsN_c : public graphics_c {
 
     std::vector<std::string> themeNames;
 
-    std::vector<std::vector<SDL_Surface *> > bgTiles;
-    std::vector<std::vector<SDL_Surface *> > fgTiles;
+    std::vector<std::vector<surface_c *> > bgTiles;
+    std::vector<std::vector<surface_c *> > fgTiles;
 
-    std::vector<std::vector<SDL_Surface *> > dominos;
+    std::vector<std::vector<surface_c *> > dominos;
 
-    std::vector<SDL_Surface *> boxBlocks;
+    std::vector<surface_c *> boxBlocks;
 
     typedef struct {
-      SDL_Surface * v;
+      surface_c * v;
       int ofs;
       bool free;
     } antSprite;

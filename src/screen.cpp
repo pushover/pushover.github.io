@@ -41,10 +41,13 @@ screen_c::screen_c(const graphicsN_c & g) :
   SDL_WM_SetCaption("Pushover", "Pushover");
 }
 
-surface_c::surface_c(uint16_t x, uint16_t y, uint8_t alpha)
+surface_c::surface_c(uint16_t x, uint16_t y, bool alpha)
 {
   video = SDL_CreateRGBSurface(0, x, y, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
-  SDL_SetAlpha(video, SDL_SRCALPHA | SDL_RLEACCEL, alpha);
+  if (alpha)
+    SDL_SetAlpha(video, SDL_SRCALPHA | SDL_RLEACCEL, SDL_ALPHA_OPAQUE);
+  else
+    SDL_SetAlpha(video, 0, 0);
 }
 
 screen_c::~screen_c(void) { }
@@ -52,7 +55,6 @@ screen_c::~screen_c(void) { }
 surface_c::~surface_c(void)
 {
   if (video) SDL_FreeSurface(video);
-
 }
 
 void screen_c::toggleFullscreen(void)
@@ -72,21 +74,21 @@ void bitfield_c::markAllDirty(void)
     dynamicDirty[y] = 0xFFFFFFFF;
 }
 
-void surface_c::blit(SDL_Surface * s, int x, int y, int clip) {
+void surface_c::blit(const surface_c & s, int x, int y, int clip) {
 
-  if (s && video)
+  if (s.video && video)
   {
     SDL_Rect dst, src;
 
     dst.x = x;
-    dst.y = y - s->h;
-    dst.w = s->w;
-    dst.h = s->h;
+    dst.y = y - s.video->h;
+    dst.w = s.video->w;
+    dst.h = s.video->h;
 
     src.x = 0;
     src.y = 0;
-    src.w = s->w;
-    src.h = s->h;
+    src.w = s.video->w;
+    src.h = s.video->h;
 
     if (dst.y < clip)
     {
@@ -99,7 +101,7 @@ void surface_c::blit(SDL_Surface * s, int x, int y, int clip) {
       dst.h -= cl;
     }
 
-    SDL_BlitSurface(s, &src, video, &dst);
+    SDL_BlitSurface(s.video, &src, video, &dst);
   }
 }
 
@@ -130,30 +132,18 @@ void surface_c::fillRect(int x, int y, int w, int h, int r, int g, int b, int a)
   }
 }
 
-void surface_c::blitBlock(SDL_Surface * s, int x, int y) {
-
-  if (s && video)
-  {
-    SDL_Rect dst;
-
-    dst.x = x;
-    dst.y = y;
-    dst.w = s->w;
-    dst.h = s->h;
-
-    SDL_BlitSurface(s, 0, video, &dst);
-  }
-}
-
-void surface_c::copy(surface_c & s, int x, int y, int w, int h) {
+void surface_c::copy(const surface_c & s, int x, int y, int w, int h, int dx, int dy) {
 
   if (s.video && video)
   {
     SDL_Rect src, dst;
-    src.x = dst.x = x;
-    src.y = dst.y = y;
+    src.x = x;
+    src.y = y;
     src.w = dst.w = w;
     src.h = dst.h = h;
+    dst.x = dx;
+    dst.y = dy;
+
     SDL_BlitSurface(s.video, &src, video, &dst);
   }
 }
