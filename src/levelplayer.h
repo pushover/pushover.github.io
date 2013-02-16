@@ -34,7 +34,7 @@ class levelPlayer_c : public levelData_c {
 
     // returns true, if there are still counter stoppers
     // of num or bigger (num = DominoTypeCounter1, 2 or 3) that are not falling
-    bool CounterStopper(int num);
+    bool CounterStopper(DominoType num);
 
     // calls the different states of the dominos
     void callStateFunction(int type, int state, int x, int y);

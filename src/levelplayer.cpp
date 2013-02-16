@@ -91,18 +91,18 @@ DominoType levelPlayer_c::pickUpDomino(int x, int y) {
 
 void levelPlayer_c::putDownDomino(int x, int y, DominoType domino, bool pushin) {
 
-  if (getDominoType(x, y) != 0)
+  if (getDominoType(x, y) != DominoTypeEmpty)
   { // there is a domino in the place where we want to put our domino
     if (pushin)
       DominoCrash(x, y, domino, 0);
     else
       DominoCrash(x, y, domino, 0x70);
   }
-  else if (x > 0 && (getDominoType(x-1, y) != DominoTypeEmpty) && (getDominoState(x-1, y) >= 12) && (getDominoState(x-1, y) <= 15))
+  else if ((getDominoType(x-1, y) != DominoTypeEmpty) && (getDominoState(x-1, y) >= DO_ST_UPRIGHT+4) && (getDominoState(x-1, y) <= DO_ST_RIGHT))
   { // there is no domino in our place but the left neighbor is falling towards us
     DominoCrash(x, y, domino, 0);
   }
-  else if ((size_t)x < levelX() && (getDominoType(x+1, y) != DominoTypeEmpty) && getDominoState(x+1, y) <= 4)
+  else if ((getDominoType(x+1, y) != DominoTypeEmpty) && getDominoState(x+1, y) <= DO_ST_UPRIGHT-4)
   { // there is no domino in our place but the right neighbor is falling towards us
     DominoCrash(x, y, domino, 0);
   }
@@ -123,7 +123,9 @@ void levelPlayer_c::fallingDomino(int x, int y) {
     setDominoState(x, y, DO_ST_ASCENDER+7);
   }
   else
+  {
     setDominoExtra(x, y, 0x70);
+  }
 
   soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
 }
@@ -192,7 +194,7 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
     case DominoTypeBridger:
     case DominoTypeVanish:
     case DominoTypeTrigger:
-      if (getDominoState(x, y) == 8) {
+      if (getDominoState(x, y) == DO_ST_UPRIGHT) {
         soundSystem_c::instance()->startSound(getDominoType(x, y)-1);
         setDominoDir(x, y, dir);
         setDominoState(x, y, getDominoState(x, y)+dir);
@@ -202,7 +204,7 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
       // the splitter is special it only falls in the left direction
       // even though the pieces fall in both directions
     case DominoTypeSplitter:
-      if (getDominoState(x, y) == 8) {
+      if (getDominoState(x, y) == DO_ST_UPRIGHT) {
         soundSystem_c::instance()->startSound(soundSystem_c::SE_SPLITTER);
         setDominoDir(x, y, -1);
         setDominoState(x, y, DO_ST_SPLIT);
@@ -214,7 +216,7 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
       // we also need to delay the domino falling against this domino, so
       // return false
     case DominoTypeExploder:
-      if (getDominoState(x, y) == 8) {
+      if (getDominoState(x, y) == DO_ST_UPRIGHT) {
         soundSystem_c::instance()->startSound(soundSystem_c::SE_EXPLODER);
         setDominoDir(x, y, -1);
         setDominoState(x, y, DO_ST_EXPLODE_E);
@@ -230,7 +232,7 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
       // already running, if it is, we don't push
       // otherwise we start the delay
     case DominoTypeDelay:
-      if (getDominoState(x, y) == 8) {
+      if (getDominoState(x, y) == DO_ST_UPRIGHT) {
         if (getDominoExtra(x, y) == 0) {
           soundSystem_c::instance()->startSound(soundSystem_c::SE_DELAY);
           setDominoDir(x, y, dir);
@@ -249,7 +251,7 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
       }
       else
       {
-        if (getDominoState(x, y) == 8 && getDominoYOffset(x, y) > -6) {
+        if (getDominoState(x, y) == DO_ST_UPRIGHT && getDominoYOffset(x, y) > -6) {
           if (getDominoExtra(x, y) != 0x60) {
             soundSystem_c::instance()->startSound(soundSystem_c::SE_ASCENDER);
           }
@@ -267,13 +269,13 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
         for (size_t yp = 0; yp < levelY(); yp++)
           for (size_t xp = 0; xp < levelX(); xp++)
           {
-            if (getDominoType(xp, yp) == DominoTypeConnectedA && getDominoState(xp, yp) == 8)
+            if (getDominoType(xp, yp) == DominoTypeConnectedA && getDominoState(xp, yp) == DO_ST_UPRIGHT)
             {
               sound = true;
               setDominoDir(xp, yp, dir);
               setDominoState(xp, yp, getDominoState(xp, yp)+dir);
             }
-            if (getDominoType(xp, yp) == DominoTypeConnectedB && getDominoState(xp, yp) == 8)
+            if (getDominoType(xp, yp) == DominoTypeConnectedB && getDominoState(xp, yp) == DO_ST_UPRIGHT)
             {
               sound = true;
               setDominoDir(xp, yp, -dir);
@@ -292,13 +294,13 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
         for (size_t yp = 0; yp < levelY(); yp++)
           for (size_t xp = 0; xp < levelX(); xp++)
           {
-            if (getDominoType(xp, yp) == DominoTypeConnectedB && getDominoState(xp, yp) == 8)
+            if (getDominoType(xp, yp) == DominoTypeConnectedB && getDominoState(xp, yp) == DO_ST_UPRIGHT)
             {
               sound = true;
               setDominoDir(xp, yp, dir);
               setDominoState(xp, yp, getDominoState(xp, yp)+dir);
             }
-            if (getDominoType(xp, yp) == DominoTypeConnectedA && getDominoState(xp, yp) == 8)
+            if (getDominoType(xp, yp) == DominoTypeConnectedA && getDominoState(xp, yp) == DO_ST_UPRIGHT)
             {
               sound = true;
               setDominoDir(xp, yp, -dir);
@@ -316,7 +318,7 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
     case DominoTypeCounter2:
     case DominoTypeCounter3:
       {
-        if (getDominoState(x, y) == 8)
+        if (getDominoState(x, y) == DO_ST_UPRIGHT)
         {
           setDominoDir(x, y, dir);
           if (CounterStopper(getDominoType(x, y)))
@@ -392,13 +394,13 @@ void levelPlayer_c::DTA_2(int x, int y) {
   }
 
   // if there is a domino left of us, we can't fall down further
-  if ((x > 0) && getDominoType(x-1, y) != 0)
+  if (getDominoType(x-1, y) != DominoTypeEmpty)
     return;
 
   // if here is a domino 2 to the left of us and that domino has fallen down
   // far enough to the right, we can't fall farther
-  if (x >= 2 && getDominoType(x-2, y) != 0 &&
-      ((getDominoState(x-2, y) > 13 && getDominoState(x-2, y) <= 15) ||
+  if (getDominoType(x-2, y) != DominoTypeEmpty &&
+      ((getDominoState(x-2, y) > DO_ST_UPRIGHT+5 && getDominoState(x-2, y) <= DO_ST_RIGHT) ||
        (getDominoState(x-2, y) > DO_ST_ASCENDER+12 && getDominoState(x-2, y) <= DO_ST_ASCENDER+14))
      )
     return;
@@ -436,13 +438,13 @@ void levelPlayer_c::DTA_J(int x, int y) {
   }
 
   // if our right neighbor if not empty, we stop
-  if (getDominoType(x+1, y) != 0)
+  if (getDominoType(x+1, y) != DominoTypeEmpty)
     return;
 
   // if the 2nd next right neighbor is not empty and far enough fallen to the left
   // we stop
   if ((size_t)(x+2) < levelX() &&
-        (   (getDominoType(x+2, y) != 0 && getDominoState(x+2, y) < 3)
+        (   (getDominoType(x+2, y) != DominoTypeEmpty && getDominoState(x+2, y) < DO_ST_UPRIGHT-5)
             // TODO remove, this special case has to be here because the old
             // exploder used to "fall left" when regarded by the states
             // this could be removed at the cost of a recording
@@ -498,7 +500,7 @@ void levelPlayer_c::DTA_4(int x, int y) {
     setDominoState(x, y, DO_ST_ASCENDER+7);
   }
 
-  if (getDominoState(x, y) == 8 && ((size_t)(y+1) >= levelY() || !getPlatform(x, y+1)) && (getDominoExtra(x, y) == 0x40 || getDominoExtra(x, y) == 0x70))
+  if (getDominoState(x, y) == DO_ST_UPRIGHT && !getPlatform(x, y+1) && (getDominoExtra(x, y) == 0x40 || getDominoExtra(x, y) == 0x70))
   {
     if ((size_t)(y+1) < levelY())
     {
@@ -533,11 +535,11 @@ void levelPlayer_c::DTA_5(int x, int y) {
 void levelPlayer_c::DTA_3(int x, int y) {
 
   // if we hit a step, stop falling
-  if (x > 0 && getPlatform(x-1, y))
+  if (getPlatform(x-1, y))
     return;
 
   // if the next domino is empty, continue falling
-  if (x == 0 || getDominoType(x-1, y) == DominoTypeEmpty) {
+  if (getDominoType(x-1, y) == DominoTypeEmpty) {
     DTA_4(x, y);
     return;
   }
@@ -560,7 +562,7 @@ void levelPlayer_c::DTA_3(int x, int y) {
   // it has started falling as well
   if (getDominoType(x-1, y) == DominoTypeDelay)
   {
-    if (getDominoState(x-1, y) != 8) {
+    if (getDominoState(x-1, y) != DO_ST_UPRIGHT) {
       DTA_4(x, y);
       return;
     }
@@ -583,7 +585,7 @@ void levelPlayer_c::DTA_3(int x, int y) {
 
   // if the right neighbor is a splitter and the splitter is already fallen
   // we try to continue falling
-  if (getDominoType(x+1, y) == DominoTypeSplitter && getDominoState(x+1, y) != 8)
+  if (getDominoType(x+1, y) == DominoTypeSplitter && getDominoState(x+1, y) != DO_ST_UPRIGHT)
   {
     if (pushDomino(x-1, y, -1))
       DTA_4(x, y);
@@ -591,7 +593,7 @@ void levelPlayer_c::DTA_3(int x, int y) {
   }
 
   // if there is a domino to the right of us that has fallen we try to continue
-  if (getDominoType(x+1, y) != DominoTypeEmpty && getDominoState(x+1, y) < 8)
+  if (getDominoType(x+1, y) != DominoTypeEmpty && getDominoState(x+1, y) < DO_ST_UPRIGHT)
   {
     if (pushDomino(x-1, y, -1))
       DTA_4(x, y);
@@ -608,7 +610,7 @@ void levelPlayer_c::DTA_3(int x, int y) {
 // same as DTA_3 but for the right direction
 void levelPlayer_c::DTA_I(int x, int y) {
 
-  if ((size_t)(x+1) < levelX() && getPlatform(x+1, y))
+  if (getPlatform(x+1, y))
     return;
 
   if (getDominoType(x+1, y) == DominoTypeEmpty) {
@@ -630,7 +632,7 @@ void levelPlayer_c::DTA_I(int x, int y) {
 
   if (getDominoType(x+1, y) == DominoTypeDelay)
   {
-    if (getDominoState(x+1, y) != 8) {
+    if (getDominoState(x+1, y) != DO_ST_UPRIGHT) {
       DTA_4(x, y);
       return;
     }
@@ -649,14 +651,14 @@ void levelPlayer_c::DTA_I(int x, int y) {
       }
   }
 
-  if (getDominoType(x-1, y) == DominoTypeSplitter && getDominoState(x-1, y) != 8)
+  if (getDominoType(x-1, y) == DominoTypeSplitter && getDominoState(x-1, y) != DO_ST_UPRIGHT)
   {
     if (pushDomino(x+1, y, 1))
       DTA_4(x, y);
     return;
   }
 
-  if (getDominoType(x-1, y) != DominoTypeEmpty && getDominoState(x-1, y) > 8)
+  if (getDominoType(x-1, y) != DominoTypeEmpty && (getDominoState(x-1, y) > DO_ST_UPRIGHT && getDominoState(x-1, y) <= DO_ST_RIGHT))
   {
     if (pushDomino(x+1, y, 1))
       DTA_4(x, y);
@@ -842,7 +844,7 @@ void levelPlayer_c::DTA_E(int x, int y) {
 
   // we can continue, if there is either no domino or no more
   // level below us
-  if ((size_t)(y+2) >= levelY() || getDominoType(x, y+2) == DominoTypeEmpty || getDominoYOffset(x, y+2) != 0)
+  if (getDominoType(x, y+2) == DominoTypeEmpty || getDominoYOffset(x, y+2) != 0)
   {
     setDominoYOffset(x, y, getDominoYOffset(x, y)+4);
     return;
@@ -899,7 +901,7 @@ void levelPlayer_c::DTA_C(int x, int y) {
   if (a == 3)
   {
     // left halve is at a pushing place, check if we hit the wall
-    if (x > 0 && !getPlatform(x-1, y))
+    if (!getPlatform(x-1, y))
     {
       // no wall, check, if we hit a domino and if so try to push it
       if (getDominoType(x-1, y) == DominoTypeEmpty)
@@ -912,7 +914,7 @@ void levelPlayer_c::DTA_C(int x, int y) {
       }
     }
   }
-  else if (a == 2 && getDominoType(x-1, y) == 0)
+  else if (a == 2 && getDominoType(x-1, y) == DominoTypeEmpty)
   {
     a--;
   }
@@ -924,7 +926,7 @@ void levelPlayer_c::DTA_C(int x, int y) {
   // same as above but for right halve
   if (b == 3)
   {
-    if ((size_t)(x+1) < levelX())
+    if (!getPlatform(x+1, y))
     {
       if (getDominoType(x+1, y) == DominoTypeEmpty)
       {
@@ -936,7 +938,7 @@ void levelPlayer_c::DTA_C(int x, int y) {
       }
     }
   }
-  else if (b == 2 && getDominoType(x+1, y) == 0)
+  else if (b == 2 && getDominoType(x+1, y) == DominoTypeEmpty)
   {
     b--;
   }
@@ -967,7 +969,7 @@ void levelPlayer_c::DTA_C(int x, int y) {
 // be placed
 void levelPlayer_c::DTA_7(int x, int y)
 {
-  if (x >= 2 && getPlatform(x-2, y+1) && !getPlatform(x-1, y+1))
+  if (getPlatform(x-2, y+1) && !getPlatform(x-1, y+1))
   {
     setPlatform(x-1, y+1, true);
     removeDomino(x, y);
@@ -981,7 +983,7 @@ void levelPlayer_c::DTA_7(int x, int y)
 // Bridger right same as DTA_7 but for other direction
 void levelPlayer_c::DTA_M(int x, int y)
 {
-  if ((size_t)(x+2) < levelX() && getPlatform(x+2, y+1) && !getPlatform(x+1, y+1))
+  if (getPlatform(x+2, y+1) && !getPlatform(x+1, y+1))
   {
     setPlatform(x+1, y+1, true);
     removeDomino(x, y);
@@ -1001,8 +1003,8 @@ void levelPlayer_c::DTA_A(int x, int y) {
   bool leftAboveEmpty = true;
   bool aboveEmpty = true;
 
-  if (x > 0 && y >= a-1 && getPlatform(x-1, y-a+1)) leftAboveEmpty = false;
-  if (x > 0 && y >= a+1 && getPlatform(x-1, y-a-1)) aboveEmpty = false;
+  if (getPlatform(x-1, y-a+1)) leftAboveEmpty = false;
+  if (getPlatform(x-1, y-a-1)) aboveEmpty = false;
 
   if (aboveEmpty && leftAboveEmpty)
   {
@@ -1093,8 +1095,8 @@ void levelPlayer_c::DTA_O(int x, int y) {
   bool rightAboveEmpty = true;
   bool aboveEmpty = true;
 
-  if ((size_t)(x+1) < levelX() && y >= a-1 && getPlatform(x+1, y-a+1)) rightAboveEmpty = false;
-  if ((size_t)(x+1) < levelX() && y >= a+1 && getPlatform(x+1, y-a-1)) aboveEmpty = false;
+  if (getPlatform(x+1, y-a+1)) rightAboveEmpty = false;
+  if (getPlatform(x+1, y-a-1)) aboveEmpty = false;
 
   if (aboveEmpty && rightAboveEmpty)
   {
@@ -1262,7 +1264,7 @@ void levelPlayer_c::DTA_K(int x, int y)
     }
     else
     {
-      if (x+1 < levelX())
+      if ((size_t)x+1 < levelX())
       {
         setDominoType(x+1, y, getDominoType(x, y));
         setDominoState(x+1, y, 2);
@@ -1360,7 +1362,7 @@ void levelPlayer_c::DTA_6(int x, int y)
 
   if (x > 0)
   {
-    if (getDominoType(x-1, y) != 0)
+    if (getDominoType(x-1, y) != DominoTypeEmpty)
     {
       DominoCrash(x-1, y, getDominoType(x, y), getDominoExtra(x, y));
     }
@@ -1408,7 +1410,7 @@ void levelPlayer_c::DTA_L(int x, int y) {
     return;
   }
 
-  if (getDominoType(x+1, y) != 0)
+  if (getDominoType(x+1, y) != DominoTypeEmpty)
   {
     DominoCrash(x+1, y, getDominoType(x, y), getDominoExtra(x, y));
   }
@@ -1423,12 +1425,12 @@ void levelPlayer_c::DTA_L(int x, int y) {
 }
 
 
-bool levelPlayer_c::CounterStopper(int num) {
+bool levelPlayer_c::CounterStopper(DominoType num) {
   for (size_t yp = 0; yp < levelY(); yp++)
     for (size_t xp = 0; xp < levelX(); xp++)
       if (  (getDominoType(xp, yp) > num)
           &&(getDominoType(xp, yp) <= DominoTypeCounter3)
-          &&(getDominoState(xp, yp) == 8)
+          &&(getDominoState(xp, yp) == DO_ST_UPRIGHT)
           &&(getDominoDir(xp, yp) == 0)
          )
       {
@@ -1581,7 +1583,7 @@ void levelPlayer_c::performDominos(void) {
   for (size_t y = 0; y < levelY(); y++)
     for (size_t x = 0; x < levelX(); x++)
       if (getDominoType(x, y) != DominoTypeEmpty &&
-          getDominoState(x, y) != 0) {
+          getDominoState(x, y) != DO_ST_INVALID) {
 
         int oldState = getDominoState(x, y);
         int oldExtra = getDominoExtra(x, y);
@@ -1604,7 +1606,7 @@ bool levelPlayer_c::triggerNotFlat(void) const {
       if (getDominoType(x, y) == DominoTypeTrigger)
       {
         // if the trigger is not lying completely flat
-        if (getDominoState(x, y) != 8 && getDominoState(x, y) != 1 && getDominoState(x, y) != 15)
+        if (getDominoState(x, y) != DO_ST_UPRIGHT && getDominoState(x, y) != DO_ST_LEFT && getDominoState(x, y) != DO_ST_RIGHT)
           return true;
 
         // there can be multiple triggers, so go on
@@ -1620,8 +1622,8 @@ bool levelPlayer_c::triggerIsFalln(void) const {
       if (getDominoType(x, y) == DominoTypeTrigger)
       {
         // if the trigger is not lying flat... then it is not falln
-        if (    (getDominoState(x, y) !=  1)
-             && (getDominoState(x, y) !=  15)
+        if (    (getDominoState(x, y) !=  DO_ST_LEFT)
+             && (getDominoState(x, y) !=  DO_ST_RIGHT)
             )
           return false;
 
@@ -1652,14 +1654,14 @@ bool levelPlayer_c::dominosFalln(void) const {
       {
         if (getDominoType(x, y) == DominoTypeSplitter)
         { // for splitters is must have started to fall
-          if (getDominoState(x, y) > 2 && getDominoState(x, y) <= 8)
+          if (getDominoState(x, y) > DO_ST_LEFT+1 && getDominoState(x, y) <= DO_ST_UPRIGHT)
           {
             return false;
           }
         }
         else if (getDominoType(x, y) == DominoTypeTrigger)
         { // triggers must as least have started to fall
-          if (getDominoState(x, y) == 8 && !triggerIsFalln())
+          if (getDominoState(x, y) == DO_ST_UPRIGHT && !triggerIsFalln())
           {
             return false;
           }
@@ -1667,21 +1669,21 @@ bool levelPlayer_c::dominosFalln(void) const {
         else if (getDominoType(x, y) == DominoTypeTumbler)
         { // tumbler must lie on something or lean against a wall
           // not fallen far enough
-          if (getDominoState(x, y) >= 3 && getDominoState(x, y) <= 13) {
+          if (getDominoState(x, y) >= DO_ST_LEFT+2 && getDominoState(x, y) <= DO_ST_RIGHT-2) {
             return false;
           }
 
           // fallen far enough but neighbor empty
-          if (   getDominoState(x, y) <= 2
-              && ((x < 1) || (getDominoType(x-1, y) == DominoTypeEmpty))
-              && ((x < 2) || (getDominoType(x-2, y) == DominoTypeEmpty || getDominoState(x-2, y) < 14))
+          if (   getDominoState(x, y) <= DO_ST_LEFT+1
+              && (getDominoType(x-1, y) == DominoTypeEmpty)
+              && (getDominoType(x-2, y) == DominoTypeEmpty || getDominoState(x-2, y) < DO_ST_RIGHT-1)
              )
           {
             return false;
           }
-          if (   getDominoState(x, y) >= 14
-              && ((x+2 > levelX()) || (getDominoType(x+1, y) == DominoTypeEmpty))
-              && ((x+3 > levelX()) || (getDominoType(x+2, y) == DominoTypeEmpty || getDominoState(x+2, y) > 2))
+          if (   getDominoState(x, y) >= DO_ST_RIGHT-1
+              && (getDominoType(x+1, y) == DominoTypeEmpty)
+              && (getDominoType(x+2, y) == DominoTypeEmpty || getDominoState(x+2, y) > DO_ST_LEFT+1)
              )
           {
             return false;
@@ -1690,17 +1692,17 @@ bool levelPlayer_c::dominosFalln(void) const {
         }
         else
         {
-          if (getDominoState(x, y) == 8)
+          if (getDominoState(x, y) == DO_ST_UPRIGHT)
           {
             return false;
           }
-          if (getDominoState(x, y) > 3 && getDominoState(x, y) < 13)
+          if (getDominoState(x, y) > DO_ST_LEFT+2 && getDominoState(x, y) < DO_ST_RIGHT-2)
           {
             // here we certainly fail
             return false;
           }
           // in this case we might still succeed, when we lean against a block
-          if (   getDominoState(x, y) == 3
+          if (   getDominoState(x, y) == DO_ST_LEFT+3
               && (   getDominoType(x-1, y) != DominoTypeStopper
                   || getDominoType(x+1, y) == DominoTypeEmpty
                   || (getDominoDir(x+1, y) != -1 && getDominoType(x+1, y) != DominoTypeSplitter))
@@ -1710,7 +1712,7 @@ bool levelPlayer_c::dominosFalln(void) const {
             return false;
           }
 
-          if (   getDominoState(x, y) == 13
+          if (   getDominoState(x, y) == DO_ST_RIGHT-3
               && (   getDominoType(x+1, y) != DominoTypeStopper
                   || getDominoType(x-1, y) == DominoTypeEmpty
                   || (getDominoDir(x-1, y) != 1 && getDominoType(x-1, y) != DominoTypeSplitter))
