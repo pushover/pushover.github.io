@@ -162,8 +162,14 @@ class levelsetList_c;
 class levelset_c;
 class solvedMap_c;
 
+typedef struct configSettings {
+  bool useFullscreen;
+  bool playMusic;
+  bool playSounds;
+} configSettings;
+
 listWindow_c * getMainWindow(surface_c & surf, graphicsN_c & gr);
-listWindow_c * getConfigWindow(surface_c & surf, graphicsN_c & gr);
+listWindow_c * getConfigWindow(surface_c & surf, graphicsN_c & gr, const configSettings & c, int sel);
 listWindow_c * getMissionWindow(const levelsetList_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & selection);
 listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & lname);
 listWindow_c * getQuitWindow(bool complete, surface_c & surf, graphicsN_c & gr);

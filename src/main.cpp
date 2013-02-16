@@ -249,8 +249,12 @@ int main(int argc, char * argv[]) {
     return check(argc-2, argv+2, checkerCrash, true) ? 0 : 1;
   }
 
-  bool fullscreen = false;
-  if (argc >= 2 && strcmp(argv[1], "-f") == 0) fullscreen = true;
+  configSettings conf;
+  conf.useFullscreen = false;
+  conf.playMusic = true;
+  conf.playSounds = true;
+
+  if (argc >= 2 && strcmp(argv[1], "-f") == 0) conf.useFullscreen = true;
 
   // setup internationalization
   setlocale(LC_MESSAGES, "");
@@ -272,7 +276,7 @@ int main(int argc, char * argv[]) {
   atexit(SDL_Quit);
   graphicsN_c gr(datadir);
   screen_c screen(gr);
-  if (fullscreen) screen.toggleFullscreen();
+  if (conf.useFullscreen) screen.toggleFullscreen();
   initText(datadir);
   soundSystem_c::instance()->openSound(datadir);
   levelPlayer_c l;
@@ -457,7 +461,7 @@ int main(int argc, char * argv[]) {
             case ST_LEVELSET: window = getMissionWindow(*levelsetList, solved, screen, gr, selectedMission); break;
             case ST_QUIT:     window = getQuitWindow(selectedMission != "", screen, gr); break;
             case ST_LEVELCONF:
-            case ST_CONFIG:   window = getConfigWindow(screen, gr); break;
+            case ST_CONFIG:   window = getConfigWindow(screen, gr, conf, 0); break;
             case ST_SOLVED:   window = getSolvedWindow(screen, gr); break;
             case ST_ABOUT:    window = getAboutWindow(screen, gr); break;
             case ST_FAILED:   window = getFailedWindow(failReason, screen, gr); break;
@@ -655,19 +659,25 @@ int main(int argc, char * argv[]) {
                 switch(dynamic_cast<listWindow_c*>(window)->getSelection())
                 {
                   case 0:   // toggle full screen
+                    conf.useFullscreen = !conf.useFullscreen;
                     screen.toggleFullscreen();
                     gr.markAllDirty();
-                    window->resetWindow();
+                    delete window;
+                    window = getConfigWindow(screen, gr, conf, 0);
                     break;
 
                   case 1:  // toggle sound effects
+                    conf.playSounds = !conf.playSounds;
                     soundSystem_c::instance()->toggleSound();
-                    window->resetWindow();
+                    delete window;
+                    window = getConfigWindow(screen, gr, conf, 1);
                     break;
 
                   case 2:  // toggle music
+                    conf.playMusic = !conf.playMusic;
                     soundSystem_c::instance()->toggleMusic();
-                    window->resetWindow();
+                    delete window;
+                    window = getConfigWindow(screen, gr, conf, 2);
                     break;
 
                   default:

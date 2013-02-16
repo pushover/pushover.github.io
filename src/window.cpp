@@ -779,17 +779,26 @@ listWindow_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, g
   return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Profile to delete"), entries, true, 0);
 }
 
-listWindow_c * getConfigWindow(surface_c & surf, graphicsN_c & gr) {
-    static std::vector<listWindow_c::entry> entries;
+listWindow_c * getConfigWindow(surface_c & surf, graphicsN_c & gr, const configSettings & c, int sel)
+{
+  std::vector<listWindow_c::entry> entries;
 
-    if (!entries.size())
-    {
-        entries.push_back(listWindow_c::entry(_("Toggle Fullscreen")));
-        entries.push_back(listWindow_c::entry(_("Toggle Sound Effects")));
-        entries.push_back(listWindow_c::entry(_("Toggle Background Music")));
-    }
+  if (c.useFullscreen)
+    entries.push_back(listWindow_c::entry(std::string(_("Use Fullscreen"))+" \xE2\x96\xA0"));
+  else
+    entries.push_back(listWindow_c::entry(std::string(_("Use Fullscreen"))+" \xE2\x96\xA1"));
 
-    return new listWindow_c(3, 2, 14, 9, surf, gr, _("Configuration"), entries, true);
+  if (c.playSounds)
+    entries.push_back(listWindow_c::entry(std::string(_("Play Sound Effects"))+" \xE2\x96\xA0"));
+  else
+    entries.push_back(listWindow_c::entry(std::string(_("Play Sound Effects"))+" \xE2\x96\xA1"));
+
+  if (c.playMusic)
+    entries.push_back(listWindow_c::entry(std::string(_("Play Background Music"))+" \xE2\x96\xA0"));
+  else
+    entries.push_back(listWindow_c::entry(std::string(_("Play Background Music"))+" \xE2\x96\xA1"));
+
+  return new listWindow_c(3, 2, 14, 9, surf, gr, _("Configuration"), entries, true, sel);
 }
 
 static int MissionSolveState(const levelset_c & ls, const solvedMap_c & solv)
