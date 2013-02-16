@@ -443,14 +443,7 @@ void levelPlayer_c::DTA_J(int x, int y) {
 
   // if the 2nd next right neighbor is not empty and far enough fallen to the left
   // we stop
-  if ((size_t)(x+2) < levelX() &&
-        (   (getDominoType(x+2, y) != DominoTypeEmpty && getDominoState(x+2, y) < DO_ST_UPRIGHT-5)
-            // TODO remove, this special case has to be here because the old
-            // exploder used to "fall left" when regarded by the states
-            // this could be removed at the cost of a recording
-         || (getDominoType(x+2, y) == DominoTypeExploder && (getDominoState(x+2, y) == DO_ST_EXPLODE || getDominoState(x+2, y) == DO_ST_EXPLODE))
-        )
-      )
+  if (getDominoType(x+2, y) != DominoTypeEmpty && getDominoState(x+2, y) < DO_ST_UPRIGHT-5)
     return;
 
   // if the domino is a splitter, we need to check, if it is in one of the
