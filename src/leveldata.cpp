@@ -708,13 +708,6 @@ void levelData_c::setLadder(unsigned int x, unsigned int y, bool val)
     level[y][x].ladder = val;
 }
 
-DominoType levelData_c::getDominoType(unsigned int x, unsigned int y) const
-{
-  if (y < level.size() && x < level[y].size())
-    return level[y][x].dominoType;
-  else
-    return DominoTypeEmpty;
-}
 unsigned char levelData_c::getDominoState(unsigned int x, unsigned int y) const
 {
   if (y < level.size() && x < level[y].size())

@@ -211,7 +211,12 @@ class levelData_c {
     // remove a domino from the level
     void removeDomino(int x, int y);
 
-    DominoType getDominoType(unsigned int x, unsigned int y) const;
+    DominoType getDominoType(unsigned int x, unsigned int y) const {
+      if (y < level.size() && x < level[y].size())
+        return level[y][x].dominoType;
+      else
+        return DominoTypeEmpty;
+    }
     unsigned char getDominoState(unsigned int x, unsigned int y) const;
     signed char   getDominoDir(unsigned int x, unsigned int y) const;
     unsigned char getDominoExtra(unsigned int x, unsigned int y) const;
