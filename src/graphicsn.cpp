@@ -226,7 +226,7 @@ static const int8_t dominoImages[DominoNumber][135] = {
 #define antDisplace (6*3)
 #define dominoYStart (3*4)
 static int convertDominoY(int y) { return 3*y; }
-#define splitterY (3*12)
+#define splitterY 34
 
 
 // The following defines are used to index into the fg element array
