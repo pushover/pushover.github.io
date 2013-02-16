@@ -29,6 +29,7 @@
 
 class textsections_c;
 
+// This enumeration contains all the available dominos that can be whithin the level
 typedef enum {
   DominoTypeEmpty,
   DominoTypeStandard,
@@ -46,7 +47,7 @@ typedef enum {
   DominoTypeCounter1,
   DominoTypeCounter2,
   DominoTypeCounter3,
-  DominoTypeLastNormal = DominoTypeCounter3,
+  DominoTypeLastNormal = DominoTypeCounter3, // dominos up to this domino are within the level files
   DominoTypeCrash0,         // all yellow big pile
   DominoTypeCrash1,         // mixed big pile
   DominoTypeCrash2,         // all red big pile
@@ -57,6 +58,7 @@ typedef enum {
 } DominoType;
 
 
+// Each of the dominos has a state, initially DO_ST_UPRIGHT
 // the following defines put down some basic numbers for the
 // possible domino states... each domino stat is supposed
 // to have exactly one meaning.. even though some
@@ -69,9 +71,9 @@ typedef enum {
 #define DO_ST_LEFT     1  // the state which represents the domino falln completely to the left
 #define DO_ST_UPRIGHT  8  // domino standing completely vertical
 #define DO_ST_RIGHT   15  // domino falln completely to the right
-#define DO_ST_LEFT_AS 36
-#define DO_ST_DOWNRIGHT 43
-#define DO_ST_RIGHT_AS 50
+#define DO_ST_LEFT_AS 36   // domino floating at the ceiling "falln" completely to the left
+#define DO_ST_DOWNRIGHT 43 // domino at the ceiling and standing
+#define DO_ST_RIGHT_AS 50  // domino at the ceiling falln right
 
 #define DO_ST_NUM     57  // number of different state
 
@@ -89,27 +91,33 @@ typedef enum {
 #define DO_ST_ASCENDER   36
 #define DO_ST_ASCENDER_E 50
 
+// crash images, starting with dust cloud... that is dissolving and at the end only the
+// pile of rubbish is left
 #define DO_ST_CRASH   51
 #define DO_ST_CRASH_E 56
 
-
+// this class represents a compete level
 class levelData_c {
 
   private:
 
+    // the current file version for level
     static const unsigned int version = 2;
+    // a string containing the characters to use for the different dominos
     static const std::string dominoChars;
+    // a function that returns true, if the given character is a valid one for a domino
     static bool isDominoChar(char ch);
+    // the maximal number of background layers
     static const unsigned char maxBg = 8;
 
-    std::string name;
-    std::string theme;
-    std::string hint;
+    std::string name;    // name of level
+    std::string theme;   // theme of level represented as a string
+    std::string hint;    // the hint for this level
     std::vector<std::string> author;
-    std::string tutorial;
+    std::string tutorial; // tutorial string, may be empty
 
-    std::string checksum;
-    std::string checksumNoTime;
+    std::string checksum;       // the checksum for this level... this is user dependent for the user given initially
+    std::string checksumNoTime; // same as above but sparing out the time of the level
 
     // the number of 1/18 seconds that are left for solving the level
     int timeLeft;
@@ -121,14 +129,15 @@ class levelData_c {
     // open and close animation for door
     unsigned char doorEntryState, doorExitState;
 
+    // content of one cell of the level
     typedef struct levelEntry {
       unsigned short bg[maxBg];
-      bool platform;
-      bool ladder;
-      DominoType dominoType;
-      unsigned char dominoState;
-      char dominoDir;
-      char dominoYOffset;
+      bool platform;             // is there a platform in this cell
+      bool ladder;               // is there a ladder in this cell
+      DominoType dominoType;     // which domino is in this cell, the platform the domino stands on is one row below
+      unsigned char dominoState; // the state the domino is in (see ebove for possible values
+      char dominoDir;            // direction the domino is fallin -1: left, 0: not falling, 1: right
+      char dominoYOffset;        // positive values lower the domino
       char dominoExtra;  // this field contains a lot of information:
         // 0-20 for delay domino is the number of ticks left until it falls
         // 0-9  for splitter is the domino that splits the splitter (for display)
@@ -140,12 +149,17 @@ class levelData_c {
     } levelEntry;
 
     std::vector< std::vector<levelEntry> > level;
+
+    // actual number of background layers for this level
     unsigned char numBg;
 
   public:
+
+    // create an empty level with no background, no foreground and no dominos
     levelData_c(void);
     virtual ~levelData_c(void) {}
 
+    // load the level from the textsection and use the userString to calculate the checksums
     virtual void load(const textsections_c & sections, const std::string & userString);
     void save(std::ostream & stream) const;
     bool operator==(const levelData_c & other) const;
@@ -164,14 +178,6 @@ class levelData_c {
     const std::string getChecksumNoTime(void) const { return checksumNoTime; }
 
     unsigned char getNumBgLayer(void) const { return numBg; }
-    void setNumBgLayer(unsigned char n) { numBg = n; }
-
-
-    // OLD INTERFACE, Deprecated
-
-
-    // NEW INTERFACE please use this only
-
     unsigned short getBg(unsigned int x, unsigned int y, int layer) const;
 
     void openEntryDoorStep(void) { doorEntryState++; }
@@ -188,10 +194,10 @@ class levelData_c {
     unsigned char getEntryState(void) const { return doorEntryState; }
     unsigned char getExitState(void) const { return doorExitState; }
 
-    bool isEntryDoorOpen(void) { return doorEntryState == 3; }
-    bool isEntryDoorClosed(void) { return doorEntryState == 0; }
-    bool isExitDoorOpen(void) { return doorExitState == 3; }
-    bool isExitDoorClosed(void) { return doorExitState == 0; }
+    bool isEntryDoorOpen(void) const { return doorEntryState == 3; }
+    bool isEntryDoorClosed(void) const { return doorEntryState == 0; }
+    bool isExitDoorOpen(void) const { return doorExitState == 3; }
+    bool isExitDoorClosed(void) const { return doorExitState == 0; }
 
     bool getPlatform(unsigned int x, unsigned int y) const;
     bool getLadder(unsigned int x, unsigned int y) const;
@@ -199,8 +205,10 @@ class levelData_c {
     void setPlatform(unsigned int x, unsigned int y, bool val);
     void setLadder(unsigned int x, unsigned int y, bool val);
 
-    void print(void);
+    // outputs most of the information for the level on stdout
+    void print(void) const;
 
+    // remove a domino from the level
     void removeDomino(int x, int y);
 
     DominoType getDominoType(unsigned int x, unsigned int y) const;

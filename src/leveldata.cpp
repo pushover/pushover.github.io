@@ -646,7 +646,7 @@ bool levelData_c::operator==(const levelData_c & other) const {
   }
 }
 
-void levelData_c::print(void) {
+void levelData_c::print(void) const {
 
   char directions[] = "<0>";
 
