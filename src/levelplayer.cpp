@@ -1253,12 +1253,7 @@ void levelPlayer_c::DTA_H(int x, int y) {
 // standard, Trigger, Delay, Bridger
 void levelPlayer_c::DTA_K(int x, int y)
 {
-  bool rightEmpty = true;
-
-  if ((size_t)(x+1) < levelX() && (size_t)(y+1) < levelY() && getPlatform(x+1, y+1))
-    rightEmpty = false;
-
-  if (rightEmpty)
+  if (!getPlatform(x+1, y+1))
   {
     if (getDominoType(x+1, y+1) != DominoTypeEmpty)
     {
@@ -1292,14 +1287,9 @@ void levelPlayer_c::DTA_K(int x, int y)
 
 // Stone completely fallen down left used for
 // standard, Trigger, Delay, Bridger
-void levelPlayer_c::DTA_1(int x, int y) {
-
-  bool leftEmpty = true;
-
-  if (x > 0 && getPlatform(x-1, y+1))
-    leftEmpty = false;
-
-  if (leftEmpty)
+void levelPlayer_c::DTA_1(int x, int y)
+{
+  if (!getPlatform(x-1, y+1))
   {
     if (getDominoType(x-1, y+1) != DominoTypeEmpty)
     {
@@ -1330,14 +1320,9 @@ void levelPlayer_c::DTA_1(int x, int y) {
 }
 
 // Tumbler fallen down left
-void levelPlayer_c::DTA_6(int x, int y) {
-
-  bool leftEmpty = true;
-
-  if (x > 0 && getPlatform(x-1, y+1))
-    leftEmpty = false;
-
-  if (leftEmpty)
+void levelPlayer_c::DTA_6(int x, int y)
+{
+  if (!getPlatform(x-1, y+1))
   {
     if (getDominoType(x-1, y+1) != DominoTypeEmpty)
     {
@@ -1394,12 +1379,7 @@ void levelPlayer_c::DTA_6(int x, int y) {
 // Tumbler fallen down right
 void levelPlayer_c::DTA_L(int x, int y) {
 
-  bool rightEmpty = true;
-
-  if ((size_t)(x+1) < levelX() && getPlatform(x+1, y+1))
-    rightEmpty = false;
-
-  if (rightEmpty)
+  if (!getPlatform(x+1, y+1))
   {
     if (getDominoType(x+1, y+1) != DominoTypeEmpty)
     {
