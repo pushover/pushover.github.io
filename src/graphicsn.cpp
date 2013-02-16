@@ -1031,6 +1031,7 @@ void graphicsN_c::drawDomino(uint16_t x, uint16_t y)
   int de = level->getDominoExtra(x, y);
   int dx;
   int dy;
+  int dc = 0;
 
   switch (ds)
   {
@@ -1049,9 +1050,22 @@ void graphicsN_c::drawDomino(uint16_t x, uint16_t y)
     case DO_ST_ASCENDER+12:
     case DO_ST_ASCENDER+13:
     case DO_ST_ASCENDER+14:
+
+      // clipping of the ascender...
+      // this is the normal clipping case, where a platform get's near
+      // enough to shave off the top of the image.
+      if (level->getPlatform(x, y-3))
+        dc = (y-2)*blockY()/2-10;
+
+      // when the ascender has rested against the wall is is transformed 2
+      // blocks higher, this is the clipping case for that position
+      if (((ds == DO_ST_ASCENDER) || (ds == DO_ST_ASCENDER_E)) && level->getPlatform(x, y-1))
+        dc = y*blockY()/2-10;
+
       ds = StoneImageOffset[level->getDominoState(x, y)-DO_ST_ASCENDER];
       dx = SpriteXPos+XposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER];
       dy = SpriteYPos+YposOffset[level->getDominoState(x, y)-DO_ST_ASCENDER]+convertDominoY(level->getDominoYOffset(x, y));
+
       break;
 
     case DO_ST_SPLIT+1:
@@ -1071,7 +1085,7 @@ void graphicsN_c::drawDomino(uint16_t x, uint16_t y)
   }
 
   assert(dominos[dt][ds] != 0);
-  target->blit(dominos[dt][ds], dx, dy);
+  target->blit(dominos[dt][ds], dx, dy, dc);
 }
 
 SDL_Surface * graphicsN_c::getHelpDominoImage(unsigned int domino) {

@@ -72,18 +72,34 @@ void bitfield_c::markAllDirty(void)
     dynamicDirty[y] = 0xFFFFFFFF;
 }
 
-void surface_c::blit(SDL_Surface * s, int x, int y) {
+void surface_c::blit(SDL_Surface * s, int x, int y, int clip) {
 
   if (s && video)
   {
-    SDL_Rect dst;
+    SDL_Rect dst, src;
 
     dst.x = x;
     dst.y = y - s->h;
     dst.w = s->w;
     dst.h = s->h;
 
-    SDL_BlitSurface(s, 0, video, &dst);
+    src.x = 0;
+    src.y = 0;
+    src.w = s->w;
+    src.h = s->h;
+
+    if (dst.y < clip)
+    {
+      int cl = clip-dst.y;
+
+      src.y += cl;
+      src.h -= cl;
+
+      dst.y += cl;
+      dst.h -= cl;
+    }
+
+    SDL_BlitSurface(s, &src, video, &dst);
   }
 }
 

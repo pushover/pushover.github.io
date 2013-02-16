@@ -106,7 +106,8 @@ class surface_c {
     ~surface_c(void);
 
     // blit the complete surface s so that the lower left corner of x is at x, y
-    void blit(SDL_Surface * s, int x, int y);
+    // and nothing is drawn above the clip line
+    void blit(SDL_Surface * s, int x, int y, int clip = 0);
     void blitBlock(SDL_Surface * s, int x, int y);
     void blitBlock(const surface_c & s, int x, int y);
     void copy(surface_c & src, int x, int y, int w, int h);
