@@ -990,7 +990,7 @@ AntAnimationState ant_c::SFFalling(void) {
     }
 
     animation = AntAnimFalling;
-    if (blockY+2 < 26) {
+    if ((size_t)(blockY+2) < level.levelY()) {
       blockY += 2;
     } else {
       animation = AntAnimGhost1;
