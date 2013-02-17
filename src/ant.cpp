@@ -1188,9 +1188,6 @@ bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
   if (level.getDominoType(x, y) != DominoTypeEmpty) return false;
   if (!level.getPlatform(x, y+1)) return false;
 
-  // TODO should go away but required a new level record for 038_a
-  if (y%2) return false;
-
   // all stones except for the vanisher may not be placed in front of doors
   if (   (carriedDomino != DominoTypeVanish)
       && (   ((x == level.getEntryX()) && (y == level.getEntryY()))
