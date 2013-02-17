@@ -772,7 +772,7 @@ AntAnimationState ant_c::SFLadder2(void) {
   if (!animateAnt(0))
     return animation;
 
-  if (carriedDomino)
+  if (carriedDomino != DominoTypeEmpty)
   {
     animation = AntAnimCarryLadder4;
   } else {
@@ -817,7 +817,7 @@ AntAnimationState ant_c::SFJumpUpLeft(void) {
     return animation;
   }
 
-  if (carriedDomino) {
+  if (carriedDomino != DominoTypeEmpty) {
     animation = AntAnimCarryStopLeft;
   } else {
     animation = AntAnimWalkLeft;
@@ -834,7 +834,7 @@ AntAnimationState ant_c::SFJumpUpRight(void) {
     return animation;
   }
 
-  if (carriedDomino) {
+  if (carriedDomino != DominoTypeEmpty) {
     animation = AntAnimCarryStopRight;
   } else {
     animation = AntAnimWalkRight;
@@ -851,7 +851,7 @@ AntAnimationState ant_c::SFJumpDownLeft(void) {
     return animation;
   }
 
-  if (carriedDomino) {
+  if (carriedDomino != DominoTypeEmpty) {
     animation = AntAnimCarryStopLeft;
   } else {
     animation = AntAnimWalkLeft;
@@ -868,7 +868,7 @@ AntAnimationState ant_c::SFJumpDownRight(void) {
     return animation;
   }
 
-  if (carriedDomino) {
+  if (carriedDomino != DominoTypeEmpty) {
     animation = AntAnimCarryStopRight;
   } else {
     animation = AntAnimWalkRight;
@@ -1042,7 +1042,7 @@ AntAnimationState ant_c::checkForNoKeyActions(void) {
     {
       if (level.getPlatform(blockX-1, blockY+1))
       {
-        if (carriedDomino != 0)
+        if (carriedDomino != DominoTypeEmpty)
         {
           animation = ReturnAntState = AntAnimXXX4;
         }
@@ -1064,7 +1064,7 @@ AntAnimationState ant_c::checkForNoKeyActions(void) {
         direction = -1;
         return ReturnAntState;
       }
-      if (carriedDomino != 0)
+      if (carriedDomino != DominoTypeEmpty)
       {
         animation = ReturnAntState = AntAnimXXX3;
         direction = 1;
@@ -1200,10 +1200,10 @@ bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
 
   // check neighbor places, if there is a domino falling in our direction, we
   // must not place the domino there....
-  if (((size_t)(x+1) < level.levelX()) && level.getDominoType(x+1, y) != DominoTypeEmpty && level.getDominoState(x+1, y) < 8)
+  if (level.getDominoType(x+1, y) != DominoTypeEmpty && level.getDominoState(x+1, y) < DO_ST_UPRIGHT)
     return false;
 
-  if ((x >  0) && level.getDominoType(x-1, y) != DominoTypeEmpty && level.getDominoState(x-1, y) > 8 && level.getDominoState(x-1, y) < 16)
+  if (level.getDominoType(x-1, y) != DominoTypeEmpty && level.getDominoState(x-1, y) > DO_ST_UPRIGHT && level.getDominoState(x-1, y) <= DO_ST_RIGHT)
     return false;
 
   // no other reason to not place the domino
@@ -1212,22 +1212,22 @@ bool ant_c::CanPlaceDomino(int x, int y, int ofs) {
 
 bool ant_c::PushableDomino(int x, int y, int ofs) {
 
-  if (carriedDomino != 0) return false;
+  if (carriedDomino != DominoTypeEmpty) return false;
 
   if (level.getDominoType(x+ofs, y) == DominoTypeEmpty) return false;
   if (!level.getPlatform(x+ofs, y+1)) return false;
 //  if (level.getLadder(x+ofs, y-1)) return false;  // TODO there is something with ladders in the original
   if (level.getDominoType(x+ofs, y) == DominoTypeSplitter) return false;
-  if (level.getDominoState(x+ofs, y) != 8) return false;
+  if (level.getDominoState(x+ofs, y) != DO_ST_UPRIGHT) return false;
 
   if (level.getDominoType(x, y) == DominoTypeEmpty) return true;
 
   if (ofs == -1)
   {
-      return level.getDominoState(x, y) >= 8;
+      return level.getDominoState(x, y) >= DO_ST_UPRIGHT;
   }
 
-  return level.getDominoState(x, y) <= 8;
+  return level.getDominoState(x, y) <= DO_ST_UPRIGHT;
 }
 
 // ok, this huge function determines what comes next
@@ -1263,10 +1263,10 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   if (animation == AntAnimPushLeft &&
       animationImage == 0)
   {
-    if ((level.getDominoType(blockX, blockY) != 0 &&
-         level.getDominoState(blockX, blockY) < 8) ||
-        (level.getDominoType(blockX-1, blockY) != 0 &&
-         level.getDominoState(blockX-1, blockY) > 8))
+    if ((level.getDominoType(blockX, blockY) != DominoTypeEmpty &&
+         level.getDominoState(blockX, blockY) < DO_ST_UPRIGHT) ||
+        (level.getDominoType(blockX-1, blockY) != DominoTypeEmpty &&
+         level.getDominoState(blockX-1, blockY) > DO_ST_UPRIGHT))
     {
       animation = returnState = AntAnimDominoDying;
       return returnState;
@@ -1275,10 +1275,10 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   if (animation == AntAnimPushRight &&
       animationImage == 0)
   {
-    if ((level.getDominoType(blockX, blockY) != 0 &&
-         level.getDominoState(blockX, blockY) > 8) ||
-        (level.getDominoType(blockX+1, blockY) != 0 &&
-         level.getDominoState(blockX+1, blockY) < 8))
+    if ((level.getDominoType(blockX, blockY) != DominoTypeEmpty &&
+         level.getDominoState(blockX, blockY) > DO_ST_UPRIGHT) ||
+        (level.getDominoType(blockX+1, blockY) != DominoTypeEmpty &&
+         level.getDominoState(blockX+1, blockY) < DO_ST_UPRIGHT))
     {
       if ((size_t)(blockX+1) < level.levelX())
       {
@@ -1368,7 +1368,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
     }
     else if (!level.getPlatform(blockX-1, blockY+1))
     {
-      if (carriedDomino != 0)
+      if (carriedDomino != DominoTypeEmpty)
       {
         animation = returnState = AntAnimLoosingDominoLeft;
         direction = -1;
@@ -1384,7 +1384,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
         direction = -1;
       }
     }
-    else if (carriedDomino != 0 &&
+    else if (carriedDomino != DominoTypeEmpty &&
         (direction == 20 || direction == -20))
     {
       animation = returnState = AntAnimXXX4;
@@ -1457,7 +1457,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
     }
     else if (!level.getPlatform(blockX+1, blockY+1))
     {
-      if (carriedDomino != 0)
+      if (carriedDomino != DominoTypeEmpty)
       {
         returnState = AntAnimStepOutForLoosingDomino;
         animation = AntAnimCarryRight;
@@ -1474,7 +1474,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
         direction = 1;
       }
     }
-    else if (carriedDomino != 0 &&
+    else if (carriedDomino != DominoTypeEmpty &&
         (direction == 20 || direction == -20))
     {
       animation = returnState = AntAnimXXX3;
@@ -1494,10 +1494,10 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   else if (keyMask & KEY_UP)
   {
     if ((level.getExitX() == blockX && level.getExitY() == blockY && level.isExitDoorOpen()) &&
-        (level.getDominoType(blockX, blockY) == 0 ||
-         level.getDominoState(blockX, blockY) > 8) &&
-        (level.getDominoType(blockX-1, blockY) == 0 ||
-         level.getDominoState(blockX-1, blockY) <= 8)
+        (level.getDominoType(blockX, blockY) == DominoTypeEmpty ||
+         level.getDominoState(blockX, blockY) > DO_ST_UPRIGHT) &&
+        (level.getDominoType(blockX-1, blockY) == DominoTypeEmpty ||
+         level.getDominoState(blockX-1, blockY) <= DO_ST_UPRIGHT)
        )
     {
       if (direction == -1)
@@ -1514,7 +1514,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
     }
     else if (level.getLadder(blockX, blockY) && !level.getLadder(blockX, blockY+1))
     {
-      if (carriedDomino == 0)
+      if (carriedDomino == DominoTypeEmpty)
       {
         animation = returnState = AntAnimLadder1;
         direction = -20;
@@ -1551,7 +1551,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
       returnState = AntAnimNothing;
       upChecker = true;
     }
-    else if (carriedDomino != 0)
+    else if (carriedDomino != DominoTypeEmpty)
     {
       returnState = AntAnimStop;
       upChecker = true;
@@ -1597,7 +1597,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
     }
     else if (level.getPlatform(blockX, blockY+1) && level.getLadder(blockX, blockY+1))
     {
-      if (carriedDomino != 0)
+      if (carriedDomino != DominoTypeEmpty)
       {
         if (direction == -1)
         {
@@ -1624,9 +1624,9 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   }
   else if (keyMask & KEY_ACTION)
   {
-    if ((animation != AntAnimPushRight) && (animation != AntAnimPushLeft) && (carriedDomino == 0)
-        && (level.getDominoType(blockX, blockY) != 0)
-        && (level.getDominoState(blockX, blockY) == 8)
+    if ((animation != AntAnimPushRight) && (animation != AntAnimPushLeft) && (carriedDomino == DominoTypeEmpty)
+        && (level.getDominoType(blockX, blockY) != DominoTypeEmpty)
+        && (level.getDominoState(blockX, blockY) == DO_ST_UPRIGHT)
         && (level.getDominoType(blockX, blockY) != DominoTypeAscender || level.getDominoExtra(blockX, blockY) != 0x60)
         && level.getPlatform(blockX, blockY+1)
           )
@@ -1718,7 +1718,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   {
     inactiveTimer = 0;
   }
-  else if (carriedDomino != 0 || (level.getLadder(blockX, blockY+1) && !level.getPlatform(blockX, blockY+1)) || finalAnimationPlayed)
+  else if (carriedDomino != DominoTypeEmpty || (level.getLadder(blockX, blockY+1) && !level.getPlatform(blockX, blockY+1)) || finalAnimationPlayed)
   {
     inactiveTimer++;
     returnState = checkForNoKeyActions();
@@ -1739,7 +1739,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
     returnState = checkForNoKeyActions();
   }
 
-  if (carriedDomino && animation < AntAnimCarryLeft)
+  if ((carriedDomino != DominoTypeEmpty) && animation < AntAnimCarryLeft)
   {
     switch (animation)
     {
