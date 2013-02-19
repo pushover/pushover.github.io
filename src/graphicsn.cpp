@@ -82,7 +82,7 @@ static const int antOffsets[] = {
   -6, -6, -6, -6,                                                   // 4,   AntAnimPushRiserRight,
   0, 0, 0, 9, 18, 27,                                               // 6,   AntAnimSuddenFallRight,
   0, 0, 0, 9, 18, 27,                                               // 6,   AntAnimSuddenFallLeft,
-  0, 12, 24, 36,                                                    // 4,   AntAnimFalling,
+  0, 12,                                                            // 4,   AntAnimFalling,
   0, 0, 0,                                                          // 3,   AntAnimInFrontOfExploder,  // 1,  AntAnimInFrontOfExploderWait,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,                      // 15,  AntAnimLanding,
   -6, -6,                                                           // 2,   AntAnimGhost1,
@@ -401,6 +401,14 @@ void graphicsN_c::getAnimation(AntAnimationState anim, pngLoader_c * png) {
 
     addAnt(anim, j, antOffsets[antOffsetPos], v);
     antOffsetPos++;
+
+  }
+
+  // TODO remove those images from the ant image
+  if (   anim == AntAnimFalling
+     )
+  {
+    png->skipLines(75*2);
   }
 }
 

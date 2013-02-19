@@ -83,7 +83,7 @@ const unsigned char numAntAnimationsImages[AntAnimNothing] = {
  8,        // AntAnimPushDelayRight,
  6,        // AntAnimSuddenFallRight,
  6,        // AntAnimSuddenFallLeft,
- 4,        // AntAnimFalling,
+ 2,        // AntAnimFalling,
  3,        // AntAnimInFrontOfExploder,
  1,        // AntAnimInFrontOfExploderWait,
  15,       // AntAnimLanding,
@@ -990,8 +990,8 @@ AntAnimationState ant_c::SFFalling(void) {
     }
 
     animation = AntAnimFalling;
-    if ((size_t)(blockY+2) < level.levelY()) {
-      blockY += 2;
+    if ((size_t)(blockY+1) < level.levelY()) {
+      blockY += 1;
     } else {
       animation = AntAnimGhost1;
       return animation;
@@ -1303,7 +1303,7 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
   }
   if (fallingHight != 0)
   {
-    if (fallingHight > 3)
+    if (fallingHight > 6)
     {
       animation = returnState = AntAnimLandDying;
     }
