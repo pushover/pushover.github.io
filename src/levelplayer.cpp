@@ -1699,7 +1699,7 @@ bool levelPlayer_c::dominosFalln(void) const {
             return false;
           }
           // in this case we might still succeed, when we lean against a block
-          if (   getDominoState(x, y) == DO_ST_LEFT+3
+          if (   getDominoState(x, y) == DO_ST_LEFT+2
               && (   getDominoType(x-1, y) != DominoTypeStopper
                   || getDominoType(x+1, y) == DominoTypeEmpty
                   || (getDominoDir(x+1, y) != -1 && getDominoType(x+1, y) != DominoTypeSplitter))
@@ -1709,7 +1709,7 @@ bool levelPlayer_c::dominosFalln(void) const {
             return false;
           }
 
-          if (   getDominoState(x, y) == DO_ST_RIGHT-3
+          if (   getDominoState(x, y) == DO_ST_RIGHT-2
               && (   getDominoType(x+1, y) != DominoTypeStopper
                   || getDominoType(x-1, y) == DominoTypeEmpty
                   || (getDominoDir(x-1, y) != 1 && getDominoType(x-1, y) != DominoTypeSplitter))
