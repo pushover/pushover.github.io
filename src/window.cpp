@@ -939,13 +939,12 @@ static std::string collectAuthors(const levelset_c & ls)
 listWindow_c * getMissionWindow(const levelsetList_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & selection) {
     std::vector<listWindow_c::entry> entries;
 
-    int index = 0;
+    int index = -1;
     std::string f;
 
     for (unsigned int i = 0; i < ls.getLevelsetNames().size(); i++)
     {
       const std::string name = ls.getLevelsetNames()[i];
-
 
       if (selection == name)
         index = i;
@@ -956,11 +955,19 @@ listWindow_c * getMissionWindow(const levelsetList_c & ls, const solvedMap_c & s
           f = std::string(_(name)) + "  \xE2\x96\xA1";
           entries.push_back(listWindow_c::entry(f));
           entries.rbegin()->sol = 0;
+
+          if (index == -1)
+            index = i;
+
           break;
         case 1:
           f = std::string(_(name)) + "  \xE2\x96\xA3";
           entries.push_back(listWindow_c::entry(f));
           entries.rbegin()->sol = 1;
+
+          if (index == -1)
+            index = i;
+
           break;
         case 2:
           f = std::string(_(name)) + "  \xE2\x96\xA0";
@@ -973,6 +980,9 @@ listWindow_c * getMissionWindow(const levelsetList_c & ls, const solvedMap_c & s
       entries.rbegin()->details.push_back(_("Description: ") + _(ls.getLevelset(name).getDescription()));
       entries.rbegin()->details.push_back(_(" Authors: ") + collectAuthors(ls.getLevelset(name)));
     }
+
+    // when all missions have been solved, return to the first
+    if (index == -1) index = 0;
 
     return new missionWindow_c(3, 1, 14, 11, surf, gr, _("Select Levelset"), entries, true, index);
 }
