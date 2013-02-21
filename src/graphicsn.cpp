@@ -27,6 +27,7 @@
 #include "ant.h"
 #include "leveldata.h"
 #include "screen.h"
+#include "colors.h"
 
 #include <SDL.h>
 #include <string.h>
@@ -1288,9 +1289,9 @@ void graphicsN_c::calcTutorial(void)
 
     pars.shadow = 0;
 
-    pars.color.r = 112;
-    pars.color.g = 39;
-    pars.color.b = 0;
+    pars.color.r = TXT_COL_R;
+    pars.color.g = TXT_COL_G;
+    pars.color.b = TXT_COL_B;
 
     uint16_t blx = 7;
     bool found = false;
@@ -1355,8 +1356,8 @@ void graphicsN_c::calcTutorial(void)
 
     tutorial = new surface_c((tutorial_w-1)*blockX(), (tutorial_h)*blockY()/2);
 
-    tutorial->fillRect(0, 0, (tutorial_w-1)*blockX()-0, (tutorial_h)*blockY()/2-0, 112, 39, 0);
-    tutorial->fillRect(2, 2, (tutorial_w-1)*blockX()-4, (tutorial_h)*blockY()/2-4, 168, 120, 80, 210);
+    tutorial->fillRect(0, 0, (tutorial_w-1)*blockX()-0, (tutorial_h)*blockY()/2-0, TXT_COL_R, TXT_COL_G, TXT_COL_B);
+    tutorial->fillRect(2, 2, (tutorial_w-1)*blockX()-4, (tutorial_h)*blockY()/2-4, BG_COL_R, BG_COL_G,BG_COL_B, TUT_COL_A);
 
     pars.box.w = blockX()*(blx-2);
     tutorial->renderText(&pars, _(level->getTutorial()));
@@ -1400,11 +1401,15 @@ void graphicsN_c::drawLevel(void) {
     fontParams_s pars;
     if (level->getTimeLeft() >= 0)
     {
-      pars.color.r = pars.color.g = 255; pars.color.b = 0;
+      pars.color.r = HLP_COL_R;
+      pars.color.g = HLP_COL_G;
+      pars.color.b = HLP_COL_B;
     }
     else
     {
-      pars.color.r = 255; pars.color.g = pars.color.b = 0;
+      pars.color.r = TIME_COL_R;
+      pars.color.g = TIME_COL_G;
+      pars.color.b = TIME_COL_B;
     }
     pars.font = FNT_BIG;
     pars.alignment = ALN_CENTER;
@@ -1428,7 +1433,9 @@ void graphicsN_c::drawLevel(void) {
     pars.box.x = 800-pars.box.w-10;
     pars.box.y = 600-pars.box.h-10;
     pars.shadow = 1;
-    pars.color.r = pars.color.g = 255; pars.color.b = 0;
+    pars.color.r = HLP_COL_R;
+    pars.color.g = HLP_COL_G;
+    pars.color.b = HLP_COL_B;
 
     target->renderText(&pars, txt);
   }

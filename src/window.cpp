@@ -28,6 +28,7 @@
 #include "solvedmap.h"
 #include "leveldata.h"
 #include "config.h"
+#include "colors.h"
 
 #include <SDL.h>
 
@@ -36,41 +37,6 @@
 #include <libintl.h>
 
 #include <assert.h>
-
-// Colour for normal text
-#define TXT_COL_R 112
-#define TXT_COL_G 39
-#define TXT_COL_B 0
-
-// Colour for selected text in list windows
-#define SEL_COL_R 255
-#define SEL_COL_G 255
-#define SEL_COL_B 255
-
-// Colour for highlighted text in list windows
-#define HIL_COL_R ((TXT_COL_R+2*255)/3)
-#define HIL_COL_G ((TXT_COL_G+2*255)/3)
-#define HIL_COL_B ((TXT_COL_B+2*255)/3)
-
-// colour for partially solved levels
-#define SO1_COL_R 221
-#define SO1_COL_G 179
-#define SO1_COL_B 0
-
-// colour for solved levels
-#define SOL_COL_R ((TXT_COL_R+ 70)/2)
-#define SOL_COL_G ((TXT_COL_G+200)/2)
-#define SOL_COL_B ((TXT_COL_B+ 70)/2)
-
-// the colour for the help text and the arrows in the help window
-#define HLP_COL_R 221
-#define HLP_COL_G 179
-#define HLP_COL_B 0
-
-// colour for separator in list window
-#define SEP_COL_R 120
-#define SEP_COL_G 90
-#define SEP_COL_B 60
 
 // a window that displays a list with selectable entries
 class listWindow_c : public window_c {
