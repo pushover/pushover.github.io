@@ -24,7 +24,8 @@ pushover_SOURCES = \
   src/tools.cpp src/tools.h \
   src/window.cpp src/window.h \
   src/window_about.cpp \
-  src/window_help.cpp
+  src/window_help.cpp \
+  src/window_input.cpp
 
 dist_doc_DATA = \
   README \
