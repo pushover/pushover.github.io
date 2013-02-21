@@ -508,7 +508,49 @@ static void uC(int x, int y, int f0, int f, int blx, int bly) {
   }
 }
 
+static void uD(int x, int y, int f0, int f, int blx, int bly)
+{
+  int by = bly*y;
+  int bw = f*blx/256;
+  int bx = blx*x+blx/2-f*blx/512;
+  int bh = bly;
 
+  if (bw > 0){
+    rects[count].x=bx;
+    rects[count].y=by;
+    rects[count].w=bw;
+    rects[count].h=bh;
+    count++;
+  }
+}
+
+static void uE(int x, int y, int f0, int f, int blx, int bly)
+{
+  int bx = blx*x;
+  int bh = f*bly/256;
+  int by = bly*y+bly/2-f*bly/512;
+  int bw = blx;
+
+  if (bw > 0){
+    rects[count].x=bx;
+    rects[count].y=by;
+    rects[count].w=bw;
+    rects[count].h=bh;
+    count++;
+  }
+}
+
+static void uF(int x, int y, int f0, int f, int blx, int bly)
+{
+  if ((x+y) % 2)
+  {
+    return uD(x, y, f0, f, blx, bly);
+  }
+  else
+  {
+    return uE(x, y, f0, f, blx, bly);
+  }
+}
 
 bool screen_c::flipAnimate(void)
 {
@@ -526,7 +568,7 @@ bool screen_c::flipAnimate(void)
       case 4: f = f5; break;  // left right
       default: assert(0); break;
     }
-    switch (rand()%12) {
+    switch (rand()%15) {
       case  0: u = u1; break;  // left --> right update
       case  1: u = u2; break;  // up --> down update
       case  2: u = u3; break;  // inside out update
@@ -539,6 +581,9 @@ bool screen_c::flipAnimate(void)
       case  9: u = uA; break;  // right --> left
       case 10: u = uB; break;  // down --> up
       case 11: u = uC; break;  // big windmill
+      case 12: u = uD; break;  // mittle out left right
+      case 13: u = uE; break;  // mittle out up down
+      case 14: u = uF; break;  // checkered uD und uE
       default: assert(0); break;
     }
   }
