@@ -22,7 +22,9 @@ pushover_SOURCES = \
   src/soundsys.cpp src/soundsys.h \
   src/textsections.cpp src/textsections.h \
   src/tools.cpp src/tools.h \
-  src/window.cpp src/window.h
+  src/window.cpp src/window.h \
+  src/window_about.cpp \
+  src/window_help.cpp
 
 dist_doc_DATA = \
   README \
