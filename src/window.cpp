@@ -28,7 +28,6 @@
 #include "solvedmap.h"
 #include "leveldata.h"
 #include "config.h"
-#include "ant.h"
 
 #include <SDL.h>
 
@@ -73,6 +72,67 @@
 #define SEP_COL_G 90
 #define SEP_COL_B 60
 
+// a window that displays a list with selectable entries
+class listWindow_c : public window_c {
+
+  public:
+    typedef struct entry {
+        std::string text;
+        std::vector<std::string> details;
+        bool highlight;
+        int sol;  // 0 no normal color, 1 bit, yellow, 2 complete green
+        bool line;
+
+        entry(std::string t) : text(t), highlight(false), sol(0), line(false) {}
+
+
+        uint16_t height_details; // calculated value to store the hight of this entry.. used by light window
+        uint16_t height; // calculated value to store the hight of this entry.. used by light window
+    } entry;
+
+  private:
+    std::vector<entry> entries;
+    std::string title;
+
+    unsigned int current;
+    bool escape;  // escape works
+
+  public:
+
+    listWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
+        const std::string & title, const std::vector<entry> & entries, bool escape, int initial = 0);
+
+    // the the user has selected something
+    unsigned int getSelection(void) { return current; } // which list entry was selected
+
+    virtual bool handleEvent(const SDL_Event & event);
+
+    virtual void redraw(void);
+};
+
+class InputWindow_c : public window_c {
+
+  private:
+    std::string input;
+
+    unsigned int cursorPosition;
+
+    std::string title;
+
+    void redraw(void);
+
+  public:
+
+    InputWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
+        const std::string & title);
+
+    // the the user has selected something
+    const std::string getText(void) { return input; } // which list entry was selected
+
+    virtual bool handleEvent(const SDL_Event & event);
+};
+
+
 window_c::window_c(unsigned char x_, unsigned char y_, unsigned char w_, unsigned char h_, surface_c & s, graphicsN_c & g) : x(x_), y(y_), w(w_), h(h_), surf(s), gr(g) {
 
   if (w < 2 || h < 2) return;
@@ -105,6 +165,37 @@ void window_c::clearInside(void) {
 
 window_c::~window_c(void) {
 }
+
+
+class helpWindow_c : public window_c {
+
+  private:
+    const levelData_c & level;
+    DominoType carried;
+    const std::string & mission;
+    std::vector<uint32_t> pages;
+    uint32_t nextPage;
+
+    surface_c & s;
+    graphicsN_c & g;
+
+  private:
+
+    void displayCurrentPage(void);
+
+  public:
+
+    helpWindow_c(const std::string & mission, const levelData_c & level, DominoType carried, surface_c & s, graphicsN_c & g);
+    bool handleEvent(const SDL_Event & event);
+
+};
+
+window_c * getHelpWindow(const std::string & mission, const levelData_c & level, DominoType carried, surface_c & surf, graphicsN_c & gr)
+{
+  return new helpWindow_c(mission, level, carried, surf, gr);
+}
+
+
 
 #define NUM_DOMINOS 12
 static struct {
@@ -731,7 +822,7 @@ bool listWindow_c::handleEvent(const SDL_Event & event) {
 }
 
 
-listWindow_c * getMainWindow(surface_c & surf, graphicsN_c & gr) {
+window_c * getMainWindow(surface_c & surf, graphicsN_c & gr) {
     static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
@@ -746,13 +837,13 @@ listWindow_c * getMainWindow(surface_c & surf, graphicsN_c & gr) {
     return new listWindow_c(4, 2, 12, 8, surf, gr, _("Main menu"), entries, false);
 }
 
-InputWindow_c * getProfileInputWindow(surface_c & surf, graphicsN_c & gr)
+window_c * getProfileInputWindow(surface_c & surf, graphicsN_c & gr)
 {
   return new InputWindow_c(4,2,12,5, surf, gr, _("Enter new profile name"));
 }
 
 
-listWindow_c * getProfileWindow(const solvedMap_c & solve, surface_c & surf, graphicsN_c & gr)
+window_c * getProfileWindow(const solvedMap_c & solve, surface_c & surf, graphicsN_c & gr)
 {
   std::vector<listWindow_c::entry> entries;
 
@@ -769,7 +860,7 @@ listWindow_c * getProfileWindow(const solvedMap_c & solve, surface_c & surf, gra
   return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Your Profile"), entries, true, solve.getCurrentUser());
 }
 
-listWindow_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, graphicsN_c & gr)
+window_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, graphicsN_c & gr)
 {
   std::vector<listWindow_c::entry> entries;
 
@@ -779,7 +870,7 @@ listWindow_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, g
   return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Profile to delete"), entries, true, 0);
 }
 
-listWindow_c * getConfigWindow(surface_c & surf, graphicsN_c & gr, const configSettings & c, int sel)
+window_c * getConfigWindow(surface_c & surf, graphicsN_c & gr, const configSettings & c, int sel)
 {
   std::vector<listWindow_c::entry> entries;
 
@@ -936,7 +1027,7 @@ static std::string collectAuthors(const levelset_c & ls)
   return res;
 }
 
-listWindow_c * getMissionWindow(const levelsetList_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & selection) {
+window_c * getMissionWindow(const levelsetList_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & selection) {
     std::vector<listWindow_c::entry> entries;
 
     int index = -1;
@@ -1037,7 +1128,7 @@ class levelWindow_c : public listWindow_c
     }
 };
 
-listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & lname) {
+window_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & lname) {
     std::vector<listWindow_c::entry> entries;
 
     int index = -1;
@@ -1080,7 +1171,7 @@ listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, s
     return new levelWindow_c(4, 0, 12, 12, surf, gr, _("Select Level"), entries, true, index);
 }
 
-listWindow_c * getQuitWindow(bool complete, surface_c & surf, graphicsN_c & gr) {
+window_c * getQuitWindow(bool complete, surface_c & surf, graphicsN_c & gr) {
     std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
@@ -1098,7 +1189,7 @@ window_c * getAboutWindow(surface_c & surf, graphicsN_c & gr) {
     return new aboutWindow_c(surf, gr);
 }
 
-listWindow_c * getSolvedWindow(surface_c & surf, graphicsN_c & gr) {
+window_c * getSolvedWindow(surface_c & surf, graphicsN_c & gr) {
     static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
@@ -1109,7 +1200,7 @@ listWindow_c * getSolvedWindow(surface_c & surf, graphicsN_c & gr) {
     return new listWindow_c(2, 3, 16, 6, surf, gr, _("Congratulations! You did it."), entries, false);
 }
 
-listWindow_c * getFailedWindow(LevelState failReason, surface_c & surf, graphicsN_c & gr) {
+window_c * getFailedWindow(LevelState failReason, surface_c & surf, graphicsN_c & gr) {
     static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())
@@ -1144,7 +1235,7 @@ listWindow_c * getFailedWindow(LevelState failReason, surface_c & surf, graphics
 }
 
 
-listWindow_c * getTimeoutWindow(surface_c & surf, graphicsN_c & gr) {
+window_c * getTimeoutWindow(surface_c & surf, graphicsN_c & gr) {
     static std::vector<listWindow_c::entry> entries;
 
     if (!entries.size())

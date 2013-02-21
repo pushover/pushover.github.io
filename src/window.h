@@ -22,13 +22,12 @@
 #ifndef __WINDOW_H__
 #define __WINDOW_H__
 
-#include "leveldata.h"
 #include "ant.h"
+
+#include <SDL.h>
 
 #include <string>
 #include <vector>
-
-#include <SDL.h>
 
 // one of those boxed windows
 // the window may update its content, but stacking the windows.... well I don't know if
@@ -53,6 +52,9 @@ class window_c {
 
     void clearInside(void);
 
+  protected:
+    bool escape;
+
   public:
 
     // minimum w and h is 2, but then you don't have space in the middle as everything is taken
@@ -64,98 +66,16 @@ class window_c {
 
     bool isDone(void) { return done; }
     void resetWindow(void) { done = false; }
+    bool hasEscaped(void) const { return escape; }
 
     unsigned char X(void) { return x; }
     unsigned char Y(void) { return y; }
     unsigned char W(void) { return w; }
     unsigned char H(void) { return h; }
-};
 
-class helpWindow_c : public window_c {
+    virtual const std::string getText(void) { return ""; }
+    virtual unsigned int getSelection(void) { return 0; }
 
-  private:
-    const levelData_c & level;
-    DominoType carried;
-    const std::string & mission;
-    std::vector<uint32_t> pages;
-    uint32_t nextPage;
-
-    surface_c & s;
-    graphicsN_c & g;
-
-  private:
-
-    void displayCurrentPage(void);
-
-  public:
-
-    helpWindow_c(const std::string & mission, const levelData_c & level, DominoType carried, surface_c & s, graphicsN_c & g);
-    bool handleEvent(const SDL_Event & event);
-
-};
-
-// a window that displays a list with selectable entries
-class listWindow_c : public window_c {
-
-  public:
-    typedef struct entry {
-        std::string text;
-        std::vector<std::string> details;
-        bool highlight;
-        int sol;  // 0 no normal color, 1 bit, yellow, 2 complete green
-        bool line;
-
-        entry(std::string t) : text(t), highlight(false), sol(0), line(false) {}
-
-
-        uint16_t height_details; // calculated value to store the hight of this entry.. used by light window
-        uint16_t height; // calculated value to store the hight of this entry.. used by light window
-    } entry;
-
-  private:
-    std::vector<entry> entries;
-    std::string title;
-
-    unsigned int current;
-    bool escape;  // escape works
-
-  public:
-
-    listWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
-        const std::string & title, const std::vector<entry> & entries, bool escape, int initial = 0);
-
-    // the the user has selected something
-    unsigned int getSelection(void) { return current; } // which list entry was selected
-
-    virtual bool handleEvent(const SDL_Event & event);
-
-    virtual void redraw(void);
-};
-
-class InputWindow_c : public window_c {
-
-  private:
-    std::string input;
-
-    unsigned int cursorPosition;
-
-    std::string title;
-
-    void redraw(void);
-
-    bool escape;
-
-  public:
-
-    InputWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
-        const std::string & title);
-
-    // the the user has selected something
-    const std::string & getText(void) { return input; } // which list entry was selected
-
-    bool hasEscaped(void) const { return escape; }
-
-    virtual bool handleEvent(const SDL_Event & event);
 };
 
 class levelsetList_c;
@@ -168,18 +88,19 @@ typedef struct configSettings {
   bool playSounds;
 } configSettings;
 
-listWindow_c * getMainWindow(surface_c & surf, graphicsN_c & gr);
-listWindow_c * getConfigWindow(surface_c & surf, graphicsN_c & gr, const configSettings & c, int sel);
-listWindow_c * getMissionWindow(const levelsetList_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & selection);
-listWindow_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & lname);
-listWindow_c * getQuitWindow(bool complete, surface_c & surf, graphicsN_c & gr);
-listWindow_c * getSolvedWindow(surface_c & surf, graphicsN_c & gr);
-listWindow_c * getFailedWindow(LevelState failReason, surface_c & surf, graphicsN_c & gr);
-listWindow_c * getTimeoutWindow(surface_c & surf, graphicsN_c & gr);
+window_c * getMainWindow(surface_c & surf, graphicsN_c & gr);
+window_c * getConfigWindow(surface_c & surf, graphicsN_c & gr, const configSettings & c, int sel);
+window_c * getMissionWindow(const levelsetList_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & selection);
+window_c * getLevelWindow(const levelset_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & lname);
+window_c * getQuitWindow(bool complete, surface_c & surf, graphicsN_c & gr);
+window_c * getSolvedWindow(surface_c & surf, graphicsN_c & gr);
+window_c * getFailedWindow(LevelState failReason, surface_c & surf, graphicsN_c & gr);
+window_c * getTimeoutWindow(surface_c & surf, graphicsN_c & gr);
 window_c * getAboutWindow(surface_c & surf, graphicsN_c & gr);
-listWindow_c * getProfileWindow(const solvedMap_c & solved, surface_c & surf, graphicsN_c & gr);
-InputWindow_c * getProfileInputWindow(surface_c & surf, graphicsN_c & gr);
-listWindow_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, graphicsN_c & gr);
+window_c * getProfileWindow(const solvedMap_c & solved, surface_c & surf, graphicsN_c & gr);
+window_c * getProfileInputWindow(surface_c & surf, graphicsN_c & gr);
+window_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, graphicsN_c & gr);
+window_c * getHelpWindow(const std::string & mission, const levelData_c & level, DominoType carried, surface_c & surf, graphicsN_c & gr);
 
 #endif
 

@@ -505,7 +505,7 @@ int main(int argc, char * argv[]) {
               break;
 
             case ST_HELP:
-              window = new helpWindow_c(selectedMission, l, a.getCarriedDomino(), screen, gr);
+              window = getHelpWindow(selectedMission, l, a.getCarriedDomino(), screen, gr);
               break;
 
             case ST_PREREPLAY:
@@ -568,7 +568,7 @@ int main(int argc, char * argv[]) {
               gr.markAllDirty();
               if (window->isDone())
               {
-                switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                switch(window->getSelection())
                 {
                   case 0: nextState = ST_LEVELSET; break;// select level set
                   case 1: nextState = ST_CONFIG; break;  // open config menu
@@ -592,7 +592,7 @@ int main(int argc, char * argv[]) {
               gr.markAllDirty();
               if (window->isDone())
               {
-                unsigned int sel = dynamic_cast<listWindow_c*>(window)->getSelection();
+                unsigned int sel = window->getSelection();
                 if (sel < solved.getNumberOfUsers())
                 {
                   solved.selectUser(sel);
@@ -628,7 +628,7 @@ int main(int argc, char * argv[]) {
               gr.markAllDirty();
               if (window->isDone())
               {
-                size_t s = dynamic_cast<listWindow_c*>(window)->getSelection();
+                size_t s = window->getSelection();
 
                 if (s+1 < solved.getNumberOfUsers())
                 {
@@ -661,9 +661,9 @@ int main(int argc, char * argv[]) {
               gr.markAllDirty();
               if (window->isDone())
               {
-                if (!dynamic_cast<InputWindow_c*>(window)->hasEscaped())
+                if (!window->hasEscaped())
                 {
-                  solved.addUser(dynamic_cast<InputWindow_c*>(window)->getText());
+                  solved.addUser(window->getText());
                   delete levelsetList;
                   levelsetList = loadAllLevels(datadir, solved.getUserString());
                   nextState = ST_MAIN;
@@ -688,7 +688,7 @@ int main(int argc, char * argv[]) {
               gr.markAllDirty();
               if (window->isDone())
               {
-                switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                switch(window->getSelection())
                 {
                   case 0:   // toggle full screen
                     conf.useFullscreen = !conf.useFullscreen;
@@ -735,7 +735,7 @@ int main(int argc, char * argv[]) {
               gr.markAllDirty();
               if (window->isDone())
               {
-                unsigned int sel = dynamic_cast<listWindow_c*>(window)->getSelection();
+                unsigned int sel = window->getSelection();
                 if (sel >= levelsetList->getLevelsetNames().size())
                   nextState = ST_MAIN;
                 else
@@ -759,7 +759,7 @@ int main(int argc, char * argv[]) {
               gr.markAllDirty();
               if (window->isDone())
               {
-                unsigned int sel = dynamic_cast<listWindow_c*>(window)->getSelection();
+                unsigned int sel = window->getSelection();
                 levelset_c ls = levelsetList->getLevelset(selectedMission);
 
                 if (sel >= ls.getLevelNames().size())
@@ -843,7 +843,7 @@ int main(int argc, char * argv[]) {
 
                 if (selectedMission != "")
                 {
-                  switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                  switch(window->getSelection())
                   {
                     case 3:
                       nextState = ST_LEVEL;
@@ -869,7 +869,7 @@ int main(int argc, char * argv[]) {
                 }
                 else
                 {
-                  switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                  switch(window->getSelection())
                   {
                     case 2:
                       nextState = ST_MAIN;
@@ -899,7 +899,7 @@ int main(int argc, char * argv[]) {
               gr.markAllDirty();
               if (window->isDone())
               {
-                switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                switch(window->getSelection())
                 {
                   case 0:
                     nextState = ST_LEVEL;
@@ -921,7 +921,7 @@ int main(int argc, char * argv[]) {
               gr.markAllDirty();
               if (window->isDone())
               {
-                switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                switch(window->getSelection())
                 {
                   case 0:                            // try again
                     {
@@ -974,7 +974,7 @@ int main(int argc, char * argv[]) {
               gr.markAllDirty();
               if (window->isDone())
               {
-                switch(dynamic_cast<listWindow_c*>(window)->getSelection())
+                switch(window->getSelection())
                 {
                   case 0:                            // try again
                     {
