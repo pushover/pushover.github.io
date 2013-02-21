@@ -66,7 +66,7 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphicsN_c & g) : window_c(2, 0, 16
   par.shadow = 0; par.box.y += surf.renderText(&par, "Harry Nadler, Avril Rigby, Don Rigby, Chris Waterworth")*lineH; par.box.x -= 30; par.box.w += 60;
 
   par.shadow = 2; par.box.y += surf.renderText(&par, _("New Programming:"))*lineH; par.box.x += 30; par.box.w -= 60;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Andreas Röver, Volker Grabsch")*lineH; par.box.x -= 30; par.box.w += 60;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Andreas RÃ¶ver, Volker Grabsch")*lineH; par.box.x -= 30; par.box.w += 60;
 
   par.shadow = 2; par.box.y += surf.renderText(&par, _("New Music:"))*lineH; par.box.x += 30; par.box.w -= 60;
   par.shadow = 0; par.box.y += surf.renderText(&par, "Roberto Lorenz")*lineH; par.box.x -= 30; par.box.w += 60;
@@ -75,7 +75,7 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphicsN_c & g) : window_c(2, 0, 16
   par.shadow = 0; par.box.y += surf.renderText(&par, "Harald Radke")*lineH; par.box.x -= 30; par.box.w += 60;
 
   par.shadow = 2; par.box.y += surf.renderText(&par, _("New Levels:"))*lineH; par.box.x += 30; par.box.w -= 60;
-  par.shadow = 0; par.box.y += surf.renderText(&par, " A&V: Volker Grabsch, Andreas Röver, Dominik Pöhlker")*lineH; par.box.x -= 30; par.box.w += 60;
+  par.shadow = 0; par.box.y += surf.renderText(&par, " A&V: Volker Grabsch, Andreas RÃ¶ver, Dominik PÃ¶hlker")*lineH; par.box.x -= 30; par.box.w += 60;
 }
 
 
