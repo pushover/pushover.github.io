@@ -49,7 +49,7 @@ solvedMap_c::solvedMap_c(void) {
     }
   }
 
-  currentUser = 0;
+  currentUser = users.size()-1;
 }
 
 solvedMap_c::~solvedMap_c(void) {  }
