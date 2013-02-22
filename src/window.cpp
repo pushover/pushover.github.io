@@ -533,63 +533,6 @@ class missionWindow_c : public listWindow_c
     }
 };
 
-class authorData {
-
-  public:
-    std::string name;
-    uint16_t cnt;
-
-    bool operator< (const authorData & b) const
-    {
-      return cnt > b.cnt;
-    }
-
-};
-
-static std::string collectAuthors(const levelset_c & ls)
-{
-  std::vector<authorData> authors;
-
-  for (size_t i = 0; i < ls.getLevelNames().size(); i++)
-  {
-    std::string e = ls.getLevelNames()[i];
-    levelData_c level;
-    ls.loadLevel(level, e, "");
-
-    for (size_t j = 0; j < level.getAuthor().size(); j++)
-    {
-      bool found = false;
-      for (size_t k = 0; k < authors.size(); k++)
-        if (authors[k].name == level.getAuthor()[j])
-        {
-          authors[k].cnt++;
-          found = true;
-          break;
-        }
-
-      if (!found)
-      {
-        authors.resize(authors.size()+1);
-        authors.back().name = level.getAuthor()[j];
-        authors.back().cnt = 1;
-      }
-    }
-  }
-
-  // sort authors by number of levels they designed
-  std::sort(authors.begin(), authors.end());
-
-  std::string res;
-
-  for (size_t i = 0; i < authors.size(); i++)
-  {
-    if (res != "") res += ", ";
-    res += authors[i].name;
-  }
-
-  return res;
-}
-
 window_c * getMissionWindow(const levelsetList_c & ls, const solvedMap_c & solv, surface_c & surf, graphicsN_c & gr, const std::string & selection) {
     std::vector<listWindow_c::entry> entries;
 

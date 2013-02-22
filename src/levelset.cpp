@@ -33,6 +33,9 @@
 #include <unistd.h>
 #include <zlib.h>
 
+#include <algorithm>
+
+
 static std::string readCompressedFile(const std::string & path) {
 
   gzFile file = ::gzopen(path.c_str(), "rb");
@@ -207,3 +210,61 @@ const levelset_c & levelsetList_c::getLevelset(const std::string & levelsetName)
     throw format_error("unknown levelset name: " + levelsetName);
   return i->second;
 }
+
+
+class authorData {
+
+  public:
+    std::string name;
+    uint16_t cnt;
+
+    bool operator< (const authorData & b) const
+    {
+      return cnt > b.cnt;
+    }
+};
+
+std::string collectAuthors(const levelset_c & ls)
+{
+  std::vector<authorData> authors;
+
+  for (size_t i = 0; i < ls.getLevelNames().size(); i++)
+  {
+    std::string e = ls.getLevelNames()[i];
+    levelData_c level;
+    ls.loadLevel(level, e, "");
+
+    for (size_t j = 0; j < level.getAuthor().size(); j++)
+    {
+      bool found = false;
+      for (size_t k = 0; k < authors.size(); k++)
+        if (authors[k].name == level.getAuthor()[j])
+        {
+          authors[k].cnt++;
+          found = true;
+          break;
+        }
+
+      if (!found)
+      {
+        authors.resize(authors.size()+1);
+        authors.back().name = level.getAuthor()[j];
+        authors.back().cnt = 1;
+      }
+    }
+  }
+
+  // sort authors by number of levels they designed
+  std::sort(authors.begin(), authors.end());
+
+  std::string res;
+
+  for (size_t i = 0; i < authors.size(); i++)
+  {
+    if (res != "") res += _(", ");
+    res += authors[i].name;
+  }
+
+  return res;
+}
+

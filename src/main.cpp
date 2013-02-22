@@ -488,7 +488,7 @@ int main(int argc, char * argv[]) {
               break;
 
             case ST_ABOUT:
-              window = getAboutWindow(screen, gr);
+              window = getAboutWindow(screen, gr, *levelsetList);
               break;
 
             case ST_FAILED:

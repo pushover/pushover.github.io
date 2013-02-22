@@ -6,4 +6,5 @@ src/window_input.cpp
 src/window_about.cpp
 src/main.cpp
 src/graphicsn.cpp
+src/levelset.cpp
 po/leveltexts.txt

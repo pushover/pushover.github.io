@@ -22,12 +22,13 @@
 #ifndef __LEVELSET_H__
 #define __LEVELSET_H__
 
+#include "textsections.h"
+
 #include <string>
 #include <vector>
 #include <map>
 
 class levelData_c;
-class textsections_c;
 
 class levelset_c {
 
@@ -69,5 +70,9 @@ class levelsetList_c {
     const std::vector<std::string> & getLevelsetNames(void) const { return levelsetNames; }
     const levelset_c & getLevelset(const std::string & levelsetName) const;
 };
+
+
+// function to collect all the authors of one levelset
+std::string collectAuthors(const levelset_c & ls);
 
 #endif

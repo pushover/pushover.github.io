@@ -23,6 +23,7 @@
 #define __WINDOW_H__
 
 #include "ant.h"
+#include "levelset.h"
 
 #include <SDL.h>
 
@@ -78,8 +79,6 @@ class window_c {
 
 };
 
-class levelsetList_c;
-class levelset_c;
 class solvedMap_c;
 
 typedef struct configSettings {
@@ -96,7 +95,7 @@ window_c * getQuitWindow(bool complete, surface_c & surf, graphicsN_c & gr);
 window_c * getSolvedWindow(surface_c & surf, graphicsN_c & gr);
 window_c * getFailedWindow(LevelState failReason, surface_c & surf, graphicsN_c & gr);
 window_c * getTimeoutWindow(surface_c & surf, graphicsN_c & gr);
-window_c * getAboutWindow(surface_c & surf, graphicsN_c & gr);
+window_c * getAboutWindow(surface_c & surf, graphicsN_c & gr, const levelsetList_c &levels);
 window_c * getProfileWindow(const solvedMap_c & solved, surface_c & surf, graphicsN_c & gr);
 window_c * getProfileInputWindow(surface_c & surf, graphicsN_c & gr);
 window_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, graphicsN_c & gr);
