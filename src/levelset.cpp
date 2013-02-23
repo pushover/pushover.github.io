@@ -58,6 +58,7 @@ levelset_c::levelset_c(const std::string & path, const std::string & userString,
   if (stat(path.c_str(), &st) != 0)
     throw format_error("file or directory does not exist: " + path);
   std::vector<textsections_c> fileSections;
+  std::vector<std::string> files;
   if (S_ISDIR(st.st_mode)) {
     const std::vector<std::string> entries = directoryEntries(path);
     for (std::vector<std::string>::const_iterator i = entries.begin(); i != entries.end(); i++) {
@@ -66,6 +67,7 @@ levelset_c::levelset_c(const std::string & path, const std::string & userString,
         continue;
       std::ifstream file((path + '/' + filename).c_str());
       fileSections.push_back(textsections_c(file, true));
+      files.push_back(path + filename);
     }
   } else {
     std::istringstream stream(readCompressedFile(path));
@@ -78,12 +80,15 @@ levelset_c::levelset_c(const std::string & path, const std::string & userString,
   /* Parse all loaded files */
   levelData_c test_level;
   bool index_loaded = false;
-  for (std::vector<textsections_c>::const_iterator i = fileSections.begin(); i != fileSections.end(); i++) {
-    const textsections_c & sections = *i;
+  for (size_t i = 0; i < fileSections.size(); i++) {
+    const textsections_c & sections = fileSections[i];
     try {
 
       /* Load level */
       test_level.load(sections, userString);
+
+      if (i < files.size())
+        filenames.insert(make_pair(test_level.getName(), files[i]));
 
     } catch (format_error & level_e) {
 
@@ -186,6 +191,12 @@ const std::string & levelset_c::getChecksumNoTime(const std::string & levelName)
   if (checksumsNoTime.find(levelName) == checksumsNoTime.end())
     throw std::exception();
   return checksumsNoTime.find(levelName)->second;
+}
+
+const std::string & levelset_c::getFilename(const std::string & levelName) const {
+  if (filenames.find(levelName) == filenames.end())
+    throw std::exception();
+  return filenames.find(levelName)->second;
 }
 
 void levelset_c::loadLevel(levelData_c & level, const std::string & levelName, const std::string & userString) const {

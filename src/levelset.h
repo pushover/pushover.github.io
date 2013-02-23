@@ -40,6 +40,7 @@ class levelset_c {
     std::vector<std::string> levelNames;
     std::map<std::string, std::string> checksums;
     std::map<std::string, std::string> checksumsNoTime;
+    std::map<std::string, std::string> filenames; // contains the filenames for the levels, if known, "" otherwise
     std::map<std::string, textsections_c> levels;
 
   public:
@@ -52,6 +53,7 @@ class levelset_c {
     const std::vector<std::string> & getLevelNames(void) const { return levelNames; }
     const std::string & getChecksum(const std::string & levelName) const;
     const std::string & getChecksumNoTime(const std::string & levelName) const;
+    const std::string & getFilename(const std::string & levelName) const;
     void loadLevel(levelData_c & level, const std::string & levelName, const std::string & userString) const;
 };
 
