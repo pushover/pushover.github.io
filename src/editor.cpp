@@ -39,6 +39,7 @@ typedef enum {
   ST_DELETE_LEVEL,
   ST_EDIT_HOME,        // the base level for the level editor
   ST_EDIT_MENU,
+  ST_EDIT_HELP,
 } states_e;
 
 static states_e currentState, nextState, messageContinue;
@@ -81,6 +82,7 @@ static void changeState(void)
       case ST_DELETE_LEVEL:
       case ST_DOUBLE_NAME:
       case ST_EDIT_MENU:
+      case ST_EDIT_HELP:
         delete window;
         window = 0;
         break;
@@ -114,6 +116,10 @@ static void changeState(void)
 
       case ST_EDIT_MENU:
         window = getEditorMenu(*screen, *gr);
+        break;
+
+      case ST_EDIT_HELP:
+        window = getEditorHelp(*screen, *gr);
         break;
     }
   }
@@ -342,11 +348,26 @@ bool eventEditor(const SDL_Event & event)
       }
       break;
 
+    case ST_EDIT_HELP:
+      if (!window)
+      {
+        nextState = ST_EXIT;
+      }
+      else
+      {
+        window->handleEvent(event);
+
+        if (window->isDone())
+        {
+          nextState = ST_EDIT_HOME;
+        }
+      }
+      break;
 
     case ST_EDIT_HOME:
 
-      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
-        nextState = ST_EDIT_MENU;
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)  nextState = ST_EDIT_MENU;
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F1)      nextState = ST_EDIT_HELP;
 
       break;
 
@@ -368,6 +389,7 @@ void stepEditor(void)
     case ST_DELETE_LEVEL:
     case ST_DOUBLE_NAME:
     case ST_EDIT_MENU:
+    case ST_EDIT_HELP:
       break;
 
     case ST_EDIT_HOME:

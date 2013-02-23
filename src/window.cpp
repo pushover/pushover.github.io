@@ -838,3 +838,61 @@ window_c * getEditorMenu(surface_c & surf, graphicsN_c & gr)
   return new listWindow_c(4, 1, 12, 11, surf, gr, _("Editor main menu"), entries, true);
 }
 
+class editorHelpWindow_c : public window_c {
+
+  private:
+    surface_c & s;
+    graphicsN_c & g;
+
+  private:
+
+    void displayCurrentPage(void)
+    {
+      clearInside();
+
+      fontParams_s par;
+
+      uint32_t ypos = (Y()+1)*gr.blockY();
+
+      par.font = FNT_NORMAL;
+      par.alignment = ALN_TEXT_CENTER;
+      par.color.r = HLP_COL_R; par.color.g = HLP_COL_G; par.color.b = HLP_COL_B;
+      par.shadow = 0;
+      par.box.x = (800-16*40)/2;
+      par.box.w = 16*40;
+      par.box.y = ypos;
+      par.box.h = (H()-2)/3*gr.blockY();
+
+      s.renderText(&par, _("Editor Help window"));
+    }
+
+  public:
+
+    editorHelpWindow_c(surface_c & su, graphicsN_c & gr) : window_c(1, 1, 18, 11, su, gr), s(su), g(gr)
+    {
+      displayCurrentPage();
+    }
+
+    bool handleEvent(const SDL_Event & event)
+    {
+      if (event.type == SDL_KEYDOWN)
+      {
+        if (   event.key.keysym.sym == SDLK_ESCAPE
+            || event.key.keysym.sym == SDLK_RETURN
+           )
+        {
+          done = true;
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+};
+
+window_c * getEditorHelp(surface_c & surf, graphicsN_c & gr)
+{
+  return new editorHelpWindow_c(surf, gr);
+}
+
