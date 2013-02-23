@@ -665,7 +665,7 @@ void graphicsN_c::drawLadders(bool before)
   // otherwise in front
   // that is why this function is called once bafore and once after drawing the ant
   // the argument is true, when called before the ant drawing
-  if (before == antOnLadder(ant->getAnimation()))
+  if (before == antOnLadder(ant ? ant->getAnimation() : AntAnimStop))
     for (unsigned int y = 0; y < level->levelY(); y++)
       for (unsigned int x = 0; x < level->levelX(); x++)
         if (dirty.isDirty(x, y))
@@ -1231,19 +1231,22 @@ void graphicsN_c::findDirtyBlocks(void)
     while (level->getExitState() > l2.getExitState()) l2.openExitDoorStep();
   }
 
-  // check for ant movement
-  if (ant->getBlockX() != antX || ant->getBlockY() != antY || ant->getAnimation() != antAnim || ant->getAnimationImage() != antImage)
+  if (ant)
   {
-    antX = ant->getBlockX();
-    antY = ant->getBlockY();
-    antAnim = ant->getAnimation();
-    antImage = ant->getAnimationImage();
+    // check for ant movement
+    if (ant->getBlockX() != antX || ant->getBlockY() != antY || ant->getAnimation() != antAnim || ant->getAnimationImage() != antImage)
+    {
+      antX = ant->getBlockX();
+      antY = ant->getBlockY();
+      antAnim = ant->getAnimation();
+      antImage = ant->getAnimationImage();
 
-    for (int i = 0; i < 5; i++)
-      for (int j = 0; j < 7; j++)
-      {
-        dirty.markDirty(antX-2+i, antY-4+j);
-      }
+      for (int i = 0; i < 5; i++)
+        for (int j = 0; j < 7; j++)
+        {
+          dirty.markDirty(antX-2+i, antY-4+j);
+        }
+    }
   }
 
   int timeLeft = level->getTimeLeft();
