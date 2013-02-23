@@ -1040,6 +1040,8 @@ void graphicsN_c::drawDominos(void)
       // when the current block is dirty, recreate it
       if (dirtybg.isDirty(x, y))
       {
+        background->fillRect(x*blockX(), y*blockY()/2, blockX(), blockY()/2, 0, 0, 0);
+
         for (unsigned char b = 0; b < level->getNumBgLayer(); b++)
           background->blitBlock(*(bgTiles[curTheme][level->getBg(x, y, b)]), x*blockX(), y*blockY()/2);
 
