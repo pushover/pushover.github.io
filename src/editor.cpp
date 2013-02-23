@@ -168,6 +168,7 @@ bool eventEditor(const SDL_Event & event)
             // a real level choosen... load that one and go into editor
             levels->loadLevel(*l, levels->getLevelNames()[sel], "");
             nextState = ST_EDIT_HOME;
+            gr->setPaintData(l, 0, screen);
           }
           else
           {
@@ -219,6 +220,7 @@ bool eventEditor(const SDL_Event & event)
 
             levels->loadLevel(*l, window->getText(), "");
 
+            gr->setPaintData(l, 0, screen);
             nextState = ST_EDIT_HOME;
           }
         }
@@ -270,7 +272,8 @@ bool eventEditor(const SDL_Event & event)
 
     case ST_EDIT_HOME:
 
-      nextState = ST_CHOOSE_LEVEL;
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+        nextState = ST_CHOOSE_LEVEL;
 
       break;
 
@@ -289,9 +292,12 @@ void stepEditor(void)
     case ST_EXIT:
     case ST_CHOOSE_LEVEL:
     case ST_NEW_LEVEL:
-    case ST_EDIT_HOME:
     case ST_DELETE_LEVEL:
     case ST_DOUBLE_NAME:
+      break;
+
+    case ST_EDIT_HOME:
+      gr->drawLevel();
       break;
   }
 }
