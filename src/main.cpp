@@ -434,7 +434,6 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              gr.markAllDirty();
               if (window->isDone())
               {
                 switch(window->getSelection())
@@ -458,7 +457,6 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              gr.markAllDirty();
               if (window->isDone())
               {
                 unsigned int sel = window->getSelection();
@@ -494,7 +492,6 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              gr.markAllDirty();
               if (window->isDone())
               {
                 size_t s = window->getSelection();
@@ -527,7 +524,6 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              gr.markAllDirty();
               if (window->isDone())
               {
                 if (!window->hasEscaped())
@@ -554,7 +550,6 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              gr.markAllDirty();
               if (window->isDone())
               {
                 switch(window->getSelection())
@@ -601,7 +596,6 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              gr.markAllDirty();
               if (window->isDone())
               {
                 unsigned int sel = window->getSelection();
@@ -625,7 +619,6 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              gr.markAllDirty();
               if (window->isDone())
               {
                 unsigned int sel = window->getSelection();
@@ -675,7 +668,6 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              gr.markAllDirty();
               if (window->isDone())
                 nextState = ST_PLAY;
             }
@@ -689,7 +681,6 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              gr.markAllDirty();
               if (window->isDone())
                 nextState = ST_MAIN;
             }
@@ -703,7 +694,6 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              gr.markAllDirty();
               if (window->isDone())
               {
                 // there are 2 different versions of the quit window, one
@@ -765,7 +755,6 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              gr.markAllDirty();
               if (window->isDone())
               {
                 switch(window->getSelection())
@@ -787,7 +776,6 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              gr.markAllDirty();
               if (window->isDone())
               {
                 switch(window->getSelection())
@@ -840,7 +828,6 @@ int main(int argc, char * argv[]) {
             else
             {
               window->handleEvent(event);
-              gr.markAllDirty();
               if (window->isDone())
               {
                 switch(window->getSelection())

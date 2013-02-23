@@ -105,9 +105,11 @@ void window_c::clearInside(void) {
 
       surf.blitBlock(*gr.getBoxBlock(yp*3+xp), (x+i)*gr.blockX(), (y+j)*gr.blockY());
     }
+  gr.markAllDirty();
 }
 
 window_c::~window_c(void) {
+  gr.markAllDirty();
 }
 
 
