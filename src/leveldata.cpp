@@ -64,6 +64,8 @@ levelData_c::levelData_c(void)
 
   // invalid time...
   timeLeft = 60*60*18;
+
+  numBg = 1;
 }
 
 const std::string levelData_c::dominoChars =
