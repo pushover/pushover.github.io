@@ -170,6 +170,9 @@ class levelData_c {
     const std::vector<std::string> & getAuthor(void) const { return author; }
     const std::string getTutorial(void) const { return tutorial; }
 
+    void setName(const std::string & n) { name = n; }
+    void setAuthor(const std::string & n) { author.push_back(n); }
+
     int getTimeLeft(void) const { return timeLeft; }
     void timeTick(void) { timeLeft--; }
     bool someTimeLeft(void) const { return timeLeft > 0; }
