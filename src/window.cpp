@@ -812,3 +812,29 @@ window_c * getMessageWindow(surface_c & surf, graphicsN_c & gr, const std::strin
   return new listWindow_c(4, 3, 12, 7, surf, gr, title, entries, true);
 }
 
+window_c * getEditorMenu(surface_c & surf, graphicsN_c & gr)
+{
+  std::vector<listWindow_c::entry> entries;
+
+  if (!entries.size())
+  {
+    entries.push_back(listWindow_c::entry(_("Select theme")));
+    entries.push_back(listWindow_c::entry(_("Change name")));
+    entries.push_back(listWindow_c::entry(_("Change time")));
+    entries.push_back(listWindow_c::entry(_("Edit hint")));
+    entries.push_back(listWindow_c::entry(_("Edit authors")));
+
+    entries.back().line = true;
+
+    entries.push_back(listWindow_c::entry(_("Test level")));
+
+    entries.back().line = true;
+
+    entries.push_back(listWindow_c::entry(_("Save")));
+    entries.push_back(listWindow_c::entry(_("Edit another file")));
+    entries.push_back(listWindow_c::entry(_("Leave editor")));
+
+  }
+  return new listWindow_c(4, 1, 12, 11, surf, gr, _("Editor main menu"), entries, true);
+}
+

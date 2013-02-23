@@ -104,6 +104,7 @@ window_c * getEditorLevelChooserWindow(surface_c & surf, graphicsN_c & gr, const
 window_c * getDeleteLevelWindow(surface_c & surf, graphicsN_c & gr, const levelset_c & l);
 window_c * getNewLevelWindow(surface_c & surf, graphicsN_c & gr);
 window_c * getMessageWindow(surface_c & surf, graphicsN_c & gr, const std::string & title);
+window_c * getEditorMenu(surface_c & surf, graphicsN_c & gr);
 
 #endif
 

@@ -38,6 +38,7 @@ typedef enum {
   ST_DOUBLE_NAME,
   ST_DELETE_LEVEL,
   ST_EDIT_HOME,        // the base level for the level editor
+  ST_EDIT_MENU,
 } states_e;
 
 static states_e currentState, nextState, messageContinue;
@@ -79,6 +80,7 @@ static void changeState(void)
       case ST_NEW_LEVEL:
       case ST_DELETE_LEVEL:
       case ST_DOUBLE_NAME:
+      case ST_EDIT_MENU:
         delete window;
         window = 0;
         break;
@@ -108,6 +110,10 @@ static void changeState(void)
 
       case ST_DOUBLE_NAME:
         window = getMessageWindow(*screen, *gr, _("The given level name already exists"));
+        break;
+
+      case ST_EDIT_MENU:
+        window = getEditorMenu(*screen, *gr);
         break;
     }
   }
@@ -270,10 +276,77 @@ bool eventEditor(const SDL_Event & event)
       }
       break;
 
+    case ST_EDIT_MENU:
+      if (!window)
+      {
+        nextState = ST_EXIT;
+      }
+      else
+      {
+        window->handleEvent(event);
+
+        if (window->isDone())
+        {
+          switch (window->getSelection())
+          {
+            case 0:
+              // theme
+              nextState = ST_EDIT_HOME;
+              break;
+
+            case 1:
+              // name
+              nextState = ST_EDIT_HOME;
+              break;
+
+            case 2:
+              // time
+              nextState = ST_EDIT_HOME;
+              break;
+
+            case 3:
+              // hint
+              nextState = ST_EDIT_HOME;
+              break;
+
+            case 4:
+              // authors
+              nextState = ST_EDIT_HOME;
+              break;
+
+            case 5:
+              // play
+              nextState = ST_EDIT_HOME;
+              break;
+
+            case 6:
+              // save
+              nextState = ST_CHOOSE_LEVEL;
+              break;
+
+            case 7:
+              // another level
+              nextState = ST_CHOOSE_LEVEL;
+              break;
+
+            case 8:
+              // leave
+              nextState = ST_EXIT;
+              break;
+
+            default:
+              nextState = ST_EDIT_HOME;
+              break;
+          }
+        }
+      }
+      break;
+
+
     case ST_EDIT_HOME:
 
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
-        nextState = ST_CHOOSE_LEVEL;
+        nextState = ST_EDIT_MENU;
 
       break;
 
@@ -294,6 +367,7 @@ void stepEditor(void)
     case ST_NEW_LEVEL:
     case ST_DELETE_LEVEL:
     case ST_DOUBLE_NAME:
+    case ST_EDIT_MENU:
       break;
 
     case ST_EDIT_HOME:
