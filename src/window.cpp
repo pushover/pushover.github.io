@@ -778,7 +778,7 @@ window_c * getEditorLevelChooserWindow(surface_c & surf, graphicsN_c & gr, const
     entries.push_back(listWindow_c::entry(names[i]));
 
   if (entries.size() > 0)
-  entries.back().line = true;
+    entries.back().line = true;
 
   entries.push_back(listWindow_c::entry(_("Add a new level")));
 
