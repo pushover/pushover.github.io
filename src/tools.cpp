@@ -104,6 +104,25 @@ std::string getHome(void) {
       throw std::runtime_error("Can't create home directory: " + home);
   }
 
+  std::string lev = home+"levels";
+
+  dir = ::opendir(lev.c_str());
+
+  if (dir)
+  {
+    closedir(dir);
+  }
+  else
+  {
+    // create it
+#ifdef WIN32
+    if (::mkdir(lev.c_str()) != 0)
+#else
+    if (::mkdir(lev.c_str(), S_IRWXU) != 0)
+#endif
+      throw std::runtime_error("Can't create home directory: " + lev);
+  }
+
   return home;
 }
 
