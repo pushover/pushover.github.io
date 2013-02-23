@@ -286,3 +286,12 @@ std::string collectAuthors(const levelset_c & ls)
   return res;
 }
 
+levelsetList_c * loadAllLevels(const std::string & datadir, const std::string & userString)
+{
+  levelsetList_c * levelsetList = new levelsetList_c();
+
+  levelsetList->load(datadir, userString);
+
+  return levelsetList;
+}
+

@@ -98,20 +98,6 @@ typedef enum {
   ST_ABOUT,
 } states_e;
 
-static levelsetList_c * loadAllLevels(const std::string & datadir, const std::string & userString)
-{
-  levelsetList_c * levelsetList = new levelsetList_c();
-
-  levelsetList->load(datadir + "/levels", userString);
-  {
-    const std::string userleveldir(getHome() + "/.pushover/levels");
-    struct stat st;
-    if (stat(userleveldir.c_str(), &st) == 0)
-      levelsetList->load(userleveldir, userString);
-  }
-
-  return levelsetList;
-}
 
 
 int main(int argc, char * argv[]) {
@@ -160,7 +146,8 @@ int main(int argc, char * argv[]) {
 #endif
 
   // prepare the list of levelsets
-  levelsetList_c * levelsetList = loadAllLevels(datadir, "");
+  const std::string levelsdir = datadir+"/levels";
+  levelsetList_c * levelsetList = loadAllLevels(levelsdir, "");
 
   states_e currentState = ST_INIT, nextState = ST_INIT;
 
@@ -464,7 +451,7 @@ int main(int argc, char * argv[]) {
                 {
                   solved.selectUser(sel);
                   delete levelsetList;
-                  levelsetList = loadAllLevels(datadir, solved.getUserString());
+                  levelsetList = loadAllLevels(levelsdir, solved.getUserString());
 
                   nextState = ST_MAIN;
                 }
@@ -505,7 +492,7 @@ int main(int argc, char * argv[]) {
                   {
                     solved.selectUser(0);
                     delete levelsetList;
-                    levelsetList = loadAllLevels(datadir, solved.getUserString());
+                    levelsetList = loadAllLevels(levelsdir, solved.getUserString());
                   }
 
                   solved.deleteUser(s+1);
@@ -530,7 +517,7 @@ int main(int argc, char * argv[]) {
                 {
                   solved.addUser(window->getText());
                   delete levelsetList;
-                  levelsetList = loadAllLevels(datadir, solved.getUserString());
+                  levelsetList = loadAllLevels(levelsdir, solved.getUserString());
                   nextState = ST_MAIN;
                 }
                 else

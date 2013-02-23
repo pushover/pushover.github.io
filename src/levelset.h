@@ -75,4 +75,7 @@ class levelsetList_c {
 // function to collect all the authors of one levelset
 std::string collectAuthors(const levelset_c & ls);
 
+// load all the levels in the given directory
+levelsetList_c * loadAllLevels(const std::string & datadir, const std::string & userString);
+
 #endif
