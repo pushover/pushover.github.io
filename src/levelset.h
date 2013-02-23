@@ -44,7 +44,7 @@ class levelset_c {
 
   public:
 
-    levelset_c(const std::string & path, const std::string & userString);
+    levelset_c(const std::string & path, const std::string & userString, bool noindexrequired = false);
     const std::string getName(void) const { return name; }
     const std::string getDescription(void) const { return description; }
     const unsigned int getPriority(void) const { return priority; }

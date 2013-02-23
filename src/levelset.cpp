@@ -51,7 +51,7 @@ static std::string readCompressedFile(const std::string & path) {
   return result;
 }
 
-levelset_c::levelset_c(const std::string & path, const std::string & userString) {
+levelset_c::levelset_c(const std::string & path, const std::string & userString, bool noindexrequired) {
 
   /* Load all files */
   struct stat st;
@@ -140,21 +140,39 @@ levelset_c::levelset_c(const std::string & path, const std::string & userString)
     checksumsNoTime.insert(make_pair(levelName, test_level.getChecksumNoTime()));
   }
 
-  /* Check for consistency and completeness */
-  if (!index_loaded)
-    throw format_error("missing levelset index");
-  std::map<std::string, bool> levelNamesMap;
-  for (std::vector<std::string>::const_iterator i = levelNames.begin(); i != levelNames.end(); i++) {
-    const std::string & levelName = *i;
-    if (levels.find(levelName) == levels.end())
-      throw format_error("missing level: " + levelName);
-    if (!levelNamesMap.insert(make_pair(levelName, true)).second)
-      throw format_error("duplicate entry in levelset index for level: " + levelName);
+  if (noindexrequired)
+  {
+    // this is the case for the editor levels...
+
+    // setup the fields with default values
+    name = "";
+    description = "";
+    priority = 0;
+
+    // copy the names fomr the level names ans sort them alphabetically
+    for (std::map<std::string, textsections_c>::const_iterator i = levels.begin(); i != levels.end(); i++)
+      levelNames.push_back(i->first);
+
+    sort(levelNames.begin(), levelNames.end());
   }
-  for (std::map<std::string, textsections_c>::const_iterator i = levels.begin(); i != levels.end(); i++) {
-    const std::string & levelName = i->first;
-    if (levelNamesMap.find(levelName) == levelNamesMap.end())
-      throw format_error("missing entry in levelset index for level: " + levelName);
+  else
+  {
+    /* Check for consistency and completeness */
+    if (!index_loaded)
+      throw format_error("missing levelset index");
+    std::map<std::string, bool> levelNamesMap;
+    for (std::vector<std::string>::const_iterator i = levelNames.begin(); i != levelNames.end(); i++) {
+      const std::string & levelName = *i;
+      if (levels.find(levelName) == levels.end())
+        throw format_error("missing level: " + levelName);
+      if (!levelNamesMap.insert(make_pair(levelName, true)).second)
+        throw format_error("duplicate entry in levelset index for level: " + levelName);
+    }
+    for (std::map<std::string, textsections_c>::const_iterator i = levels.begin(); i != levels.end(); i++) {
+      const std::string & levelName = i->first;
+      if (levelNamesMap.find(levelName) == levelNamesMap.end())
+        throw format_error("missing entry in levelset index for level: " + levelName);
+    }
   }
 }
 
