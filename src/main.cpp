@@ -28,6 +28,7 @@
 #include "window.h"
 #include "solvedmap.h"
 #include "tools.h"
+#include "editor.h"
 
 #include <SDL.h>
 
@@ -96,6 +97,7 @@ typedef enum {
   ST_QUIT,     // play exit dialog showing
   ST_EXIT,     // exiting program
   ST_ABOUT,
+  ST_EDITOR,   // leveleditor stuff
 } states_e;
 
 
@@ -295,6 +297,10 @@ int main(int argc, char * argv[]) {
               gr.drawLevel();
               break;
 
+            case ST_EDITOR:
+              leaveEditor();
+              break;
+
             case ST_PREREPLAY:
             case ST_PREPLAY:
             case ST_INIT:
@@ -303,7 +309,6 @@ int main(int argc, char * argv[]) {
             case ST_FAILDELAY:
             case ST_EXIT:
               break;
-
           }
 
           // now enter the new one
@@ -387,6 +392,10 @@ int main(int argc, char * argv[]) {
             case ST_EXIT:
               exitProgram = true;
               break;
+
+            case ST_EDITOR:
+              startEditor(gr, screen);
+              break;
           }
 
           currentState = nextState;
@@ -428,8 +437,9 @@ int main(int argc, char * argv[]) {
                   case 0: nextState = ST_LEVELSET; break;// select level set
                   case 1: nextState = ST_CONFIG; break;  // open config menu
                   case 2: nextState = ST_PROFILE; break; // open profile selector
-                  case 3: nextState = ST_ABOUT; break;   // about window
-                  case 4: nextState = ST_EXIT; break;    // exit program
+                  case 3: nextState = ST_EDITOR; break;  // go to level editor
+                  case 4: nextState = ST_ABOUT; break;   // about window
+                  case 5: nextState = ST_EXIT; break;    // exit program
                 }
               }
             }
@@ -862,6 +872,13 @@ int main(int argc, char * argv[]) {
           case ST_FAILDELAY:
           case ST_EXIT:
             break;
+
+          case ST_EDITOR:
+            if (eventEditor(event))
+            {
+              nextState = ST_MAIN;
+            }
+            break;
         }
       }
 
@@ -993,6 +1010,10 @@ int main(int argc, char * argv[]) {
         case ST_QUIT:
         case ST_EXIT:
         case ST_ABOUT:
+          break;
+
+        case ST_EDITOR:
+          stepEditor();
           break;
       }
 

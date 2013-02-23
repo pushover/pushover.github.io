@@ -100,6 +100,7 @@ window_c * getProfileWindow(const solvedMap_c & solved, surface_c & surf, graphi
 window_c * getProfileInputWindow(surface_c & surf, graphicsN_c & gr);
 window_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, graphicsN_c & gr);
 window_c * getHelpWindow(const std::string & mission, const levelData_c & level, DominoType carried, surface_c & surf, graphicsN_c & gr);
+window_c * getEditorLevelChooserWindow(surface_c & surf, graphicsN_c & gr, const levelset_c & l);
 
 #endif
 

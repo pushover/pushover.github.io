@@ -104,6 +104,7 @@ void window_c::clearInside(void) {
       if (j+1 == h) yp = 2;
 
       surf.blitBlock(*gr.getBoxBlock(yp*3+xp), (x+i)*gr.blockX(), (y+j)*gr.blockY());
+
     }
   gr.markAllDirty();
 }
@@ -401,6 +402,7 @@ window_c * getMainWindow(surface_c & surf, graphicsN_c & gr) {
         entries.push_back(listWindow_c::entry(_("Play Levelset")));
         entries.push_back(listWindow_c::entry(_("Configuration")));
         entries.push_back(listWindow_c::entry(_("Profile Selection")));
+        entries.push_back(listWindow_c::entry(_("Level Editor")));
         entries.push_back(listWindow_c::entry(_("About")));
         entries.push_back(listWindow_c::entry(_("Quit")));
     }
@@ -766,4 +768,23 @@ window_c * getTimeoutWindow(surface_c & surf, graphicsN_c & gr) {
     return new listWindow_c((20-w)/2, 3, w, 6, surf, gr, title, entries, false);
 }
 
+window_c * getEditorLevelChooserWindow(surface_c & surf, graphicsN_c & gr, const levelset_c & l)
+{
+  std::vector<listWindow_c::entry> entries;
+
+  const std::vector<std::string> names = l.getLevelNames();
+
+  for (size_t i = 0; i < names.size(); i++)
+    entries.push_back(listWindow_c::entry(names[i]));
+
+  if (entries.size() > 0)
+  entries.back().line = true;
+
+  entries.push_back(listWindow_c::entry(_("Add a new level")));
+
+  if (entries.size() > 1)
+    entries.push_back(listWindow_c::entry(_("Delete a level")));
+
+  return new listWindow_c(2, 0, 16, 12, surf, gr, _("Choose level to edit"), entries, true);
+}
 

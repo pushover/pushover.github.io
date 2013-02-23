@@ -8,6 +8,7 @@ pushover_SOURCES = \
   src/ant.cpp src/ant.h \
   src/check.cpp src/check.h \
   src/colors.h \
+  src/editor.cpp src/editor.h \
   src/graphics.h \
   src/graphicsn.cpp src/graphicsn.h \
   src/leveldata.cpp src/leveldata.h \
