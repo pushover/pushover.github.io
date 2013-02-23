@@ -66,6 +66,7 @@ levelData_c::levelData_c(void)
   timeLeft = 60*60*18;
 
   numBg = 1;
+  theme = "aztec";
 }
 
 const std::string levelData_c::dominoChars =
