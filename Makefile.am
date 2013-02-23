@@ -6,6 +6,7 @@ bin_PROGRAMS = pushover
 pushover_CXXFLAGS = -Wall -DPKGDATADIR=\"$(pkgdatadir)\" -DLOCALEDIR=\"$(localedir)\"
 pushover_SOURCES = \
   src/ant.cpp src/ant.h \
+  src/check.cpp src/check.h \
   src/colors.h \
   src/graphics.h \
   src/graphicsn.cpp src/graphicsn.h \
