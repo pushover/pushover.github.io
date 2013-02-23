@@ -394,7 +394,7 @@ int main(int argc, char * argv[]) {
               break;
 
             case ST_EDITOR:
-              startEditor(gr, screen);
+              startEditor(gr, screen, l, solved.getUserName(solved.getCurrentUser()));
               break;
           }
 

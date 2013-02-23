@@ -101,6 +101,9 @@ window_c * getProfileInputWindow(surface_c & surf, graphicsN_c & gr);
 window_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, graphicsN_c & gr);
 window_c * getHelpWindow(const std::string & mission, const levelData_c & level, DominoType carried, surface_c & surf, graphicsN_c & gr);
 window_c * getEditorLevelChooserWindow(surface_c & surf, graphicsN_c & gr, const levelset_c & l);
+window_c * getDeleteLevelWindow(surface_c & surf, graphicsN_c & gr, const levelset_c & l);
+window_c * getNewLevelWindow(surface_c & surf, graphicsN_c & gr);
+window_c * getMessageWindow(surface_c & surf, graphicsN_c & gr, const std::string & title);
 
 #endif
 

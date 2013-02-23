@@ -228,3 +228,9 @@ window_c * getProfileInputWindow(surface_c & surf, graphicsN_c & gr)
   return new InputWindow_c(4,2,12,5, surf, gr, _("Enter new profile name"));
 }
 
+
+window_c * getNewLevelWindow(surface_c & surf, graphicsN_c & gr)
+{
+  return new InputWindow_c(4,2,12,5, surf, gr, _("Enter name for the new level"));
+}
+

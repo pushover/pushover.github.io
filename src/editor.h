@@ -24,11 +24,14 @@
 
 #include <SDL.h>
 
+#include <string>
+
 class graphicsN_c;
 class screen_c;
+class levelPlayer_c;
 
 void leaveEditor(void);
-void startEditor(graphicsN_c & g, screen_c & s);
+void startEditor(graphicsN_c & g, screen_c & s, levelPlayer_c & lp, const std::string & user);
 
 // return true, when the level editor wants to leave
 bool eventEditor(const SDL_Event & event);

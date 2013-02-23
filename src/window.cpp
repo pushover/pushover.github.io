@@ -772,7 +772,7 @@ window_c * getEditorLevelChooserWindow(surface_c & surf, graphicsN_c & gr, const
 {
   std::vector<listWindow_c::entry> entries;
 
-  const std::vector<std::string> names = l.getLevelNames();
+  const std::vector<std::string> & names = l.getLevelNames();
 
   for (size_t i = 0; i < names.size(); i++)
     entries.push_back(listWindow_c::entry(names[i]));
@@ -786,5 +786,29 @@ window_c * getEditorLevelChooserWindow(surface_c & surf, graphicsN_c & gr, const
     entries.push_back(listWindow_c::entry(_("Delete a level")));
 
   return new listWindow_c(2, 0, 16, 12, surf, gr, _("Choose level to edit"), entries, true);
+}
+
+window_c * getDeleteLevelWindow(surface_c & surf, graphicsN_c & gr, const levelset_c & l)
+{
+  std::vector<listWindow_c::entry> entries;
+
+  const std::vector<std::string> names = l.getLevelNames();
+
+  for (size_t i = 0; i < names.size(); i++)
+    entries.push_back(listWindow_c::entry(names[i]));
+
+  return new listWindow_c(2, 0, 16, 12, surf, gr, _("Choose level to delete"), entries, true);
+}
+
+window_c * getMessageWindow(surface_c & surf, graphicsN_c & gr, const std::string & title)
+{
+  std::vector<listWindow_c::entry> entries;
+
+  if (!entries.size())
+  {
+    entries.push_back(listWindow_c::entry(_("Continue")));
+  }
+
+  return new listWindow_c(4, 3, 12, 7, surf, gr, title, entries, true);
 }
 
