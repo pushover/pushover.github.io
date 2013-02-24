@@ -387,11 +387,17 @@ bool eventEditor(const SDL_Event & event)
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == '-')
       {
         // toggle platforms
+        for (uint8_t x = gr->getCursorX(); x < gr->getCursorX()+gr->getCursorW(); x++)
+          for (uint8_t y = gr->getCursorY(); y < gr->getCursorY()+gr->getCursorH(); y++)
+            l->setPlatform(x, y, !l->getPlatform(x, y));
       }
 
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'h')
       {
         // toggle ladders
+        for (uint8_t x = gr->getCursorX(); x < gr->getCursorX()+gr->getCursorW(); x++)
+          for (uint8_t y = gr->getCursorY(); y < gr->getCursorY()+gr->getCursorH(); y++)
+            l->setLadder(x, y, !l->getLadder(x, y));
       }
 
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'g')

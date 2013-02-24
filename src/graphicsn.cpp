@@ -1212,6 +1212,17 @@ void graphicsN_c::findDirtyBlocks(void)
         l2.setPlatform(x,y, level->getPlatform(x, y));
       }
 
+      if (level->getLadder(x, y) != l2.getLadder(x, y))
+      {
+        for (int j = 0; j < 3; j++)
+        {
+          dirty.markDirty(x, y-1+j);
+          dirtybg.markDirty(x, y-1+j);
+        }
+
+        l2.setLadder(x,y, level->getLadder(x, y));
+      }
+
       if (level->getDominoType(x, y) != l2.getDominoType(x, y) ||
           level->getDominoState(x, y) != l2.getDominoState(x, y) ||
           level->getDominoYOffset(x, y) != l2.getDominoYOffset(x, y)
