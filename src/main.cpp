@@ -50,20 +50,6 @@ static std::string getLocaleDir(void)
   return std::string((stat("locale", &st) == 0) ? "locale" : LOCALEDIR);
 }
 
-static unsigned int getKeyMask(void) {
-  unsigned int keyMask = 0;
-
-  Uint8 *keystate = SDL_GetKeyState(NULL);
-
-  if ( keystate[SDLK_UP] ) keyMask |= KEY_UP;
-  if ( keystate[SDLK_DOWN] ) keyMask |= KEY_DOWN;
-  if ( keystate[SDLK_LEFT] ) keyMask |= KEY_LEFT;
-  if ( keystate[SDLK_RIGHT] ) keyMask |= KEY_RIGHT;
-  if ( keystate[SDLK_SPACE] ) keyMask |= KEY_ACTION;
-
-  return keyMask;
-}
-
 LevelState playTick(levelPlayer_c & l, ant_c & a, graphics_c & gr, unsigned int keys)
 {
   LevelState res = a.performAnimation(keys);
@@ -394,7 +380,7 @@ int main(int argc, char * argv[]) {
               break;
 
             case ST_EDITOR:
-              startEditor(gr, screen, l, solved.getUserName(solved.getCurrentUser()));
+              startEditor(gr, screen, l, a, solved.getUserName(solved.getCurrentUser()));
               break;
           }
 

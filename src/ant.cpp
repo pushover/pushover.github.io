@@ -26,6 +26,15 @@
 
 #include <assert.h>
 
+
+
+// the following defines are used for the keymask
+#define KEY_LEFT 1
+#define KEY_UP 2
+#define KEY_RIGHT 4
+#define KEY_DOWN 8
+#define KEY_ACTION 16
+
 // the statemashine for the ant works as follows:
 // - detect what the ant has to do next
 // - play the complete animation resuling maybe in a new position or somethin else
@@ -1765,5 +1774,19 @@ AntAnimationState ant_c::SFNextAction(unsigned int keyMask) {
 bool ant_c::isVisible(void) const
 {
   return blockX >= 0 && (size_t)blockX < level.levelX() && blockY >= 0 && (size_t)blockY < level.levelY();
+}
+
+unsigned int getKeyMask(void) {
+  unsigned int keyMask = 0;
+
+  Uint8 *keystate = SDL_GetKeyState(NULL);
+
+  if ( keystate[SDLK_UP] ) keyMask |= KEY_UP;
+  if ( keystate[SDLK_DOWN] ) keyMask |= KEY_DOWN;
+  if ( keystate[SDLK_LEFT] ) keyMask |= KEY_LEFT;
+  if ( keystate[SDLK_RIGHT] ) keyMask |= KEY_RIGHT;
+  if ( keystate[SDLK_SPACE] ) keyMask |= KEY_ACTION;
+
+  return keyMask;
 }
 

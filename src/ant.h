@@ -28,14 +28,6 @@
 
 // this class contains all necessary code for the ant animation
 
-// the following defines are used for the keymask
-#define KEY_LEFT 1
-#define KEY_UP 2
-#define KEY_RIGHT 4
-#define KEY_DOWN 8
-#define KEY_ACTION 16
-
-
 // This enumeration contains all the possible animations that the ant can
 // perform. The number of images in each animation is fixes and can be
 // aquired using getAntImages
@@ -270,6 +262,10 @@ class ant_c {
     bool CanPlaceDomino(int x, int y, int ofs);
     bool PushableDomino(int x, int y, int ofs);
 };
+
+// get the keymask for the ant movements
+unsigned int getKeyMask(void);
+
 
 #endif
 

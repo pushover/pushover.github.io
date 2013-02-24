@@ -25,6 +25,7 @@
 #include "screen.h"
 #include "graphicsn.h"
 #include "tools.h"
+#include "recorder.h"
 
 #include <fstream>
 #include <sys/stat.h>
@@ -40,6 +41,7 @@ typedef enum {
   ST_EDIT_HOME,        // the base level for the level editor
   ST_EDIT_MENU,
   ST_EDIT_HELP,
+  ST_EDIT_PLAY,
 } states_e;
 
 static states_e currentState, nextState, messageContinue;
@@ -51,6 +53,9 @@ static levelset_c * levels;
 static levelPlayer_c * l;
 static std::string userName;
 static std::string levelFileName;
+static std::string levelName;
+static recorder_c rec;
+static ant_c * a;
 
 static void loadLevels(void)
 {
@@ -76,6 +81,10 @@ static void changeState(void)
       case ST_INIT:
       case ST_EXIT:
       case ST_EDIT_HOME:
+        break;
+
+      case ST_EDIT_PLAY:
+        gr->setPaintData(l, 0, screen);
         break;
 
       case ST_CHOOSE_LEVEL:
@@ -123,6 +132,10 @@ static void changeState(void)
       case ST_EDIT_HELP:
         window = getEditorHelp(*screen, *gr);
         break;
+
+      case ST_EDIT_PLAY:
+        gr->setPaintData(l, a, screen);
+        break;
     }
   }
 }
@@ -142,7 +155,7 @@ void leaveEditor(void)
   gr->setShowGrid(false);
 }
 
-void startEditor(graphicsN_c & g, screen_c & s, levelPlayer_c & lp, const std::string & user)
+void startEditor(graphicsN_c & g, screen_c & s, levelPlayer_c & lp, ant_c & ant, const std::string & user)
 {
   nextState = ST_CHOOSE_LEVEL;
   currentState = ST_INIT;
@@ -156,6 +169,7 @@ void startEditor(graphicsN_c & g, screen_c & s, levelPlayer_c & lp, const std::s
   loadLevels();
 
   l = &lp;
+  a = &ant;
   userName = user;
 
   gr->setCursor(l->levelX()/2, l->levelY()/2, 1, 1);
@@ -187,10 +201,10 @@ bool eventEditor(const SDL_Event & event)
           if (sel < levels->getLevelNames().size())
           {
             // a real level choosen... load that one and go into editor
-            std::string name = levels->getLevelNames()[sel];
-            levelFileName = levels->getFilename(name);
+            levelName = levels->getLevelNames()[sel];
+            levelFileName = levels->getFilename(levelName);
 
-            levels->loadLevel(*l, name, "");
+            levels->loadLevel(*l, levelName, "");
             nextState = ST_EDIT_HOME;
             gr->setPaintData(l, 0, screen);
           }
@@ -241,11 +255,12 @@ bool eventEditor(const SDL_Event & event)
               l.save(f);
             }
             loadLevels();
-            levels->loadLevel(*l, window->getText(), "");
+            levelName = window->getText();
+            levels->loadLevel(*l, levelName, "");
 
             gr->setPaintData(l, 0, screen);
 
-            levelFileName = levels->getFilename(window->getText());
+            levelFileName = levels->getFilename(levelName);
             nextState = ST_EDIT_HOME;
           }
         }
@@ -333,7 +348,14 @@ bool eventEditor(const SDL_Event & event)
 
             case 5:
               // play
-              nextState = ST_EDIT_HOME;
+              {
+                std::ofstream out(levelFileName.c_str());
+                l->save(out);
+              }
+              loadLevels();
+              a->initForLevel();
+              gr->setShowGrid(false);
+              nextState = ST_EDIT_PLAY;
               break;
 
             case 6:
@@ -342,6 +364,7 @@ bool eventEditor(const SDL_Event & event)
                 std::ofstream out(levelFileName.c_str());
                 l->save(out);
               }
+              loadLevels();
               nextState = ST_EDIT_HOME;
               break;
 
@@ -500,6 +523,14 @@ bool eventEditor(const SDL_Event & event)
 
       break;
 
+    case ST_EDIT_PLAY:
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
+        nextState = ST_EDIT_HOME;
+        levels->loadLevel(*l, levelName, "");
+      }
+
+      break;
+
   }
 
   return currentState == ST_EXIT;
@@ -521,9 +552,34 @@ void stepEditor(void)
     case ST_EDIT_HELP:
       break;
 
+
+    case ST_EDIT_PLAY:
+      {
+        unsigned int keyMask = getKeyMask();
+        rec.addEvent(keyMask);
+        uint16_t failReason = a->performAnimation(keyMask);
+
+        if (l->levelInactive())
+        {
+          switch (failReason) {
+            case LS_undecided:
+              break;
+            case LS_solved:
+              rec.save("levels/"+levelName+"_");
+              // intentionally fall throgh
+            default:
+              nextState = ST_EDIT_HOME;
+              levels->loadLevel(*l, levelName, "");
+              break;
+          }
+        }
+      }
+      // intentionally fall though to repaint the level
+
     case ST_EDIT_HOME:
       gr->drawLevel();
       break;
+
   }
 }
 
