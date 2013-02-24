@@ -238,6 +238,8 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   cursorY = 13;
   cursorW = cursorH = 1;
   overlay = 0;
+  foregroundVisible = true;
+  bgDrawMode = 0;
 
   dominos.resize(DominoNumber);
 
@@ -1043,62 +1045,90 @@ void graphicsN_c::drawDominos(void)
       // when the current block is dirty, recreate it
       if (dirtybg.isDirty(x, y))
       {
-        background->fillRect(x*blockX(), y*blockY()/2, blockX(), blockY()/2, 0, 0, 0);
 
-        for (unsigned char b = 0; b < level->getNumBgLayer(); b++)
-          background->blitBlock(*(bgTiles[curTheme][level->getBg(x, y, b)]), x*blockX(), y*blockY()/2);
-
-        // blit the doors
-        if (x == level->getEntryX() && y+2 == level->getEntryY())
-          background->blitBlock(*fgTiles[curTheme][FG_DOORSTART+0+2*level->getEntryState()], x*blockX(), y*blockY()/2);
-        if (x == level->getEntryX() && y+1 == level->getEntryY())
-          background->blitBlock(*fgTiles[curTheme][FG_DOORSTART+1+2*level->getEntryState()], x*blockX(), y*blockY()/2);
-
-        if (x == level->getExitX() && y+2 == level->getExitY())
-          background->blitBlock(*fgTiles[curTheme][FG_DOORSTART+0+2*level->getExitState()], x*blockX(), y*blockY()/2);
-        if (x == level->getExitX() && y+1 == level->getExitY())
-          background->blitBlock(*fgTiles[curTheme][FG_DOORSTART+1+2*level->getExitState()], x*blockX(), y*blockY()/2);
-
-        if (editorMode)
+        if (bgDrawMode == 0)
         {
-          fontParams_s pars;
+          background->fillRect(x*blockX(), y*blockY()/2, blockX(), blockY()/2, 0, 0, 0);
+          for (unsigned char b = 0; b < level->getNumBgLayer(); b++)
+            background->blitBlock(*(bgTiles[curTheme][level->getBg(x, y, b)]), x*blockX(), y*blockY()/2);
+        }
+        else
+        {
+          for (int yc = 0; yc < 3; yc++)
+            for (int xc = 0; xc < 5; xc++)
+            {
+              if ((xc+5*x+yc+3*y)%2)
+                background->fillRect(x*blockX()+8*xc, y*blockY()/2+8*yc, 8, 8, 85, 85, 85);
+              else
+                background->fillRect(x*blockX()+8*xc, y*blockY()/2+8*yc, 8, 8, 2*85, 2*85, 2*85);
+            }
 
-          pars.font = FNT_SMALL;
-          pars.alignment = ALN_CENTER;
-          pars.box.w = blockX();
-          pars.box.h = blockY();
-          pars.shadow = 0;
-          pars.color.r = HLP_COL_R;
-          pars.color.g = HLP_COL_G;
-          pars.color.b = HLP_COL_B;
-
-          pars.box.x = level->getEntryX()*blockX();
-          pars.box.y = (level->getEntryY()-2)*blockY()/2;
-          background->renderText(&pars, "In");
-
-          pars.box.x = level->getExitX()*blockX();
-          pars.box.y = (level->getExitY()-2)*blockY()/2;
-          background->renderText(&pars, "Out");
+          if (bgDrawMode == 1)
+          {
+            for (unsigned char b = 0; b <= bgDrawLayer; b++)
+              background->blitBlock(*(bgTiles[curTheme][level->getBg(x, y, b)]), x*blockX(), y*blockY()/2);
+          }
+          else
+          {
+            background->blitBlock(*(bgTiles[curTheme][level->getBg(x, y, bgDrawLayer)]), x*blockX(), y*blockY()/2);
+          }
         }
 
-        // blit the platform images
+        if (foregroundVisible)
         {
-          uint16_t s[4];
+          // blit the doors
+          if (x == level->getEntryX() && y+2 == level->getEntryY())
+            background->blitBlock(*fgTiles[curTheme][FG_DOORSTART+0+2*level->getEntryState()], x*blockX(), y*blockY()/2);
+          if (x == level->getEntryX() && y+1 == level->getEntryY())
+            background->blitBlock(*fgTiles[curTheme][FG_DOORSTART+1+2*level->getEntryState()], x*blockX(), y*blockY()/2);
 
-          getPlatformImage(x, y, s);
+          if (x == level->getExitX() && y+2 == level->getExitY())
+            background->blitBlock(*fgTiles[curTheme][FG_DOORSTART+0+2*level->getExitState()], x*blockX(), y*blockY()/2);
+          if (x == level->getExitX() && y+1 == level->getExitY())
+            background->blitBlock(*fgTiles[curTheme][FG_DOORSTART+1+2*level->getExitState()], x*blockX(), y*blockY()/2);
 
-          if (s[0] < fgTiles[curTheme].size())
-            background->blitBlock(*fgTiles[curTheme][s[0]], x*blockX(), y*blockY()/2);
-          if (s[1] < fgTiles[curTheme].size())
-            background->blitBlock(*fgTiles[curTheme][s[1]], x*blockX(), y*blockY()/2);
+          if (editorMode)
+          {
+            fontParams_s pars;
 
-          if (s[2] < fgTiles[curTheme].size())
-            background->blitBlock(*fgTiles[curTheme][s[2]], x*blockX()+blockX()/2, y*blockY()/2);
-          if (s[3] < fgTiles[curTheme].size())
-            background->blitBlock(*fgTiles[curTheme][s[3]], x*blockX()+blockX()/2, y*blockY()/2);
+            pars.font = FNT_SMALL;
+            pars.alignment = ALN_CENTER;
+            pars.box.w = blockX();
+            pars.box.h = blockY();
+            pars.shadow = 0;
+            pars.color.r = HLP_COL_R;
+            pars.color.g = HLP_COL_G;
+            pars.color.b = HLP_COL_B;
+
+            pars.box.x = level->getEntryX()*blockX();
+            pars.box.y = (level->getEntryY()-2)*blockY()/2;
+            background->renderText(&pars, "In");
+
+            pars.box.x = level->getExitX()*blockX();
+            pars.box.y = (level->getExitY()-2)*blockY()/2;
+            background->renderText(&pars, "Out");
+          }
+
+          // blit the platform images
+          {
+            uint16_t s[4];
+
+            getPlatformImage(x, y, s);
+
+            if (s[0] < fgTiles[curTheme].size())
+              background->blitBlock(*fgTiles[curTheme][s[0]], x*blockX(), y*blockY()/2);
+            if (s[1] < fgTiles[curTheme].size())
+              background->blitBlock(*fgTiles[curTheme][s[1]], x*blockX(), y*blockY()/2);
+
+            if (s[2] < fgTiles[curTheme].size())
+              background->blitBlock(*fgTiles[curTheme][s[2]], x*blockX()+blockX()/2, y*blockY()/2);
+            if (s[3] < fgTiles[curTheme].size())
+              background->blitBlock(*fgTiles[curTheme][s[3]], x*blockX()+blockX()/2, y*blockY()/2);
+          }
         }
 
-        background->gradient(blockX()*x, blockY()/2*y, blockX(), blockY()/2);
+        if (bgDrawMode == 0)
+          background->gradient(blockX()*x, blockY()/2*y, blockX(), blockY()/2);
       }
     }
   }
@@ -1110,6 +1140,7 @@ void graphicsN_c::drawDominos(void)
       if (dirty.isDirty(x, y))
         target->copy(*background, x*blockX(), y*blockY()/2, blockX(), blockY()/2, x*blockX(), y*blockY()/2);
 
+  if (!foregroundVisible) return;
 
   // the idea behind this code is to repaint the dirty blocks. Dominos that are actually
   // within neighbor block must be repaint, too, when they might reach into the actual
@@ -1467,9 +1498,13 @@ void graphicsN_c::drawLevel(void) {
   findDirtyBlocks();
 
   drawDominos();
-  drawLadders(true);
-  drawAnt();
-  drawLadders(false);
+
+  if (foregroundVisible)
+  {
+    drawLadders(true);
+    drawAnt();
+    drawLadders(false);
+  }
 
   if (grid && target)
     for (size_t y = 0; y < level->levelY(); y++)
@@ -1707,6 +1742,36 @@ void graphicsN_c::setOverlay(const surface_c * o)
   if (overlay)
   {
     markAllDirty();
+  }
+}
+
+void graphicsN_c::setForegroundVisibility(bool on)
+{
+  if (on != foregroundVisible)
+  {
+    foregroundVisible = on;
+    markAllDirty();
+    dirtybg.markAllDirty();
+  }
+}
+
+void graphicsN_c::setBgDrawMode(uint8_t mode)
+{
+  if (bgDrawMode != mode)
+  {
+    bgDrawMode = mode;
+    markAllDirty();
+    dirtybg.markAllDirty();
+  }
+}
+
+void graphicsN_c::setBgDrawLayer(uint8_t layer)
+{
+  if (bgDrawLayer != layer)
+  {
+    bgDrawLayer = layer;
+    markAllDirty();
+    dirtybg.markAllDirty();
   }
 }
 

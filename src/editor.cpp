@@ -41,6 +41,7 @@ typedef enum {
   ST_EDIT_HOME,        // edit the foreground of the level (all level related elements
   ST_EDIT_DOMINOS_SELECTOR,
   ST_EDIT_BACKGROUND,  // edit the background imagery of the level
+  ST_EDIT_BG_SELECTOR,
   ST_EDIT_MENU,
   ST_EDIT_HELP,
   ST_EDIT_PLAY,
@@ -61,6 +62,7 @@ static ant_c * a;
 static DominoType dt;
 static surface_c * dominoOverlay = 0;
 static surface_c * backgroundOverlay = 0;
+static uint8_t bgLayer = 0;
 
 static void loadLevels(void)
 {
@@ -108,6 +110,59 @@ void updateDominoOverlay(void)
   gr->setOverlay(dominoOverlay);
 }
 
+#define B_OVL_W gr->blockX()
+#define B_OVL_H gr->blockY()
+#define B_OVL_COL 18
+#define B_OVL_ROW 11
+#define B_OVL_FRAME 3
+
+void updateBackgroundOverlay(void)
+{
+  if (!backgroundOverlay)
+  {
+    backgroundOverlay = new surface_c (2*B_OVL_FRAME+B_OVL_W*B_OVL_COL, 2*B_OVL_FRAME+B_OVL_H*B_OVL_ROW, false);
+  }
+
+  backgroundOverlay->fillRect(0, 0, backgroundOverlay->getX(), backgroundOverlay->getY(), 0, 0, 0);
+
+  const std::vector<surface_c *> bgTiles = gr->getBgTiles();
+
+  int x = 0;
+  int y = 0;
+  int b = 0;
+
+  for (size_t t = 0; t < bgTiles.size(); t++)
+  {
+    for (int yc = 0; yc < 3; yc++)
+      for (int xc = 0; xc < 5; xc++)
+      {
+        if ((xc+5*x+yc+6*y+3*b)%2)
+          backgroundOverlay->fillRect(B_OVL_FRAME+x*B_OVL_W+xc*8, B_OVL_FRAME+y*B_OVL_H+b*B_OVL_H/2+yc*8, 8, 8, 85, 85, 85);
+        else
+          backgroundOverlay->fillRect(B_OVL_FRAME+x*B_OVL_W+xc*8, B_OVL_FRAME+y*B_OVL_H+b*B_OVL_H/2+yc*8, 8, 8, 2*85, 2*85, 2*85);
+      }
+
+    backgroundOverlay->blitBlock(*(bgTiles[t]), B_OVL_FRAME+x*B_OVL_W, B_OVL_FRAME+y*B_OVL_H+b*B_OVL_H/2);
+
+    b++;
+    if (b == 2)
+    {
+      b = 0;
+      x++;
+      if (x == B_OVL_COL)
+      {
+        x = 0;
+        y++;
+
+        if (y == B_OVL_ROW)
+          break;
+      }
+    }
+  }
+
+  gr->setOverlay(backgroundOverlay);
+}
+
 static void changeState(void)
 {
   if (currentState != nextState)
@@ -136,6 +191,7 @@ static void changeState(void)
         break;
 
       case ST_EDIT_DOMINOS_SELECTOR:
+      case ST_EDIT_BG_SELECTOR:
         gr->setOverlay(0);
         break;
     }
@@ -183,6 +239,10 @@ static void changeState(void)
       case ST_EDIT_DOMINOS_SELECTOR:
         updateDominoOverlay();
         break;
+
+      case ST_EDIT_BG_SELECTOR:
+        updateBackgroundOverlay();
+        break;
     }
   }
 }
@@ -221,6 +281,7 @@ void startEditor(graphicsN_c & g, screen_c & s, levelPlayer_c & lp, ant_c & ant,
   gr->setCursor(l->levelX()/2, l->levelY()/2, 1, 1);
 
   dt = DominoTypeStandard;
+  bgLayer = 0;
 }
 
 static void handleCommonKeys(const SDL_Event & event)
@@ -353,6 +414,7 @@ bool eventEditor(const SDL_Event & event)
             levels->loadLevel(*l, levelName, "");
             nextState = ST_EDIT_HOME;
             gr->setPaintData(l, 0, screen);
+            bgLayer = 0;
           }
           else
           {
@@ -408,6 +470,7 @@ bool eventEditor(const SDL_Event & event)
 
             levelFileName = levels->getFilename(levelName);
             nextState = ST_EDIT_HOME;
+            bgLayer = 0;
           }
         }
       }
@@ -586,6 +649,16 @@ bool eventEditor(const SDL_Event & event)
 
       break;
 
+    case ST_EDIT_BG_SELECTOR:
+
+      if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_LCTRL)
+      {
+        setDominoStatus(dt);
+        nextState = ST_EDIT_BACKGROUND;
+      }
+
+      break;
+
     case ST_EDIT_HOME:
 
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
@@ -705,6 +778,7 @@ bool eventEditor(const SDL_Event & event)
       {
         nextState = ST_EDIT_MENU;
         messageContinue = ST_EDIT_BACKGROUND;
+        gr->setForegroundVisibility(true);
       }
 
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F1)
@@ -717,6 +791,41 @@ bool eventEditor(const SDL_Event & event)
       {
         nextState = ST_EDIT_HOME;
         gr->setStatus(_("Foreground editing mode"));
+        gr->setForegroundVisibility(true);
+      }
+
+      // toggle foreground visibilty
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'f')
+      {
+        gr->setForegroundVisibility(!gr->getForegroundVisibility());
+      }
+
+      // choose layer to edit
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == '+')
+      {
+        if (bgLayer+1 < l->getNumBgLayer())
+        {
+          bgLayer++;
+          gr->setBgDrawLayer(bgLayer);
+        }
+      }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == '-')
+      {
+        if (bgLayer > 0)
+        {
+          bgLayer--;
+          gr->setBgDrawLayer(bgLayer);
+        }
+      }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F2) gr->setBgDrawMode(0);
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F3) gr->setBgDrawMode(1);
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4) gr->setBgDrawMode(2);
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LCTRL)
+      {
+        nextState = ST_EDIT_BG_SELECTOR;
       }
 
       handleCommonKeys(event);
@@ -780,6 +889,7 @@ void stepEditor(void)
     case ST_EDIT_HOME:
     case ST_EDIT_BACKGROUND:
     case ST_EDIT_DOMINOS_SELECTOR:
+    case ST_EDIT_BG_SELECTOR:
       gr->drawLevel();
       break;
 

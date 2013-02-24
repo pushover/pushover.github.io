@@ -75,6 +75,14 @@ class graphicsN_c : public graphics_c {
     // set Overlay to be displayed over the level
     void setOverlay(const surface_c * o);
 
+    void setForegroundVisibility(bool on);
+    bool getForegroundVisibility(void) const { return foregroundVisible; }
+
+    void setBgDrawMode(uint8_t mode);
+    void setBgDrawLayer(uint8_t layer);
+
+    const std::vector<surface_c *> getBgTiles(void) const { return bgTiles[curTheme]; }
+
   private:
 
     bool editorMode;
@@ -83,6 +91,8 @@ class graphicsN_c : public graphics_c {
     std::string statusText;
     uint16_t statusTime;
     const surface_c * overlay;
+    bool foregroundVisible;
+    uint8_t bgDrawMode, bgDrawLayer;
 
     // add an image to a specific ant animation, the new image is added at the end
     // you must also provide an y-offset used when animating to displace the image
