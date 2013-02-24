@@ -38,7 +38,8 @@ typedef enum {
   ST_NEW_LEVEL,
   ST_DOUBLE_NAME,
   ST_DELETE_LEVEL,
-  ST_EDIT_HOME,        // the base level for the level editor
+  ST_EDIT_HOME,        // edit the foreground of the level (all level related elements
+  ST_EDIT_DOMINOS_SELECTOR,
   ST_EDIT_MENU,
   ST_EDIT_HELP,
   ST_EDIT_PLAY,
@@ -56,6 +57,9 @@ static std::string levelFileName;
 static std::string levelName;
 static recorder_c rec;
 static ant_c * a;
+static DominoType dt;
+static surface_c * dominoOverlay = 0;
+static surface_c * backgroundOverlay = 0;
 
 static void loadLevels(void)
 {
@@ -69,6 +73,37 @@ static void loadLevels(void)
     printf("format error %s\n", e.msg.c_str());
     levels = 0;
   }
+}
+
+#define D_OVL_W 50
+#define D_OVL_H 70
+#define D_OVL_COL 5
+#define D_OVL_ROW 3
+#define D_OVL_FRAME 3
+
+void updateDominoOverlay(void)
+{
+  if (!dominoOverlay)
+  {
+    dominoOverlay = new surface_c (2*D_OVL_FRAME+D_OVL_W*D_OVL_COL, 2*D_OVL_FRAME+D_OVL_H*D_OVL_ROW);
+    dominoOverlay->fillRect(0, 0, dominoOverlay->getX(), dominoOverlay->getY(), 0, 0, 0);
+  }
+
+  for (int i = 0; i < DominoTypeLastNormal; i++)
+  {
+    if (dt == (DominoType(i+1)))
+    {
+      dominoOverlay->fillRect(D_OVL_FRAME+D_OVL_W*(i % D_OVL_COL), D_OVL_FRAME+D_OVL_H*(i / D_OVL_COL), D_OVL_W, D_OVL_H, 100, 100, 100, 128);
+    }
+    else
+    {
+      dominoOverlay->fillRect(D_OVL_FRAME+D_OVL_W*(i % D_OVL_COL), D_OVL_FRAME+D_OVL_H*(i / D_OVL_COL), D_OVL_W, D_OVL_H, 0, 0, 0, 128);
+    }
+
+    dominoOverlay->blit(*gr->getHelpDominoImage((DominoType)(i+1)), D_OVL_W*(i%D_OVL_COL)-75, 62+D_OVL_H*(i/D_OVL_COL));
+  }
+
+  gr->setOverlay(dominoOverlay);
 }
 
 static void changeState(void)
@@ -95,6 +130,10 @@ static void changeState(void)
       case ST_EDIT_HELP:
         delete window;
         window = 0;
+        break;
+
+      case ST_EDIT_DOMINOS_SELECTOR:
+        gr->setOverlay(0);
         break;
     }
 
@@ -136,6 +175,10 @@ static void changeState(void)
       case ST_EDIT_PLAY:
         gr->setPaintData(l, a, screen);
         break;
+
+      case ST_EDIT_DOMINOS_SELECTOR:
+        updateDominoOverlay();
+        break;
     }
   }
 }
@@ -164,7 +207,6 @@ void startEditor(graphicsN_c & g, screen_c & s, levelPlayer_c & lp, ant_c & ant,
   screen = &s;
   gr = &g;
   gr->setEditorMode(true);
-  gr->setShowGrid(true);
 
   loadLevels();
 
@@ -173,6 +215,106 @@ void startEditor(graphicsN_c & g, screen_c & s, levelPlayer_c & lp, ant_c & ant,
   userName = user;
 
   gr->setCursor(l->levelX()/2, l->levelY()/2, 1, 1);
+
+  dt = DominoTypeStandard;
+}
+
+static void handleCommonKeys(const SDL_Event & event)
+{
+  Uint8 *keystate = SDL_GetKeyState(NULL);
+
+  if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
+  {
+    if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+      gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), gr->getCursorH()-1);
+    else
+      gr->setCursor(gr->getCursorX(), gr->getCursorY()-1, gr->getCursorW(), gr->getCursorH());
+  }
+
+  if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
+  {
+    if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+      gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), gr->getCursorH()+1);
+    else
+      gr->setCursor(gr->getCursorX(), gr->getCursorY()+1, gr->getCursorW(), gr->getCursorH());
+  }
+
+  if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LEFT)
+  {
+    if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+      gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW()-1, gr->getCursorH());
+    else
+      gr->setCursor(gr->getCursorX()-1, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
+  }
+
+  if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RIGHT)
+  {
+    if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+      gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW()+1, gr->getCursorH());
+    else
+      gr->setCursor(gr->getCursorX()+1, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
+  }
+
+  if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_HOME)
+  {
+    if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+      gr->setCursor(gr->getCursorX(), gr->getCursorY(), 1, gr->getCursorH());
+    else
+      gr->setCursor(0, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
+  }
+
+  if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_END)
+  {
+    if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+      gr->setCursor(gr->getCursorX(), gr->getCursorY(), l->levelX(), gr->getCursorH());
+    else
+      gr->setCursor(l->levelX()-1, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
+  }
+
+  if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_PAGEUP)
+  {
+    if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+      gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), 1);
+    else
+      gr->setCursor(gr->getCursorX(), 0, gr->getCursorW(), gr->getCursorH());
+  }
+
+  if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_PAGEDOWN)
+  {
+    if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+      gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), l->levelY());
+    else
+      gr->setCursor(gr->getCursorX(), l->levelY()-1, gr->getCursorW(), gr->getCursorH());
+  }
+
+  if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'g')
+  {
+    // toggle grid
+    gr->setShowGrid(!gr->getShowGrid());
+  }
+}
+
+static void setDominoStatus(DominoType dt)
+{
+  switch (dt)
+  {
+    case DominoTypeStandard:   gr->setStatus(_("Selected Standard domino")); break;
+    case DominoTypeStopper:    gr->setStatus(_("Selected Stopper domino")); break;
+    case DominoTypeSplitter:   gr->setStatus(_("Selected Splitter domino")); break;
+    case DominoTypeExploder:   gr->setStatus(_("Selected Exploder domino")); break;
+    case DominoTypeDelay:      gr->setStatus(_("Selected Delay domino")); break;
+    case DominoTypeTumbler:    gr->setStatus(_("Selected Tumbler domino")); break;
+    case DominoTypeBridger:    gr->setStatus(_("Selected Bridger domino")); break;
+    case DominoTypeVanish:     gr->setStatus(_("Selected Vanisher domino")); break;
+    case DominoTypeTrigger:    gr->setStatus(_("Selected Trigger domino")); break;
+    case DominoTypeAscender:   gr->setStatus(_("Selected Ascender domino")); break;
+    case DominoTypeConnectedA: gr->setStatus(_("Selected Connected A domino")); break;
+    case DominoTypeConnectedB: gr->setStatus(_("Selected Connected B domino")); break;
+    case DominoTypeCounter1:   gr->setStatus(_("Selected Counter Stopper 1 domino")); break;
+    case DominoTypeCounter2:   gr->setStatus(_("Selected Counter Stopper 2 domino")); break;
+    case DominoTypeCounter3:   gr->setStatus(_("Selected Counter Stopper 3 domino")); break;
+    default:                   gr->setStatus(_("Selected unknown domino")); break;
+  }
 }
 
 bool eventEditor(const SDL_Event & event)
@@ -402,6 +544,44 @@ bool eventEditor(const SDL_Event & event)
       }
       break;
 
+    case ST_EDIT_DOMINOS_SELECTOR:
+
+      if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_LCTRL)
+      {
+        setDominoStatus(dt);
+        nextState = ST_EDIT_HOME;
+      }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
+        if (dt > D_OVL_COL)
+        {
+          dt = (DominoType)(dt-D_OVL_COL);
+          updateDominoOverlay();
+        }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LEFT)
+        if (dt > 1)
+        {
+          dt = (DominoType)(dt-1);
+          updateDominoOverlay();
+        }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
+        if (dt+D_OVL_COL <= DominoTypeLastNormal )
+        {
+          dt = (DominoType)(dt+D_OVL_COL);
+          updateDominoOverlay();
+        }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RIGHT)
+        if (dt+1 <= DominoTypeLastNormal )
+        {
+          dt = (DominoType)(dt+1);
+          updateDominoOverlay();
+        }
+
+      break;
+
     case ST_EDIT_HOME:
 
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)  nextState = ST_EDIT_MENU;
@@ -446,12 +626,6 @@ bool eventEditor(const SDL_Event & event)
         }
       }
 
-      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'g')
-      {
-        // toggle grid
-        gr->setShowGrid(!gr->getShowGrid());
-      }
-
       // door placement
       if (  (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'o')
           ||(event.type == SDL_KEYDOWN && event.key.keysym.sym == 'i'))
@@ -487,74 +661,23 @@ bool eventEditor(const SDL_Event & event)
         }
       }
 
-      // update cursor
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LCTRL)
       {
-        Uint8 *keystate = SDL_GetKeyState(NULL);
-
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
-        {
-          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
-            gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), gr->getCursorH()-1);
-          else
-            gr->setCursor(gr->getCursorX(), gr->getCursorY()-1, gr->getCursorW(), gr->getCursorH());
-        }
-
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
-        {
-          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
-            gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), gr->getCursorH()+1);
-          else
-            gr->setCursor(gr->getCursorX(), gr->getCursorY()+1, gr->getCursorW(), gr->getCursorH());
-        }
-
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LEFT)
-        {
-          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
-            gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW()-1, gr->getCursorH());
-          else
-            gr->setCursor(gr->getCursorX()-1, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
-        }
-
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RIGHT)
-        {
-          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
-            gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW()+1, gr->getCursorH());
-          else
-            gr->setCursor(gr->getCursorX()+1, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
-        }
-
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_HOME)
-        {
-          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
-            gr->setCursor(gr->getCursorX(), gr->getCursorY(), 1, gr->getCursorH());
-          else
-            gr->setCursor(0, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
-        }
-
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_END)
-        {
-          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
-            gr->setCursor(gr->getCursorX(), gr->getCursorY(), l->levelX(), gr->getCursorH());
-          else
-            gr->setCursor(l->levelX()-1, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
-        }
-
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_PAGEUP)
-        {
-          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
-            gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), 1);
-          else
-            gr->setCursor(gr->getCursorX(), 0, gr->getCursorW(), gr->getCursorH());
-        }
-
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_PAGEDOWN)
-        {
-          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
-            gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), l->levelY());
-          else
-            gr->setCursor(gr->getCursorX(), l->levelY()-1, gr->getCursorW(), gr->getCursorH());
-        }
+        nextState = ST_EDIT_DOMINOS_SELECTOR;
       }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == ' ')
+      {
+        DominoType val = dt;
+        if (l->getDominoType(gr->getCursorX(), gr->getCursorY()) != DominoTypeEmpty)
+          val = DominoTypeEmpty;
+
+        for (uint8_t x = gr->getCursorX(); x < gr->getCursorX()+gr->getCursorW(); x++)
+          for (uint8_t y = gr->getCursorY(); y < gr->getCursorY()+gr->getCursorH(); y++)
+            l->setDominoType(x, y, val);
+      }
+
+      handleCommonKeys(event);
 
       break;
 
@@ -612,6 +735,7 @@ void stepEditor(void)
       // intentionally fall though to repaint the level
 
     case ST_EDIT_HOME:
+    case ST_EDIT_DOMINOS_SELECTOR:
       gr->drawLevel();
       break;
 

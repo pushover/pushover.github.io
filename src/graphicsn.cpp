@@ -237,6 +237,7 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   cursorX = 10;
   cursorY = 13;
   cursorW = cursorH = 1;
+  overlay = 0;
 
   dominos.resize(DominoNumber);
 
@@ -1589,6 +1590,9 @@ void graphicsN_c::drawLevel(void) {
 
     target->renderText(&pars, statusText);
   }
+
+  if (overlay)
+    target->blitBlock(*overlay, (target->getX()-overlay->getX())/2, (target->getY()-overlay->getY())/2);
 }
 
 void graphicsN_c::setEditorMode(bool on)
@@ -1689,5 +1693,20 @@ void graphicsN_c::setStatus(const std::string & txt)
   for (size_t x = 0; x < level->levelX(); x++)
     for (size_t y = 0; y < 2; y++)
       markDirty(x, y+level->levelY()-2);
+}
+
+void graphicsN_c::setOverlay(const surface_c * o)
+{
+  if (overlay)
+  {
+    markAllDirty();
+  }
+
+  overlay = o;
+
+  if (overlay)
+  {
+    markAllDirty();
+  }
 }
 

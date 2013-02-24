@@ -72,6 +72,9 @@ class graphicsN_c : public graphics_c {
     // set a status text, this text automatically vanishes after a while
     void setStatus(const std::string & txt);
 
+    // set Overlay to be displayed over the level
+    void setOverlay(const surface_c * o);
+
   private:
 
     bool editorMode;
@@ -79,6 +82,7 @@ class graphicsN_c : public graphics_c {
     uint8_t cursorX, cursorY, cursorW, cursorH;
     std::string statusText;
     uint16_t statusTime;
+    const surface_c * overlay;
 
     // add an image to a specific ant animation, the new image is added at the end
     // you must also provide an y-offset used when animating to displace the image

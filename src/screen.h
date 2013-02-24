@@ -112,6 +112,9 @@ class surface_c {
     void copy(const surface_c & src, int x, int y, int w, int h, int dx = 0, int dy = 0);
     void fillRect(int x, int y, int w, int h, int r, int g, int b, int a = SDL_ALPHA_OPAQUE);
 
+    uint16_t getX(void) const { if (!video) return 0; else return video->w; }
+    uint16_t getY(void) const { if (!video) return 0; else return video->h; }
+
     // render a given UFT-8 encoded text to the surface v into the given box
     // the text is automatically broken into lines and newlines within the
     // text are considered to be new paragraphs
