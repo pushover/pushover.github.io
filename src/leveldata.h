@@ -197,6 +197,9 @@ class levelData_c {
     unsigned char getEntryState(void) const { return doorEntryState; }
     unsigned char getExitState(void) const { return doorExitState; }
 
+    void setEntry(uint8_t x, uint8_t y) { doorEntryX = x; doorEntryY = y; }
+    void setExit(uint8_t x, uint8_t y) { doorExitX = x; doorExitY = y; }
+
     bool isEntryDoorOpen(void) const { return doorEntryState == 3; }
     bool isEntryDoorClosed(void) const { return doorEntryState == 0; }
     bool isExitDoorOpen(void) const { return doorExitState == 3; }

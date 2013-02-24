@@ -1240,6 +1240,38 @@ void graphicsN_c::findDirtyBlocks(void)
       }
     }
 
+  // check for changes in door position... needed for the level editor
+  if (level->getEntryX() != l2.getEntryX() || level->getEntryY() != l2.getEntryY())
+  {
+    dirty.markDirty(l2.getEntryX(), l2.getEntryY()-1);
+    dirty.markDirty(l2.getEntryX(), l2.getEntryY()-2);
+    dirtybg.markDirty(l2.getEntryX(), l2.getEntryY()-1);
+    dirtybg.markDirty(l2.getEntryX(), l2.getEntryY()-2);
+
+    l2.setEntry(level->getEntryX(), level->getEntryY());
+
+    dirty.markDirty(l2.getEntryX(), l2.getEntryY()-1);
+    dirty.markDirty(l2.getEntryX(), l2.getEntryY()-2);
+    dirtybg.markDirty(l2.getEntryX(), l2.getEntryY()-1);
+    dirtybg.markDirty(l2.getEntryX(), l2.getEntryY()-2);
+  }
+
+  if (level->getExitX() != l2.getExitX() || level->getExitY() != l2.getExitY())
+  {
+    dirty.markDirty(l2.getExitX(), l2.getExitY()-1);
+    dirty.markDirty(l2.getExitX(), l2.getExitY()-2);
+    dirtybg.markDirty(l2.getExitX(), l2.getExitY()-1);
+    dirtybg.markDirty(l2.getExitX(), l2.getExitY()-2);
+
+    l2.setExit(level->getExitX(), level->getExitY());
+
+    dirty.markDirty(l2.getExitX(), l2.getExitY()-1);
+    dirty.markDirty(l2.getExitX(), l2.getExitY()-2);
+    dirtybg.markDirty(l2.getExitX(), l2.getExitY()-1);
+    dirtybg.markDirty(l2.getExitX(), l2.getExitY()-2);
+  }
+
+
   // check for changes in doors
   //
   // The thing with the door is that it is drawn one level _above_
@@ -1315,6 +1347,24 @@ void graphicsN_c::findDirtyBlocks(void)
 
   Sec = newSec;
   Min = newMin;
+
+  // the status line
+  if (editorMode)
+  {
+    if (statusTime)
+    {
+      statusTime--;
+
+      if (statusTime == 0)
+      {
+        statusText = "";
+
+        for (size_t x = 0; x < level->levelX(); x++)
+          for (size_t y = 0; y < 2; y++)
+            markDirty(x, y+level->levelY()-2);
+      }
+    }
+  }
 }
 
 void graphicsN_c::calcTutorial(void)
@@ -1521,6 +1571,24 @@ void graphicsN_c::drawLevel(void) {
     if (tutdirty)
       target->blitBlock(*tutorial, tutorial_x*blockX()+blockX()/2, tutorial_y*blockY()/2);
   }
+
+  if (editorMode && statusTime && statusText != "")
+  {
+    fontParams_s pars;
+
+    pars.font = FNT_SMALL;
+    pars.alignment = ALN_TEXT_CENTER;
+    pars.box.w = 600;
+    pars.box.h = blockY();
+    pars.box.x = 100;
+    pars.box.y = 600-blockY();
+    pars.shadow = 1;
+    pars.color.r = HLP_COL_R;
+    pars.color.g = HLP_COL_G;
+    pars.color.b = HLP_COL_B;
+
+    target->renderText(&pars, statusText);
+  }
 }
 
 void graphicsN_c::setEditorMode(bool on)
@@ -1611,7 +1679,15 @@ void graphicsN_c::setCursor(int8_t x, int8_t y, int8_t w, int8_t h)
     markDirty(cursorX, cursorY+i);
     markDirty(cursorX+cursorW-1, cursorY+i);
   }
+}
 
-  printf("cursor %i %i  %i %i\n", cursorX, cursorY, cursorW, cursorH);
+void graphicsN_c::setStatus(const std::string & txt)
+{
+  statusText = txt;
+  statusTime = 18*5;
+
+  for (size_t x = 0; x < level->levelX(); x++)
+    for (size_t y = 0; y < 2; y++)
+      markDirty(x, y+level->levelY()-2);
 }
 

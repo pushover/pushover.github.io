@@ -452,6 +452,41 @@ bool eventEditor(const SDL_Event & event)
         gr->setShowGrid(!gr->getShowGrid());
       }
 
+      // door placement
+      if (  (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'o')
+          ||(event.type == SDL_KEYDOWN && event.key.keysym.sym == 'i'))
+      {
+        if (gr->getCursorH() != 2 || gr->getCursorW() != 1)
+          gr->setStatus(_("Doors can only beplaced in 1x2 sized boxes"));
+        else if (gr->getCursorY()+2 >= l->levelY())
+          gr->setStatus(_("Doors can not be placed that low down in the level"));
+        else
+        {
+          int x, y;
+
+          if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'i')
+          {
+            x = l->getExitX();
+            y = l->getExitY();
+          }
+          else
+          {
+            x = l->getEntryX();
+            y = l->getEntryY();
+          }
+
+          if (x == gr->getCursorX() && abs(y-(gr->getCursorY()+2)) < 2)
+            gr->setStatus(_("Doors must not overlap"));
+          else
+          {
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'i')
+              l->setEntry(gr->getCursorX(), gr->getCursorY()+2);
+            else
+              l->setExit(gr->getCursorX(), gr->getCursorY()+2);
+          }
+        }
+      }
+
       // update cursor
       {
         Uint8 *keystate = SDL_GetKeyState(NULL);

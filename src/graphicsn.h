@@ -69,11 +69,16 @@ class graphicsN_c : public graphics_c {
     uint8_t getCursorH(void) const { return cursorH; }
     void setCursor(int8_t x, int8_t y, int8_t w, int8_t h);
 
+    // set a status text, this text automatically vanishes after a while
+    void setStatus(const std::string & txt);
+
   private:
 
     bool editorMode;
     bool grid;
     uint8_t cursorX, cursorY, cursorW, cursorH;
+    std::string statusText;
+    uint16_t statusTime;
 
     // add an image to a specific ant animation, the new image is added at the end
     // you must also provide an y-offset used when animating to displace the image
