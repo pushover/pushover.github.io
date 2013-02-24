@@ -50,6 +50,7 @@ static screen_c * screen;
 static levelset_c * levels;
 static levelPlayer_c * l;
 static std::string userName;
+static std::string levelFileName;
 
 static void loadLevels(void)
 {
@@ -99,6 +100,7 @@ static void changeState(void)
         break;
 
       case ST_CHOOSE_LEVEL:
+        loadLevels();
         window = getEditorLevelChooserWindow(*screen, *gr, *levels);
         break;
 
@@ -185,7 +187,10 @@ bool eventEditor(const SDL_Event & event)
           if (sel < levels->getLevelNames().size())
           {
             // a real level choosen... load that one and go into editor
-            levels->loadLevel(*l, levels->getLevelNames()[sel], "");
+            std::string name = levels->getLevelNames()[sel];
+            levelFileName = levels->getFilename(name);
+
+            levels->loadLevel(*l, name, "");
             nextState = ST_EDIT_HOME;
             gr->setPaintData(l, 0, screen);
           }
@@ -236,10 +241,11 @@ bool eventEditor(const SDL_Event & event)
               l.save(f);
             }
             loadLevels();
-
             levels->loadLevel(*l, window->getText(), "");
 
             gr->setPaintData(l, 0, screen);
+
+            levelFileName = levels->getFilename(window->getText());
             nextState = ST_EDIT_HOME;
           }
         }
@@ -265,8 +271,6 @@ bool eventEditor(const SDL_Event & event)
             std::string fname = levels->getFilename(name);
 
             remove(fname.c_str());
-
-            loadLevels();
           }
           nextState = ST_CHOOSE_LEVEL;
         }
@@ -334,7 +338,11 @@ bool eventEditor(const SDL_Event & event)
 
             case 6:
               // save
-              nextState = ST_CHOOSE_LEVEL;
+              {
+                std::ofstream out(levelFileName.c_str());
+                l->save(out);
+              }
+              nextState = ST_EDIT_HOME;
               break;
 
             case 7:
