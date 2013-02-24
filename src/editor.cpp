@@ -86,19 +86,20 @@ void updateDominoOverlay(void)
 {
   if (!dominoOverlay)
   {
-    dominoOverlay = new surface_c (2*D_OVL_FRAME+D_OVL_W*D_OVL_COL, 2*D_OVL_FRAME+D_OVL_H*D_OVL_ROW);
-    dominoOverlay->fillRect(0, 0, dominoOverlay->getX(), dominoOverlay->getY(), 0, 0, 0);
+    dominoOverlay = new surface_c (2*D_OVL_FRAME+D_OVL_W*D_OVL_COL, 2*D_OVL_FRAME+D_OVL_H*D_OVL_ROW, false);
   }
+
+  dominoOverlay->fillRect(0, 0, dominoOverlay->getX(), dominoOverlay->getY(), 0, 0, 0);
 
   for (int i = 0; i < DominoTypeLastNormal; i++)
   {
     if (dt == (DominoType(i+1)))
     {
-      dominoOverlay->fillRect(D_OVL_FRAME+D_OVL_W*(i % D_OVL_COL), D_OVL_FRAME+D_OVL_H*(i / D_OVL_COL), D_OVL_W, D_OVL_H, 100, 100, 100, 128);
+      dominoOverlay->fillRect(D_OVL_FRAME+D_OVL_W*(i % D_OVL_COL), D_OVL_FRAME+D_OVL_H*(i / D_OVL_COL), D_OVL_W, D_OVL_H, 100, 100, 100);
     }
     else
     {
-      dominoOverlay->fillRect(D_OVL_FRAME+D_OVL_W*(i % D_OVL_COL), D_OVL_FRAME+D_OVL_H*(i / D_OVL_COL), D_OVL_W, D_OVL_H, 0, 0, 0, 128);
+      dominoOverlay->fillRect(D_OVL_FRAME+D_OVL_W*(i % D_OVL_COL), D_OVL_FRAME+D_OVL_H*(i / D_OVL_COL), D_OVL_W, D_OVL_H, 0, 0, 0);
     }
 
     dominoOverlay->blit(*gr->getHelpDominoImage((DominoType)(i+1)), D_OVL_W*(i%D_OVL_COL)-75, 62+D_OVL_H*(i/D_OVL_COL));
