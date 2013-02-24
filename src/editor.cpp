@@ -40,6 +40,7 @@ typedef enum {
   ST_DELETE_LEVEL,
   ST_EDIT_HOME,        // edit the foreground of the level (all level related elements
   ST_EDIT_DOMINOS_SELECTOR,
+  ST_EDIT_BACKGROUND,  // edit the background imagery of the level
   ST_EDIT_MENU,
   ST_EDIT_HELP,
   ST_EDIT_PLAY,
@@ -116,6 +117,7 @@ static void changeState(void)
       case ST_INIT:
       case ST_EXIT:
       case ST_EDIT_HOME:
+      case ST_EDIT_BACKGROUND:
         break;
 
       case ST_EDIT_PLAY:
@@ -145,6 +147,7 @@ static void changeState(void)
       case ST_INIT:
       case ST_EXIT:
       case ST_EDIT_HOME:
+      case ST_EDIT_BACKGROUND:
         break;
 
       case ST_CHOOSE_LEVEL:
@@ -507,7 +510,7 @@ bool eventEditor(const SDL_Event & event)
                 l->save(out);
               }
               loadLevels();
-              nextState = ST_EDIT_HOME;
+              nextState = messageContinue;
               break;
 
             case 7:
@@ -521,7 +524,7 @@ bool eventEditor(const SDL_Event & event)
               break;
 
             default:
-              nextState = ST_EDIT_HOME;
+              nextState = messageContinue;
               break;
           }
         }
@@ -539,7 +542,7 @@ bool eventEditor(const SDL_Event & event)
 
         if (window->isDone())
         {
-          nextState = ST_EDIT_HOME;
+          nextState = messageContinue;
         }
       }
       break;
@@ -584,8 +587,22 @@ bool eventEditor(const SDL_Event & event)
 
     case ST_EDIT_HOME:
 
-      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)  nextState = ST_EDIT_MENU;
-      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F1)      nextState = ST_EDIT_HELP;
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+      {
+        nextState = ST_EDIT_MENU;
+        messageContinue = ST_EDIT_HOME;
+      }
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F1)
+      {
+        nextState = ST_EDIT_HELP;
+        messageContinue = ST_EDIT_HOME;
+      }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_TAB)
+      {
+        nextState = ST_EDIT_BACKGROUND;
+        gr->setStatus(_("Background editing mode"));
+      }
 
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == '-')
       {
@@ -681,6 +698,31 @@ bool eventEditor(const SDL_Event & event)
 
       break;
 
+    case ST_EDIT_BACKGROUND:
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+      {
+        nextState = ST_EDIT_MENU;
+        messageContinue = ST_EDIT_BACKGROUND;
+      }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F1)
+      {
+        nextState = ST_EDIT_HELP;
+        messageContinue = ST_EDIT_BACKGROUND;
+      }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_TAB)
+      {
+        nextState = ST_EDIT_HOME;
+        gr->setStatus(_("Foreground editing mode"));
+      }
+
+      handleCommonKeys(event);
+
+      break;
+
+
     case ST_EDIT_PLAY:
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE) {
         nextState = ST_EDIT_HOME;
@@ -735,6 +777,7 @@ void stepEditor(void)
       // intentionally fall though to repaint the level
 
     case ST_EDIT_HOME:
+    case ST_EDIT_BACKGROUND:
     case ST_EDIT_DOMINOS_SELECTOR:
       gr->drawLevel();
       break;
