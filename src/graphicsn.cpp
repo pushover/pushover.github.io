@@ -232,9 +232,11 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   level = 0;
   tutorial = 0;
 
-#ifdef DEBUG
   grid = false;
-#endif
+  editorMode = false;
+  cursorX = 10;
+  cursorY = 13;
+  cursorW = cursorH = 1;
 
   dominos.resize(DominoNumber);
 
@@ -1056,6 +1058,28 @@ void graphicsN_c::drawDominos(void)
         if (x == level->getExitX() && y+1 == level->getExitY())
           background->blitBlock(*fgTiles[curTheme][FG_DOORSTART+1+2*level->getExitState()], x*blockX(), y*blockY()/2);
 
+        if (editorMode)
+        {
+          fontParams_s pars;
+
+          pars.font = FNT_SMALL;
+          pars.alignment = ALN_CENTER;
+          pars.box.w = blockX();
+          pars.box.h = blockY();
+          pars.shadow = 0;
+          pars.color.r = HLP_COL_R;
+          pars.color.g = HLP_COL_G;
+          pars.color.b = HLP_COL_B;
+
+          pars.box.x = level->getEntryX()*blockX();
+          pars.box.y = (level->getEntryY()-2)*blockY()/2;
+          background->renderText(&pars, "In");
+
+          pars.box.x = level->getExitX()*blockX();
+          pars.box.y = (level->getExitY()-2)*blockY()/2;
+          background->renderText(&pars, "Out");
+        }
+
         // blit the platform images
         {
           uint16_t s[4];
@@ -1385,7 +1409,6 @@ void graphicsN_c::drawLevel(void) {
   drawAnt();
   drawLadders(false);
 
-#ifdef DEBUG
   if (grid && target)
     for (size_t y = 0; y < level->levelY(); y++)
       for (size_t x = 0; x < level->levelX(); x++)
@@ -1396,7 +1419,26 @@ void graphicsN_c::drawLevel(void) {
           target->fillRect(x*blockX(), y*blockY()/2, 1, blockY()/2, 128, 128, 128);
           target->fillRect((x+1)*blockX()-1, y*blockY()/2, 1, blockY()/2, 128, 128, 128);
         }
-#endif
+
+  if (editorMode)
+  {
+    for (size_t y = 0; y < level->levelY(); y++)
+      for (size_t x = 0; x < level->levelX(); x++)
+        if (dirty.isDirty(x, y))
+        {
+          if (y == cursorY && (x >= cursorX && x < cursorX+cursorW))
+            target->fillRect(x*blockX(), y*blockY()/2, blockX(), 1, 255, 255, 255);
+
+          if (y == cursorY+cursorH-1 && (x >= cursorX && x < cursorX+cursorW))
+          target->fillRect(x*blockX(), (y+1)*blockY()/2-1, blockX(), 1, 255, 255, 255);
+
+          if (x == cursorX && (y >= cursorY && y < cursorY+cursorH))
+            target->fillRect(x*blockX(), y*blockY()/2, 1, blockY()/2, 255, 255, 255);
+
+          if (x == cursorX+cursorW-1 && (y >= cursorY && y < cursorY+cursorH))
+            target->fillRect((x+1)*blockX()-1, y*blockY()/2, 1, blockY()/2, 255, 255, 255);
+        }
+  }
 
   if (Min != -1)
   {
@@ -1447,7 +1489,7 @@ void graphicsN_c::drawLevel(void) {
 
   // redraw tutorial box
 
-  if (level->getTutorial() != "") {
+  if (!editorMode && level->getTutorial() != "") {
 
     if (!tutorial)
     {
@@ -1470,5 +1512,95 @@ void graphicsN_c::drawLevel(void) {
   }
 }
 
+void graphicsN_c::setEditorMode(bool on)
+{
+  if (on != editorMode)
+  {
+    editorMode = on;
+    markAllDirty();
+  }
+}
 
+void graphicsN_c::setShowGrid(bool on)
+{
+  if (on != grid)
+  {
+    grid = on;
+    markAllDirty();
+  }
+}
+
+void graphicsN_c::setCursor(int8_t x, int8_t y, int8_t w, int8_t h)
+{
+  if (!level) return;
+
+  if (x < 0)
+  {
+    w += x;
+    x = 0;
+  }
+
+  if (y < 0)
+  {
+    w += y;
+    y = 0;
+  }
+
+  if (w < 1) w = 1;
+  if (h < 1) h = 1;
+
+  if (x >= level->levelX())
+  {
+    x = level->levelX()-1;
+    w = 1;
+  }
+
+  if (y >= level->levelY())
+  {
+    y = level->levelY()-1;
+    h = 1;
+  }
+
+  if (x+w > level->levelX())
+  {
+    w = level->levelX()-x;
+  }
+
+  if (y+h > level->levelY())
+  {
+    h = level->levelY()-y;
+  }
+
+
+  for (size_t i = 0; i < cursorW; i++)
+  {
+    markDirty(cursorX+i, cursorY);
+    markDirty(cursorX+i, cursorY+cursorH-1);
+  }
+
+  for (size_t i = 0; i < cursorH; i++)
+  {
+    markDirty(cursorX, cursorY+i);
+    markDirty(cursorX+cursorW-1, cursorY+i);
+  }
+
+  cursorX = x;
+  cursorY = y;
+  cursorW = w;
+  cursorH = h;
+
+  for (size_t i = 0; i < cursorW; i++)
+  {
+    markDirty(cursorX+i, cursorY);
+    markDirty(cursorX+i, cursorY+cursorH-1);
+  }
+
+  for (size_t i = 0; i < cursorH; i++)
+  {
+    markDirty(cursorX, cursorY+i);
+    markDirty(cursorX+cursorW-1, cursorY+i);
+  }
+
+  printf("cursor %i %i  %i %i\n", cursorX, cursorY, cursorW, cursorH);
+}
 

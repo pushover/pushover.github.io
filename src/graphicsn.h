@@ -60,12 +60,20 @@ class graphicsN_c : public graphics_c {
     // get domino animation image
     const surface_c * getHelpDominoImage(unsigned int domino);
 
-#ifdef DEBUG
-    void togglegrid(void) { grid = ! grid; }
-    bool grid;
-#endif
+    void setEditorMode(bool on);
+    void setShowGrid(bool on);
+    bool getShowGrid(void) const { return grid; }
+    uint8_t getCursorX(void) const { return cursorX; }
+    uint8_t getCursorY(void) const { return cursorY; }
+    uint8_t getCursorW(void) const { return cursorW; }
+    uint8_t getCursorH(void) const { return cursorH; }
+    void setCursor(int8_t x, int8_t y, int8_t w, int8_t h);
 
   private:
+
+    bool editorMode;
+    bool grid;
+    uint8_t cursorX, cursorY, cursorW, cursorH;
 
     // add an image to a specific ant animation, the new image is added at the end
     // you must also provide an y-offset used when animating to displace the image

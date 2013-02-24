@@ -135,6 +135,9 @@ void leaveEditor(void)
 
   if (currentState != ST_EXIT)
     printf("oops editor left without reason\n");
+
+  gr->setEditorMode(false);
+  gr->setShowGrid(false);
 }
 
 void startEditor(graphicsN_c & g, screen_c & s, levelPlayer_c & lp, const std::string & user)
@@ -145,11 +148,15 @@ void startEditor(graphicsN_c & g, screen_c & s, levelPlayer_c & lp, const std::s
 
   screen = &s;
   gr = &g;
+  gr->setEditorMode(true);
+  gr->setShowGrid(true);
 
   loadLevels();
 
   l = &lp;
   userName = user;
+
+  gr->setCursor(l->levelX()/2, l->levelY()/2, 1, 1);
 }
 
 bool eventEditor(const SDL_Event & event)
@@ -368,6 +375,91 @@ bool eventEditor(const SDL_Event & event)
 
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)  nextState = ST_EDIT_MENU;
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F1)      nextState = ST_EDIT_HELP;
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == '-')
+      {
+        // toggle platforms
+      }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'h')
+      {
+        // toggle ladders
+      }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'g')
+      {
+        // toggle grid
+        gr->setShowGrid(!gr->getShowGrid());
+      }
+
+      // update cursor
+      {
+        Uint8 *keystate = SDL_GetKeyState(NULL);
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), gr->getCursorH()-1);
+          else
+            gr->setCursor(gr->getCursorX(), gr->getCursorY()-1, gr->getCursorW(), gr->getCursorH());
+        }
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), gr->getCursorH()+1);
+          else
+            gr->setCursor(gr->getCursorX(), gr->getCursorY()+1, gr->getCursorW(), gr->getCursorH());
+        }
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LEFT)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW()-1, gr->getCursorH());
+          else
+            gr->setCursor(gr->getCursorX()-1, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
+        }
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RIGHT)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW()+1, gr->getCursorH());
+          else
+            gr->setCursor(gr->getCursorX()+1, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
+        }
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_HOME)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            gr->setCursor(gr->getCursorX(), gr->getCursorY(), 1, gr->getCursorH());
+          else
+            gr->setCursor(0, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
+        }
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_END)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            gr->setCursor(gr->getCursorX(), gr->getCursorY(), l->levelX(), gr->getCursorH());
+          else
+            gr->setCursor(l->levelX()-1, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
+        }
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_PAGEUP)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), 1);
+          else
+            gr->setCursor(gr->getCursorX(), 0, gr->getCursorW(), gr->getCursorH());
+        }
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_PAGEDOWN)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), l->levelY());
+          else
+            gr->setCursor(gr->getCursorX(), l->levelY()-1, gr->getCursorW(), gr->getCursorH());
+        }
+      }
 
       break;
 
