@@ -1095,7 +1095,7 @@ void graphicsN_c::drawDominos(void)
             pars.alignment = ALN_CENTER;
             pars.box.w = blockX();
             pars.box.h = blockY();
-            pars.shadow = 0;
+            pars.shadow = 1;
             pars.color.r = HLP_COL_R;
             pars.color.g = HLP_COL_G;
             pars.color.b = HLP_COL_B;
