@@ -116,6 +116,8 @@ int main(int argc, char * argv[]) {
   SDL_Init(SDL_INIT_TIMER);
   SDL_Init(SDL_INIT_VIDEO);
   SDL_EnableUNICODE(1);
+  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+
   atexit(SDL_Quit);
   graphicsN_c gr(datadir);
   screen_c screen(gr);
