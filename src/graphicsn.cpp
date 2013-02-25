@@ -1524,16 +1524,16 @@ void graphicsN_c::drawLevel(void) {
         if (dirty.isDirty(x, y))
         {
           if (y == cursorY && (x >= cursorX && x < cursorX+cursorW))
-            target->fillRect(x*blockX(), y*blockY()/2, blockX(), 1, 255, 255, 255);
+            target->fillRect(x*blockX(), y*blockY()/2-1, blockX(), 2, 255, 255, 255);
 
           if (y == cursorY+cursorH-1 && (x >= cursorX && x < cursorX+cursorW))
-          target->fillRect(x*blockX(), (y+1)*blockY()/2-1, blockX(), 1, 255, 255, 255);
+          target->fillRect(x*blockX(), (y+1)*blockY()/2-1, blockX(), 2, 255, 255, 255);
 
           if (x == cursorX && (y >= cursorY && y < cursorY+cursorH))
-            target->fillRect(x*blockX(), y*blockY()/2, 1, blockY()/2, 255, 255, 255);
+            target->fillRect(x*blockX()-1, y*blockY()/2, 2, blockY()/2, 255, 255, 255);
 
           if (x == cursorX+cursorW-1 && (y >= cursorY && y < cursorY+cursorH))
-            target->fillRect((x+1)*blockX()-1, y*blockY()/2, 1, blockY()/2, 255, 255, 255);
+            target->fillRect((x+1)*blockX()-1, y*blockY()/2, 2, blockY()/2, 255, 255, 255);
         }
   }
 
@@ -1689,17 +1689,20 @@ void graphicsN_c::setCursor(int8_t x, int8_t y, int8_t w, int8_t h)
     h = level->levelY()-y;
   }
 
-
   for (size_t i = 0; i < cursorW; i++)
   {
+    markDirty(cursorX+i, cursorY-1);
     markDirty(cursorX+i, cursorY);
     markDirty(cursorX+i, cursorY+cursorH-1);
+    markDirty(cursorX+i, cursorY+cursorH);
   }
 
   for (size_t i = 0; i < cursorH; i++)
   {
+    markDirty(cursorX-1, cursorY+i);
     markDirty(cursorX, cursorY+i);
     markDirty(cursorX+cursorW-1, cursorY+i);
+    markDirty(cursorX+cursorW, cursorY+i);
   }
 
   cursorX = x;
@@ -1709,14 +1712,18 @@ void graphicsN_c::setCursor(int8_t x, int8_t y, int8_t w, int8_t h)
 
   for (size_t i = 0; i < cursorW; i++)
   {
+    markDirty(cursorX+i, cursorY-1);
     markDirty(cursorX+i, cursorY);
     markDirty(cursorX+i, cursorY+cursorH-1);
+    markDirty(cursorX+i, cursorY+cursorH);
   }
 
   for (size_t i = 0; i < cursorH; i++)
   {
+    markDirty(cursorX-1, cursorY+i);
     markDirty(cursorX, cursorY+i);
     markDirty(cursorX+cursorW-1, cursorY+i);
+    markDirty(cursorX+cursorW, cursorY+i);
   }
 }
 
