@@ -49,6 +49,7 @@ class graphicsN_c : public graphics_c {
     virtual unsigned int blockY(void) const { return 48; }
 
     void markAllDirty(void) { dirty.markAllDirty(); }
+    void markAllDirtyBg(void) { dirtybg.markAllDirty(); dirty.markAllDirty(); }
     const bitfield_c & getDirty(void) const { return dirty; }
     void clearDirty(void) { dirty.clearDirty(); }
 
@@ -83,6 +84,11 @@ class graphicsN_c : public graphics_c {
 
     const std::vector<surface_c *> getBgTiles(void) const { return bgTiles[curTheme]; }
 
+    void setEditPlaneLayer(uint8_t layer);
+    void setEditPlaneTile(uint8_t x, uint8_t y, uint16_t tile);
+    void clearEditPlane(void);
+
+
   private:
 
     bool editorMode;
@@ -93,6 +99,8 @@ class graphicsN_c : public graphics_c {
     const surface_c * overlay;
     bool foregroundVisible;
     uint8_t bgDrawMode, bgDrawLayer;
+    uint8_t editPlaneLayer;
+    std::vector<std::vector<uint16_t> > editPlane;
 
     // add an image to a specific ant animation, the new image is added at the end
     // you must also provide an y-offset used when animating to displace the image

@@ -62,6 +62,8 @@ levelData_c::levelData_c(void)
   doorEntryState = 0;
   doorExitState = 0;
 
+  doorEntryX = doorEntryY = doorExitX = doorExitY = 255;
+
   // invalid time...
   timeLeft = 60*60*18;
 
@@ -841,5 +843,16 @@ bool levelForegroundEmpty(const levelData_c & l, int16_t x, int16_t y, uint16_t 
         return false;
     }
   return true;
+}
+
+void levelData_c::setBg(unsigned int x, unsigned int y, int layer, uint16_t tile)
+{
+  if (layer < maxBg && x < levelX() && y < levelY())
+  {
+    if (layer > numBg)
+      numBg = layer+1;
+
+    level[y][x].bg[layer] = tile;
+  }
 }
 

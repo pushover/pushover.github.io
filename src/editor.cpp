@@ -63,6 +63,15 @@ static DominoType dt;
 static surface_c * dominoOverlay = 0;
 static surface_c * backgroundOverlay = 0;
 static uint8_t bgLayer = 0;
+static std::vector<std::vector<uint16_t> > bgPattern;
+
+static uint8_t bgSelX = 0;
+static uint8_t bgSelY = 0;
+static uint8_t bgSelW = 1;
+static uint8_t bgSelH = 1;
+static std::vector<std::vector<uint16_t> > bgTilesLayout; // contains the layout of the bg tiles as used in the bg tile selector
+std::string bgTileLayoutTheme;
+static uint16_t bgTilesStart = 0;
 
 static void loadLevels(void)
 {
@@ -82,7 +91,7 @@ static void loadLevels(void)
 #define D_OVL_H 70
 #define D_OVL_COL 5
 #define D_OVL_ROW 3
-#define D_OVL_FRAME 3
+#define D_OVL_FRAME 5
 
 void updateDominoOverlay(void)
 {
@@ -111,13 +120,50 @@ void updateDominoOverlay(void)
 }
 
 #define B_OVL_W gr->blockX()
-#define B_OVL_H gr->blockY()
-#define B_OVL_COL 18
-#define B_OVL_ROW 11
-#define B_OVL_FRAME 3
+#define B_OVL_H (gr->blockY()/2)
+#define B_OVL_COL 17
+#define B_OVL_ROW 22
+#define B_OVL_FRAME 5
 
 void updateBackgroundOverlay(void)
 {
+  const std::vector<surface_c *> bgTiles = gr->getBgTiles();
+
+  if (bgTileLayoutTheme != l->getTheme())
+  {
+    bgTileLayoutTheme = l->getTheme();
+
+    uint16_t x = 0;
+    uint16_t y = 0;
+    uint16_t b = 0;
+
+    for (size_t t = 0; t < bgTiles.size(); t++)
+    {
+      if (bgTilesLayout.size() <= (size_t)(y*2+b))
+      {
+        bgTilesLayout.resize(y*2+b+1);
+        bgTilesLayout.back().resize(B_OVL_COL);
+      }
+
+      bgTilesLayout[y*2+b][x] = t;
+
+      b++;
+      if (b == 2)
+      {
+        b = 0;
+        x++;
+        if (x == B_OVL_COL)
+        {
+          x = 0;
+          y++;
+
+          if (y == B_OVL_ROW)
+            break;
+        }
+      }
+    }
+  }
+
   if (!backgroundOverlay)
   {
     backgroundOverlay = new surface_c (2*B_OVL_FRAME+B_OVL_W*B_OVL_COL, 2*B_OVL_FRAME+B_OVL_H*B_OVL_ROW, false);
@@ -125,40 +171,27 @@ void updateBackgroundOverlay(void)
 
   backgroundOverlay->fillRect(0, 0, backgroundOverlay->getX(), backgroundOverlay->getY(), 0, 0, 0);
 
-  const std::vector<surface_c *> bgTiles = gr->getBgTiles();
-
-  int x = 0;
-  int y = 0;
-  int b = 0;
-
-  for (size_t t = 0; t < bgTiles.size(); t++)
-  {
-    for (int yc = 0; yc < 3; yc++)
-      for (int xc = 0; xc < 5; xc++)
-      {
-        if ((xc+5*x+yc+6*y+3*b)%2)
-          backgroundOverlay->fillRect(B_OVL_FRAME+x*B_OVL_W+xc*8, B_OVL_FRAME+y*B_OVL_H+b*B_OVL_H/2+yc*8, 8, 8, 85, 85, 85);
-        else
-          backgroundOverlay->fillRect(B_OVL_FRAME+x*B_OVL_W+xc*8, B_OVL_FRAME+y*B_OVL_H+b*B_OVL_H/2+yc*8, 8, 8, 2*85, 2*85, 2*85);
-      }
-
-    backgroundOverlay->blitBlock(*(bgTiles[t]), B_OVL_FRAME+x*B_OVL_W, B_OVL_FRAME+y*B_OVL_H+b*B_OVL_H/2);
-
-    b++;
-    if (b == 2)
+  for (int y = 0; y < B_OVL_ROW; y++)
+    for (int x = 0; x < B_OVL_COL; x++)
     {
-      b = 0;
-      x++;
-      if (x == B_OVL_COL)
-      {
-        x = 0;
-        y++;
+      for (int yc = 0; yc < 3; yc++)
+        for (int xc = 0; xc < 5; xc++)
+        {
+          if ((xc+5*x+yc+3*y)%2)
+            backgroundOverlay->fillRect(B_OVL_FRAME+x*B_OVL_W+xc*8, B_OVL_FRAME+y*B_OVL_H+yc*8, 8, 8, 85, 85, 85);
+          else
+            backgroundOverlay->fillRect(B_OVL_FRAME+x*B_OVL_W+xc*8, B_OVL_FRAME+y*B_OVL_H+yc*8, 8, 8, 2*85, 2*85, 2*85);
+        }
 
-        if (y == B_OVL_ROW)
-          break;
-      }
+      if ((size_t)(bgTilesStart+y) < bgTilesLayout.size())
+        backgroundOverlay->blitBlock(*(bgTiles[bgTilesLayout[bgTilesStart+y][x]]), B_OVL_FRAME+x*B_OVL_W, B_OVL_FRAME+y*B_OVL_H);
+
+      backgroundOverlay->fillRect(B_OVL_FRAME+B_OVL_W*(bgSelX)-1, B_OVL_FRAME+B_OVL_H*(bgSelY), 2, B_OVL_H*bgSelH, 255, 255, 255);
+      backgroundOverlay->fillRect(B_OVL_FRAME+B_OVL_W*(bgSelX+bgSelW)-1, B_OVL_FRAME+B_OVL_H*(bgSelY), 2, B_OVL_H*bgSelH, 255, 255, 255);
+
+      backgroundOverlay->fillRect(B_OVL_FRAME+B_OVL_W*(bgSelX), B_OVL_FRAME+B_OVL_H*(bgSelY)-1, B_OVL_W*bgSelW, 2, 255, 255, 255);
+      backgroundOverlay->fillRect(B_OVL_FRAME+B_OVL_W*(bgSelX), B_OVL_FRAME+B_OVL_H*(bgSelY+bgSelH)-1, B_OVL_W*bgSelW, 2, 255, 255, 255);
     }
-  }
 
   gr->setOverlay(backgroundOverlay);
 }
@@ -284,72 +317,120 @@ void startEditor(graphicsN_c & g, screen_c & s, levelPlayer_c & lp, ant_c & ant,
   bgLayer = 0;
 }
 
-static void handleCommonKeys(const SDL_Event & event)
+static bool handleCommonKeys(const SDL_Event & event)
 {
   Uint8 *keystate = SDL_GetKeyState(NULL);
 
   if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
   {
     if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+    {
       gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), gr->getCursorH()-1);
+      return true;
+    }
     else
+    {
       gr->setCursor(gr->getCursorX(), gr->getCursorY()-1, gr->getCursorW(), gr->getCursorH());
+      return true;
+    }
   }
 
   if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
   {
     if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+    {
       gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), gr->getCursorH()+1);
+      return true;
+    }
     else
+    {
       gr->setCursor(gr->getCursorX(), gr->getCursorY()+1, gr->getCursorW(), gr->getCursorH());
+      return true;
+    }
   }
 
   if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LEFT)
   {
     if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+    {
       gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW()-1, gr->getCursorH());
+      return true;
+    }
     else
+    {
       gr->setCursor(gr->getCursorX()-1, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
+      return true;
+    }
   }
 
   if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RIGHT)
   {
     if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+    {
       gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW()+1, gr->getCursorH());
+      return true;
+    }
     else
+    {
       gr->setCursor(gr->getCursorX()+1, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
+      return true;
+    }
   }
 
   if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_HOME)
   {
     if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+    {
       gr->setCursor(gr->getCursorX(), gr->getCursorY(), 1, gr->getCursorH());
+      return true;
+    }
     else
+    {
       gr->setCursor(0, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
+      return true;
+    }
   }
 
   if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_END)
   {
     if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+    {
       gr->setCursor(gr->getCursorX(), gr->getCursorY(), l->levelX(), gr->getCursorH());
+      return true;
+    }
     else
+    {
       gr->setCursor(l->levelX()-1, gr->getCursorY(), gr->getCursorW(), gr->getCursorH());
+      return true;
+    }
   }
 
   if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_PAGEUP)
   {
     if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+    {
       gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), 1);
+      return true;
+    }
     else
+    {
       gr->setCursor(gr->getCursorX(), 0, gr->getCursorW(), gr->getCursorH());
+      return true;
+    }
   }
 
   if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_PAGEDOWN)
   {
     if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+    {
       gr->setCursor(gr->getCursorX(), gr->getCursorY(), gr->getCursorW(), l->levelY());
+      return true;
+    }
     else
+    {
       gr->setCursor(gr->getCursorX(), l->levelY()-1, gr->getCursorW(), gr->getCursorH());
+      return true;
+    }
   }
 
   if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'g')
@@ -357,6 +438,55 @@ static void handleCommonKeys(const SDL_Event & event)
     // toggle grid
     gr->setShowGrid(!gr->getShowGrid());
   }
+
+  return false;
+}
+
+static void setBgCursor(int8_t x, int8_t y, int8_t w, int8_t h)
+{
+  if (x < 0)
+  {
+    w += x;
+    x = 0;
+  }
+
+  if (y < 0)
+  {
+    h += y;
+    y = 0;
+  }
+
+  if (w < 1) w = 1;
+  if (h < 1) h = 1;
+
+  if (x >= B_OVL_COL)
+  {
+    x = B_OVL_COL-1;
+    w = 1;
+  }
+
+  if (y >= B_OVL_ROW)
+  {
+    y = B_OVL_ROW-1;
+    h = 1;
+  }
+
+  if (x+w > B_OVL_COL)
+  {
+    w = B_OVL_COL-x;
+  }
+
+  if (y+h > B_OVL_ROW)
+  {
+    h = B_OVL_ROW-y;
+  }
+
+  bgSelX = x;
+  bgSelY = y;
+  bgSelW = w;
+  bgSelH = h;
+
+  updateBackgroundOverlay();
 }
 
 static void setDominoStatus(DominoType dt)
@@ -381,6 +511,22 @@ static void setDominoStatus(DominoType dt)
     default:                   gr->setStatus(_("Selected unknown domino")); break;
   }
 }
+
+static void updateEditPlane()
+{
+
+  gr->clearEditPlane();
+
+  if (bgPattern.size() > 0)
+  {
+    gr->setEditPlaneLayer(bgLayer);
+
+    for (size_t i = 0; i < gr->getCursorW(); i++)
+      for (size_t j = 0; j < gr->getCursorH(); j++)
+        gr->setEditPlaneTile(gr->getCursorX()+i, gr->getCursorY()+j, bgPattern[j % bgPattern.size()][i % bgPattern[0].size()]);
+  }
+}
+
 
 bool eventEditor(const SDL_Event & event)
 {
@@ -653,8 +799,93 @@ bool eventEditor(const SDL_Event & event)
 
       if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_LCTRL)
       {
-        setDominoStatus(dt);
         nextState = ST_EDIT_BACKGROUND;
+
+        bgPattern.resize(bgSelH);
+        for (size_t i = 0; i < bgSelH; i++)
+        {
+          bgPattern[i].resize(bgSelW);
+
+          for (size_t j = 0; j < bgSelW; j++)
+            bgPattern[i][j] = bgTilesLayout[bgSelY+i][bgSelX+j];
+        }
+
+        updateEditPlane();
+      }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+      {
+        bgPattern.clear();
+        nextState = ST_EDIT_BACKGROUND;
+        updateEditPlane();
+      }
+
+      {
+        Uint8 *keystate = SDL_GetKeyState(NULL);
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            setBgCursor(bgSelX, bgSelY, bgSelW, bgSelH-1);
+          else
+            setBgCursor(bgSelX, bgSelY-1, bgSelW, bgSelH);
+        }
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            setBgCursor(bgSelX, bgSelY, bgSelW, bgSelH+1);
+          else
+            setBgCursor(bgSelX, bgSelY+1, bgSelW, bgSelH);
+        }
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LEFT)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            setBgCursor(bgSelX, bgSelY, bgSelW-1, bgSelH);
+          else
+            setBgCursor(bgSelX-1, bgSelY, bgSelW, bgSelH);
+        }
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RIGHT)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            setBgCursor(bgSelX, bgSelY, bgSelW+1, bgSelH);
+          else
+            setBgCursor(bgSelX+1, bgSelY, bgSelW, bgSelH);
+        }
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_HOME)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            setBgCursor(bgSelX, bgSelY, 1, bgSelH);
+          else
+            setBgCursor(0, bgSelY, bgSelW, bgSelH);
+        }
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_END)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            setBgCursor(bgSelX, bgSelY, B_OVL_COL, bgSelH);
+          else
+            setBgCursor(B_OVL_COL-1, bgSelY, bgSelW, bgSelH);
+        }
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_PAGEUP)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            setBgCursor(bgSelX, bgSelY, bgSelW, 1);
+          else
+            setBgCursor(bgSelX, 0, bgSelW, bgSelH);
+        }
+
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_PAGEDOWN)
+        {
+          if (keystate[SDLK_RSHIFT] || keystate[SDLK_LSHIFT])
+            setBgCursor(bgSelX, bgSelY, bgSelW, B_OVL_ROW);
+          else
+            setBgCursor(bgSelX, B_OVL_ROW-1, bgSelW, bgSelH);
+        }
       }
 
       break;
@@ -723,7 +954,7 @@ bool eventEditor(const SDL_Event & event)
       {
         if (gr->getCursorH() != 2 || gr->getCursorW() != 1)
           gr->setStatus(_("Doors can only beplaced in 1x2 sized boxes"));
-        else if (gr->getCursorY()+2 >= l->levelY())
+        else if ((size_t)(gr->getCursorY()+2) >= l->levelY())
           gr->setStatus(_("Doors can not be placed that low down in the level"));
         else
         {
@@ -803,10 +1034,11 @@ bool eventEditor(const SDL_Event & event)
       // choose layer to edit
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == '+')
       {
-        if (bgLayer+1 < l->getNumBgLayer())
+        if (bgLayer < 8)
         {
           bgLayer++;
           gr->setBgDrawLayer(bgLayer);
+          updateEditPlane();
         }
       }
 
@@ -816,6 +1048,7 @@ bool eventEditor(const SDL_Event & event)
         {
           bgLayer--;
           gr->setBgDrawLayer(bgLayer);
+          updateEditPlane();
         }
       }
 
@@ -828,7 +1061,25 @@ bool eventEditor(const SDL_Event & event)
         nextState = ST_EDIT_BG_SELECTOR;
       }
 
-      handleCommonKeys(event);
+      if (handleCommonKeys(event))
+      {
+        // cursor has changed, redo the pattern
+        updateEditPlane();
+      }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == ' ')
+      {
+        // place tiles
+
+        if (bgPattern.size())
+        {
+          for (size_t i = 0; i < gr->getCursorW(); i++)
+            for (size_t j = 0; j < gr->getCursorH(); j++)
+              l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, bgLayer, bgPattern[j % bgPattern.size()][i % bgPattern[0].size()]);
+
+          gr->markAllDirtyBg();
+        }
+      }
 
       break;
 

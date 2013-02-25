@@ -240,6 +240,8 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   overlay = 0;
   foregroundVisible = true;
   bgDrawMode = 0;
+  editPlaneLayer = 255;
+  statusTime = 0;
 
   dominos.resize(DominoNumber);
 
@@ -1050,7 +1052,10 @@ void graphicsN_c::drawDominos(void)
         {
           background->fillRect(x*blockX(), y*blockY()/2, blockX(), blockY()/2, 0, 0, 0);
           for (unsigned char b = 0; b < level->getNumBgLayer(); b++)
-            background->blitBlock(*(bgTiles[curTheme][level->getBg(x, y, b)]), x*blockX(), y*blockY()/2);
+            if (b == editPlaneLayer && editPlane[y][x] != 0xFFFF)
+              background->blitBlock(*(bgTiles[curTheme][editPlane[y][x]]), x*blockX(), y*blockY()/2);
+            else
+              background->blitBlock(*(bgTiles[curTheme][level->getBg(x, y, b)]), x*blockX(), y*blockY()/2);
         }
         else
         {
@@ -1066,11 +1071,17 @@ void graphicsN_c::drawDominos(void)
           if (bgDrawMode == 1)
           {
             for (unsigned char b = 0; b <= bgDrawLayer; b++)
-              background->blitBlock(*(bgTiles[curTheme][level->getBg(x, y, b)]), x*blockX(), y*blockY()/2);
+              if (b == editPlaneLayer && editPlane[y][x] != 0xFFFF)
+                background->blitBlock(*(bgTiles[curTheme][editPlane[y][x]]), x*blockX(), y*blockY()/2);
+              else
+                background->blitBlock(*(bgTiles[curTheme][level->getBg(x, y, b)]), x*blockX(), y*blockY()/2);
           }
           else
           {
-            background->blitBlock(*(bgTiles[curTheme][level->getBg(x, y, bgDrawLayer)]), x*blockX(), y*blockY()/2);
+            if (bgDrawLayer == editPlaneLayer && editPlane[y][x] != 0xFFFF)
+              background->blitBlock(*(bgTiles[curTheme][editPlane[y][x]]), x*blockX(), y*blockY()/2);
+            else
+              background->blitBlock(*(bgTiles[curTheme][level->getBg(x, y, bgDrawLayer)]), x*blockX(), y*blockY()/2);
           }
         }
 
@@ -1660,7 +1671,7 @@ void graphicsN_c::setCursor(int8_t x, int8_t y, int8_t w, int8_t h)
 
   if (y < 0)
   {
-    w += y;
+    h += y;
     y = 0;
   }
 
@@ -1781,4 +1792,40 @@ void graphicsN_c::setBgDrawLayer(uint8_t layer)
     dirtybg.markAllDirty();
   }
 }
+
+void graphicsN_c::setEditPlaneLayer(uint8_t layer)
+{
+  editPlaneLayer = layer;
+}
+
+void graphicsN_c::setEditPlaneTile(uint8_t x, uint8_t y, uint16_t tile)
+{
+  if (!level) return;
+
+  if (editPlane.size() != level->levelY())
+    editPlane.resize(level->levelY());
+
+  for (size_t i = 0; i < level->levelY(); i++)
+    if (editPlane[i].size() != level->levelX())
+    {
+      editPlane[i].resize(level->levelX());
+      for (size_t j = 0; j < level->levelX(); j++)
+        editPlane[i][j] = 0xFFFF;
+    }
+
+  editPlane[y][x] = tile;
+  dirty.markDirty(x, y);
+  dirtybg.markDirty(x, y);
+}
+
+void graphicsN_c::clearEditPlane(void)
+{
+  editPlaneLayer = 255;
+
+  editPlane.clear();
+
+  markAllDirty();
+  dirtybg.markAllDirty();
+}
+
 

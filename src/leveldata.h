@@ -183,6 +183,8 @@ class levelData_c {
     unsigned char getNumBgLayer(void) const { return numBg; }
     unsigned short getBg(unsigned int x, unsigned int y, int layer) const;
 
+    void setBg(unsigned int x, unsigned int y, int layer, uint16_t tile);
+
     void openEntryDoorStep(void) { doorEntryState++; }
     void closeEntryDoorStep(void) { doorEntryState--; }
     void openExitDoorStep(void) { doorExitState++; }
