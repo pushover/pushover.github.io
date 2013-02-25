@@ -1052,6 +1052,34 @@ bool eventEditor(const SDL_Event & event)
         }
       }
 
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_INSERT)
+      {
+        for (size_t i = 0; i < gr->getCursorW(); i++)
+          for (size_t j = 0; j < gr->getCursorH(); j++)
+          {
+            for (size_t a = 7; a > bgLayer; a--)
+              l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, a, l->getBg(gr->getCursorX()+i, gr->getCursorY()+j, a-1));
+
+            l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, bgLayer, 0);
+          }
+
+        gr->markAllDirtyBg();
+      }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DELETE)
+      {
+        for (size_t i = 0; i < gr->getCursorW(); i++)
+          for (size_t j = 0; j < gr->getCursorH(); j++)
+          {
+            for (size_t a = bgLayer; a < 7; a++)
+              l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, a, l->getBg(gr->getCursorX()+i, gr->getCursorY()+j, a+1));
+
+            l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, 7, 0);
+          }
+
+        gr->markAllDirtyBg();
+      }
+
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F2) gr->setBgDrawMode(0);
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F3) gr->setBgDrawMode(1);
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4) gr->setBgDrawMode(2);
