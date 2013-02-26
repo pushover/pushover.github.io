@@ -1109,6 +1109,37 @@ bool eventEditor(const SDL_Event & event)
         }
       }
 
+      // copy existing background
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'c')
+      {
+        bgPattern.resize(gr->getCursorH());
+        for (size_t j = 0; j < gr->getCursorH(); j++)
+        {
+          bgPattern[j].resize(gr->getCursorW());
+          for (size_t i = 0; i < gr->getCursorW(); i++)
+            bgPattern[j][i] = l->getBg(gr->getCursorX()+i, gr->getCursorY()+j, bgLayer);
+        }
+
+        updateEditPlane();
+      }
+
+      // cut the cursor shape
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'x')
+      {
+        bgPattern.resize(gr->getCursorH());
+        for (size_t j = 0; j < gr->getCursorH(); j++)
+        {
+          bgPattern[j].resize(gr->getCursorW());
+          for (size_t i = 0; i < gr->getCursorW(); i++)
+          {
+            bgPattern[j][i] = l->getBg(gr->getCursorX()+i, gr->getCursorY()+j, bgLayer);
+            l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, bgLayer, 0);
+          }
+        }
+
+        updateEditPlane();
+      }
+
       break;
 
 
