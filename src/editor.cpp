@@ -137,6 +137,9 @@ void updateBackgroundOverlay(void)
     uint16_t y = 0;
     uint16_t b = 0;
 
+    bgTilesLayout.clear();
+    bgTilesStart = 0;
+
     for (size_t t = 0; t < bgTiles.size(); t++)
     {
       if (bgTilesLayout.size() <= (size_t)(y*2+b))
@@ -156,9 +159,6 @@ void updateBackgroundOverlay(void)
         {
           x = 0;
           y++;
-
-          if (y == B_OVL_ROW)
-            break;
         }
       }
     }
@@ -452,7 +452,10 @@ static void setBgCursor(int8_t x, int8_t y, int8_t w, int8_t h)
 
   if (y < 0)
   {
-    h += y;
+    if (bgTilesStart >= -y)
+      bgTilesStart += y;
+    else
+      h += y;
     y = 0;
   }
 
@@ -467,6 +470,9 @@ static void setBgCursor(int8_t x, int8_t y, int8_t w, int8_t h)
 
   if (y >= B_OVL_ROW)
   {
+    if (bgTilesStart+B_OVL_ROW < bgTilesLayout.size())
+      bgTilesStart++;
+
     y = B_OVL_ROW-1;
     h = 1;
   }
@@ -479,6 +485,9 @@ static void setBgCursor(int8_t x, int8_t y, int8_t w, int8_t h)
   if (y+h > B_OVL_ROW)
   {
     h = B_OVL_ROW-y;
+
+    if (bgTilesStart+B_OVL_ROW < bgTilesLayout.size())
+      bgTilesStart++;
   }
 
   bgSelX = x;
@@ -807,7 +816,7 @@ bool eventEditor(const SDL_Event & event)
           bgPattern[i].resize(bgSelW);
 
           for (size_t j = 0; j < bgSelW; j++)
-            bgPattern[i][j] = bgTilesLayout[bgSelY+i][bgSelX+j];
+            bgPattern[i][j] = bgTilesLayout[bgTilesStart+bgSelY+i][bgSelX+j];
         }
 
         updateEditPlane();
