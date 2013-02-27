@@ -1118,6 +1118,12 @@ bool eventEditor(const SDL_Event & event)
         }
       }
 
+      // toggle number visibility
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'n')
+      {
+        gr->setShowBgNumbers(!gr->getShowBgNumbers());
+      }
+
       // copy existing background
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'c')
       {

@@ -242,6 +242,7 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   bgDrawMode = 0;
   editPlaneLayer = 255;
   statusTime = 0;
+  showBgNumbers = false;
 
   dominos.resize(DominoNumber);
 
@@ -1048,7 +1049,7 @@ void graphicsN_c::drawDominos(void)
       if (dirtybg.isDirty(x, y))
       {
 
-        if (bgDrawMode == 0)
+        if (bgDrawMode == 0 || !editorMode)
         {
           background->fillRect(x*blockX(), y*blockY()/2, blockX(), blockY()/2, 0, 0, 0);
           for (unsigned char b = 0; b < level->getNumBgLayer(); b++)
@@ -1082,6 +1083,26 @@ void graphicsN_c::drawDominos(void)
               background->blitBlock(*(bgTiles[curTheme][editPlane[y][x]]), x*blockX(), y*blockY()/2);
             else
               background->blitBlock(*(bgTiles[curTheme][level->getBg(x, y, bgDrawLayer)]), x*blockX(), y*blockY()/2);
+          }
+
+          if (showBgNumbers)
+          {
+            char number[4];
+            snprintf(number, 3, "%i", level->getBg(x, y, bgDrawLayer));
+            fontParams_s pars;
+
+            pars.font = FNT_SMALL;
+            pars.alignment = ALN_CENTER;
+            pars.box.w = blockX();
+            pars.box.h = blockY()/2;
+            pars.box.x = x*blockX();
+            pars.box.y = y*blockY()/2;
+            pars.shadow = 1;
+            pars.color.r = 255;
+            pars.color.g = 255;
+            pars.color.b = 255;
+
+            background->renderText(&pars, number);
           }
         }
 
@@ -1233,7 +1254,6 @@ void graphicsN_c::drawDominos(void)
       drawDomino(x+1, y+2);
     }
   }
-
 }
 
 void graphicsN_c::findDirtyBlocks(void)
@@ -1828,4 +1848,14 @@ void graphicsN_c::clearEditPlane(void)
   dirtybg.markAllDirty();
 }
 
+void graphicsN_c::setShowBgNumbers(bool on)
+{
+  if (showBgNumbers != on)
+  {
+    showBgNumbers = on;
+
+    markAllDirty();
+    dirtybg.markAllDirty();
+  }
+}
 

@@ -88,6 +88,9 @@ class graphicsN_c : public graphics_c {
     void setEditPlaneTile(uint8_t x, uint8_t y, uint16_t tile);
     void clearEditPlane(void);
 
+    void setShowBgNumbers(bool on);
+    bool getShowBgNumbers(void) const { return showBgNumbers; }
+
 
   private:
 
@@ -101,6 +104,7 @@ class graphicsN_c : public graphics_c {
     uint8_t bgDrawMode, bgDrawLayer;
     uint8_t editPlaneLayer;
     std::vector<std::vector<uint16_t> > editPlane;
+    bool showBgNumbers;
 
     // add an image to a specific ant animation, the new image is added at the end
     // you must also provide an y-offset used when animating to displace the image
