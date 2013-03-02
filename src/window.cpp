@@ -58,6 +58,7 @@ class listWindow_c : public window_c {
   private:
     std::vector<entry> entries;
     std::string title;
+    std::string subtitle;
 
     unsigned int current;
     bool escape;  // escape works
@@ -65,7 +66,7 @@ class listWindow_c : public window_c {
   public:
 
     listWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
-        const std::string & title, const std::vector<entry> & entries, bool escape, int initial = 0);
+        const std::string & title, const std::string & subtitle, const std::vector<entry> & entries, bool escape, int initial = 0);
 
     // the the user has selected something
     unsigned int getSelection(void) { return current; } // which list entry was selected
@@ -135,7 +136,18 @@ void listWindow_c::redraw(void) {
 
   surf.fillRect(gr.blockX()*(x+1)+1, ypos+1, gr.blockX()*(w-2), 2, 0, 0, 0);
   surf.fillRect(gr.blockX()*(x+1), ypos, gr.blockX()*(w-2), 2, TXT_COL_R, TXT_COL_G, TXT_COL_G);
+
   ypos += 20;
+
+  if (subtitle != "")
+  {
+    par.font = FNT_SMALL;
+    par.shadow = false;
+    par.box.y = ypos;
+    surf.renderText(&par, subtitle);
+    ypos += getTextHeight(&par, subtitle);
+  }
+
 
   unsigned int bestLine = 0xFFFF;
   unsigned int bestCenter = 10000; // distance to center for the current best starting line
@@ -284,8 +296,8 @@ void listWindow_c::redraw(void) {
 }
 
 listWindow_c::listWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
-    const std::string & t, const std::vector<entry> & e, bool esc, int initial)
-  : window_c(x, y, w, h, s, gr), entries(e), title(t), current(initial), escape(esc)
+    const std::string & t, const std::string & subt, const std::vector<entry> & e, bool esc, int initial)
+  : window_c(x, y, w, h, s, gr), entries(e), title(t), subtitle(subt), current(initial), escape(esc)
 {
   // calculate the hight of all entries
   fontParams_s par;
@@ -407,7 +419,7 @@ window_c * getMainWindow(surface_c & surf, graphicsN_c & gr) {
         entries.push_back(listWindow_c::entry(_("Quit")));
     }
 
-    return new listWindow_c(4, 2, 12, 8, surf, gr, _("Main menu"), entries, false);
+    return new listWindow_c(4, 2, 12, 8, surf, gr, _("Main menu"), "", entries, false);
 }
 
 window_c * getProfileWindow(const solvedMap_c & solve, surface_c & surf, graphicsN_c & gr)
@@ -424,7 +436,7 @@ window_c * getProfileWindow(const solvedMap_c & solve, surface_c & surf, graphic
   entries.push_back(listWindow_c::entry(_("Add new profile")));
   entries.push_back(listWindow_c::entry(_("Delete a profile")));
 
-  return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Your Profile"), entries, true, solve.getCurrentUser());
+  return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Your Profile"), "", entries, true, solve.getCurrentUser());
 }
 
 window_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, graphicsN_c & gr)
@@ -434,7 +446,7 @@ window_c * getProfileSelector(const solvedMap_c & solve, surface_c & surf, graph
   for (size_t i = 1; i < solve.getNumberOfUsers(); i++)
     entries.push_back(listWindow_c::entry(solve.getUserName(i)));
 
-  return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Profile to delete"), entries, true, 0);
+  return new listWindow_c(4, 0, 12, 12, surf, gr, _("Select Profile to delete"), "",  entries, true, 0);
 }
 
 window_c * getConfigWindow(surface_c & surf, graphicsN_c & gr, const configSettings & c, int sel)
@@ -456,7 +468,7 @@ window_c * getConfigWindow(surface_c & surf, graphicsN_c & gr, const configSetti
   else
     entries.push_back(listWindow_c::entry(std::string(_("Play Background Music"))+" \xE2\x96\xA1"));
 
-  return new listWindow_c(3, 2, 14, 9, surf, gr, _("Configuration"), entries, true, sel);
+  return new listWindow_c(3, 2, 14, 9, surf, gr, _("Configuration"), "", entries, true, sel);
 }
 
 static int MissionSolveState(const levelset_c & ls, const solvedMap_c & solv)
@@ -494,7 +506,7 @@ class missionWindow_c : public listWindow_c
 
     missionWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
         const std::string & t, const std::vector<entry> & e, bool esc, int initial) :
-      listWindow_c(x, y, w, h, s, gr, t, e, esc, initial)
+      listWindow_c(x, y, w, h, s, gr, t, "", e, esc, initial)
     {
       redraw();
     }
@@ -595,7 +607,7 @@ class levelWindow_c : public listWindow_c
 
     levelWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
         const std::string & t, const std::vector<entry> & e, bool esc, int initial) :
-      listWindow_c(x, y, w, h, s, gr, t, e, esc, initial)
+      listWindow_c(x, y, w, h, s, gr, t, "", e, esc, initial)
     {
       redraw();
     }
@@ -692,7 +704,7 @@ window_c * getQuitWindow(bool complete, surface_c & surf, graphicsN_c & gr) {
         entries.push_back(listWindow_c::entry(_("Return to menu")));
     }
 
-    return new listWindow_c(4, 3, 12, 7, surf, gr, _("And now?"), entries, true);
+    return new listWindow_c(4, 3, 12, 7, surf, gr, _("And now?"), "", entries, true);
 }
 
 window_c * getSolvedWindow(surface_c & surf, graphicsN_c & gr) {
@@ -703,7 +715,7 @@ window_c * getSolvedWindow(surface_c & surf, graphicsN_c & gr) {
         entries.push_back(listWindow_c::entry(_("Continue")));
     }
 
-    return new listWindow_c(2, 3, 16, 6, surf, gr, _("Congratulations! You did it."), entries, false);
+    return new listWindow_c(2, 3, 16, 6, surf, gr, _("Congratulations! You did it."), "", entries, false);
 }
 
 window_c * getFailedWindow(LevelState failReason, surface_c & surf, graphicsN_c & gr) {
@@ -737,7 +749,7 @@ window_c * getFailedWindow(LevelState failReason, surface_c & surf, graphicsN_c 
     // add the border
     w += 2;
 
-    return new listWindow_c((20-w)/2, 3, w, 6, surf, gr, title, entries, false);
+    return new listWindow_c((20-w)/2, 3, w, 6, surf, gr, title, "", entries, false);
 }
 
 
@@ -765,7 +777,7 @@ window_c * getTimeoutWindow(surface_c & surf, graphicsN_c & gr) {
     // add the border
     w += 2;
 
-    return new listWindow_c((20-w)/2, 3, w, 6, surf, gr, title, entries, false);
+    return new listWindow_c((20-w)/2, 3, w, 6, surf, gr, title, "", entries, false);
 }
 
 window_c * getEditorLevelChooserWindow(surface_c & surf, graphicsN_c & gr, const levelset_c & l)
@@ -785,7 +797,7 @@ window_c * getEditorLevelChooserWindow(surface_c & surf, graphicsN_c & gr, const
   if (entries.size() > 1)
     entries.push_back(listWindow_c::entry(_("Delete a level")));
 
-  return new listWindow_c(2, 0, 16, 12, surf, gr, _("Choose level to edit"), entries, true);
+  return new listWindow_c(2, 0, 16, 12, surf, gr, _("Choose level to edit"), "", entries, true);
 }
 
 window_c * getDeleteLevelWindow(surface_c & surf, graphicsN_c & gr, const levelset_c & l)
@@ -797,7 +809,7 @@ window_c * getDeleteLevelWindow(surface_c & surf, graphicsN_c & gr, const levels
   for (size_t i = 0; i < names.size(); i++)
     entries.push_back(listWindow_c::entry(names[i]));
 
-  return new listWindow_c(2, 0, 16, 12, surf, gr, _("Choose level to delete"), entries, true);
+  return new listWindow_c(2, 0, 16, 12, surf, gr, _("Choose level to delete"), "", entries, true);
 }
 
 window_c * getMessageWindow(surface_c & surf, graphicsN_c & gr, const std::string & title)
@@ -809,7 +821,7 @@ window_c * getMessageWindow(surface_c & surf, graphicsN_c & gr, const std::strin
     entries.push_back(listWindow_c::entry(_("Continue")));
   }
 
-  return new listWindow_c(4, 3, 12, 7, surf, gr, title, entries, true);
+  return new listWindow_c(4, 3, 12, 7, surf, gr, title, "", entries, true);
 }
 
 window_c * getEditorMenu(surface_c & surf, graphicsN_c & gr)
@@ -835,7 +847,7 @@ window_c * getEditorMenu(surface_c & surf, graphicsN_c & gr)
     entries.push_back(listWindow_c::entry(_("Leave editor")));
 
   }
-  return new listWindow_c(4, 1, 12, 11, surf, gr, _("Editor main menu"), entries, true);
+  return new listWindow_c(4, 1, 12, 11, surf, gr, _("Editor main menu"), "", entries, true);
 }
 
 class editorHelpWindow_c : public window_c {
@@ -894,5 +906,25 @@ class editorHelpWindow_c : public window_c {
 window_c * getEditorHelp(surface_c & surf, graphicsN_c & gr)
 {
   return new editorHelpWindow_c(surf, gr);
+}
+
+window_c * getThemeSelectorWindow(surface_c & surf, graphicsN_c &gr)
+{
+  static std::vector<listWindow_c::entry> entries;
+
+  if (!entries.size())
+  {
+    entries.push_back(listWindow_c::entry(_("Toxic City")));
+    entries.push_back(listWindow_c::entry(_("Atzec Temple")));
+    entries.push_back(listWindow_c::entry(_("Space Station")));
+    entries.push_back(listWindow_c::entry(_("Electric Circuits")));
+    entries.push_back(listWindow_c::entry(_("Greek Temple")));
+    entries.push_back(listWindow_c::entry(_("Medieval Castle")));
+    entries.push_back(listWindow_c::entry(_("Mechanic Toys")));
+    entries.push_back(listWindow_c::entry(_("Dungeon Cell")));
+    entries.push_back(listWindow_c::entry(_("Japanese Room")));
+    entries.push_back(listWindow_c::entry(_("Cave")));
+  }
+  return new listWindow_c(4, 1, 12, 11, surf, gr, _("Choose theme"), "Keep in mind that choosing a new theme will clear the background of your level, if you don't want that press ESC", entries, true);
 }
 

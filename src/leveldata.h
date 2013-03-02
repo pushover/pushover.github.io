@@ -166,6 +166,7 @@ class levelData_c {
 
     const std::string getName(void) const { return name; }
     const std::string getTheme(void) const { return theme; }
+    void setTheme(const std::string & th) { theme = th; }
     const std::string getHint(void) const { return hint; }
     const std::vector<std::string> & getAuthor(void) const { return author; }
     const std::string getTutorial(void) const { return tutorial; }

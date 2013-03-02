@@ -38,6 +38,7 @@ typedef enum {
   ST_NEW_LEVEL,
   ST_DOUBLE_NAME,
   ST_DELETE_LEVEL,
+  ST_SELECT_THEME,
   ST_EDIT_HOME,        // edit the foreground of the level (all level related elements
   ST_EDIT_DOMINOS_SELECTOR,
   ST_EDIT_BACKGROUND,  // edit the background imagery of the level
@@ -334,6 +335,7 @@ static void changeState(void)
       case ST_DOUBLE_NAME:
       case ST_EDIT_MENU:
       case ST_EDIT_HELP:
+      case ST_SELECT_THEME:
         delete window;
         window = 0;
         break;
@@ -390,6 +392,10 @@ static void changeState(void)
 
       case ST_EDIT_BG_SELECTOR:
         updateBackgroundOverlay();
+        break;
+
+      case ST_SELECT_THEME:
+        window = getThemeSelectorWindow(*screen, *gr);
         break;
     }
   }
@@ -702,6 +708,48 @@ bool eventEditor(const SDL_Event & event)
       }
       break;
 
+    case ST_SELECT_THEME:
+      if (!window)
+      {
+        nextState = ST_EXIT;
+      }
+      else
+      {
+        window->handleEvent(event);
+
+        if (window->isDone())
+        {
+          unsigned int sel = window->getSelection();
+
+          switch (sel)
+          {
+            case 0: l->setTheme("toxcity"); break;
+            case 1: l->setTheme("aztec"); break;
+            case 2: l->setTheme("space"); break;
+            case 3: l->setTheme("electro"); break;
+            case 4: l->setTheme("greek"); break;
+            case 5: l->setTheme("castle"); break;
+            case 6: l->setTheme("mechanic"); break;
+            case 7: l->setTheme("dungeon"); break;
+            case 8: l->setTheme("japanese"); break;
+            case 9: l->setTheme("cavern"); break;
+            default: break;
+          }
+
+          if (sel < 10)
+            for (size_t y = 0; y < l->levelY(); y++)
+              for (size_t x = 0; x < l->levelX(); x++)
+                for (size_t lay = 0; lay < 8; lay++)
+                  l->setBg(x, y, lay, 0);
+
+          gr->setPaintData(l, 0, screen);
+
+          nextState = ST_EDIT_MENU;
+        }
+      }
+
+      break;
+
     case ST_NEW_LEVEL:
       if (!window)
       {
@@ -801,8 +849,7 @@ bool eventEditor(const SDL_Event & event)
           switch (window->getSelection())
           {
             case 0:
-              // theme
-              nextState = ST_EDIT_HOME;
+              nextState = ST_SELECT_THEME;
               break;
 
             case 1:
@@ -1343,6 +1390,9 @@ void stepEditor(void)
     case ST_EDIT_DOMINOS_SELECTOR:
     case ST_EDIT_BG_SELECTOR:
       gr->drawLevel();
+      break;
+
+    case ST_SELECT_THEME:
       break;
 
   }
