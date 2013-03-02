@@ -4,6 +4,8 @@
 #include "screen.h"
 #include "graphicsn.h"
 
+#include <sstream>
+
 
 class InputWindow_c : public window_c {
 
@@ -252,5 +254,17 @@ window_c * getAuthorsAddWindow(surface_c & surf, graphicsN_c & gr)
 window_c * getLevelnameWindow(surface_c & surf, graphicsN_c & gr, const std::string & init)
 {
   return new InputWindow_c(4,2,12,5, surf, gr, _("Enter new level name"), "When the level name is descriptive, please use English as language.", init);
+}
+
+window_c * getTimeWindow(surface_c & surf, graphicsN_c & gr, int time)
+{
+  int min = time / 60;
+  int sec = time % 60;
+
+  std::ostringstream timeStream;
+
+  timeStream << min << ":" << sec;
+
+  return new InputWindow_c(4,2,12,5, surf, gr, _("Enter time for level"), "Enter as 'minutes:seconds'.", timeStream.str());
 }
 

@@ -111,6 +111,7 @@ window_c * getAuthorsWindow(surface_c & screen, graphicsN_c & gr, const std::vec
 window_c * getAuthorsAddWindow(surface_c & screen, graphicsN_c & gr);
 window_c * getAuthorsDelWindow(surface_c & screen, graphicsN_c & gr, const std::vector<std::string> & auth);
 window_c * getLevelnameWindow(surface_c & screen, graphicsN_c & gr, const std::string & init);
+window_c * getTimeWindow(surface_c & screen, graphicsN_c & gr, int time);
 
 #endif
 

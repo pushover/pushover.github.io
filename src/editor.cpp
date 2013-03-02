@@ -28,6 +28,8 @@
 #include "recorder.h"
 
 #include <fstream>
+#include <sstream>
+
 #include <sys/stat.h>
 
 // states of the level Editor
@@ -39,6 +41,7 @@ typedef enum {
   ST_DOUBLE_NAME,
   ST_CANT_CREATE_FILE,
   ST_INVALID_FILENAME,
+  ST_INVALID_TIMEFORMAT,
   ST_DELETE_LEVEL,
   ST_SELECT_THEME,
   ST_EDIT_AUTHORS,
@@ -52,6 +55,7 @@ typedef enum {
   ST_EDIT_HELP,
   ST_EDIT_PLAY,
   ST_EDIT_LEVELNAME,
+  ST_EDIT_TIME,
 } states_e;
 
 static states_e currentState, nextState, messageContinue;
@@ -340,6 +344,7 @@ static void changeState(void)
       case ST_DELETE_LEVEL:
       case ST_CANT_CREATE_FILE:
       case ST_INVALID_FILENAME:
+      case ST_INVALID_TIMEFORMAT:
       case ST_DOUBLE_NAME:
       case ST_EDIT_MENU:
       case ST_EDIT_HELP:
@@ -348,6 +353,7 @@ static void changeState(void)
       case ST_EDIT_AUTHORS_DEL:
       case ST_EDIT_AUTHORS_ADD:
       case ST_EDIT_LEVELNAME:
+      case ST_EDIT_TIME:
         delete window;
         window = 0;
         break;
@@ -394,6 +400,10 @@ static void changeState(void)
         window = getMessageWindow(*screen, *gr, _("The filename you provided does contain invalid characters"));
         break;
 
+      case ST_INVALID_TIMEFORMAT:
+        window = getMessageWindow(*screen, *gr, _("The time you have given is invalid"));
+        break;
+
       case ST_EDIT_MENU:
         window = getEditorMenu(*screen, *gr);
         break;
@@ -432,6 +442,10 @@ static void changeState(void)
 
       case ST_EDIT_LEVELNAME:
         window = getLevelnameWindow(*screen, *gr, l->getName());
+        break;
+
+      case ST_EDIT_TIME:
+        window = getTimeWindow(*screen, *gr, l->getTimeLeft() / 18);
         break;
     }
   }
@@ -860,6 +874,51 @@ bool eventEditor(const SDL_Event & event)
       }
       break;
 
+    case ST_EDIT_TIME:
+      if (!window)
+      {
+        nextState = ST_EXIT;
+      }
+      else
+      {
+        window->handleEvent(event);
+
+        if (window->isDone())
+        {
+          if (!window->hasEscaped())
+          {
+            std::istringstream tm(window->getText());
+
+            bool validFormat = true;
+
+            unsigned int timeMinutes;
+            tm >> timeMinutes;
+            if (tm.get() != ':')
+              validFormat = false;
+            unsigned int timeSeconds;
+            tm >> timeSeconds;
+            if (!tm.eof() || !tm)
+              validFormat = false;
+
+            if (validFormat)
+            {
+              l->setTimeLeft((timeMinutes*60+timeSeconds)*18);
+              nextState = ST_EDIT_MENU;
+            }
+            else
+            {
+              nextState = ST_INVALID_TIMEFORMAT;
+              messageContinue = ST_EDIT_MENU;
+            }
+          }
+          else
+          {
+            nextState = ST_EDIT_MENU;
+          }
+        }
+      }
+      break;
+
     case ST_EDIT_AUTHORS_ADD:
       if (!window)
       {
@@ -997,6 +1056,7 @@ bool eventEditor(const SDL_Event & event)
     case ST_DOUBLE_NAME:
     case ST_CANT_CREATE_FILE:
     case ST_INVALID_FILENAME:
+    case ST_INVALID_TIMEFORMAT:
 
       if (!window)
       {
@@ -1036,7 +1096,7 @@ bool eventEditor(const SDL_Event & event)
 
             case 2:
               // time
-              nextState = ST_EDIT_HOME;
+              nextState = ST_EDIT_TIME;
               break;
 
             case 3:
@@ -1538,12 +1598,14 @@ void stepEditor(void)
     case ST_DOUBLE_NAME:
     case ST_CANT_CREATE_FILE:
     case ST_INVALID_FILENAME:
+    case ST_INVALID_TIMEFORMAT:
     case ST_EDIT_MENU:
     case ST_EDIT_HELP:
     case ST_EDIT_AUTHORS:
     case ST_EDIT_AUTHORS_ADD:
     case ST_EDIT_AUTHORS_DEL:
     case ST_EDIT_LEVELNAME:
+    case ST_EDIT_TIME:
       break;
 
     case ST_EDIT_PLAY:

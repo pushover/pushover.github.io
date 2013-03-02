@@ -178,6 +178,7 @@ class levelData_c {
     int getTimeLeft(void) const { return timeLeft; }
     void timeTick(void) { timeLeft--; }
     bool someTimeLeft(void) const { return timeLeft > 0; }
+    void setTimeLeft(int tm) { timeLeft = tm; }
 
     const std::string getChecksum(void) const { return checksum; }
     const std::string getChecksumNoTime(void) const { return checksumNoTime; }
