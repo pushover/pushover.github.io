@@ -47,6 +47,17 @@ unsigned int luaClass_c::getArraySize(const std::string & name) {
 #endif
 }
 
+unsigned int luaClass_c::getArraySize(const std::string & name, unsigned int idx) {
+  lua_getglobal(L, name.c_str());
+  lua_pushnumber(L, idx);
+  lua_gettable(L, -2);
+#if LUA_VERSION_NUM > 501
+  return lua_rawlen(L, -1);
+#else
+  return lua_objlen(L, -1);
+#endif
+}
+
 lua_Number luaClass_c::getNumberArray(const std::string & name, unsigned int idx) {
   lua_getglobal(L, name.c_str());
   lua_pushnumber(L, idx);
@@ -54,6 +65,20 @@ lua_Number luaClass_c::getNumberArray(const std::string & name, unsigned int idx
 
   lua_Number result = lua_tonumber(L, -1);
   lua_pop(L, 2);
+
+  return result;
+}
+
+lua_Number luaClass_c::get2dNumberArray(const std::string & name, unsigned int idx1, unsigned int idx2) {
+  lua_getglobal(L, name.c_str());
+  lua_pushnumber(L, idx1);
+  lua_gettable(L, -2);
+
+  lua_pushnumber(L, idx2);
+  lua_gettable(L, -2);
+
+  lua_Number result = lua_tonumber(L, -1);
+  lua_pop(L, 3);
 
   return result;
 }

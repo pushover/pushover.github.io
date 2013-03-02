@@ -91,6 +91,10 @@ class graphicsN_c : public graphics_c {
     void setShowBgNumbers(bool on);
     bool getShowBgNumbers(void) const { return showBgNumbers; }
 
+    // the separates patterns alway work like this:
+    // first index contains the number of columns, the followind entries in the vector
+    // contain the different tiles to use
+    const std::vector<std::vector<uint16_t> > & getBgTilePatterns(void) const { return bgTilePatterns[curTheme]; }
 
   private:
 
@@ -148,6 +152,9 @@ class graphicsN_c : public graphics_c {
 
     std::vector<std::vector<surface_c *> > bgTiles;
     std::vector<std::vector<surface_c *> > fgTiles;
+
+    // for all themes a vector of arrays with Tile Patterns to use for the level editor
+    std::vector<std::vector<std::vector<uint16_t> > > bgTilePatterns;
 
     std::vector<std::vector<surface_c *> > dominos;
 

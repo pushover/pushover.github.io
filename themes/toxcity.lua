@@ -1,6 +1,5 @@
 
--- the 22 foreground tiles
-
+-- the 9 foreground tiles
 foreground = {
   0, 0,  -- Platforms 1
   1, 0,  -- Platforms 2
@@ -14,7 +13,6 @@ foreground = {
 }
 
 -- as many background tiles as you want.
-
 background = {
   14, 13,
    8, 1,
@@ -204,4 +202,10 @@ background = {
   12, 13,
   13, 13,
 }
--- 186
+
+backgroundPatterns = { 
+  { 3   , 4, 6, 8, 5, 7, 9, 10, 2, 14, 11, 3, 15, 16, 18, 20, 17, 19, 21 }, 
+  { 2   , 154, 156, 155, 157 }, 
+  { 1   , 212, 213, 90 }, 
+  { 1   , 306, 307, 310, 311 },
+}

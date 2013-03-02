@@ -740,6 +740,7 @@ void graphicsN_c::setTheme(const std::string & name)
 
   bgTiles.resize(bgTiles.size()+1);
   fgTiles.resize(fgTiles.size()+1);
+  bgTilePatterns.resize(bgTilePatterns.size()+1);
 
   luaClass_c l;
   l.doFile(dataPath+"/themes/tools.lua");
@@ -865,6 +866,25 @@ void graphicsN_c::setTheme(const std::string & name)
     }
 
     yPos++;
+  }
+
+  // get the patterns
+  {
+    uint16_t patternsSize = l.getArraySize("backgroundPatterns");
+
+    bgTilePatterns[curTheme].resize(patternsSize);
+
+    for (uint16_t i = 0; i < patternsSize; i++)
+    {
+      uint16_t v = l.getArraySize("backgroundPatterns", i+1);
+
+      for (uint16_t j = 0; j < v; j++)
+      {
+        uint16_t w = l.get2dNumberArray("backgroundPatterns", i+1, j+1);
+
+        bgTilePatterns[curTheme][i].push_back(w);
+      }
+    }
   }
 }
 

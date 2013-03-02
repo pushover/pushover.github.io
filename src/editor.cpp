@@ -133,35 +133,127 @@ void updateBackgroundOverlay(void)
   {
     bgTileLayoutTheme = l->getTheme();
 
-    uint16_t x = 0;
-    uint16_t y = 0;
-    uint16_t b = 0;
-
     bgTilesLayout.clear();
     bgTilesStart = 0;
 
+    const std::vector<std::vector<uint16_t> > & pt = gr->getBgTilePatterns();
+
+    std::vector<std::vector<bool> > used; // which tiles of the selector are already used
+
+    uint16_t line = 0; // first empty line
+
+    // first place the patterns
+    for (size_t p = 0; p < pt.size(); p++)
+    {
+      uint16_t w = pt[p][0];
+      uint16_t h = (pt[p].size()-1)/pt[p][0];
+
+      if (w > B_OVL_COL) continue;
+
+      // make sure that we fit
+      if (line+h > used.size())
+      {
+        used.resize(line+h);
+
+        for (size_t i = 0; i < used.size(); i++)
+          if (used[i].size() != B_OVL_COL) used[i].resize(B_OVL_COL);
+      }
+
+      // find an empty place
+      for (size_t y = 0; y <= line+1; y++)
+        for (size_t x = 0; x < (size_t)B_OVL_COL-w+1; x++)
+        {
+          bool found = true;
+
+          for (size_t xw = 0; xw < w; xw++)
+            for (size_t yh = 0; yh < h; yh++)
+              if (used[y+yh][x+xw])
+                found = false;
+
+          if (found)
+          {
+            // place big tile
+            if (bgTilesLayout.size() < y+h)
+            {
+              bgTilesLayout.resize(y+h);
+
+              for (size_t i = 0; i < bgTilesLayout.size(); i++)
+                if (bgTilesLayout[i].size() != B_OVL_COL) bgTilesLayout[i].resize(B_OVL_COL);
+            }
+
+            for (size_t xw = 0; xw < w; xw++)
+              for (size_t yh = 0; yh < h; yh++)
+              {
+                used[y+yh][x+xw] = true;
+                bgTilesLayout[y+yh][x+xw] = pt[p][1+yh*w+xw];
+              }
+
+            if (y+h > line) line = y+h;
+            y = line+1;
+            break;
+          }
+        }
+    }
+
+    // now all the remaining tiles
+    uint16_t x = 0;
+    uint16_t y = 0;
+    uint16_t b = 0;
     for (size_t t = 0; t < bgTiles.size(); t++)
     {
-      if (bgTilesLayout.size() <= (size_t)(y*2+b))
-      {
-        bgTilesLayout.resize(y*2+b+1);
-        bgTilesLayout.back().resize(B_OVL_COL);
-      }
+      bool done = false;
 
-      bgTilesLayout[y*2+b][x] = t;
+      for (size_t yy = 0; yy < bgTilesLayout.size(); yy++)
+        for (size_t xx = 0; xx < B_OVL_COL; xx++)
+          if (used[yy][xx] && bgTilesLayout[yy][xx] == t)
+            done = true;
 
-      b++;
-      if (b == 2)
+      if (!done)
       {
-        b = 0;
-        x++;
-        if (x == B_OVL_COL)
+        // find next empty cell
+
+        while ((2*y+b < used.size()) && used[2*y+b][x])
         {
-          x = 0;
-          y++;
+          b++;
+          if (b == 2)
+          {
+            b = 0;
+            x++;
+            if (x == B_OVL_COL)
+            {
+              x = 0;
+              y++;
+            }
+          }
         }
+
+        // make sure the tile can be placed
+        if (bgTilesLayout.size() <= (size_t)(y*2+b))
+        {
+          bgTilesLayout.resize(y*2+b+1);
+
+          for (size_t i = 0; i < bgTilesLayout.size(); i++)
+            if (bgTilesLayout[i].size() != B_OVL_COL) bgTilesLayout[i].resize(B_OVL_COL);
+        }
+
+        if (used.size() <= (size_t)(2*y+b))
+        {
+          used.resize(y*2+b+1);
+
+          for (size_t i = 0; i < used.size(); i++)
+            if (used[i].size() != B_OVL_COL) used[i].resize(B_OVL_COL);
+        }
+
+        bgTilesLayout[y*2+b][x] = t;
+        used[y*2+b][x] = true;
       }
     }
+
+    // mark all unused tiles with a big number
+    for (size_t xw = 0; xw < B_OVL_COL; xw++)
+      for (size_t yh = 0; yh < bgTilesLayout.size(); yh++)
+        if (!used[yh][xw])
+          bgTilesLayout[yh][xw] = (uint16_t)(-1);
   }
 
   if (!backgroundOverlay)
@@ -174,23 +266,46 @@ void updateBackgroundOverlay(void)
   for (int y = 0; y < B_OVL_ROW; y++)
     for (int x = 0; x < B_OVL_COL; x++)
     {
-      for (int yc = 0; yc < 3; yc++)
-        for (int xc = 0; xc < 5; xc++)
+      if (bgTilesLayout[y+bgTilesStart][x] < bgTiles.size())
+      {
+        for (int yc = 0; yc < 3; yc++)
+          for (int xc = 0; xc < 5; xc++)
+          {
+            if ((xc+5*x+yc+3*y)%2)
+              backgroundOverlay->fillRect(B_OVL_FRAME+x*B_OVL_W+xc*8, B_OVL_FRAME+y*B_OVL_H+yc*8, 8, 8, 85, 85, 85);
+            else
+              backgroundOverlay->fillRect(B_OVL_FRAME+x*B_OVL_W+xc*8, B_OVL_FRAME+y*B_OVL_H+yc*8, 8, 8, 2*85, 2*85, 2*85);
+          }
+
+        if ((size_t)(bgTilesStart+y) < bgTilesLayout.size())
+          backgroundOverlay->blitBlock(*(bgTiles[bgTilesLayout[bgTilesStart+y][x]]), B_OVL_FRAME+x*B_OVL_W, B_OVL_FRAME+y*B_OVL_H);
+
+        if (gr->getShowBgNumbers())
         {
-          if ((xc+5*x+yc+3*y)%2)
-            backgroundOverlay->fillRect(B_OVL_FRAME+x*B_OVL_W+xc*8, B_OVL_FRAME+y*B_OVL_H+yc*8, 8, 8, 85, 85, 85);
-          else
-            backgroundOverlay->fillRect(B_OVL_FRAME+x*B_OVL_W+xc*8, B_OVL_FRAME+y*B_OVL_H+yc*8, 8, 8, 2*85, 2*85, 2*85);
+          char number[5];
+          snprintf(number, 4, "%i", bgTilesLayout[bgTilesStart+y][x]);
+          fontParams_s pars;
+
+          pars.font = FNT_SMALL;
+          pars.alignment = ALN_CENTER;
+          pars.box.w = B_OVL_W;
+          pars.box.h = B_OVL_H;
+          pars.box.x = B_OVL_FRAME+x*B_OVL_W;
+          pars.box.y = B_OVL_FRAME+y*B_OVL_H;
+          pars.shadow = 1;
+          pars.color.r = 255;
+          pars.color.g = 255;
+          pars.color.b = 255;
+
+          backgroundOverlay->renderText(&pars, number);
         }
 
-      if ((size_t)(bgTilesStart+y) < bgTilesLayout.size())
-        backgroundOverlay->blitBlock(*(bgTiles[bgTilesLayout[bgTilesStart+y][x]]), B_OVL_FRAME+x*B_OVL_W, B_OVL_FRAME+y*B_OVL_H);
+        backgroundOverlay->fillRect(B_OVL_FRAME+B_OVL_W*(bgSelX)-1, B_OVL_FRAME+B_OVL_H*(bgSelY), 2, B_OVL_H*bgSelH, 255, 255, 255);
+        backgroundOverlay->fillRect(B_OVL_FRAME+B_OVL_W*(bgSelX+bgSelW)-1, B_OVL_FRAME+B_OVL_H*(bgSelY), 2, B_OVL_H*bgSelH, 255, 255, 255);
 
-      backgroundOverlay->fillRect(B_OVL_FRAME+B_OVL_W*(bgSelX)-1, B_OVL_FRAME+B_OVL_H*(bgSelY), 2, B_OVL_H*bgSelH, 255, 255, 255);
-      backgroundOverlay->fillRect(B_OVL_FRAME+B_OVL_W*(bgSelX+bgSelW)-1, B_OVL_FRAME+B_OVL_H*(bgSelY), 2, B_OVL_H*bgSelH, 255, 255, 255);
-
-      backgroundOverlay->fillRect(B_OVL_FRAME+B_OVL_W*(bgSelX), B_OVL_FRAME+B_OVL_H*(bgSelY)-1, B_OVL_W*bgSelW, 2, 255, 255, 255);
-      backgroundOverlay->fillRect(B_OVL_FRAME+B_OVL_W*(bgSelX), B_OVL_FRAME+B_OVL_H*(bgSelY+bgSelH)-1, B_OVL_W*bgSelW, 2, 255, 255, 255);
+        backgroundOverlay->fillRect(B_OVL_FRAME+B_OVL_W*(bgSelX), B_OVL_FRAME+B_OVL_H*(bgSelY)-1, B_OVL_W*bgSelW, 2, 255, 255, 255);
+        backgroundOverlay->fillRect(B_OVL_FRAME+B_OVL_W*(bgSelX), B_OVL_FRAME+B_OVL_H*(bgSelY+bgSelH)-1, B_OVL_W*bgSelW, 2, 255, 255, 255);
+      }
     }
 
   gr->setOverlay(backgroundOverlay);
@@ -1122,6 +1237,18 @@ bool eventEditor(const SDL_Event & event)
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'n')
       {
         gr->setShowBgNumbers(!gr->getShowBgNumbers());
+      }
+
+      // print out the current selection for a "big tile" for the theme
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'l')
+      {
+        std::cout << "  { " << (int)gr->getCursorW() << "   ";
+
+        for (size_t j = 0; j < gr->getCursorH(); j++)
+          for (size_t i = 0; i < gr->getCursorW(); i++)
+            std::cout << ", " << l->getBg(gr->getCursorX()+i, gr->getCursorY()+j, bgLayer);
+
+        std::cout << " }, \n";
       }
 
       // copy existing background
