@@ -241,7 +241,7 @@ window_c * getProfileInputWindow(surface_c & surf, graphicsN_c & gr)
 
 window_c * getNewLevelWindow(surface_c & surf, graphicsN_c & gr)
 {
-  return new InputWindow_c(4,2,12,6, surf, gr, _("Enter file name for the new level"), _("This will be also used as an initial level name"));
+  return new InputWindow_c(4,2,12,6, surf, gr, _("Enter file name for the new level"), _("Please use only basic latin letters (a-z), numbers and the dash and underscore."));
 }
 
 window_c * getAuthorsAddWindow(surface_c & surf, graphicsN_c & gr)

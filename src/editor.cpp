@@ -37,6 +37,8 @@ typedef enum {
   ST_EXIT,
   ST_NEW_LEVEL,
   ST_DOUBLE_NAME,
+  ST_CANT_CREATE_FILE,
+  ST_INVALID_FILENAME,
   ST_DELETE_LEVEL,
   ST_SELECT_THEME,
   ST_EDIT_AUTHORS,
@@ -335,6 +337,8 @@ static void changeState(void)
       case ST_CHOOSE_LEVEL:
       case ST_NEW_LEVEL:
       case ST_DELETE_LEVEL:
+      case ST_CANT_CREATE_FILE:
+      case ST_INVALID_FILENAME:
       case ST_DOUBLE_NAME:
       case ST_EDIT_MENU:
       case ST_EDIT_HELP:
@@ -378,6 +382,14 @@ static void changeState(void)
 
       case ST_DOUBLE_NAME:
         window = getMessageWindow(*screen, *gr, _("The given level name already exists"));
+        break;
+
+      case ST_CANT_CREATE_FILE:
+        window = getMessageWindow(*screen, *gr, _("Can not create a file with the given filename"));
+        break;
+
+      case ST_INVALID_FILENAME:
+        window = getMessageWindow(*screen, *gr, _("The filename you provided does contain invalid characters"));
         break;
 
       case ST_EDIT_MENU:
@@ -675,6 +687,22 @@ static void updateEditPlane()
   }
 }
 
+static bool stringValidAsFilename(const std::string s)
+{
+  for (size_t i = 0; i < s.length(); i++)
+  {
+    if (  (s[i] < '0' || s[i] > '9')
+        &&(s[i] < 'a' || s[i] > 'z')
+        &&(s[i] < 'A' || s[i] > 'Z')
+        &&(s[i] != '_')
+        &&(s[i] != '-')
+       )
+      return false;
+  }
+
+  return true;
+}
+
 
 bool eventEditor(const SDL_Event & event)
 {
@@ -858,34 +886,58 @@ bool eventEditor(const SDL_Event & event)
 
         if (window->isDone())
         {
-          std::string fname = getHome() + "levels/" + window->getText() + ".level";
-          struct stat st;
-
-          // first check if the resulting filename would be
-          if (stat(fname.c_str(), &st) == 0)
+          if (!window->hasEscaped())
           {
-            nextState = ST_DOUBLE_NAME;
-            messageContinue = ST_CHOOSE_LEVEL;
-          }
-          else
-          {
-            // create the new level
+            if (!stringValidAsFilename(window->getText()))
             {
-              levelData_c l;
-              l.setName(window->getText());
-              l.setAuthor(userName);
-              std::ofstream f(fname.c_str());
-              l.save(f);
+              nextState = ST_INVALID_FILENAME;;
+              messageContinue = ST_CHOOSE_LEVEL;
             }
-            loadLevels();
-            levelName = window->getText();
-            levels->loadLevel(*l, levelName, "");
+            else
+            {
+              std::string fname = getHome() + "levels/" + window->getText() + ".level";
+              struct stat st;
 
-            gr->setPaintData(l, 0, screen);
+              // first check if the resulting filename would be
+              if (stat(fname.c_str(), &st) == 0)
+              {
+                nextState = ST_DOUBLE_NAME;
+                messageContinue = ST_CHOOSE_LEVEL;
+              }
+              else
+              {
+                // create the new level
+                {
+                  std::ofstream f(fname.c_str());
 
-            levelFileName = levels->getFilename(levelName);
-            nextState = ST_EDIT_HOME;
-            bgLayer = 0;
+                  if (!f)
+                  {
+                    nextState = ST_CANT_CREATE_FILE;
+                    messageContinue = ST_CHOOSE_LEVEL;
+                  }
+                  else
+                  {
+                    levelData_c l;
+                    l.setName(window->getText());
+                    l.setAuthor(userName);
+                    l.save(f);
+                  }
+                }
+
+                if (nextState != ST_CANT_CREATE_FILE)
+                {
+                  loadLevels();
+                  levelName = window->getText();
+                  levels->loadLevel(*l, levelName, "");
+
+                  gr->setPaintData(l, 0, screen);
+
+                  levelFileName = levels->getFilename(levelName);
+                  nextState = ST_EDIT_HOME;
+                  bgLayer = 0;
+                }
+              }
+            }
           }
         }
       }
@@ -917,6 +969,9 @@ bool eventEditor(const SDL_Event & event)
       break;
 
     case ST_DOUBLE_NAME:
+    case ST_CANT_CREATE_FILE:
+    case ST_INVALID_FILENAME:
+
       if (!window)
       {
         nextState = ST_EXIT;
@@ -1456,13 +1511,14 @@ void stepEditor(void)
     case ST_NEW_LEVEL:
     case ST_DELETE_LEVEL:
     case ST_DOUBLE_NAME:
+    case ST_CANT_CREATE_FILE:
+    case ST_INVALID_FILENAME:
     case ST_EDIT_MENU:
     case ST_EDIT_HELP:
     case ST_EDIT_AUTHORS:
     case ST_EDIT_AUTHORS_ADD:
     case ST_EDIT_AUTHORS_DEL:
       break;
-
 
     case ST_EDIT_PLAY:
       {
