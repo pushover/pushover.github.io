@@ -925,7 +925,7 @@ window_c * getThemeSelectorWindow(surface_c & surf, graphicsN_c &gr)
     entries.push_back(listWindow_c::entry(_("Japanese Room")));
     entries.push_back(listWindow_c::entry(_("Cave")));
   }
-  return new listWindow_c(4, 1, 12, 11, surf, gr, _("Choose theme"), "Keep in mind that choosing a new theme will clear the background of your level, if you don't want that press ESC", entries, true);
+  return new listWindow_c(4, 1, 12, 11, surf, gr, _("Choose theme"), _("Keep in mind that choosing a new theme will clear the background of your level, if you don't want that press ESC"), entries, true);
 }
 
 window_c * getAuthorsWindow(surface_c & surf, graphicsN_c & gr, const std::vector<std::string> & auth)

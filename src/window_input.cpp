@@ -13,13 +13,14 @@ class InputWindow_c : public window_c {
     unsigned int cursorPosition;
 
     std::string title;
+    std::string subtitle;
 
     void redraw(void);
 
   public:
 
     InputWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
-        const std::string & title);
+        const std::string & title, const std::string & subtitle);
 
     // the the user has selected something
     const std::string getText(void) { return input; } // which list entry was selected
@@ -29,9 +30,10 @@ class InputWindow_c : public window_c {
 
 
 InputWindow_c::InputWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
-        const std::string & ti) : window_c(x, y, w, h, s, gr)
+        const std::string & ti, const std::string & suti) : window_c(x, y, w, h, s, gr)
 {
   title = ti;
+  subtitle = suti;
   input = "";
   cursorPosition = 0;
   escape = false;
@@ -210,6 +212,15 @@ void InputWindow_c::redraw(void)
 
   ypos += 20;
 
+  if (subtitle != "")
+  {
+    par.font = FNT_SMALL;
+    par.shadow = false;
+    par.box.y = ypos;
+    surf.renderText(&par, subtitle);
+    ypos += getTextHeight(&par, subtitle);
+  }
+
   par.alignment = ALN_TEXT;
   par.font = FNT_NORMAL;
   par.shadow = 0;
@@ -225,16 +236,16 @@ void InputWindow_c::redraw(void)
 
 window_c * getProfileInputWindow(surface_c & surf, graphicsN_c & gr)
 {
-  return new InputWindow_c(4,2,12,5, surf, gr, _("Enter new profile name"));
+  return new InputWindow_c(4,2,12,5, surf, gr, _("Enter new profile name"), "");
 }
 
 window_c * getNewLevelWindow(surface_c & surf, graphicsN_c & gr)
 {
-  return new InputWindow_c(4,2,12,5, surf, gr, _("Enter name for the new level"));
+  return new InputWindow_c(4,2,12,6, surf, gr, _("Enter file name for the new level"), _("This will be also used as an initial level name"));
 }
 
 window_c * getAuthorsAddWindow(surface_c & surf, graphicsN_c & gr)
 {
-  return new InputWindow_c(4,2,12,5, surf, gr, _("Enter new authors name"));
+  return new InputWindow_c(4,2,12,5, surf, gr, _("Enter new authors name"), "");
 }
 
