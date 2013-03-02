@@ -122,7 +122,7 @@ void listWindow_c::redraw(void) {
   fontParams_s par;
 
   par.font = FNT_BIG;
-  par.alignment = ALN_CENTER;
+  par.alignment = ALN_TEXT_CENTER;
   par.color.r = TXT_COL_R; par.color.g = TXT_COL_G; par.color.b = TXT_COL_B;
   par.shadow = 2;
   par.box.x = gr.blockX()*(x+1);

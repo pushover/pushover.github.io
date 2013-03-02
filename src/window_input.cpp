@@ -193,7 +193,7 @@ void InputWindow_c::redraw(void)
   fontParams_s par;
 
   par.font = FNT_BIG;
-  par.alignment = ALN_CENTER;
+  par.alignment = ALN_TEXT_CENTER;
   par.color.r = TXT_COL_R; par.color.g = TXT_COL_G; par.color.b = TXT_COL_B;
   par.shadow = 2;
   par.box.x = gr.blockX()*(x+1);
@@ -203,7 +203,7 @@ void InputWindow_c::redraw(void)
 
   surf.renderText(&par, title);
 
-  int ypos = gr.blockY()*(y+1) + getFontHeight(FNT_BIG);
+  int ypos = gr.blockY()*(y+1) + getTextHeight(&par, title);
 
   surf.fillRect(gr.blockX()*(x+1)+1, ypos+1, gr.blockX()*(w-2), 2, 0, 0, 0);
   surf.fillRect(gr.blockX()*(x+1), ypos, gr.blockX()*(w-2), 2, TXT_COL_R, TXT_COL_G, TXT_COL_B);
