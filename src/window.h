@@ -110,6 +110,7 @@ window_c * getThemeSelectorWindow(surface_c & surf, graphicsN_c &gr);
 window_c * getAuthorsWindow(surface_c & screen, graphicsN_c & gr, const std::vector<std::string> & auth);
 window_c * getAuthorsAddWindow(surface_c & screen, graphicsN_c & gr);
 window_c * getAuthorsDelWindow(surface_c & screen, graphicsN_c & gr, const std::vector<std::string> & auth);
+window_c * getLevelnameWindow(surface_c & screen, graphicsN_c & gr, const std::string & init);
 
 #endif
 

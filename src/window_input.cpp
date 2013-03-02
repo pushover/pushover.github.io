@@ -20,7 +20,7 @@ class InputWindow_c : public window_c {
   public:
 
     InputWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
-        const std::string & title, const std::string & subtitle);
+        const std::string & title, const std::string & subtitle, const std::string & init = "");
 
     // the the user has selected something
     const std::string getText(void) { return input; } // which list entry was selected
@@ -30,12 +30,12 @@ class InputWindow_c : public window_c {
 
 
 InputWindow_c::InputWindow_c(int x, int y, int w, int h, surface_c & s, graphicsN_c & gr,
-        const std::string & ti, const std::string & suti) : window_c(x, y, w, h, s, gr)
+        const std::string & ti, const std::string & suti, const std::string & txt) : window_c(x, y, w, h, s, gr)
 {
   title = ti;
   subtitle = suti;
-  input = "";
-  cursorPosition = 0;
+  input = txt;
+  cursorPosition = txt.length();
   escape = false;
   redraw();
 }
@@ -247,5 +247,10 @@ window_c * getNewLevelWindow(surface_c & surf, graphicsN_c & gr)
 window_c * getAuthorsAddWindow(surface_c & surf, graphicsN_c & gr)
 {
   return new InputWindow_c(4,2,12,5, surf, gr, _("Enter new authors name"), "");
+}
+
+window_c * getLevelnameWindow(surface_c & surf, graphicsN_c & gr, const std::string & init)
+{
+  return new InputWindow_c(4,2,12,5, surf, gr, _("Enter new level name"), "When the level name is descriptive, please use English as language.", init);
 }
 
