@@ -62,7 +62,7 @@ levelData_c::levelData_c(void)
   doorEntryState = 0;
   doorExitState = 0;
 
-  doorEntryX = doorEntryY = doorExitX = doorExitY = 255;
+  doorEntryX = doorEntryY = doorExitX = doorExitY = 0;
 
   // invalid time...
   timeLeft = 60*60*18;

@@ -1247,6 +1247,8 @@ bool eventEditor(const SDL_Event & event)
               l->setEntry(gr->getCursorX(), gr->getCursorY()+2);
             else
               l->setExit(gr->getCursorX(), gr->getCursorY()+2);
+
+            gr->markAllDirtyBg();
           }
         }
       }
