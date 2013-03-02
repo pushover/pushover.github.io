@@ -41,6 +41,8 @@ void levelPlayer_c::load(const textsections_c & sections, const std::string & us
   openDoorEntry = openDoorExit = false;
 
   levelData_c::load(sections, userString);
+
+  inactive = 0;
 }
 
 void levelPlayer_c::performDoors(void) {
