@@ -1107,8 +1107,8 @@ void graphicsN_c::drawDominos(void)
 
           if (showBgNumbers)
           {
-            char number[4];
-            snprintf(number, 3, "%i", level->getBg(x, y, bgDrawLayer));
+            char number[5];
+            snprintf(number, 4, "%i", level->getBg(x, y, bgDrawLayer));
             fontParams_s pars;
 
             pars.font = FNT_SMALL;
