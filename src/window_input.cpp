@@ -236,7 +236,7 @@ void InputWindow_c::redraw(void)
 
 window_c * getProfileInputWindow(surface_c & surf, graphicsN_c & gr)
 {
-  return new InputWindow_c(4,2,12,5, surf, gr, _("Enter new profile name"), "");
+  return new InputWindow_c(4,2,12,6, surf, gr, _("Enter new profile name"), "ATTENTION: Changing the name is not possible later on, so choose wisely.");
 }
 
 window_c * getNewLevelWindow(surface_c & surf, graphicsN_c & gr)
