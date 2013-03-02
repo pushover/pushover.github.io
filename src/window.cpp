@@ -928,3 +928,32 @@ window_c * getThemeSelectorWindow(surface_c & surf, graphicsN_c &gr)
   return new listWindow_c(4, 1, 12, 11, surf, gr, _("Choose theme"), "Keep in mind that choosing a new theme will clear the background of your level, if you don't want that press ESC", entries, true);
 }
 
+window_c * getAuthorsWindow(surface_c & surf, graphicsN_c & gr, const std::vector<std::string> & auth)
+{
+  std::vector<listWindow_c::entry> entries;
+
+  for (size_t i = 0; i < auth.size(); i++)
+    entries.push_back(listWindow_c::entry(auth[i]));
+
+  if (entries.size())
+  {
+    entries.back().line = true;
+
+    entries.push_back(listWindow_c::entry(_("Delete an author")));
+  }
+
+  entries.push_back(listWindow_c::entry(_("Add an author")));
+
+  return new listWindow_c(4, 1, 12, 11, surf, gr, _("Edit level authors"), "", entries, true);
+}
+
+window_c * getAuthorsDelWindow(surface_c & surf, graphicsN_c & gr, const std::vector<std::string> & auth)
+{
+  std::vector<listWindow_c::entry> entries;
+
+  for (size_t i = 0; i < auth.size(); i++)
+    entries.push_back(listWindow_c::entry(auth[i]));
+
+  return new listWindow_c(4, 1, 12, 11, surf, gr, _("Select Author to delete"), "", entries, true);
+}
+

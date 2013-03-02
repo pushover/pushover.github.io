@@ -39,6 +39,9 @@ typedef enum {
   ST_DOUBLE_NAME,
   ST_DELETE_LEVEL,
   ST_SELECT_THEME,
+  ST_EDIT_AUTHORS,
+  ST_EDIT_AUTHORS_DEL,
+  ST_EDIT_AUTHORS_ADD,
   ST_EDIT_HOME,        // edit the foreground of the level (all level related elements
   ST_EDIT_DOMINOS_SELECTOR,
   ST_EDIT_BACKGROUND,  // edit the background imagery of the level
@@ -336,6 +339,9 @@ static void changeState(void)
       case ST_EDIT_MENU:
       case ST_EDIT_HELP:
       case ST_SELECT_THEME:
+      case ST_EDIT_AUTHORS:
+      case ST_EDIT_AUTHORS_DEL:
+      case ST_EDIT_AUTHORS_ADD:
         delete window;
         window = 0;
         break;
@@ -396,6 +402,18 @@ static void changeState(void)
 
       case ST_SELECT_THEME:
         window = getThemeSelectorWindow(*screen, *gr);
+        break;
+
+      case ST_EDIT_AUTHORS:
+        window = getAuthorsWindow(*screen, *gr, l->getAuthor());
+        break;
+
+      case ST_EDIT_AUTHORS_ADD:
+        window = getAuthorsAddWindow(*screen, *gr);
+        break;
+
+      case ST_EDIT_AUTHORS_DEL:
+        window = getAuthorsDelWindow(*screen, *gr, l->getAuthor());
         break;
     }
   }
@@ -750,6 +768,85 @@ bool eventEditor(const SDL_Event & event)
 
       break;
 
+    case ST_EDIT_AUTHORS:
+      if (!window)
+      {
+        nextState = ST_EXIT;
+      }
+      else
+      {
+        window->handleEvent(event);
+
+        if (window->isDone())
+        {
+          unsigned int sel = window->getSelection();
+          unsigned int aut = l->getAuthor().size();
+
+          if (sel < aut)
+          {
+            // don't do anything when an author was selected
+            window->resetWindow();
+          }
+          else if (sel == aut && aut != 0)
+          {
+            // delete author
+            nextState = ST_EDIT_AUTHORS_DEL;
+          }
+          else if ((sel == aut && aut == 0) || (sel == aut+1 && aut != 0))
+          {
+            // add a new author
+            nextState = ST_EDIT_AUTHORS_ADD;
+          }
+          else
+          {
+            // escape pressed
+            nextState = ST_EDIT_MENU;
+          }
+        }
+      }
+      break;
+
+    case ST_EDIT_AUTHORS_ADD:
+      if (!window)
+      {
+        nextState = ST_EXIT;
+      }
+      else
+      {
+        window->handleEvent(event);
+
+        if (window->isDone())
+        {
+          if (!window->hasEscaped())
+          {
+            l->getAuthor().push_back(window->getText());
+          }
+          nextState = ST_EDIT_AUTHORS;
+        }
+      }
+      break;
+
+    case ST_EDIT_AUTHORS_DEL:
+      if (!window)
+      {
+        nextState = ST_EXIT;
+      }
+      else
+      {
+        window->handleEvent(event);
+
+        if (window->isDone())
+        {
+          unsigned int sel = window->getSelection();
+
+          if (sel < l->getAuthor().size())
+            l->getAuthor().erase(l->getAuthor().begin()+sel);
+
+          nextState = ST_EDIT_AUTHORS;
+        }
+      }
+      break;
+
     case ST_NEW_LEVEL:
       if (!window)
       {
@@ -869,7 +966,7 @@ bool eventEditor(const SDL_Event & event)
 
             case 4:
               // authors
-              nextState = ST_EDIT_HOME;
+              nextState = ST_EDIT_AUTHORS;
               break;
 
             case 5:
@@ -1359,6 +1456,9 @@ void stepEditor(void)
     case ST_DOUBLE_NAME:
     case ST_EDIT_MENU:
     case ST_EDIT_HELP:
+    case ST_EDIT_AUTHORS:
+    case ST_EDIT_AUTHORS_ADD:
+    case ST_EDIT_AUTHORS_DEL:
       break;
 
 
