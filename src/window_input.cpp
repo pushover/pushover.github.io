@@ -238,7 +238,7 @@ void InputWindow_c::redraw(void)
 
 window_c * getProfileInputWindow(surface_c & surf, graphicsN_c & gr)
 {
-  return new InputWindow_c(4,2,12,6, surf, gr, _("Enter new profile name"), "ATTENTION: Changing the name is not possible later on, so choose wisely.");
+  return new InputWindow_c(4,2,12,6, surf, gr, _("Enter new profile name"), _("ATTENTION: Changing the name is not possible later on, so choose wisely."));
 }
 
 window_c * getNewLevelWindow(surface_c & surf, graphicsN_c & gr)
@@ -253,7 +253,7 @@ window_c * getAuthorsAddWindow(surface_c & surf, graphicsN_c & gr)
 
 window_c * getLevelnameWindow(surface_c & surf, graphicsN_c & gr, const std::string & init)
 {
-  return new InputWindow_c(4,2,12,5, surf, gr, _("Enter new level name"), "When the level name is descriptive, please use English as language.", init);
+  return new InputWindow_c(4,2,12,5, surf, gr, _("Enter new level name"), _("When the level name is descriptive, please use English as language."), init);
 }
 
 window_c * getTimeWindow(surface_c & surf, graphicsN_c & gr, int time)
@@ -265,6 +265,6 @@ window_c * getTimeWindow(surface_c & surf, graphicsN_c & gr, int time)
 
   timeStream << min << ":" << sec;
 
-  return new InputWindow_c(4,2,12,5, surf, gr, _("Enter time for level"), "Enter as 'minutes:seconds'.", timeStream.str());
+  return new InputWindow_c(4,2,12,5, surf, gr, _("Enter time for level"), _("Enter as 'minutes:seconds'."), timeStream.str());
 }
 
