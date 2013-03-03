@@ -226,7 +226,7 @@ void InputWindow_c::redraw(void)
 
   par.alignment = ALN_TEXT;
   par.font = FNT_NORMAL;
-  par.shadow = 0;
+  par.shadow = false;
 
   unsigned int startold = textstart;
 
@@ -306,5 +306,10 @@ window_c * getTimeWindow(surface_c & surf, graphicsN_c & gr, int time)
   timeStream << min << ":" << sec;
 
   return new InputWindow_c(4,2,12,5, surf, gr, _("Enter time for level"), _("Enter as 'minutes:seconds'."), timeStream.str());
+}
+
+window_c * getHintWindow(surface_c & surf, graphicsN_c & gr, const std::string & h)
+{
+  return new InputWindow_c(2,2,14,5, surf, gr, _("Enter hint for level"), _("Please use English texts if you intend to publish the level."), h);
 }
 

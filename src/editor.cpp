@@ -56,6 +56,7 @@ typedef enum {
   ST_EDIT_PLAY,
   ST_EDIT_LEVELNAME,
   ST_EDIT_TIME,
+  ST_EDIT_HINT,
 } states_e;
 
 static states_e currentState, nextState, messageContinue;
@@ -354,6 +355,7 @@ static void changeState(void)
       case ST_EDIT_AUTHORS_ADD:
       case ST_EDIT_LEVELNAME:
       case ST_EDIT_TIME:
+      case ST_EDIT_HINT:
         delete window;
         window = 0;
         break;
@@ -446,6 +448,10 @@ static void changeState(void)
 
       case ST_EDIT_TIME:
         window = getTimeWindow(*screen, *gr, l->getTimeLeft() / 18);
+        break;
+
+      case ST_EDIT_HINT:
+        window = getHintWindow(*screen, *gr, l->getHint());
         break;
     }
   }
@@ -874,6 +880,26 @@ bool eventEditor(const SDL_Event & event)
       }
       break;
 
+    case ST_EDIT_HINT:
+      if (!window)
+      {
+        nextState = ST_EXIT;
+      }
+      else
+      {
+        window->handleEvent(event);
+
+        if (window->isDone())
+        {
+          if (!window->hasEscaped())
+          {
+            l->setHint(window->getText());
+          }
+          nextState = ST_EDIT_MENU;
+        }
+      }
+      break;
+
     case ST_EDIT_TIME:
       if (!window)
       {
@@ -1095,17 +1121,14 @@ bool eventEditor(const SDL_Event & event)
               break;
 
             case 2:
-              // time
               nextState = ST_EDIT_TIME;
               break;
 
             case 3:
-              // hint
-              nextState = ST_EDIT_HOME;
+              nextState = ST_EDIT_HINT;
               break;
 
             case 4:
-              // authors
               nextState = ST_EDIT_AUTHORS;
               break;
 
@@ -1606,6 +1629,7 @@ void stepEditor(void)
     case ST_EDIT_AUTHORS_DEL:
     case ST_EDIT_LEVELNAME:
     case ST_EDIT_TIME:
+    case ST_EDIT_HINT:
       break;
 
     case ST_EDIT_PLAY:
