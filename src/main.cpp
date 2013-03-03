@@ -402,11 +402,14 @@ int main(int argc, char * argv[]) {
         }
 
 #ifdef DEBUG
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F2)         gr.setShowGrid(!gr.getShowGrid());
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F3)         debug_fastforward = true;
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4)         debug_singlestep = true;
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F5)         debug_play = true;
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F6)         { printf("Tick: %i\n", tick); l.print(); }
+        if (currentState == ST_PLAY || currentState == ST_REPLAY)
+        {
+          if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F2)         gr.setShowGrid(!gr.getShowGrid());
+          if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F3)         debug_fastforward = true;
+          if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4)         debug_singlestep = true;
+          if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F5)         debug_play = true;
+          if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F6)         { printf("Tick: %i\n", tick); l.print(); }
+        }
 #endif
         switch (currentState) {
 
