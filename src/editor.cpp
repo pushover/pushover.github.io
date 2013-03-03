@@ -278,7 +278,7 @@ void updateBackgroundOverlay(void)
   for (int y = 0; y < B_OVL_ROW; y++)
     for (int x = 0; x < B_OVL_COL; x++)
     {
-      if (bgTilesLayout[y+bgTilesStart][x] < bgTiles.size())
+      if ((y+bgTilesStart) < bgTilesLayout.size() && bgTilesLayout[y+bgTilesStart][x] < bgTiles.size())
       {
         for (int yc = 0; yc < 3; yc++)
           for (int xc = 0; xc < 5; xc++)
@@ -1238,7 +1238,10 @@ bool eventEditor(const SDL_Event & event)
           bgPattern[i].resize(bgSelW);
 
           for (size_t j = 0; j < bgSelW; j++)
-            bgPattern[i][j] = bgTilesLayout[bgTilesStart+bgSelY+i][bgSelX+j];
+            if (bgTilesStart+bgSelY+i < bgTilesLayout.size())
+              bgPattern[i][j] = bgTilesLayout[bgTilesStart+bgSelY+i][bgSelX+j];
+            else
+              bgPattern[i][j] = 0;
         }
 
         updateEditPlane();
@@ -1467,7 +1470,7 @@ bool eventEditor(const SDL_Event & event)
       // choose layer to edit
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == '+')
       {
-        if (bgLayer < 8)
+        if (bgLayer+1 < 8)
         {
           bgLayer++;
           gr->setBgDrawLayer(bgLayer);
