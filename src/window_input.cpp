@@ -13,6 +13,8 @@ class InputWindow_c : public window_c {
     std::string input;
 
     unsigned int cursorPosition;
+    unsigned int textstart; // first character to be displayed (for long strings
+    unsigned int textlen; // number of characters to display
 
     std::string title;
     std::string subtitle;
@@ -38,6 +40,8 @@ InputWindow_c::InputWindow_c(int x, int y, int w, int h, surface_c & s, graphics
   subtitle = suti;
   input = txt;
   cursorPosition = txt.length();
+  textstart = 0;
+  textlen = txt.length();
   escape = false;
   redraw();
 }
@@ -169,18 +173,15 @@ bool InputWindow_c::handleEvent(const SDL_Event & event)
     }
     else if (event.key.keysym.unicode >= 32)
     {
-      if (getTextWidth(FNT_NORMAL, input+(char)event.key.keysym.unicode) < gr.blockX()*(w-2))
-      {
-        char utf8[10];
-        size_t s = utf8EncodeOne(event.key.keysym.unicode, utf8, 10);
+      char utf8[10];
+      size_t s = utf8EncodeOne(event.key.keysym.unicode, utf8, 10);
 
-        for (size_t i = 0; i < s; i++)
-        {
-          input.insert(cursorPosition, 1, utf8[i]);
-          cursorPosition++;
-        }
-        redraw();
+      for (size_t i = 0; i < s; i++)
+      {
+        input.insert(cursorPosition, 1, utf8[i]);
+        cursorPosition++;
       }
+      redraw();
     }
     else
     {
@@ -227,12 +228,51 @@ void InputWindow_c::redraw(void)
   par.font = FNT_NORMAL;
   par.shadow = 0;
 
-  unsigned int wi = getTextWidth(FNT_NORMAL, input.substr(0, cursorPosition));
+  unsigned int startold = textstart;
+
+  if (textstart > cursorPosition) textstart = cursorPosition;
+
+  unsigned int wi = getTextWidth(FNT_NORMAL, input.substr(textstart, cursorPosition-textstart));
+
+  if (wi > gr.blockX()*(w-2))
+  {
+    while (wi > gr.blockX()*(w-2) && (textstart < cursorPosition))
+    {
+      textstart++;
+      while (   (textstart < cursorPosition)
+          && ((input[textstart] & 0xC0) == 0x80)
+          )
+      {
+        textstart++;
+      }
+
+      wi = getTextWidth(FNT_NORMAL, input.substr(textstart, cursorPosition-textstart));
+    }
+  }
+
+  if (textstart != startold)
+  {
+    textlen = input.length()-textstart;
+
+    unsigned int txtwi = getTextWidth(FNT_NORMAL, input.substr(textstart, textlen));
+
+    while (txtwi > gr.blockX()*(w-2) && (textlen > 0))
+    {
+      textlen--;
+      while (   (textlen > 0)
+          && ((input[textstart+textlen] & 0xC0) == 0x80)
+          )
+      {
+        textlen--;
+      }
+      txtwi = getTextWidth(FNT_NORMAL, input.substr(textstart, textlen));
+    }
+  }
 
   surf.fillRect(gr.blockX()*(x+1)+wi, ypos, 4, getFontHeight(FNT_NORMAL), 0, 0, 0);
 
   par.box.y = ypos;
-  surf.renderText(&par, input);
+  surf.renderText(&par, input.substr(textstart, textlen));
 }
 
 
