@@ -109,6 +109,9 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
     if (!versionStream.eof() || !versionStream)
       throw format_error("invalid level version");
   }
+#ifdef DEBUG
+  loadVersion = givenVersion;
+#endif
 
   /* Name section */
   name = sections.getSingleLine("Name");
@@ -512,6 +515,22 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
 
 void levelData_c::save(std::ostream & stream) const
 {
+#ifdef DEBUG
+  if (loadVersion == 1)
+  {
+    // we try to save in version 1 format
+
+    std::ostringstream ss;
+    if (save_v1(ss))
+    {
+      stream << ss.str();
+      printf("successfully saved\n");
+    }
+
+    return;
+  }
+#endif
+
   unsigned int timeSeconds = timeLeft/18;
 
   std::string authors;

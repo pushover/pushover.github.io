@@ -153,6 +153,15 @@ class levelData_c {
     // actual number of background layers for this level
     unsigned char numBg;
 
+
+#ifdef DEBUG
+    // functions to save a level in the old format
+    uint16_t loadVersion;
+    bool save_v1(std::ostream & stream) const;
+    unsigned char getFg(unsigned int x, unsigned int y) const;
+#endif
+
+
   public:
 
     // create an empty level with no background, no foreground and no dominos
