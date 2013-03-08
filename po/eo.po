@@ -1,0 +1,1386 @@
+# Spanish translations for Pushover.
+# Copyright (C) 2013 Andreas Röver
+# This file is distributed under the same license as the pushover package.
+# Felipe Castro <fefcas@gmail.com>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pushover 0.0.4-pre1\n"
+"Report-Msgid-Bugs-To: roever@users.sf.net\n"
+"POT-Creation-Date: 2013-03-08 21:26+0100\n"
+"PO-Revision-Date: 2013-03-08 15:43-0300\n"
+"Last-Translator: Felipe Castro <fefcas@gmail.com>\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
+"Language: eo\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. TRANSLATORS: don't translate this string, rather enter the main text direction this will influence how dialogs are
+#. layouted, possible values "left to right" "right to left" anything that is not "right to left" will be treated as
+#. left to right
+#: src/screen.cpp:731
+msgid "left to right"
+msgstr ""
+
+#: src/window.cpp:399
+msgid "Play Levelset"
+msgstr "Ludi nivelaron"
+
+#: src/window.cpp:400 src/window.cpp:455 src/window.cpp:687
+msgid "Configuration"
+msgstr "Agordo"
+
+#: src/window.cpp:401
+msgid "Profile Selection"
+msgstr "Profilo-elekto"
+
+#: src/window.cpp:402
+msgid "About"
+msgstr "Pri"
+
+#: src/window.cpp:403
+msgid "Quit"
+msgstr "Eliri"
+
+#: src/window.cpp:406
+msgid "Main menu"
+msgstr "Ĉefa menuo"
+
+#: src/window.cpp:420
+msgid "Add new profile"
+msgstr "Aldoni novan profilon"
+
+#: src/window.cpp:421
+msgid "Delete a profile"
+msgstr "Forigi profilon"
+
+#: src/window.cpp:423
+msgid "Select Your Profile"
+msgstr "Elekti vian profilon"
+
+#: src/window.cpp:433
+msgid "Select Profile to delete"
+msgstr "Elekti profilon por forigi"
+
+#: src/window.cpp:441 src/window.cpp:443
+#, fuzzy
+msgid "Use Fullscreen"
+msgstr "Alternigi tutekranreĝimon"
+
+#: src/window.cpp:446 src/window.cpp:448
+#, fuzzy
+msgid "Play Sound Effects"
+msgstr "Alternigi son-efektojn"
+
+#: src/window.cpp:451 src/window.cpp:453
+#, fuzzy
+msgid "Play Background Music"
+msgstr "Alternigi fonan muzikon"
+
+#. TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
+#: src/window.cpp:513
+msgid "not started"
+msgstr ""
+
+#. TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
+#: src/window.cpp:515
+msgid "partially done"
+msgstr ""
+
+#. TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
+#: src/window.cpp:517
+msgid "done"
+msgstr ""
+
+#: src/window.cpp:577
+msgid "Description: "
+msgstr ""
+
+#: src/window.cpp:578
+msgid " Authors: "
+msgstr ""
+
+#: src/window.cpp:584
+msgid "Select Levelset"
+msgstr "Elekti nivelaron"
+
+#. TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
+#: src/window.cpp:614
+msgid "unsolved"
+msgstr "nesolvita"
+
+#. TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
+#: src/window.cpp:616
+msgid "solved but not in time"
+msgstr "solvita ne-ĝustatempe"
+
+#. TRANSLATORS: keep very short as these 3 must fit in one line in the level selector window
+#: src/window.cpp:618
+msgid "solved"
+msgstr "solvita"
+
+#: src/window.cpp:672
+msgid "No Level in Levelset"
+msgstr "Neniu nivelo en nivelaro"
+
+#: src/window.cpp:677
+msgid "Select Level"
+msgstr "Elekti nivelon"
+
+#: src/window.cpp:685
+msgid "Return to level"
+msgstr "Retroiri al nivelo"
+
+#: src/window.cpp:686
+msgid "Restart level"
+msgstr "Rekomencigi nivelon"
+
+#: src/window.cpp:688 src/window.cpp:711
+msgid "Return to menu"
+msgstr "Retroiri al menuo"
+
+#: src/window.cpp:691
+msgid "And now?"
+msgstr "Kaj nun?"
+
+#: src/window.cpp:699
+msgid "Continue"
+msgstr "Daŭrigi"
+
+#: src/window.cpp:702
+msgid "Congratulations! You did it."
+msgstr "Gratulon! Vi sukcesis."
+
+#: src/window.cpp:710 src/window.cpp:745
+msgid "Retry the level"
+msgstr "Reprovi la nivelon"
+
+#: src/window.cpp:716
+msgid "You failed: Some dominoes crashed"
+msgstr "Vi fiaskis: kelkaj domenoj frakasiĝis"
+
+#: src/window.cpp:717
+msgid "You failed: Not all dominoes fell"
+msgstr "Vi fiaskis: ne ĉiuj domenoj falis"
+
+#: src/window.cpp:718
+msgid "You failed: You died"
+msgstr "Vi fiaskis: vi mortis"
+
+#: src/window.cpp:719
+msgid "You failed: Trigger was not last to fall"
+msgstr "Vi fiaskis: Ekiganto ne estis la lasta falanta"
+
+#: src/window.cpp:720
+msgid "You failed: Trigger not flat on the ground"
+msgstr "Vi fiaskis: Ekigilo ne tute etendita surgrunde"
+
+#: src/window.cpp:721
+msgid "You failed... but I don't know why ...?"
+msgstr "Vi fiaskis... sed mi ne scias kial ...?"
+
+#: src/window.cpp:746
+msgid "Select next level"
+msgstr "Elekti sekvan nivelon"
+
+#: src/window.cpp:750
+msgid "Not quite, you were not fast enough, but you may continue if you want"
+msgstr ""
+"Ne preskaŭ, vi ne estis sufiĉe rapida, sed vi povas daŭrigi se vi volas"
+
+#: src/window_help.cpp:38
+msgid "Standard: nothing special about this stone, it simply falls"
+msgstr "Ordinara: nenio speciala pri tiu ĉi ŝtono, ĝi simple falas"
+
+#: src/window_help.cpp:39
+msgid "Blocker: can not fall, only stone allowed to stand at level end"
+msgstr "Blokanto: ne povas fali, nura ŝtono permesata stari post nivel-fino"
+
+#: src/window_help.cpp:40
+msgid "Splitter: when something falls on its top it will split in two"
+msgstr "Apartiganto: kiam io falas sur ĝia supro ĝi dividiĝas duoble"
+
+#: src/window_help.cpp:41
+msgid "Exploder: will blast a hole into the platform below it"
+msgstr "Eksplodanto: ĝi malfermas truon en la platformo sub ĝi"
+
+#: src/window_help.cpp:42
+msgid "Delay: falls not immediately but a while after being pushed"
+msgstr "Prokrastanto: ĝi falas ne tuje sed iam post esti puŝita"
+
+#: src/window_help.cpp:43
+msgid "Tumbler: will continue rolling until it hits an obstacle"
+msgstr "Rulanto: ĝi rulados ĝis frapi obstaklon"
+
+#: src/window_help.cpp:44
+msgid "Bridger: will connect the platform if there is a gap of one unit"
+msgstr "Ponto: ĝi konektos la platformon se estos breĉo unuope granda"
+
+#: src/window_help.cpp:45
+msgid ""
+"Vanish: pushes next block but then vanishes, only stone you may place in "
+"front of doors"
+msgstr ""
+"Malaperanto: puŝas venontan blokon sed tiam malaperas, estas la nura ŝtono "
+"kiun vi povas lokigi antaŭ pordoj"
+
+#: src/window_help.cpp:46
+msgid ""
+"Trigger: the last domino that must fall and it must lie flat, can not be "
+"moved"
+msgstr ""
+"Ekiganto: la lasta domeno kiu devas fali kaj ĝi devas resti etendita, ne "
+"povas esti movigita"
+
+#: src/window_help.cpp:47
+msgid "Ascender: will raise to ceiling when pushed and then flip up there"
+msgstr "Supriranto: ĝi leviĝos plafonen kiam puŝita kaj ĝi turniĝos tie"
+
+#: src/window_help.cpp:49
+msgid ""
+"Entangled: all stones of this type will fall together as if quantum entangled"
+msgstr ""
+"Ariganto: ĉiu ŝtonoj el tiu tipo falos kune kvazaŭ ili estas kvantume arigita"
+
+#: src/window_help.cpp:52
+msgid ""
+"Semiblocker: these behave like blocker as long as there is a stone still "
+"standing that has more lines"
+msgstr ""
+"Dunblokanto: tiuj ĉi kondutas kiel la blokanto kondiĉe ke estu ŝtono ankaraŭ "
+"staranta, kiu havas pli da linioj"
+
+#: src/window_help.cpp:72
+msgid "Arrange dominos in a run so that trigger falls last. You have 1 push."
+msgstr ""
+"Aranĝu domenojn sinsekve tiel ke ekiganto falas laste. Vi havas 1 puŝon."
+
+#: src/window_help.cpp:105
+msgid "Level information"
+msgstr ""
+
+#. TRANSLATORS: this is the separator between the levelset and the levelname in the help window
+#: src/window_help.cpp:116
+msgid " / "
+msgstr ""
+
+#: src/window_help.cpp:120
+msgid "Level name:"
+msgstr ""
+
+#. TRANSLATORS: this is the separator that is placed between the different authors in the autor list in the help window
+#: src/window_help.cpp:133 src/levelset.cpp:264
+msgid ", "
+msgstr ""
+
+#: src/window_help.cpp:138
+msgid "Level author:"
+msgstr ""
+
+#: src/window_input.cpp:228
+msgid "Enter new profile name"
+msgstr "Entajpi novan profil-nomon"
+
+#. TRANSLATORS: the %s is a placeholder for the version
+#: src/window_about.cpp:35
+#, c-format
+msgid "Pushover - %s - About"
+msgstr "Pushover - %s - Pri"
+
+#: src/window_about.cpp:56
+msgid "Original Concept:"
+msgstr "Originala koncepto:"
+
+#: src/window_about.cpp:59
+msgid "Original Programming:"
+msgstr "Originala programado:"
+
+#: src/window_about.cpp:62
+msgid "Original Graphics:"
+msgstr "Originala grafikaĵoj:"
+
+#: src/window_about.cpp:65
+msgid "Original Music & SFX:"
+msgstr "Originala muziko & SFX:"
+
+#: src/window_about.cpp:68
+msgid "New Programming:"
+msgstr "Nova programado:"
+
+#: src/window_about.cpp:71
+msgid "New Music:"
+msgstr "Nova muziko:"
+
+#: src/window_about.cpp:74
+msgid "New Graphics:"
+msgstr "Novaj grafikaĵoj:"
+
+#: src/window_about.cpp:79
+#, fuzzy
+msgid "Levels:"
+msgstr "Novaj niveloj:"
+
+#: src/window_about.cpp:85
+msgid ": "
+msgstr ""
+
+#: src/graphicsn.cpp:1426
+msgid "F1: Help"
+msgstr ""
+
+#: po/leveltexts.txt:1
+msgid "Use the Delays to synchronize!"
+msgstr "Uzi la Prokrastatnoj por sinkronigi!"
+
+#: po/leveltexts.txt:2
+msgid "Catch the Entangled"
+msgstr "Kaptu la Ariganton"
+
+#: po/leveltexts.txt:3
+msgid "Catch the falling domino"
+msgstr "Kaptu la falantan domenon"
+
+#: po/leveltexts.txt:4
+msgid "Hit the Raiser on the head"
+msgstr "Frapu la Legiganton surkape"
+
+#: po/leveltexts.txt:5 po/leveltexts.txt:6 po/leveltexts.txt:7
+#: po/leveltexts.txt:8 po/leveltexts.txt:13 po/leveltexts.txt:18
+#: po/leveltexts.txt:19 po/leveltexts.txt:21 po/leveltexts.txt:23
+#: po/leveltexts.txt:25 po/leveltexts.txt:29
+msgid "..."
+msgstr "..."
+
+#: po/leveltexts.txt:9
+msgid "Let Ascender hit Tumbler hit Stopper!"
+msgstr "Lasu Supriranton frapi Rulanton kaj frapi Haltiganton!"
+
+#: po/leveltexts.txt:10
+msgid "It's just a question of timing"
+msgstr "Jen nur problemo pri tempmezurado"
+
+#: po/leveltexts.txt:11
+msgid "Create asymmetry, then compensate!"
+msgstr "Kreu malsimetrion, do kompensu!"
+
+#: po/leveltexts.txt:12 po/leveltexts.txt:28
+msgid "Look at the help"
+msgstr "Konsultu la helpon"
+
+#: po/leveltexts.txt:14
+msgid "Mirror the level!"
+msgstr "Speguligu la nivelon!"
+
+#: po/leveltexts.txt:15
+msgid "Just run!"
+msgstr "Nur kuru!"
+
+#: po/leveltexts.txt:16
+msgid "Hurry up, but don't be too fast!"
+msgstr "Hastu, sed ne iru tro rapide!"
+
+#: po/leveltexts.txt:17
+msgid "Let Tumbler from above hit Ascender!"
+msgstr "Lasi Rulanton frapi el sube Supriranton!"
+
+#: po/leveltexts.txt:20
+msgid "You can get dominoes in front of doors!"
+msgstr "Vi povas havi domenojn antaŭ pordoj!"
+
+#: po/leveltexts.txt:22
+msgid "Keep the top domino pair from falling!"
+msgstr "Evitu ke la supra domen-paro falu!"
+
+#: po/leveltexts.txt:24
+msgid "Hold lower Ascender until Tumbler is away!"
+msgstr "Tenu la plejsuban Supriranton ĝis kiam Rulanto estas for!"
+
+#: po/leveltexts.txt:26
+msgid "Put Bridger in place, drop three Ascenders!"
+msgstr "Metu la Ponton sialoke, faligu tri Suprirantojn!"
+
+#: po/leveltexts.txt:27
+msgid "Push Trigger into left direction and hurry up!"
+msgstr "Puŝu Ekiganton maldekstren kaj hastu!"
+
+#: po/leveltexts.txt:30
+msgid "Run and push the Bridger!"
+msgstr "Kuru kaj puŝu la Ponton!"
+
+#: po/leveltexts.txt:31
+msgid "Push from right! Try different spaces between Ascenders!"
+msgstr "Puŝu el dekstre! Provu malsamajn spacojn inter Suprirantojn!"
+
+#: po/leveltexts.txt:32
+msgid "Tumbler up!"
+msgstr "Rulanto supren!"
+
+#: po/leveltexts.txt:33
+msgid "Move with care!"
+msgstr "Movigu atenteme!"
+
+#: po/leveltexts.txt:34
+msgid "Start the main run with a drop and push the others!"
+msgstr "Ekigu la ĉefan ruladon per faligo kaj puŝu la aliajn!"
+
+#: po/leveltexts.txt:35
+msgid "It's easy!"
+msgstr "Estas facile!"
+
+#: po/leveltexts.txt:36
+msgid ""
+"Move everything off the centre platform except the Tumbler and Exploder!"
+msgstr ""
+"Movigu ĉion for de la centra platformo krom la Rulanton kaj la Eksplodanton!"
+
+#: po/leveltexts.txt:37
+msgid "Start the run in the middle!"
+msgstr "Ekigu la ruladon en la mezo!"
+
+#: po/leveltexts.txt:38
+msgid "Tumblers cross in the middle! Timing is critical!"
+msgstr "Rulantoj trairas en la mezo! Tempo estas gravega!"
+
+#: po/leveltexts.txt:39
+msgid "Float away!"
+msgstr "Ŝvebu for!"
+
+#: po/leveltexts.txt:40
+msgid "Stop the move!"
+msgstr "Haltigu la movon!"
+
+#: po/leveltexts.txt:41
+msgid "Place the Floater, swap the top!"
+msgstr "Metu la Ŝvebanton, permutu la supron!"
+
+#: po/leveltexts.txt:42
+msgid "It's just a big Delay!"
+msgstr "Jen nur longa Prokrasto!"
+
+#: po/leveltexts.txt:43
+msgid "Trap Tumbler to move the Bridger on time!"
+msgstr "Kaptu la Rulanton por movigi la Ponton ĝustatempe!"
+
+#: po/leveltexts.txt:44
+msgid "Move the Float and the Normal, but leave the Delay alone!"
+msgstr "Movigu la Ŝvebanton kaj la Normalan, sed lasu la Prokraston sola!"
+
+#: po/leveltexts.txt:45
+msgid "Watch the gap!"
+msgstr "Regardu la breĉon!"
+
+#: po/leveltexts.txt:46
+msgid ""
+"Push a domino into a Splitter and wait for a trapped Tumbler and move up!"
+msgstr ""
+"Puŝu domenon en Apartiganton kaj atentu por kaptita Rulanto kaj movigu "
+"supren!"
+
+#: po/leveltexts.txt:47
+msgid "Push the run and drop the other! This will keep you busy!"
+msgstr "Puŝu la ruladon kaj faligu la alian! Tio tenos vin okupata!"
+
+#: po/leveltexts.txt:48
+msgid "Which side?"
+msgstr "Kiu flanko?"
+
+#: po/leveltexts.txt:49
+msgid "Tumbler!"
+msgstr "Rulanto!"
+
+#: po/leveltexts.txt:50
+msgid "You're in the dark!"
+msgstr "Vi estas en malhelo!"
+
+#: po/leveltexts.txt:51
+msgid "Start the run and trap the Tumbler so you can complete the puzzle!"
+msgstr ""
+"Ekigu la ruladon kaj kaptu la Rulanton tiel ke vi povos kompletigi la puzlon!"
+
+#: po/leveltexts.txt:52
+msgid "You have to move a Delay and a Bridge after the run starts!"
+msgstr "Vi devas movigi Prokraston kaj Ponton post kiam la rulado komenciĝas!"
+
+#: po/leveltexts.txt:53
+msgid "Make push, move Floater!"
+msgstr "Donu la puŝon, movigu la Ŝvebanton!"
+
+#: po/leveltexts.txt:54
+msgid "Push the Tumbler and then start hurrying!"
+msgstr "Puŝu la Rulanton kaj tiam komencu hasti!"
+
+#: po/leveltexts.txt:55
+msgid "Push the Tumbler, run and move the Bridge! Then jump! Be quick!"
+msgstr "Puŝu la Rulanton, kuru kaj movigu la Ponton! Tiam saltu! Estu rapida!"
+
+#: po/leveltexts.txt:56
+msgid "Bring them down!"
+msgstr "Venigu ilin suben!"
+
+#: po/leveltexts.txt:57
+msgid "Swap the Floater with some block!"
+msgstr "Permutu la Ŝvebanton kun iu bloko!"
+
+#: po/leveltexts.txt:58
+msgid "Push, block, move and run!"
+msgstr "Puŝu, bloku, movigu kaj kuru!"
+
+#: po/leveltexts.txt:59
+msgid "Arrange Delays down central column and push left hand Normal domino!"
+msgstr ""
+"Aranĝu Prokrastojn sub la centra kolumno kaj puŝu maldekstr-mana Normala "
+"domeno!"
+
+#: po/leveltexts.txt:60
+msgid "Lefthand side finishes last! Use the Bridges!"
+msgstr "Maldesktr-mana flanko finas laste! Uzu la Pontojn!"
+
+#: po/leveltexts.txt:61 po/leveltexts.txt:132
+msgid "Catch the Tumblers!"
+msgstr "Kaptu la Rulantojn!"
+
+#: po/leveltexts.txt:62 po/leveltexts.txt:76
+msgid "Tumbler timing is troublesome!"
+msgstr "Tempo de Rulanto estas problemeca!"
+
+#: po/leveltexts.txt:63
+msgid "Drop the domino that's by the exit! Make the push later!"
+msgstr "Faligi la domeno kiu restas apud la eliron! Donu la puŝon poste!"
+
+#: po/leveltexts.txt:64
+msgid "Move and push!"
+msgstr "Movigu kaj puŝu!"
+
+#: po/leveltexts.txt:65
+msgid ""
+"Use a drop! There is a way to make it work with a push, but I can't find it!"
+msgstr ""
+"Uzu faligon! Ekzistas maniero funkciigi ĝin per puŝo, sed mi ne trovas ĝin!"
+
+#: po/leveltexts.txt:66
+msgid "Place Floaters under the holes!"
+msgstr "Metu Ŝvebantojn sub la truoj!"
+
+#: po/leveltexts.txt:67
+msgid "Make the push, move the Blocker!"
+msgstr "Donu la puŝon, movigu la Blokanton!"
+
+#: po/leveltexts.txt:68
+msgid "Push the Tumbler away from the Trigger domino and be busy!"
+msgstr "Puŝu la Rulanton for de la Ekiganta domeno kaj restu okupata!"
+
+#: po/leveltexts.txt:69
+msgid "Hide the Blocker behind the ladder!"
+msgstr "Kaŝu la Blokanton malantaŭ la ŝtuparo!"
+
+#: po/leveltexts.txt:70
+msgid "Where to split?"
+msgstr "Kie apartigi?"
+
+#: po/leveltexts.txt:71
+msgid "Move them close, then push!"
+msgstr "Movigu ilin proksime, do puŝu!"
+
+#: po/leveltexts.txt:72
+msgid "One block to move!"
+msgstr "Unu bloko por movi!"
+
+#: po/leveltexts.txt:73
+msgid "Time is of the essence!"
+msgstr "Tempo estas esenca!"
+
+#: po/leveltexts.txt:74
+msgid "You need to move Delays to the Trigger side!"
+msgstr "Vi bezonas movigi Prokrastojn flanken de la Ekigilo!"
+
+#: po/leveltexts.txt:75
+msgid "Exploder to go!"
+msgstr "Eksplodanto devas iri!"
+
+#: po/leveltexts.txt:77
+msgid "Place the Standard!"
+msgstr "Metu la Ordinaran!"
+
+#: po/leveltexts.txt:78
+msgid "Move the Bridger!"
+msgstr "Movigu la Ponton!"
+
+#: po/leveltexts.txt:79
+msgid "To float is the key!"
+msgstr "Ŝvebi estas ŝlosilo!"
+
+#: po/leveltexts.txt:80
+msgid "Place the Bridge, swap the Yellow, push the right side!"
+msgstr "Metu la Ponton, permutu la Flavon, puŝu dekstren!"
+
+#: po/leveltexts.txt:81
+msgid "Drop a Yellow, make the push!"
+msgstr "Faligu Flavon, donu la puŝon!"
+
+#: po/leveltexts.txt:82
+msgid "You'll have to put that Yellow in the run somewhere!"
+msgstr "Vi devos meti tiu Flavon en la rulado ie!"
+
+#: po/leveltexts.txt:83
+msgid "Wrong way - wrong place!"
+msgstr "Malĝusta vojo - malĝusta loko!"
+
+#: po/leveltexts.txt:84
+msgid "Push and pick up and run!"
+msgstr "Puŝu kaj prenu kaj kuru!"
+
+#: po/leveltexts.txt:85
+msgid "Move the Floater, make the push!"
+msgstr "Movigu la Ŝvebanton, donu la puŝon!"
+
+#: po/leveltexts.txt:86
+msgid "Get home quickly!"
+msgstr "Iru hejmen rapide!"
+
+#: po/leveltexts.txt:87
+msgid "You can drop a Yellow!"
+msgstr "Vi povas faligi Flavon!"
+
+#: po/leveltexts.txt:88
+msgid "Build a bridge!"
+msgstr "Konstruu ponton!"
+
+#: po/leveltexts.txt:89
+msgid "Get home in time!"
+msgstr "Alveni hejmen ĝustatempe!"
+
+#: po/leveltexts.txt:90
+msgid "Drop the block!"
+msgstr "Faligu la blokon!"
+
+#: po/leveltexts.txt:91
+msgid "It's your problem!"
+msgstr "Jen via problemo!"
+
+#: po/leveltexts.txt:92
+msgid "Delay another way!"
+msgstr "Prokrastu alimaniere!"
+
+#: po/leveltexts.txt:93
+msgid "Drop the first Floater and push the second!"
+msgstr "Faligu la unuan Ŝvebanton kaj puŝu la duan!"
+
+#: po/leveltexts.txt:94
+msgid "Push the one next to the entrance door!"
+msgstr "Puŝu tiun proksiman de la enir-pordo!"
+
+#: po/leveltexts.txt:95
+msgid "You need to tumble!"
+msgstr "Vi bezonas ruligi!"
+
+#: po/leveltexts.txt:96
+msgid "Drop the Floaters in position! Start one run with a drop!"
+msgstr "Faligu la Ŝvebantojn en pozicio! Ekigu unu ruladon per faligo!"
+
+#: po/leveltexts.txt:97
+msgid "Just move the Normal dominoes up and the Blocker across!"
+msgstr "Simple movigu la Normalajn domenojn supren kaj la Blokanton trae!"
+
+#: po/leveltexts.txt:98
+msgid "You need four in a line before you push!"
+msgstr "Vi bezonas kvar en linio antaŭ ol puŝi!"
+
+#: po/leveltexts.txt:99
+msgid "Do you really need that Bridger?"
+msgstr "Ĉu vi vere bezonas tiun Ponton?"
+
+#: po/leveltexts.txt:100
+msgid "Swap the blocks!"
+msgstr "Permutu la blokojn!"
+
+#: po/leveltexts.txt:101
+msgid "Make the bridge, then it's all down to time!"
+msgstr "Faru la ponton, tiam ĉio dependos de la tempo!"
+
+#: po/leveltexts.txt:102
+msgid "Start the run and see what happens!"
+msgstr "Ekigu la ruladon kaj vidu kio okazas!"
+
+#: po/leveltexts.txt:103
+msgid "Use Blockers to turn the dominoes!"
+msgstr "Uzu Blokantoj por turnigi la domenojn!"
+
+#: po/leveltexts.txt:104
+msgid ""
+"Tumbler, Normal, Bridger, Tumbler, put remaining Tumbler in place and push!"
+msgstr ""
+"Rulanto, Normala, Ponto, Rulanto, metu restantan Rulanton surloke kaj puŝu!"
+
+#: po/leveltexts.txt:105
+msgid "Move a few and push!"
+msgstr "Movigu kelkajn kaj puŝu!"
+
+#: po/leveltexts.txt:106
+msgid ""
+"Drop dominoes on Splitters to start the runs! Move domino in front of exit!"
+msgstr ""
+"Faligu domenojn en Apartigiloj por ekigi la ruladojn! Movigu domeno antaŭ la "
+"eliro!"
+
+#: po/leveltexts.txt:107
+msgid "Some dominoes have a split personality!"
+msgstr "Kelkaj domenoj havas apartiĝeman trajton!"
+
+#: po/leveltexts.txt:108
+msgid "Symmetry - and don't forget to bridge after the Trigger!"
+msgstr "Simetrio - kaj ne forgesu ponton post la Ekiganto!"
+
+#: po/leveltexts.txt:109
+msgid "Should the Blocker be there?"
+msgstr "Ĉu la Blokanto devus esti tie?"
+
+#: po/leveltexts.txt:110
+msgid "Make the push, grab the block and run for your life!"
+msgstr "Donu da puŝon, prenu la blokon kaj kuru por sin savi!"
+
+#: po/leveltexts.txt:111
+msgid "Left hand side finishes last! Use the Bridgers!"
+msgstr "Maldekst-mana flanko finiĝas laste! Uzu la Pontojn!"
+
+#: po/leveltexts.txt:112
+msgid "Push a Floater to start two runs!"
+msgstr "Puŝu Ŝvebanton por ekigi du ruladojn!"
+
+#: po/leveltexts.txt:113
+msgid "Push a Floater to start the run! Be careful with the Yellow one!"
+msgstr "Puŝu Ŝvebanton por ekigi la ruladon! Atentu la Flavon!"
+
+#: po/leveltexts.txt:114
+msgid "You must create a run of Tumblers that can fall off a platform!"
+msgstr "Vi devas krei ruladon de Rulantoj kiuj povas fali for de la platformo!"
+
+#: po/leveltexts.txt:115
+msgid "Make a trap for the Tumbler until a bridge is made!"
+msgstr "Faru kaptilon por la Rulanto ĝis kiam la ponto estu preta!"
+
+#: po/leveltexts.txt:116
+msgid "Move the Exploder, swap some Yellows, push from the top!"
+msgstr "Movigu la Eksplodanton, permutu kelkajn Flavojn, puŝu el la supro!"
+
+#: po/leveltexts.txt:117
+msgid "Move a Delay down and watch the Tumbler and Floater cross over!"
+msgstr ""
+"Movigu Prokraston suben kaj rigardu la Rulanton kaj la Ŝvebanton trairi "
+"super!"
+
+#: po/leveltexts.txt:118
+msgid "Time is tight!"
+msgstr "Tempo estas premanta!"
+
+#: po/leveltexts.txt:119
+msgid "Be quick moving those Delays!"
+msgstr "Estu rapida por movigi tiujn Prokrastojn!"
+
+#: po/leveltexts.txt:120
+msgid "Tumbler, Floater and Blocker?"
+msgstr "Rulanto, Ŝvebanto kaj Blokanto?"
+
+#: po/leveltexts.txt:121
+msgid "Pop the floor!"
+msgstr "Tuŝu la plankon!"
+
+#: po/leveltexts.txt:122
+msgid "Be sure to place the Delays right! The Yellow is important!"
+msgstr "Estu certa meti la Prokrastojn ĝuste! La Flavo gravas!"
+
+#: po/leveltexts.txt:123
+msgid "Drop a Yellow, move Exploder, now it's up to you!"
+msgstr "Faligu Flavon, movigu Eksplodanton, nun vi respondecas!"
+
+#: po/leveltexts.txt:124
+msgid "Don't waste time with the ringing bell!"
+msgstr "Ne elspezu tempon kun la sonorileton!"
+
+#: po/leveltexts.txt:125
+msgid "Use the Blocker to stop the Tumbler! Watch out for the Floater!"
+msgstr "Uzu la Blokanton por haltigi la Rulanton! Atentu bone la Ŝvebanton!"
+
+#: po/leveltexts.txt:126
+msgid "Just a Tumbler in the wrong place!"
+msgstr "Nur Rulanto en malĝusta loko!"
+
+#: po/leveltexts.txt:127
+msgid "Put Floater in last! Insert Delay to stop Tumblers!"
+msgstr "Metu Ŝvebanto laste! Enmetu Prokraston por haltigi Rulantojn!"
+
+#: po/leveltexts.txt:128
+msgid "You've got some running to do!"
+msgstr "Vi havas kelkajn ruladojn por fari!"
+
+#: po/leveltexts.txt:129
+msgid "Move the Delay!"
+msgstr "Movigu la Prokrastanton!"
+
+#: po/leveltexts.txt:130
+msgid "Make the push, move your Floater! Stop the block! Go home!"
+msgstr "Donu la puŝon, movigu vian Ŝvebanton! Haltigu la blokon! Iru hejmen!"
+
+#: po/leveltexts.txt:131
+msgid "Three blocks to move, the Tumbler is one!"
+msgstr "Tri blokoj por movi, la Rulanto estas unu el ili!"
+
+#: po/leveltexts.txt:133
+msgid "Place the Floaters!"
+msgstr "Metu la Ŝvebantojn!"
+
+#: po/leveltexts.txt:134
+msgid "One last crash"
+msgstr "Unu lasta frakasiĝo"
+
+#: po/leveltexts.txt:135
+msgid "A&V"
+msgstr "A&V"
+
+#: po/leveltexts.txt:136
+msgid "Missing Quantum"
+msgstr "Mankanta Kvantumon"
+
+#: po/leveltexts.txt:137
+msgid "Dominik 10"
+msgstr "Dominiko 10"
+
+#: po/leveltexts.txt:138
+msgid "Out of reach"
+msgstr "For de atingeblo"
+
+#: po/leveltexts.txt:139
+msgid "Dominik 2"
+msgstr "Dominiko 2"
+
+#: po/leveltexts.txt:140
+msgid "Dominik 6"
+msgstr "Dominiko 6"
+
+#: po/leveltexts.txt:141
+msgid "Dominik 7"
+msgstr "Dominiko 7"
+
+#: po/leveltexts.txt:142
+msgid "Dominik 4"
+msgstr "Dominiko 4"
+
+#: po/leveltexts.txt:143
+msgid "Missing Stopper"
+msgstr "Mankanta Haltiganto"
+
+#: po/leveltexts.txt:144
+msgid "Quantum Timing"
+msgstr "Kvantuma Tempmezuro"
+
+#: po/leveltexts.txt:145
+msgid "Crashed again"
+msgstr "Frakasita refoje"
+
+#: po/leveltexts.txt:146
+msgid "Quantum Theory"
+msgstr "Kvantuma Teorio"
+
+#: po/leveltexts.txt:147
+msgid "Dominik 11"
+msgstr "Dominiko 11"
+
+#: po/leveltexts.txt:148
+msgid "Wrong direction"
+msgstr "Malĝusta direkto"
+
+#: po/leveltexts.txt:149
+msgid "Run!"
+msgstr "Kuru!"
+
+#: po/leveltexts.txt:150
+msgid "Still too easy"
+msgstr "Ankoraŭ tro facile"
+
+#: po/leveltexts.txt:151
+msgid "Missing Stopper 2"
+msgstr "Mankanta Haltiganto 2"
+
+#: po/leveltexts.txt:152
+msgid "Dominik 8"
+msgstr "Dominiko 8"
+
+#: po/leveltexts.txt:153
+msgid "Dominik 1"
+msgstr "Dominiko 1"
+
+#: po/leveltexts.txt:154
+msgid "One too much"
+msgstr "Unu troige"
+
+#: po/leveltexts.txt:155
+msgid "Dominik 12"
+msgstr "Dominiko 12"
+
+#: po/leveltexts.txt:156
+msgid "Crash!"
+msgstr "Frakasiĝo!"
+
+#: po/leveltexts.txt:157
+msgid "Dominik 5"
+msgstr "Dominiko 5"
+
+#: po/leveltexts.txt:158
+msgid "Easy distance"
+msgstr "Facila distanco"
+
+#: po/leveltexts.txt:159
+msgid "Dominik 3"
+msgstr "Dominiko 3"
+
+#: po/leveltexts.txt:160
+msgid "Hard distance"
+msgstr "Malfacila distanco"
+
+#: po/leveltexts.txt:161
+msgid "Too easy"
+msgstr "Tro facile"
+
+#: po/leveltexts.txt:162
+msgid "Quantum Theory 2"
+msgstr "Kvantuma Teorio 2"
+
+#: po/leveltexts.txt:163
+msgid "Dominik 9"
+msgstr "Dominiko 9"
+
+#: po/leveltexts.txt:164
+msgid "Run 'n' Bridge"
+msgstr "Kuru 'k' Ponto"
+
+#: po/leveltexts.txt:165
+msgid "Merger"
+msgstr "Kunfandiganto"
+
+#: po/leveltexts.txt:166
+msgid "010"
+msgstr "010"
+
+#: po/leveltexts.txt:167
+msgid "033"
+msgstr "033"
+
+#: po/leveltexts.txt:168
+msgid "Original"
+msgstr "Originala"
+
+#: po/leveltexts.txt:169
+msgid "053"
+msgstr "053"
+
+#: po/leveltexts.txt:170
+msgid "021"
+msgstr "021"
+
+#: po/leveltexts.txt:171
+msgid "065"
+msgstr "065"
+
+#: po/leveltexts.txt:172
+msgid "037"
+msgstr "037"
+
+#: po/leveltexts.txt:173
+msgid "057"
+msgstr "057"
+
+#: po/leveltexts.txt:174
+msgid "012"
+msgstr "012"
+
+#: po/leveltexts.txt:175
+msgid "034"
+msgstr "034"
+
+#: po/leveltexts.txt:176
+msgid "038"
+msgstr "038"
+
+#: po/leveltexts.txt:177
+msgid "025"
+msgstr "025"
+
+#: po/leveltexts.txt:178
+msgid "067"
+msgstr "067"
+
+#: po/leveltexts.txt:179
+msgid "035"
+msgstr "035"
+
+#: po/leveltexts.txt:180
+msgid "011"
+msgstr "011"
+
+#: po/leveltexts.txt:181
+msgid "081"
+msgstr "081"
+
+#: po/leveltexts.txt:182
+msgid "088"
+msgstr "088"
+
+#: po/leveltexts.txt:183
+msgid "004"
+msgstr "004"
+
+#: po/leveltexts.txt:184
+msgid "026"
+msgstr "026"
+
+#: po/leveltexts.txt:185
+msgid "100"
+msgstr "100"
+
+#: po/leveltexts.txt:186
+msgid "089"
+msgstr "089"
+
+#: po/leveltexts.txt:187
+msgid "064"
+msgstr "064"
+
+#: po/leveltexts.txt:188
+msgid "068"
+msgstr "068"
+
+#: po/leveltexts.txt:189
+msgid "078"
+msgstr "078"
+
+#: po/leveltexts.txt:190
+msgid "055"
+msgstr "055"
+
+#: po/leveltexts.txt:191
+msgid "022"
+msgstr "022"
+
+#: po/leveltexts.txt:192
+msgid "031"
+msgstr "031"
+
+#: po/leveltexts.txt:193
+msgid "059"
+msgstr "059"
+
+#: po/leveltexts.txt:194
+msgid "063"
+msgstr "063"
+
+#: po/leveltexts.txt:195
+msgid "072"
+msgstr "072"
+
+#: po/leveltexts.txt:196
+msgid "091 (SNES)"
+msgstr "091 (SNES)"
+
+#: po/leveltexts.txt:197
+msgid "083"
+msgstr "083"
+
+#: po/leveltexts.txt:198
+msgid "051"
+msgstr "051"
+
+#: po/leveltexts.txt:199
+msgid "002"
+msgstr "002"
+
+#: po/leveltexts.txt:200
+msgid "098"
+msgstr "098"
+
+#: po/leveltexts.txt:201
+msgid "054"
+msgstr "054"
+
+#: po/leveltexts.txt:202
+msgid "066"
+msgstr "066"
+
+#: po/leveltexts.txt:203
+msgid "092"
+msgstr "092"
+
+#: po/leveltexts.txt:204
+msgid "020"
+msgstr "020"
+
+#: po/leveltexts.txt:205
+msgid "006"
+msgstr "006"
+
+#: po/leveltexts.txt:206
+msgid "001"
+msgstr "001"
+
+#: po/leveltexts.txt:207
+msgid "023"
+msgstr "023"
+
+#: po/leveltexts.txt:208
+msgid "082"
+msgstr "082"
+
+#: po/leveltexts.txt:209
+msgid "032"
+msgstr "032"
+
+#: po/leveltexts.txt:210
+msgid "027"
+msgstr "027"
+
+#: po/leveltexts.txt:211
+msgid "071"
+msgstr "071"
+
+#: po/leveltexts.txt:212
+msgid "061"
+msgstr "061"
+
+#: po/leveltexts.txt:213
+msgid "005"
+msgstr "005"
+
+#: po/leveltexts.txt:214
+msgid "015"
+msgstr "015"
+
+#: po/leveltexts.txt:215
+msgid "016"
+msgstr "016"
+
+#: po/leveltexts.txt:216
+msgid "013"
+msgstr "013"
+
+#: po/leveltexts.txt:217
+msgid "076"
+msgstr "076"
+
+#: po/leveltexts.txt:218
+msgid "028"
+msgstr "028"
+
+#: po/leveltexts.txt:219
+msgid "050"
+msgstr "050"
+
+#: po/leveltexts.txt:220
+msgid "044"
+msgstr "044"
+
+#: po/leveltexts.txt:221
+msgid "062"
+msgstr "062"
+
+#: po/leveltexts.txt:222
+msgid "024"
+msgstr "024"
+
+#: po/leveltexts.txt:223
+msgid "041"
+msgstr "041"
+
+#: po/leveltexts.txt:224
+msgid "036"
+msgstr "036"
+
+#: po/leveltexts.txt:225
+msgid "042"
+msgstr "042"
+
+#: po/leveltexts.txt:226
+msgid "017"
+msgstr "017"
+
+#: po/leveltexts.txt:227
+msgid "070"
+msgstr "070"
+
+#: po/leveltexts.txt:228
+msgid "060"
+msgstr "060"
+
+#: po/leveltexts.txt:229
+msgid "086"
+msgstr "086"
+
+#: po/leveltexts.txt:230
+msgid "003"
+msgstr "003"
+
+#: po/leveltexts.txt:231
+msgid "094"
+msgstr "094"
+
+#: po/leveltexts.txt:232
+msgid "039"
+msgstr "039"
+
+#: po/leveltexts.txt:233
+msgid "029"
+msgstr "029"
+
+#: po/leveltexts.txt:234
+msgid "087"
+msgstr "087"
+
+#: po/leveltexts.txt:235
+msgid "009"
+msgstr "009"
+
+#: po/leveltexts.txt:236
+msgid "077"
+msgstr "077"
+
+#: po/leveltexts.txt:237
+msgid "075"
+msgstr "075"
+
+#: po/leveltexts.txt:238
+msgid "056"
+msgstr "056"
+
+#: po/leveltexts.txt:239
+msgid "099"
+msgstr "099"
+
+#: po/leveltexts.txt:240
+msgid "014"
+msgstr "014"
+
+#: po/leveltexts.txt:241
+msgid "058"
+msgstr "058"
+
+#: po/leveltexts.txt:242
+msgid "084"
+msgstr "084"
+
+#: po/leveltexts.txt:243
+msgid "095"
+msgstr "095"
+
+#: po/leveltexts.txt:244
+msgid "008"
+msgstr "008"
+
+#: po/leveltexts.txt:245
+msgid "049"
+msgstr "049"
+
+#: po/leveltexts.txt:246
+msgid "085"
+msgstr "085"
+
+#: po/leveltexts.txt:247
+msgid "073"
+msgstr "073"
+
+#: po/leveltexts.txt:248
+msgid "069"
+msgstr "069"
+
+#: po/leveltexts.txt:249
+msgid "096"
+msgstr "096"
+
+#: po/leveltexts.txt:250
+msgid "045"
+msgstr "045"
+
+#: po/leveltexts.txt:251
+msgid "018"
+msgstr "018"
+
+#: po/leveltexts.txt:252
+msgid "047"
+msgstr "047"
+
+#: po/leveltexts.txt:253
+msgid "048"
+msgstr "048"
+
+#: po/leveltexts.txt:254
+msgid "090"
+msgstr "090"
+
+#: po/leveltexts.txt:255
+msgid "080"
+msgstr "080"
+
+#: po/leveltexts.txt:256
+msgid "007"
+msgstr "007"
+
+#: po/leveltexts.txt:257
+msgid "079"
+msgstr "079"
+
+#: po/leveltexts.txt:258
+msgid "019"
+msgstr "019"
+
+#: po/leveltexts.txt:259
+msgid "101"
+msgstr "101"
+
+#: po/leveltexts.txt:260
+msgid "074"
+msgstr "074"
+
+#: po/leveltexts.txt:261
+msgid "043"
+msgstr "043"
+
+#: po/leveltexts.txt:262
+msgid "093"
+msgstr "093"
+
+#: po/leveltexts.txt:263
+msgid "097"
+msgstr "097"
+
+#: po/leveltexts.txt:264
+msgid "040"
+msgstr "040"
+
+#: po/leveltexts.txt:265
+msgid "052"
+msgstr "052"
+
+#: po/leveltexts.txt:266
+msgid "030"
+msgstr "030"
+
+#: po/leveltexts.txt:267
+msgid "091"
+msgstr "091"
+
+#: po/leveltexts.txt:268
+msgid "046"
+msgstr "046"
+
+#: po/leveltexts.txt:269
+msgid ""
+"This levelset contains some new problems creates for the open source version "
+"of Pushover."
+msgstr ""
+
+#: po/leveltexts.txt:270
+msgid ""
+"This levelset contains the original levels that were published with pushover "
+"in 1992 including some adaptations of levels that were done in later "
+"releases of the original game."
+msgstr ""
+
+#~ msgid "Original Levels:"
+#~ msgstr "Originalaj niveloj:"
