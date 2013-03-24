@@ -107,8 +107,6 @@ class levelData_c {
     static const std::string dominoChars;
     // a function that returns true, if the given character is a valid one for a domino
     static bool isDominoChar(char ch);
-    // the maximal number of background layers
-    static const unsigned char maxBg = 8;
 
     std::string name;    // name of level
     std::string theme;   // theme of level represented as a string
@@ -131,7 +129,7 @@ class levelData_c {
 
     // content of one cell of the level
     typedef struct levelEntry {
-      unsigned short bg[maxBg];
+      std::vector <uint16_t> bg;
       bool platform;             // is there a platform in this cell
       bool ladder;               // is there a ladder in this cell
       DominoType dominoType;     // which domino is in this cell, the platform the domino stands on is one row below
@@ -150,8 +148,7 @@ class levelData_c {
 
     std::vector< std::vector<levelEntry> > level;
 
-    // actual number of background layers for this level
-    unsigned char numBg;
+    uint16_t numBg; // current maximum number of background layers
 
 
 #ifdef DEBUG

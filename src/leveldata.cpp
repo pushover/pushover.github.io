@@ -47,8 +47,7 @@ levelData_c::levelData_c(void)
     level[y].resize(LEVELSIZE_V1_X);
 
     for (unsigned int x = 0; x < level[y].size(); x++) {
-      for (unsigned int i = 0; i < maxBg; i++)
-        level[y][x].bg[i] = 0;
+      level[y][x].bg.clear();
       level[y][x].ladder = false;
       level[y][x].platform = false;
       level[y][x].dominoType = DominoTypeEmpty;
@@ -168,8 +167,7 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
       level[y][x].platform = false;
       level[y][x].ladder = false;
 
-      for (unsigned int b = 0; b < maxBg; b++)
-        level[y][x].bg[b] = 0;
+      level[y][x].bg.clear();
     }
   }
 
@@ -300,18 +298,17 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
     numBg = bgSections.size();
     if (numBg == 0)
       throw format_error("missing Background section");
-    if (numBg > maxBg)
-      throw format_error("too many Background sections");
     for (unsigned char b = 0; b < numBg; b++) {
       if (bgSections[b].size() != 13)
         throw format_error("wrong number of background rows");
       for (unsigned int y = 0; y < 13; y++) {
         std::istringstream line(bgSections[b][y]);
         for (unsigned int x = 0; x < LEVELSIZE_V1_X; x++) {
-          line >> level[2*y][x].bg[b];
-          level[2*y][x].bg[b] *= 2;
+          uint16_t val;
+          line >> val;
+          setBg(x, 2*y, b, 2*val);
           if (y < 12)
-            level[2*y+1][x].bg[b] = level[2*y][x].bg[b]+1;
+            setBg(x, 2*y+1, b, 2*val+1);
 
           if (!line)
             throw format_error("not enough background tiles in a row");
@@ -452,15 +449,16 @@ void levelData_c::load(const textsections_c & sections, const std::string & user
     numBg = bgSections.size();
     if (numBg == 0)
       throw format_error("missing Background section");
-    if (numBg > maxBg)
-      throw format_error("too many Background sections");
     for (unsigned char b = 0; b < numBg; b++) {
       if (bgSections[b].size() != LEVELSIZE_V1_Y)
         throw format_error("wrong number of background rows");
       for (unsigned int y = 0; y < LEVELSIZE_V1_Y; y++) {
         std::istringstream line(bgSections[b][y]);
-        for (unsigned int x = 0; x < LEVELSIZE_V1_X; x++) {
-          line >> level[y][x].bg[b];
+        for (unsigned int x = 0; x < LEVELSIZE_V1_X; x++)
+        {
+          uint16_t val;
+          line >> val;
+          setBg(x, y, b, val);
 
           if (!line)
             throw format_error("not enough background tiles in a row");
@@ -709,7 +707,10 @@ void levelData_c::print(void) const {
 }
 
 unsigned short levelData_c::getBg(unsigned int x, unsigned int y, int layer) const {
+  if (layer < level[y][x].bg.size())
     return level[y][x].bg[layer];
+  else
+    return 0;
 }
 
 bool levelData_c::getPlatform(unsigned int x, unsigned int y) const {
@@ -866,12 +867,27 @@ bool levelForegroundEmpty(const levelData_c & l, int16_t x, int16_t y, uint16_t 
 
 void levelData_c::setBg(unsigned int x, unsigned int y, int layer, uint16_t tile)
 {
-  if (layer < maxBg && x < levelX() && y < levelY())
+  if (x < levelX() && y < levelY())
   {
-    if (layer > numBg)
-      numBg = layer+1;
 
-    level[y][x].bg[layer] = tile;
+    if (tile != 0 && tile != 1)
+    {
+      if (level[y][x].bg.size() <= layer)
+      {
+        level[y][x].bg.resize(layer+1);
+        if (level[y][x].bg.size() > numBg)
+        {
+          numBg = level[y][x].bg.size();
+          printf("num layer = %i\n", numBg);
+        }
+      }
+      level[y][x].bg[layer] = tile;
+    }
+    else
+    {
+      if (layer < level[y][x].bg.size())
+        level[y][x].bg[layer] = tile;
+    }
   }
 }
 

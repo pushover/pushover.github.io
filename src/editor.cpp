@@ -811,7 +811,7 @@ bool eventEditor(const SDL_Event & event)
           if (sel < 10)
             for (size_t y = 0; y < l->levelY(); y++)
               for (size_t x = 0; x < l->levelX(); x++)
-                for (size_t lay = 0; lay < 8; lay++)
+                for (size_t lay = 0; lay < l->getNumBgLayer(); lay++)
                   l->setBg(x, y, lay, 0);
 
           gr->setPaintData(l, 0, screen);
@@ -1470,7 +1470,7 @@ bool eventEditor(const SDL_Event & event)
       // choose layer to edit
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == '+')
       {
-        if (bgLayer+1 < 8)
+        if (bgLayer < 255)
         {
           bgLayer++;
           gr->setBgDrawLayer(bgLayer);
@@ -1493,7 +1493,7 @@ bool eventEditor(const SDL_Event & event)
         for (size_t i = 0; i < gr->getCursorW(); i++)
           for (size_t j = 0; j < gr->getCursorH(); j++)
           {
-            for (size_t a = 7; a > bgLayer; a--)
+            for (size_t a = l->getNumBgLayer(); a > bgLayer; a--)
               l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, a, l->getBg(gr->getCursorX()+i, gr->getCursorY()+j, a-1));
 
             l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, bgLayer, 0);
@@ -1507,10 +1507,10 @@ bool eventEditor(const SDL_Event & event)
         for (size_t i = 0; i < gr->getCursorW(); i++)
           for (size_t j = 0; j < gr->getCursorH(); j++)
           {
-            for (size_t a = bgLayer; a < 7; a++)
+            for (size_t a = bgLayer; a < l->getNumBgLayer()-1; a++)
               l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, a, l->getBg(gr->getCursorX()+i, gr->getCursorY()+j, a+1));
 
-            l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, 7, 0);
+            l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, l->getNumBgLayer()-1, 0);
           }
 
         gr->markAllDirtyBg();
