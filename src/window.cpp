@@ -32,7 +32,6 @@
 #include <SDL.h>
 
 #include <stdexcept>
-#include <algorithm>
 #include <libintl.h>
 
 #include <assert.h>
