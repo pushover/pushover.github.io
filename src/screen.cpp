@@ -627,7 +627,8 @@ SDL_Surface * surface_c::getIdentical(void) const {
     return SDL_CreateRGBSurface(0, video->w, video->h, 32, video->format->Rmask, video->format->Gmask, video->format->Bmask, 0);
 }
 
-static std::vector<TTF_Font * > fonts;
+
+static std::vector<std::vector<TTF_Font *> > fonts;
 
 
 void initText(std::string dir) {
@@ -639,6 +640,8 @@ void initText(std::string dir) {
     exit(1);
   }
 
+  fonts.resize(3);
+
   TTF_Font * ft;
 
   ft = TTF_OpenFont(fname.c_str(), 18);
@@ -647,7 +650,7 @@ void initText(std::string dir) {
     exit(1);
   }
 
-  fonts.push_back(ft);
+  fonts[0].push_back(ft);
 
   ft = TTF_OpenFont(fname.c_str(), 30);
   if (!ft) {
@@ -655,7 +658,7 @@ void initText(std::string dir) {
     exit(1);
   }
 
-  fonts.push_back(ft);
+  fonts[1].push_back(ft);
 
   ft = TTF_OpenFont(fname.c_str(), 35);
   if (!ft) {
@@ -663,13 +666,40 @@ void initText(std::string dir) {
     exit(1);
   }
 
-  fonts.push_back(ft);
+  fonts[2].push_back(ft);
+
+  fname = dir+"/data/DroidSansJapanese.ttf";
+
+  ft = TTF_OpenFont(fname.c_str(), 18);
+  if (!ft) {
+    std::cout << "Can't open Font file: " << fname << std::endl;
+    exit(1);
+  }
+
+  fonts[0].push_back(ft);
+
+  ft = TTF_OpenFont(fname.c_str(), 30);
+  if (!ft) {
+    std::cout << "Can't open Font file: " << fname << std::endl;
+    exit(1);
+  }
+
+  fonts[1].push_back(ft);
+
+  ft = TTF_OpenFont(fname.c_str(), 35);
+  if (!ft) {
+    std::cout << "Can't open Font file: " << fname << std::endl;
+    exit(1);
+  }
+
+  fonts[2].push_back(ft);
 }
 
 void deinitText(void) {
 
   for (unsigned int i = 0; i < fonts.size(); i++)
-    TTF_CloseFont(fonts[i]);
+    for (size_t j = 0; j < fonts[i].size(); j++)
+      TTF_CloseFont(fonts[i][j]);
 
   TTF_Quit();
 }
@@ -704,6 +734,9 @@ static std::vector<std::string> split(const std::string & text, const std::strin
   return res;
 }
 
+
+
+
 bool rightToLeft(void)
 {
   //TRANSLATORS: don't translate this string, rather enter the main text direction this will influence how dialogs are
@@ -712,7 +745,139 @@ bool rightToLeft(void)
   return strcmp(_("left to right"), "right to left") == 0;
 }
 
-unsigned int surface_c::renderText(const fontParams_s * par, const std::string & t)
+static unsigned int findFontForChar(int font, Uint16 ch)
+{
+  unsigned int f = 0;
+  while (f < fonts[font].size())
+  {
+    if (TTF_GlyphIsProvided(fonts[font][f], ch))
+    {
+      printf("%i ", f);
+      return f;
+    }
+
+    f++;
+  }
+
+  return 0;
+}
+
+static uint16_t calcWidth(Uint16 * string, int font)
+{
+  if (string[0] == 0) return 0;
+
+  int width = 0;
+
+  uint16_t start = 0;
+  uint16_t end = 1;
+  int ff = findFontForChar(font, string[start]);
+
+  while (string[end] != 0)
+  {
+    int nf = findFontForChar(font, string[end]);
+
+    if (nf != ff)
+    {
+      int www;
+      Uint16 charSave = string[end];
+      string[end] = 0;
+
+      TTF_SizeUNICODE(fonts[font][ff], string+start, &www, 0);
+      width += www;
+
+      string[end] = charSave;
+      start = end;
+      ff = nf;
+    }
+    end++;
+  }
+
+  int www;
+
+  TTF_SizeUNICODE(fonts[font][ff], string+start, &www, 0);
+  width += www;
+
+  return width;
+}
+
+static SDL_Surface * outString(Uint16 * string, int font, SDL_Color color)
+{
+  if (string[0] == 0) return 0;
+
+  std::vector <SDL_Surface * > texts;
+
+  uint16_t start = 0;
+  uint16_t end = 1;
+  int ff = findFontForChar(font, string[start]);
+
+  while (string[end] != 0)
+  {
+    int nf = findFontForChar(font, string[end]);
+
+    if (nf != ff)
+    {
+      Uint16 charSave = string[end];
+      string[end] = 0;
+
+      texts.push_back(TTF_RenderUNICODE_Blended(fonts[font][ff], string+start, color));
+
+      string[end] = charSave;
+      start = end;
+      ff = nf;
+    }
+    end++;
+  }
+
+  texts.push_back(TTF_RenderUNICODE_Blended(fonts[font][ff], string+start, color));
+
+  // shortcut, when only one surface was creates no assembly required
+  if (texts.size() == 1)
+  {
+    return texts[0];
+  }
+
+  // now assemble all the texts into one large surface
+  //
+  // first calculate the required size for that surface
+
+  int w = 0;
+  int h = 0;
+
+  for (size_t i = 0; i < texts.size(); i++)
+  {
+    w += texts[i]->w;
+    if (texts[i]->h > h) h = texts[i]->h;
+  }
+
+  // create a target surface
+
+  SDL_Surface * res = SDL_CreateRGBSurface(0, w, h, 32, 0xff, 0xff00, 0xff0000, 0xff000000);
+  SDL_SetAlpha(res, SDL_SRCALPHA, 0);
+  SDL_FillRect(res, 0, SDL_MapRGBA(res->format, 0, 0, 0, SDL_ALPHA_TRANSPARENT));
+
+  int xpos = 0;
+
+  for (size_t i = 0; i < texts.size(); i++)
+  {
+    printf("alpha %x\n", texts[i]->format->Amask);
+    SDL_Rect r;
+    r.x = xpos;
+    r.y = h-texts[i]->h;
+    r.w = texts[i]->w;
+    r.h = texts[i]->h;
+    SDL_SetAlpha(texts[i], 0, 0);
+    SDL_BlitSurface(texts[i], 0, res, &r);
+
+    xpos += texts[i]->w;
+
+    SDL_FreeSurface(texts[i]);
+  }
+
+  return res;
+}
+
+
+unsigned int renderTextIntern(const fontParams_s * par, const std::string & t, SDL_Surface * video)
 {
   // make some safety checks, empty strings are not output
   bool onlySpace = true;
@@ -736,8 +901,9 @@ unsigned int surface_c::renderText(const fontParams_s * par, const std::string &
 
   int ypos = par->box.y;
   unsigned int lines = 0;
+  unsigned int height = 0;
 
-  if (par->alignment == ALN_CENTER)
+  if (par->alignment == ALN_CENTER && video)
     ypos += (par->box.h-getTextHeight(par, t))/2;
 
   // iterate over all paragraphs
@@ -792,8 +958,7 @@ unsigned int surface_c::renderText(const fontParams_s * par, const std::string &
 
         outttf[nextLineEnd-lineStart+1] = 0;
 
-        int w;
-        TTF_SizeUNICODE(fonts[par->font], outttf, &w, 0);
+        int w = calcWidth(outttf, par->font);
 
         if (w > par->box.w)
         {
@@ -829,88 +994,92 @@ unsigned int surface_c::renderText(const fontParams_s * par, const std::string &
 
       outttf[j] = 0;
 
-      SDL_Surface * vv = TTF_RenderUNICODE_Blended(fonts[par->font], outttf, par->color);
+      SDL_Surface * vv = outString(outttf, par->font, par->color);
       SDL_Surface * vb = NULL;
 
       if (par->shadow)
       {
         SDL_Color bg;
         bg.r = bg.g = bg.b = 0;
-        vb = TTF_RenderUNICODE_Blended(fonts[par->font], outttf, bg);
+        vb = outString(outttf, par->font, bg);
       }
 
-      if (par->alignment == ALN_TEXT) {
+      if (video)
+      {
+        if (par->alignment == ALN_TEXT) {
 
-        SDL_Rect r = par->box;
+          SDL_Rect r = par->box;
 
-        if (rightToLeft())
-        {
-          r.x = r.x+r.w-vv->w;
+          if (rightToLeft())
+          {
+            r.x = r.x+r.w-vv->w;
+          }
+          r.w = vv->w;
+          r.h = vv->h;
+          r.y = ypos;
+
+          if (par->shadow == 1)
+          {
+            int sa = 1;
+            if (par->font == FNT_BIG) sa = 2;
+
+            r.x-=sa; r.y-=sa; SDL_BlitSurface(vb, 0, video, &r);
+            r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+            r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+            r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+            r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+            r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+            r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+            r.y-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+            r.x+=sa;
+          }
+          else if (par->shadow == 2)
+          {
+            int sa = 1;
+
+            r.x+=sa; r.y+=sa; SDL_BlitSurface(vb, 0, video, &r);
+            r.x-=sa; r.y-=sa;
+          }
+          SDL_BlitSurface(vv, 0, video, &r);
         }
-        r.w = vv->w;
-        r.h = vv->h;
-        r.y = ypos;
+        else if (par->alignment == ALN_TEXT_CENTER || par->alignment == ALN_CENTER) {
 
-        if (par->shadow == 1)
-        {
-          int sa = 1;
-          if (par->font == FNT_BIG) sa = 2;
+          SDL_Rect r;
 
-          r.x-=sa; r.y-=sa; SDL_BlitSurface(vb, 0, video, &r);
-          r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-          r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-          r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-          r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-          r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
-          r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
-          r.y-=sa;          SDL_BlitSurface(vb, 0, video, &r);
-          r.x+=sa;
+          r.x = par->box.x + (par->box.w - vv->w)/2;
+          r.y = ypos;
+
+          r.w = vv->w;
+          r.h = vv->h;
+
+          if (par->shadow == 1)
+          {
+            int sa = 1;
+            if (par->font == FNT_BIG) sa = 2;
+
+            r.x-=sa; r.y-=sa; SDL_BlitSurface(vb, 0, video, &r);
+            r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+            r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+            r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+            r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+            r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+            r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+            r.y-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+            r.x+=sa;
+          }
+          else if (par->shadow == 2)
+          {
+            int sa = 1;
+
+            r.x+=sa; r.y+=sa; SDL_BlitSurface(vb, 0, video, &r);
+            r.x-=sa; r.y-=sa;
+          }
+          SDL_BlitSurface(vv, 0, video, &r);
         }
-        else if (par->shadow == 2)
-        {
-          int sa = 1;
-
-          r.x+=sa; r.y+=sa; SDL_BlitSurface(vb, 0, video, &r);
-          r.x-=sa; r.y-=sa;
-        }
-        SDL_BlitSurface(vv, 0, video, &r);
-      }
-      else if (par->alignment == ALN_TEXT_CENTER || par->alignment == ALN_CENTER) {
-
-        SDL_Rect r;
-
-        r.x = par->box.x + (par->box.w - vv->w)/2;
-        r.y = ypos;
-
-        r.w = vv->w;
-        r.h = vv->h;
-
-        if (par->shadow == 1)
-        {
-          int sa = 1;
-          if (par->font == FNT_BIG) sa = 2;
-
-          r.x-=sa; r.y-=sa; SDL_BlitSurface(vb, 0, video, &r);
-          r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-          r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-          r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-          r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-          r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
-          r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
-          r.y-=sa;          SDL_BlitSurface(vb, 0, video, &r);
-          r.x+=sa;
-        }
-        else if (par->shadow == 2)
-        {
-          int sa = 1;
-
-          r.x+=sa; r.y+=sa; SDL_BlitSurface(vb, 0, video, &r);
-          r.x-=sa; r.y-=sa;
-        }
-        SDL_BlitSurface(vv, 0, video, &r);
       }
 
       ypos += vv->h;
+      height += vv->h;
 
       SDL_FreeSurface(vv);
       if (par->shadow) SDL_FreeSurface(vb);
@@ -920,58 +1089,53 @@ unsigned int surface_c::renderText(const fontParams_s * par, const std::string &
       // when the break reason was a normal space, skip those spaces
       while (paraString[lineStart] == ' ' && lineStart < ucsLength)
         lineStart++;
-
-      lines++;
     }
   }
 
-  return lines;
+  return height;
+}
+
+unsigned int surface_c::renderText(const fontParams_s * par, const std::string & t)
+{
+  return renderTextIntern(par, t, video);
 }
 
 unsigned int getFontHeight(unsigned int font) {
   if (font < fonts.size())
-    return TTF_FontLineSkip(fonts[font]);
+    return TTF_FontLineSkip(fonts[font][0]);
   else
     return 0;
 }
 
-unsigned int getTextWidth(unsigned int font, const std::string & t) {
-  int w = 0;
-  TTF_SizeUTF8(fonts[font], t.c_str(), &w, 0);
+unsigned int getTextWidth(unsigned int font, const std::string & string)
+{
+  if (string[0] == 0) return 0;
 
-  return w;
+  FriBidiChar * text = new FriBidiChar[string.length() + 1];
+
+  int ucsLength = fribidi_charset_to_unicode(FRIBIDI_CHAR_SET_UTF8,
+      const_cast<char*>(string.c_str()), string.length(), text);
+
+  Uint16 outttf[ucsLength+1];
+
+  for (int i = 0; i <= ucsLength; i++)
+  {
+    if (text[i] > 0xFFFF) printf("oops unsupported character\n");
+    outttf[i] = text[i];
+  }
+
+  outttf[ucsLength] = 0;
+
+  int width = calcWidth(outttf, font);
+
+  delete [] text;
+
+  return width;
 }
 
 unsigned int getTextHeight(const fontParams_s * par, const std::string & t) {
 
-  std::vector<std::string> words = split(t.c_str(), " ");
-
-  unsigned int word = 0;
-  int height = 0;
-
-  while (word < words.size()) {
-
-    std::string curLine = words[word];
-    word++;
-
-    while (word < words.size())
-    {
-      int w;
-      TTF_SizeUTF8(fonts[par->font], (curLine+words[word]).c_str(), &w, 0);
-
-      if (w > par->box.w) break;
-
-      curLine = curLine + " " + words[word];
-      word++;
-    }
-
-    int h, w;
-    TTF_SizeUTF8(fonts[par->font], curLine.c_str(), &w, &h);
-
-    height += h;
-  }
-
-  return height;
+  return renderTextIntern(par, t, 0);
 }
 
 

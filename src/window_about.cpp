@@ -53,36 +53,36 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphicsN_c & g, const levelsetList_
 
   int sk = rightToLeft() ? 0 : 30;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Concept:"))*lineH; par.box.x += sk; par.box.w -= 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Chas Partington")*lineH; par.box.x -= sk; par.box.w += 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Concept:")); par.box.x += sk; par.box.w -= 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Chas Partington"); par.box.x -= sk; par.box.w += 30;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Programming:"))*lineH; par.box.x += sk; par.box.w -= 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Dave Elcock, Helen Elcock, Keith Watterson")*lineH; par.box.x -= sk; par.box.w += 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Programming:")); par.box.x += sk; par.box.w -= 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Dave Elcock, Helen Elcock, Keith Watterson"); par.box.x -= sk; par.box.w += 30;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Graphics:"))*lineH; par.box.x += sk; par.box.w -= 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Bryan King, Barry Armstrong")*lineH; par.box.x -= sk; par.box.w += 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Graphics:")); par.box.x += sk; par.box.w -= 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Bryan King, Barry Armstrong"); par.box.x -= sk; par.box.w += 30;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Music & SFX:"))*lineH; par.box.x += sk; par.box.w -= 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Keith Tinman, Dean Evans, Johnathan Dunn")*lineH; par.box.x -= sk; par.box.w += 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Original Music & SFX:")); par.box.x += sk; par.box.w -= 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Keith Tinman, Dean Evans, Johnathan Dunn"); par.box.x -= sk; par.box.w += 30;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Programming:"))*lineH; par.box.x += sk; par.box.w -= 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Andreas Röver, Volker Grabsch")*lineH; par.box.x -= sk; par.box.w += 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Programming:")); par.box.x += sk; par.box.w -= 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Andreas Röver, Volker Grabsch"); par.box.x -= sk; par.box.w += 30;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Music:"))*lineH; par.box.x += sk; par.box.w -= 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Roberto Lorenz")*lineH; par.box.x -= sk; par.box.w += 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Music:")); par.box.x += sk; par.box.w -= 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Roberto Lorenz"); par.box.x -= sk; par.box.w += 30;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Graphics:"))*lineH; par.box.x += sk; par.box.w -= 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Harald Radke")*lineH; par.box.x -= sk; par.box.w += 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("New Graphics:")); par.box.x += sk; par.box.w -= 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Harald Radke"); par.box.x -= sk; par.box.w += 30;
 
   par.box.y += 5;
 
-  par.shadow = 2; par.box.y += surf.renderText(&par, _("Levels:"))*lineH; par.box.x += sk; par.box.w -= 30;
+  par.shadow = 2; par.box.y += surf.renderText(&par, _("Levels:")); par.box.x += sk; par.box.w -= 30;
 
   for (size_t i = 0; i < ls.getLevelsetNames().size(); i++)
   {
     const std::string name = ls.getLevelsetNames()[i];
     par.shadow = 0;
-    par.box.y += surf.renderText(&par, _(name) + _(": ") + collectAuthors(ls.getLevelset(name)))*lineH;
+    par.box.y += surf.renderText(&par, _(name) + _(": ") + collectAuthors(ls.getLevelset(name)));
   }
 }
 
