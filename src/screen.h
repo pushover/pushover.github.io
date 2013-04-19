@@ -131,6 +131,7 @@ class surface_c {
     // return value is the number of lines that were output
     unsigned int renderText(const fontParams_s * par, const std::string & t);
 
+
     // apply the gradient within the given area
     void gradient(int x, int y, int w, int h);
 

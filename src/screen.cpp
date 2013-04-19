@@ -23,12 +23,15 @@
 
 #include "graphicsn.h"
 
+#include "linebreak/linebreak.h"
+
 #include <SDL/SDL_ttf.h>
 
 #include "fribidi.h"
 
 #include <iostream>
 #include <vector>
+#include <memory>
 
 #include "libintl.h"
 
@@ -671,16 +674,20 @@ void deinitText(void) {
   TTF_Quit();
 }
 
-static std::vector<std::string> split(const std::string & text, char splitter)
+// splits a string along a set of characters, attention, splitting characters must be single byte utf-8 encodable
+static std::vector<std::string> split(const std::string & text, const std::string & splitter)
 {
   std::string current;
   std::vector<std::string> res;
 
   for (unsigned int i = 0; i < text.length(); i++)
   {
-    if (text[i] == splitter)
+    if (splitter.find_first_of(text[i]) != splitter.npos)
     {
-      res.push_back(current);
+      if (current.length())
+      {
+        res.push_back(current);
+      }
       current = "";
     }
     else
@@ -689,38 +696,12 @@ static std::vector<std::string> split(const std::string & text, char splitter)
     }
   }
 
-  if (current.length()) res.push_back(current);
+  if (current.length())
+  {
+    res.push_back(current);
+  }
 
   return res;
-}
-
-
-static std::string fribiditize(const std::string &text)
-{
-    // TODO this will probably fail, as soon as mixed left right and right left
-    // text happens....
-
-    FriBidiCharType base = FRIBIDI_TYPE_ON;
-    FriBidiChar *logicalString = new FriBidiChar[text.length() + 1];
-    FriBidiChar *visualString = new FriBidiChar[text.length() + 1];
-
-    int ucsLength = fribidi_charset_to_unicode(FRIBIDI_CHAR_SET_UTF8,
-            const_cast<char*>(text.c_str()),
-            text.length(), logicalString);
-    fribidi_boolean ok = fribidi_log2vis(logicalString, ucsLength, &base,
-            visualString, NULL, NULL, NULL);
-    if (!ok) {
-        return text;
-    }
-
-    char *buffer = new char[text.length() + 1];
-    int length = fribidi_unicode_to_charset(FRIBIDI_CHAR_SET_UTF8,
-            visualString, ucsLength, buffer);
-    std::string result = std::string(buffer, length);
-    delete[] buffer;
-    delete[] visualString;
-    delete[] logicalString;
-    return result;
 }
 
 bool rightToLeft(void)
@@ -749,120 +730,199 @@ unsigned int surface_c::renderText(const fontParams_s * par, const std::string &
     return 1;
   }
 
-  std::vector<std::string> words = split(t.c_str(), ' ');;
+  // STEP 1 split into paragraphs, paragraphs
+  // are separated by \n or \r
+  std::vector<std::string> paragraphs = split(t.c_str(), "\n\r");;
 
   int ypos = par->box.y;
+  unsigned int lines = 0;
 
   if (par->alignment == ALN_CENTER)
     ypos += (par->box.h-getTextHeight(par, t))/2;
 
-  unsigned int word = 0;
-  unsigned int lines = 0;
+  // iterate over all paragraphs
+  for (size_t para = 0; para < paragraphs.size(); para++)
+  {
+    //convert paragraph to utf-16 ... because all other routines can handle only that
 
-  while (word < words.size()) {
+    FriBidiCharType base = FRIBIDI_TYPE_ON;
+    FriBidiChar * paraString = new FriBidiChar[paragraphs[para].length() + 1];
 
-    std::string curLine = words[word];
-    word++;
-    lines++;
+    int ucsLength = fribidi_charset_to_unicode(FRIBIDI_CHAR_SET_UTF8,
+            const_cast<char*>(paragraphs[para].c_str()),
+            paragraphs[para].length(), paraString);
 
-    while (word < words.size())
+    FriBidiCharType bidiTypes[ucsLength];
+    FriBidiLevel bidiLevels[ucsLength];
+
+    // analyse direction
+    fribidi_get_bidi_types(paraString, ucsLength, bidiTypes);
+    fribidi_get_par_embedding_levels(bidiTypes, ucsLength, &base, bidiLevels);
+
+    // find line break points (using unicode algorithm and more)
+    char breaks[ucsLength];
+    set_linebreaks_utf32((utf32_t*)(paraString), ucsLength, "en", breaks);
+
+    size_t lineStart = 0;
+
+    while (lineStart < ucsLength)
     {
-      int w;
-      TTF_SizeUTF8(fonts[par->font], fribiditize(curLine+words[word]).c_str(), &w, 0);
+      size_t lineEnd = lineStart+1;
 
-      if (w > par->box.w) break;
+      while (breaks[lineEnd] != LINEBREAK_MUSTBREAK && breaks[lineEnd] != LINEBREAK_ALLOWBREAK && lineEnd < ucsLength)
+        lineEnd++;
 
-      curLine = curLine + " " + words[word];
-      word++;
+      while (lineEnd+1 < ucsLength)
+      {
+        size_t nextLineEnd = lineEnd+1;
+
+        while (breaks[nextLineEnd] != LINEBREAK_MUSTBREAK && breaks[nextLineEnd] != LINEBREAK_ALLOWBREAK && nextLineEnd < ucsLength)
+          nextLineEnd++;
+
+        // we should also apply the bidi algorithm here and do shaping as well to
+        // properly calculate the width of the line, but for sake of simplicity
+        // we leave that out for the moment
+
+        Uint16 outttf[ucsLength+1];
+
+        for (int i = 0; i <= nextLineEnd-lineStart; i++)
+        {
+          outttf[i] = paraString[i+lineStart];
+        }
+
+        outttf[nextLineEnd-lineStart+1] = 0;
+
+        int w;
+        TTF_SizeUNICODE(fonts[par->font], outttf, &w, 0);
+
+        if (w > par->box.w)
+        {
+          break;
+        }
+
+        lineEnd = nextLineEnd;
+
+      }
+
+      // TODO here we should do actual shaping...
+      fribidi_reorder_line(FRIBIDI_FLAGS_DEFAULT, // flags...
+          bidiTypes,
+          lineEnd-lineStart+1,
+          lineStart,
+          base,
+          bidiLevels,
+          paraString,
+          NULL
+          );
+
+      Uint16 outttf[ucsLength+1];
+
+      int j = 0;
+      for (int i = 0; i <= lineEnd-lineStart; i++)
+      {
+        if (paraString[i+lineStart] < 0x202A || paraString[i+lineStart] > 0x202E)  // exclude bidi characters
+        {
+          outttf[j] = paraString[i+lineStart];
+          j++;
+        }
+      }
+
+      outttf[j] = 0;
+
+      SDL_Surface * vv = TTF_RenderUNICODE_Blended(fonts[par->font], outttf, par->color);
+      SDL_Surface * vb = NULL;
+
+      if (par->shadow)
+      {
+        SDL_Color bg;
+        bg.r = bg.g = bg.b = 0;
+        vb = TTF_RenderUNICODE_Blended(fonts[par->font], outttf, bg);
+      }
+
+      if (par->alignment == ALN_TEXT) {
+
+        SDL_Rect r = par->box;
+
+        if (rightToLeft())
+        {
+          r.x = r.x+r.w-vv->w;
+        }
+        r.w = vv->w;
+        r.h = vv->h;
+        r.y = ypos;
+
+        if (par->shadow == 1)
+        {
+          int sa = 1;
+          if (par->font == FNT_BIG) sa = 2;
+
+          r.x-=sa; r.y-=sa; SDL_BlitSurface(vb, 0, video, &r);
+          r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+          r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+          r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+          r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+          r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+          r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+          r.y-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+          r.x+=sa;
+        }
+        else if (par->shadow == 2)
+        {
+          int sa = 1;
+
+          r.x+=sa; r.y+=sa; SDL_BlitSurface(vb, 0, video, &r);
+          r.x-=sa; r.y-=sa;
+        }
+        SDL_BlitSurface(vv, 0, video, &r);
+      }
+      else if (par->alignment == ALN_TEXT_CENTER || par->alignment == ALN_CENTER) {
+
+        SDL_Rect r;
+
+        r.x = par->box.x + (par->box.w - vv->w)/2;
+        r.y = ypos;
+
+        r.w = vv->w;
+        r.h = vv->h;
+
+        if (par->shadow == 1)
+        {
+          int sa = 1;
+          if (par->font == FNT_BIG) sa = 2;
+
+          r.x-=sa; r.y-=sa; SDL_BlitSurface(vb, 0, video, &r);
+          r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+          r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+          r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+          r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
+          r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+          r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+          r.y-=sa;          SDL_BlitSurface(vb, 0, video, &r);
+          r.x+=sa;
+        }
+        else if (par->shadow == 2)
+        {
+          int sa = 1;
+
+          r.x+=sa; r.y+=sa; SDL_BlitSurface(vb, 0, video, &r);
+          r.x-=sa; r.y-=sa;
+        }
+        SDL_BlitSurface(vv, 0, video, &r);
+      }
+
+      ypos += vv->h;
+
+      SDL_FreeSurface(vv);
+      if (par->shadow) SDL_FreeSurface(vb);
+
+      lineStart = lineEnd+1;
+
+      // when the break reason was a normal space, skip those spaces
+      while (paraString[lineStart] == ' ' && lineStart < ucsLength)
+        lineStart++;
+
+      lines++;
     }
-
-    curLine = fribiditize(curLine);
-
-    SDL_Surface * vv = TTF_RenderUTF8_Blended(fonts[par->font], curLine.c_str(), par->color);
-    SDL_Surface * vb = NULL;
-
-    if (par->shadow)
-    {
-      SDL_Color bg;
-      bg.r = bg.g = bg.b = 0;
-      vb = TTF_RenderUTF8_Blended(fonts[par->font], curLine.c_str(), bg);
-    }
-
-    if (par->alignment == ALN_TEXT) {
-
-      SDL_Rect r = par->box;
-
-      if (rightToLeft())
-      {
-        r.x = r.x+r.w-vv->w;
-      }
-      r.w = vv->w;
-      r.h = vv->h;
-      r.y = ypos;
-
-      if (par->shadow == 1)
-      {
-        int sa = 1;
-        if (par->font == FNT_BIG) sa = 2;
-
-        r.x-=sa; r.y-=sa; SDL_BlitSurface(vb, 0, video, &r);
-        r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-        r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-        r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-        r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-        r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
-        r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
-        r.y-=sa;          SDL_BlitSurface(vb, 0, video, &r);
-        r.x+=sa;
-      }
-      else if (par->shadow == 2)
-      {
-        int sa = 1;
-
-        r.x+=sa; r.y+=sa; SDL_BlitSurface(vb, 0, video, &r);
-        r.x-=sa; r.y-=sa;
-      }
-      SDL_BlitSurface(vv, 0, video, &r);
-    }
-    else if (par->alignment == ALN_TEXT_CENTER || par->alignment == ALN_CENTER) {
-
-      SDL_Rect r;
-
-      r.x = par->box.x + (par->box.w - vv->w)/2;
-      r.y = ypos;
-
-      r.w = vv->w;
-      r.h = vv->h;
-
-      if (par->shadow == 1)
-      {
-        int sa = 1;
-        if (par->font == FNT_BIG) sa = 2;
-
-        r.x-=sa; r.y-=sa; SDL_BlitSurface(vb, 0, video, &r);
-        r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-        r.x+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-        r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-        r.y+=sa;          SDL_BlitSurface(vb, 0, video, &r);
-        r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
-        r.x-=sa;          SDL_BlitSurface(vb, 0, video, &r);
-        r.y-=sa;          SDL_BlitSurface(vb, 0, video, &r);
-        r.x+=sa;
-      }
-      else if (par->shadow == 2)
-      {
-        int sa = 1;
-
-        r.x+=sa; r.y+=sa; SDL_BlitSurface(vb, 0, video, &r);
-        r.x-=sa; r.y-=sa;
-      }
-      SDL_BlitSurface(vv, 0, video, &r);
-    }
-
-    ypos += vv->h;
-
-    SDL_FreeSurface(vv);
-    if (par->shadow) SDL_FreeSurface(vb);
   }
 
   return lines;
@@ -884,7 +944,7 @@ unsigned int getTextWidth(unsigned int font, const std::string & t) {
 
 unsigned int getTextHeight(const fontParams_s * par, const std::string & t) {
 
-  std::vector<std::string> words = split(t.c_str(), ' ');
+  std::vector<std::string> words = split(t.c_str(), " ");
 
   unsigned int word = 0;
   int height = 0;
