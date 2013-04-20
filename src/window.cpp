@@ -532,18 +532,27 @@ class missionWindow_c : public listWindow_c
         _("done")
       };
 
+      int widths[3];
+
+      widths[0] = getTextWidth(FNT_SMALL, text[0]);
+      widths[1] = getTextWidth(FNT_SMALL, text[1]);
+      widths[2] = getTextWidth(FNT_SMALL, text[2]);
+
       par.box.x = gr.blockX()*(X()+1 + X()+W()-1)/2 -
-          (getTextWidth(FNT_SMALL, text[0]) + getTextWidth(FNT_SMALL, text[1]) + getTextWidth(FNT_SMALL, text[2]) + 30)/2;
+          (widths[0] + widths[1] + widths[2] + 30)/2;
 
       par.color.r = TXT_COL_R; par.color.g = TXT_COL_G; par.color.b = TXT_COL_B;
+      par.box.w = widths[0];
       surf.renderText(&par, text[0]);
       par.box.x += getTextWidth(FNT_SMALL, text[0])+15;
 
       par.color.r = SO1_COL_R; par.color.g = SO1_COL_G; par.color.b = SO1_COL_B;
+      par.box.w = widths[1];
       surf.renderText(&par, text[1]);
       par.box.x += getTextWidth(FNT_SMALL, text[1])+15;
 
       par.color.r = SOL_COL_R; par.color.g = SOL_COL_G; par.color.b = SOL_COL_B;
+      par.box.w = widths[2];
       surf.renderText(&par, text[2]);
     }
 };
@@ -633,18 +642,27 @@ class levelWindow_c : public listWindow_c
         _("solved")
       };
 
+      int widths[3];
+
+      widths[0] = getTextWidth(FNT_SMALL, text[0]);
+      widths[1] = getTextWidth(FNT_SMALL, text[1]);
+      widths[2] = getTextWidth(FNT_SMALL, text[2]);
+
       par.box.x = gr.blockX()*(X()+1 + X()+W()-1)/2 -
-          (getTextWidth(FNT_SMALL, text[0]) + getTextWidth(FNT_SMALL, text[1]) + getTextWidth(FNT_SMALL, text[2]) + 30)/2;
+          (widths[0] + widths[1] + widths[2] + 30)/2;
 
       par.color.r = TXT_COL_R; par.color.g = TXT_COL_G; par.color.b = TXT_COL_B;
+      par.box.w = widths[0];
       surf.renderText(&par, text[0]);
       par.box.x += getTextWidth(FNT_SMALL, text[0])+15;
 
       par.color.r = SO1_COL_R; par.color.g = SO1_COL_G; par.color.b = SO1_COL_B;
+      par.box.w = widths[1];
       surf.renderText(&par, text[1]);
       par.box.x += getTextWidth(FNT_SMALL, text[1])+15;
 
       par.color.r = SOL_COL_R; par.color.g = SOL_COL_G; par.color.b = SOL_COL_B;
+      par.box.w = widths[2];
       surf.renderText(&par, text[2]);
     }
 };
