@@ -40,4 +40,14 @@ std::vector<std::string> directoryEntries(const std::string & path);
 // return current system time
 uint64_t getTime(void);
 
+// look for a file with a certain name within the given directory and its
+// subdirectories, the depth is limited, the first found file is returned
+// if no file is found, an empty string is returned
+std::string findFileInDirectory(const std::string & path, const std::string name, uint16_t depth = 3);
+
+// split a string into a vector of strings using a string of separator characters, wherever
+// one of the separators is found within the text the text will be split, the separator is gone
+// ATTENTION right now the separator is limited to characters that are 1 byte UTF-8 encodable
+std::vector<std::string> splitString(const std::string & text, const std::string & splitter);
+
 #endif

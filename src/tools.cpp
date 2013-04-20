@@ -39,6 +39,8 @@
 
 #include <stdexcept>
 
+#include <boost/filesystem.hpp>
+
 uint64_t getTime(void)
 {
 #ifdef WIN32
@@ -137,3 +139,62 @@ std::vector<std::string> directoryEntries(const std::string & path) {
     throw std::runtime_error("Can't close directory: " + path);
   return entries;
 }
+
+
+std::string findFileInDirectory(const std::string & path, const std::string name, uint16_t depth)
+{
+  boost::filesystem::path p (path);   // p reads clearer than argv[1] in the following code
+
+  if (depth > 0)
+  {
+    if (boost::filesystem::exists(p))
+    {
+      if (boost::filesystem::is_regular_file(p) && p.filename() == name)
+      {
+        return p.string();
+      }
+      else if (boost::filesystem::is_directory(p))
+      {
+        for (boost::filesystem::directory_iterator i(p); i != boost::filesystem::directory_iterator(); ++i)
+        {
+          std::string f = findFileInDirectory(i->path().string(), name, depth-1);
+
+          if (f != "") return f;
+        }
+      }
+    }
+  }
+
+  return "";
+}
+
+// splits a string along a set of characters, attention, splitting characters must be single byte utf-8 encodable
+std::vector<std::string> splitString(const std::string & text, const std::string & splitter)
+{
+  std::string current;
+  std::vector<std::string> res;
+
+  for (unsigned int i = 0; i < text.length(); i++)
+  {
+    if (splitter.find_first_of(text[i]) != splitter.npos)
+    {
+      if (current.length())
+      {
+        res.push_back(current);
+      }
+      current = "";
+    }
+    else
+    {
+      current += text[i];
+    }
+  }
+
+  if (current.length())
+  {
+    res.push_back(current);
+  }
+
+  return res;
+}
+

@@ -22,6 +22,7 @@
 #include "screen.h"
 
 #include "graphicsn.h"
+#include "tools.h"
 
 #include "linebreak/linebreak.h"
 
@@ -630,10 +631,41 @@ SDL_Surface * surface_c::getIdentical(void) const {
 
 static std::vector<std::vector<TTF_Font *> > fonts;
 
+// list of paths to look for the fonts
 
-void initText(std::string dir) {
+const char * fontpaths [] = {
+  "/usr/share/fonts/",
+  "data/",
+  PKGDATADIR,
+  "" // empty string as end of list
+};
 
-  std::string fname = dir+"/data/FreeSans.ttf";
+
+static std::string findFont(const std::string & font)
+{
+  size_t i = 0;
+
+  while (strcmp(fontpaths[i], "") != 0)
+  {
+    std::string f = findFileInDirectory(fontpaths[i], font);
+
+    if (f != "") return f;
+
+    i++;
+  }
+
+  return "";
+}
+
+
+void initText(std::string dir)
+{
+  //TRANSLATORS: this is a list of fonts that you might need for your translation, please
+  //specify a semicolon separated list of fonts to use, FreeSans.ttf should always be
+  //the first, making English text legible, but if that font doesn't contains characters
+  //you need, you can add them. ATTENTION: do not enter spaces, example for japanese
+  //  "FreeSans.ttf;DroidSansJapanese.ttf"
+  std::vector<std::string> fontList = splitString(_("FreeSans.ttf"), ";");
 
   if (TTF_Init() == -1) {
     std::cout << "Can't initialize font engine" << std::endl;
@@ -642,57 +674,45 @@ void initText(std::string dir) {
 
   fonts.resize(3);
 
-  TTF_Font * ft;
+  for (size_t i = 0; i < fontList.size(); i++)
+  {
+    std::string fname = findFont(fontList[i]);
 
-  ft = TTF_OpenFont(fname.c_str(), 18);
-  if (!ft) {
-    std::cout << "Can't open Font file: " << fname << std::endl;
-    exit(1);
+    if (fname == "")
+    {
+      std::cout << "Could not find required fontfile for font  " << fontList[i] << std::endl;
+    }
+    else
+    {
+      std::cout << "found font " << fname << std::endl;
+
+      TTF_Font * ft;
+
+      ft = TTF_OpenFont(fname.c_str(), 18);
+      if (!ft) {
+        std::cout << "Can't open Font file: " << fname << std::endl;
+        exit(1);
+      }
+
+      fonts[0].push_back(ft);
+
+      ft = TTF_OpenFont(fname.c_str(), 30);
+      if (!ft) {
+        std::cout << "Can't open Font file: " << fname << std::endl;
+        exit(1);
+      }
+
+      fonts[1].push_back(ft);
+
+      ft = TTF_OpenFont(fname.c_str(), 35);
+      if (!ft) {
+        std::cout << "Can't open Font file: " << fname << std::endl;
+        exit(1);
+      }
+
+      fonts[2].push_back(ft);
+    }
   }
-
-  fonts[0].push_back(ft);
-
-  ft = TTF_OpenFont(fname.c_str(), 30);
-  if (!ft) {
-    std::cout << "Can't open Font file: " << fname << std::endl;
-    exit(1);
-  }
-
-  fonts[1].push_back(ft);
-
-  ft = TTF_OpenFont(fname.c_str(), 35);
-  if (!ft) {
-    std::cout << "Can't open Font file: " << fname << std::endl;
-    exit(1);
-  }
-
-  fonts[2].push_back(ft);
-
-  fname = dir+"/data/DroidSansJapanese.ttf";
-
-  ft = TTF_OpenFont(fname.c_str(), 18);
-  if (!ft) {
-    std::cout << "Can't open Font file: " << fname << std::endl;
-    exit(1);
-  }
-
-  fonts[0].push_back(ft);
-
-  ft = TTF_OpenFont(fname.c_str(), 30);
-  if (!ft) {
-    std::cout << "Can't open Font file: " << fname << std::endl;
-    exit(1);
-  }
-
-  fonts[1].push_back(ft);
-
-  ft = TTF_OpenFont(fname.c_str(), 35);
-  if (!ft) {
-    std::cout << "Can't open Font file: " << fname << std::endl;
-    exit(1);
-  }
-
-  fonts[2].push_back(ft);
 }
 
 void deinitText(void) {
@@ -703,39 +723,6 @@ void deinitText(void) {
 
   TTF_Quit();
 }
-
-// splits a string along a set of characters, attention, splitting characters must be single byte utf-8 encodable
-static std::vector<std::string> split(const std::string & text, const std::string & splitter)
-{
-  std::string current;
-  std::vector<std::string> res;
-
-  for (unsigned int i = 0; i < text.length(); i++)
-  {
-    if (splitter.find_first_of(text[i]) != splitter.npos)
-    {
-      if (current.length())
-      {
-        res.push_back(current);
-      }
-      current = "";
-    }
-    else
-    {
-      current += text[i];
-    }
-  }
-
-  if (current.length())
-  {
-    res.push_back(current);
-  }
-
-  return res;
-}
-
-
-
 
 bool rightToLeft(void)
 {
@@ -897,7 +884,7 @@ unsigned int renderTextIntern(const fontParams_s * par, const std::string & t, S
 
   // STEP 1 split into paragraphs, paragraphs
   // are separated by \n or \r
-  std::vector<std::string> paragraphs = split(t.c_str(), "\n\r");;
+  std::vector<std::string> paragraphs = splitString(t.c_str(), "\n\r");;
 
   int ypos = par->box.y;
   unsigned int lines = 0;
