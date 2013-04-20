@@ -28,7 +28,10 @@ pushover_SOURCES = \
   src/window.cpp src/window.h \
   src/window_about.cpp \
   src/window_help.cpp \
-  src/window_input.cpp
+  src/window_input.cpp \
+  src/linebreak/linebreak.c \
+  src/linebreak/linebreakdata.c \
+  src/linebreak/linebreakdef.c
 
 dist_doc_DATA = \
   README \
