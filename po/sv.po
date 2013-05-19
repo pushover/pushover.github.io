@@ -1,16 +1,17 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Andreas Röver
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Swedish translation for the game PUSHOVER
+# Copyright (C) 2013 Andreas Röver
+# This file is distributed under the same license as the Pushover package.
+# Johannes Genberg <johannesgenberg@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Svensk version\n"
+"Project-Id-Version: pushover 0.0.4-pre1\n"
 "Report-Msgid-Bugs-To: roever@users.sf.net\n"
 "POT-Creation-Date: 2013-04-18 17:16+0200\n"
-"PO-Revision-Date: 2013-04-26 23:34+0100\n"
+"PO-Revision-Date: 2013-05-15 20:23+0100\n"
 "Last-Translator: Johannes Genberg <johannesgenberg@gmail.com>\n"
-"Language-Team: svenska <se@li.org>\n"
+"Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
