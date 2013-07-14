@@ -1347,18 +1347,21 @@ bool eventEditor(const SDL_Event & event)
       {
         if (SDL_GetKeyState(NULL)[SDLK_LSHIFT] || SDL_GetKeyState(NULL)[SDLK_RSHIFT])
         {
-          bool val = !l->getPlatform(gr->getCursorX(), gr->getCursorY());
-
-          for (uint8_t x = gr->getCursorX(); x < gr->getCursorX()+gr->getCursorW(); x++)
-            for (uint8_t y = gr->getCursorY(); y < gr->getCursorY()+gr->getCursorH(); y++)
-              l->setPlatform(x, y, val);
-        }
-        else
-        {
           // toggle platforms
           for (uint8_t x = gr->getCursorX(); x < gr->getCursorX()+gr->getCursorW(); x++)
             for (uint8_t y = gr->getCursorY(); y < gr->getCursorY()+gr->getCursorH(); y++)
               l->setPlatform(x, y, !l->getPlatform(x, y));
+        }
+        else
+        {
+          // set all platforms, or remove all platforms if all platforms are already set
+          bool allSet = true;
+          for (uint8_t x = gr->getCursorX(); x < gr->getCursorX()+gr->getCursorW(); x++)
+            for (uint8_t y = gr->getCursorY(); y < gr->getCursorY()+gr->getCursorH(); y++)
+              allSet = allSet && l->getPlatform(x, y);
+          for (uint8_t x = gr->getCursorX(); x < gr->getCursorX()+gr->getCursorW(); x++)
+            for (uint8_t y = gr->getCursorY(); y < gr->getCursorY()+gr->getCursorH(); y++)
+              l->setPlatform(x, y, !allSet);
         }
       }
 
@@ -1366,19 +1369,21 @@ bool eventEditor(const SDL_Event & event)
       {
         if (SDL_GetKeyState(NULL)[SDLK_LSHIFT] || SDL_GetKeyState(NULL)[SDLK_RSHIFT])
         {
-          bool val = !l->getLadder(gr->getCursorX(), gr->getCursorY());
-
-          // toggle ladders
-          for (uint8_t x = gr->getCursorX(); x < gr->getCursorX()+gr->getCursorW(); x++)
-            for (uint8_t y = gr->getCursorY(); y < gr->getCursorY()+gr->getCursorH(); y++)
-              l->setLadder(x, y, val);
-        }
-        else
-        {
           // toggle ladders
           for (uint8_t x = gr->getCursorX(); x < gr->getCursorX()+gr->getCursorW(); x++)
             for (uint8_t y = gr->getCursorY(); y < gr->getCursorY()+gr->getCursorH(); y++)
               l->setLadder(x, y, !l->getLadder(x, y));
+        }
+        else
+        {
+          // set all ladders, or remove all ladders if all ladders are already set
+          bool allSet = true;
+          for (uint8_t x = gr->getCursorX(); x < gr->getCursorX()+gr->getCursorW(); x++)
+            for (uint8_t y = gr->getCursorY(); y < gr->getCursorY()+gr->getCursorH(); y++)
+              allSet = allSet && l->getLadder(x, y);
+          for (uint8_t x = gr->getCursorX(); x < gr->getCursorX()+gr->getCursorW(); x++)
+            for (uint8_t y = gr->getCursorY(); y < gr->getCursorY()+gr->getCursorH(); y++)
+              l->setLadder(x, y, !allSet);
         }
       }
 
