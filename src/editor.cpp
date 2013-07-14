@@ -1486,6 +1486,9 @@ bool eventEditor(const SDL_Event & event)
         {
           bgLayer++;
           gr->setBgDrawLayer(bgLayer);
+          std::ostringstream status;
+          status << _("Switched to background layer: ") << static_cast<int>(bgLayer);
+          gr->setStatus(status.str());
           updateEditPlane();
         }
       }
@@ -1496,6 +1499,9 @@ bool eventEditor(const SDL_Event & event)
         {
           bgLayer--;
           gr->setBgDrawLayer(bgLayer);
+          std::ostringstream status;
+          status << _("Switched to background layer: ") << static_cast<int>(bgLayer);
+          gr->setStatus(status.str());
           updateEditPlane();
         }
       }
