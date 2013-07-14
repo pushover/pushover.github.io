@@ -70,5 +70,10 @@
 #define TIME_COL_G 0
 #define TIME_COL_B 0
 
+// cursor color (level editor)
+#define CURS_COL_R 255
+#define CURS_COL_G 255
+#define CURS_COL_B 255
+
 #endif
 

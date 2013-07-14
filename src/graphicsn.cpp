@@ -1570,21 +1570,24 @@ void graphicsN_c::drawLevel(void) {
 
   if (editorMode)
   {
+    int colorR = CURS_COL_R;
+    int colorG = CURS_COL_G;
+    int colorB = CURS_COL_B;
     for (size_t y = 0; y < level->levelY(); y++)
       for (size_t x = 0; x < level->levelX(); x++)
         if (dirty.isDirty(x, y))
         {
           if (y == cursorY && (x >= cursorX && x < cursorX+cursorW))
-            target->fillRect(x*blockX(), y*blockY()/2-1, blockX(), 2, 255, 255, 255);
+            target->fillRect(x*blockX(), y*blockY()/2-1, blockX(), 2, colorR, colorG, colorB);
 
           if (y == cursorY+cursorH-1 && (x >= cursorX && x < cursorX+cursorW))
-            target->fillRect(x*blockX(), (y+1)*blockY()/2-1, blockX(), 2, 255, 255, 255);
+            target->fillRect(x*blockX(), (y+1)*blockY()/2-1, blockX(), 2, colorR, colorG, colorB);
 
           if (x == cursorX && (y >= cursorY && y < cursorY+cursorH))
-            target->fillRect(x*blockX()-1, y*blockY()/2, 2, blockY()/2, 255, 255, 255);
+            target->fillRect(x*blockX()-1, y*blockY()/2, 2, blockY()/2, colorR, colorG, colorB);
 
           if (x == cursorX+cursorW-1 && (y >= cursorY && y < cursorY+cursorH))
-            target->fillRect((x+1)*blockX()-1, y*blockY()/2, 2, blockY()/2, 255, 255, 255);
+            target->fillRect((x+1)*blockX()-1, y*blockY()/2, 2, blockY()/2, colorR, colorG, colorB);
         }
   }
 
