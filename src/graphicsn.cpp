@@ -234,6 +234,7 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
 
   grid = false;
   editorMode = false;
+  cursorMode = CURS_FG;
   cursorX = 10;
   cursorY = 13;
   cursorW = cursorH = 1;
@@ -1570,9 +1571,12 @@ void graphicsN_c::drawLevel(void) {
 
   if (editorMode)
   {
-    int colorR = CURS_COL_R;
-    int colorG = CURS_COL_G;
-    int colorB = CURS_COL_B;
+    int colorR, colorG, colorB;
+    switch (cursorMode) {
+      default:
+      case CURS_FG: colorR = CURS_FG_COL_R; colorG = CURS_FG_COL_G; colorB = CURS_FG_COL_B; break;
+      case CURS_BG: colorR = CURS_BG_COL_R; colorG = CURS_BG_COL_G; colorB = CURS_BG_COL_B; break;
+    }
     for (size_t y = 0; y < level->levelY(); y++)
       for (size_t x = 0; x < level->levelX(); x++)
         if (dirty.isDirty(x, y))
@@ -1689,6 +1693,15 @@ void graphicsN_c::setEditorMode(bool on)
   if (on != editorMode)
   {
     editorMode = on;
+    markAllDirty();
+  }
+}
+
+void graphicsN_c::setCursorMode(cursorMode_e mode)
+{
+  if (mode != cursorMode)
+  {
+    cursorMode = mode;
     markAllDirty();
   }
 }

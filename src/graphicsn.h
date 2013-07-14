@@ -33,6 +33,11 @@ class pngLoader_c;
 class levelData_c;
 class ant_c;
 
+typedef enum {
+  CURS_FG,
+  CURS_BG
+} cursorMode_e;
+
 /* implementation for graphics class using the original graphics */
 class graphicsN_c : public graphics_c {
 
@@ -62,6 +67,7 @@ class graphicsN_c : public graphics_c {
     const surface_c * getHelpDominoImage(unsigned int domino);
 
     void setEditorMode(bool on);
+    void setCursorMode(cursorMode_e mode);
     void setShowGrid(bool on);
     bool getShowGrid(void) const { return grid; }
     uint8_t getCursorX(void) const { return cursorX; }
@@ -99,6 +105,7 @@ class graphicsN_c : public graphics_c {
   private:
 
     bool editorMode;
+    cursorMode_e cursorMode;
     bool grid;
     uint8_t cursorX, cursorY, cursorW, cursorH;
     std::string statusText;

@@ -357,7 +357,10 @@ static void changeState(void)
       case ST_INIT:
       case ST_EXIT:
       case ST_EDIT_HOME:
+        break;
+
       case ST_EDIT_BACKGROUND:
+        gr->setCursorMode(CURS_FG);
         break;
 
       case ST_EDIT_PLAY:
@@ -398,7 +401,10 @@ static void changeState(void)
       case ST_INIT:
       case ST_EXIT:
       case ST_EDIT_HOME:
+        break;
+
       case ST_EDIT_BACKGROUND:
+        gr->setCursorMode(CURS_BG);
         break;
 
       case ST_CHOOSE_LEVEL:
