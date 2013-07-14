@@ -99,6 +99,29 @@ static void loadLevels(void)
   }
 }
 
+static void setDominoStatus(DominoType dt)
+{
+  switch (dt)
+  {
+    case DominoTypeStandard:   gr->setStatus(_("Selected Standard domino")); break;
+    case DominoTypeStopper:    gr->setStatus(_("Selected Stopper domino")); break;
+    case DominoTypeSplitter:   gr->setStatus(_("Selected Splitter domino")); break;
+    case DominoTypeExploder:   gr->setStatus(_("Selected Exploder domino")); break;
+    case DominoTypeDelay:      gr->setStatus(_("Selected Delay domino")); break;
+    case DominoTypeTumbler:    gr->setStatus(_("Selected Tumbler domino")); break;
+    case DominoTypeBridger:    gr->setStatus(_("Selected Bridger domino")); break;
+    case DominoTypeVanish:     gr->setStatus(_("Selected Vanisher domino")); break;
+    case DominoTypeTrigger:    gr->setStatus(_("Selected Trigger domino")); break;
+    case DominoTypeAscender:   gr->setStatus(_("Selected Ascender domino")); break;
+    case DominoTypeConnectedA: gr->setStatus(_("Selected Connected A domino")); break;
+    case DominoTypeConnectedB: gr->setStatus(_("Selected Connected B domino")); break;
+    case DominoTypeCounter1:   gr->setStatus(_("Selected Counter Stopper 1 domino")); break;
+    case DominoTypeCounter2:   gr->setStatus(_("Selected Counter Stopper 2 domino")); break;
+    case DominoTypeCounter3:   gr->setStatus(_("Selected Counter Stopper 3 domino")); break;
+    default:                   gr->setStatus(_("Selected unknown domino")); break;
+  }
+}
+
 #define D_OVL_W 50
 #define D_OVL_H 70
 #define D_OVL_COL 5
@@ -129,6 +152,7 @@ void updateDominoOverlay(void)
   }
 
   gr->setOverlay(dominoOverlay);
+  setDominoStatus(dt);
 }
 
 #define B_OVL_W gr->blockX()
@@ -673,29 +697,6 @@ static void setBgCursor(int8_t x, int8_t y, int8_t w, int8_t h)
   bgSelH = h;
 
   updateBackgroundOverlay();
-}
-
-static void setDominoStatus(DominoType dt)
-{
-  switch (dt)
-  {
-    case DominoTypeStandard:   gr->setStatus(_("Selected Standard domino")); break;
-    case DominoTypeStopper:    gr->setStatus(_("Selected Stopper domino")); break;
-    case DominoTypeSplitter:   gr->setStatus(_("Selected Splitter domino")); break;
-    case DominoTypeExploder:   gr->setStatus(_("Selected Exploder domino")); break;
-    case DominoTypeDelay:      gr->setStatus(_("Selected Delay domino")); break;
-    case DominoTypeTumbler:    gr->setStatus(_("Selected Tumbler domino")); break;
-    case DominoTypeBridger:    gr->setStatus(_("Selected Bridger domino")); break;
-    case DominoTypeVanish:     gr->setStatus(_("Selected Vanisher domino")); break;
-    case DominoTypeTrigger:    gr->setStatus(_("Selected Trigger domino")); break;
-    case DominoTypeAscender:   gr->setStatus(_("Selected Ascender domino")); break;
-    case DominoTypeConnectedA: gr->setStatus(_("Selected Connected A domino")); break;
-    case DominoTypeConnectedB: gr->setStatus(_("Selected Connected B domino")); break;
-    case DominoTypeCounter1:   gr->setStatus(_("Selected Counter Stopper 1 domino")); break;
-    case DominoTypeCounter2:   gr->setStatus(_("Selected Counter Stopper 2 domino")); break;
-    case DominoTypeCounter3:   gr->setStatus(_("Selected Counter Stopper 3 domino")); break;
-    default:                   gr->setStatus(_("Selected unknown domino")); break;
-  }
 }
 
 static void updateEditPlane()
