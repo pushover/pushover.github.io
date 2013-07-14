@@ -1578,7 +1578,7 @@ void graphicsN_c::drawLevel(void) {
             target->fillRect(x*blockX(), y*blockY()/2-1, blockX(), 2, 255, 255, 255);
 
           if (y == cursorY+cursorH-1 && (x >= cursorX && x < cursorX+cursorW))
-          target->fillRect(x*blockX(), (y+1)*blockY()/2-1, blockX(), 2, 255, 255, 255);
+            target->fillRect(x*blockX(), (y+1)*blockY()/2-1, blockX(), 2, 255, 255, 255);
 
           if (x == cursorX && (y >= cursorY && y < cursorY+cursorH))
             target->fillRect(x*blockX()-1, y*blockY()/2, 2, blockY()/2, 255, 255, 255);
