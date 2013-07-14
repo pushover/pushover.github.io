@@ -1338,6 +1338,7 @@ bool eventEditor(const SDL_Event & event)
         nextState = ST_EDIT_MENU;
         messageContinue = ST_EDIT_HOME;
       }
+
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F1)
       {
         nextState = ST_EDIT_HELP;
