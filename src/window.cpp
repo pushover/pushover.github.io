@@ -855,10 +855,6 @@ window_c * getEditorMenu(surface_c & surf, graphicsN_c & gr)
 
     entries.back().line = true;
 
-    entries.push_back(listWindow_c::entry(_("Test level")));
-
-    entries.back().line = true;
-
     entries.push_back(listWindow_c::entry(_("Save")));
     entries.push_back(listWindow_c::entry(_("Edit another file")));
     entries.push_back(listWindow_c::entry(_("Leave editor")));

@@ -736,6 +736,17 @@ static bool stringValidAsFilename(const std::string s)
   return true;
 }
 
+static void playLevel()
+{
+  {
+    std::ofstream out(levelFileName.c_str());
+    l->save(out);
+  }
+  loadLevels();
+  a->initForLevel();
+  gr->setShowGrid(false);
+  nextState = ST_EDIT_PLAY;
+}
 
 bool eventEditor(const SDL_Event & event)
 {
@@ -1140,18 +1151,6 @@ bool eventEditor(const SDL_Event & event)
               break;
 
             case 5:
-              // play
-              {
-                std::ofstream out(levelFileName.c_str());
-                l->save(out);
-              }
-              loadLevels();
-              a->initForLevel();
-              gr->setShowGrid(false);
-              nextState = ST_EDIT_PLAY;
-              break;
-
-            case 6:
               // save
               {
                 std::ofstream out(levelFileName.c_str());
@@ -1161,12 +1160,12 @@ bool eventEditor(const SDL_Event & event)
               nextState = messageContinue;
               break;
 
-            case 7:
+            case 6:
               // another level
               nextState = ST_CHOOSE_LEVEL;
               break;
 
-            case 8:
+            case 7:
               // leave
               nextState = ST_EXIT;
               break;
@@ -1345,6 +1344,11 @@ bool eventEditor(const SDL_Event & event)
         messageContinue = ST_EDIT_HOME;
       }
 
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'p')
+      {
+        playLevel();
+      }
+
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_TAB)
       {
         nextState = ST_EDIT_BACKGROUND;
@@ -1465,6 +1469,11 @@ bool eventEditor(const SDL_Event & event)
       {
         nextState = ST_EDIT_HELP;
         messageContinue = ST_EDIT_BACKGROUND;
+      }
+
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'p')
+      {
+        playLevel();
       }
 
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_TAB)
