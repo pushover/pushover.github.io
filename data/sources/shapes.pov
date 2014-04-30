@@ -412,19 +412,14 @@
     texture { TxtR }
   }
   intersection {
-    box { <-W/2, 0, D/3> <W/2, H, D/2> }
+    box { <-W/2, 0, D/3> <W/2, H, 2*D/3> }
     object { Edges }
     texture { TxtY }
-  }
-  intersection {
-    box { <-W/2, 0, D/2> <W/2, H, 2*D/3> }
-    object { Edges }
-    texture { TxtR }
   }
   intersection {
     box { <-W/2, 0, 2*D/3> <W/2, H, D> }
     object { Edges }
-    texture { TxtY }
+    texture { TxtR }
   }
 }
 
@@ -452,7 +447,7 @@
   }
 }
 
-#declare my = 0.00000001;
+#declare my = 0.00001;
 
 // starter
 #declare Domino17 = union {
@@ -462,7 +457,7 @@
     texture { TxtY }
   }
   intersection {
-    box { <-W/2-my, H/3, 1*D/5> <W/2+my, 2*H/3, 4*D/5> }
+    box { <-W/2-my, H/4, 1*D/5> <W/2+my, 3*H/4, 4*D/5> }
     object { Edges }
     texture { TxtR }
   }
