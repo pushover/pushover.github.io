@@ -143,8 +143,8 @@ void soundSystem_c::playMusic(const std::string & fname) {
 
   if (music)
   {
-    Mix_FadeOutMusic(100);
-    SDL_Delay(130);
+    Mix_FadeOutMusic(500);
+    SDL_Delay(500);
     Mix_HaltMusic();
 
     Mix_FreeMusic(music);

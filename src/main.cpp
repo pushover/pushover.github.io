@@ -1027,5 +1027,7 @@ int main(int argc, char * argv[]) {
 
   }
 
+  soundSystem_c::instance()->playMusic(datadir+"/themes/NonExistingFile.ogg");
+
   return 0;
 }
