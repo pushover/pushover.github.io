@@ -740,7 +740,6 @@ static unsigned int findFontForChar(int font, Uint16 ch)
   {
     if (TTF_GlyphIsProvided(fonts[font][f], ch))
     {
-      printf("%i ", f);
       return f;
     }
 
