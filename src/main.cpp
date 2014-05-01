@@ -307,6 +307,9 @@ int main(int argc, char * argv[]) {
               break;
 
             case ST_PROFILE_INIT:
+              soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
+              // intentionally fall through
+
             case ST_PROFILE:
               window = getProfileWindow(solved, screen, gr);
               break;
