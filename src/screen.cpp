@@ -888,7 +888,6 @@ unsigned int renderTextIntern(const fontParams_s * par, const std::string & t, S
   std::vector<std::string> paragraphs = splitString(t.c_str(), "\n\r");;
 
   int ypos = par->box.y;
-  unsigned int lines = 0;
   unsigned int height = 0;
 
   if (par->alignment == ALN_CENTER && video)
