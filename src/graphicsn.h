@@ -70,11 +70,11 @@ class graphicsN_c : public graphics_c {
     void setCursorMode(cursorMode_e mode);
     void setShowGrid(bool on);
     bool getShowGrid(void) const { return grid; }
-    uint8_t getCursorX(void) const { return cursorX; }
-    uint8_t getCursorY(void) const { return cursorY; }
-    uint8_t getCursorW(void) const { return cursorW; }
-    uint8_t getCursorH(void) const { return cursorH; }
-    void setCursor(int8_t x, int8_t y, int8_t w, int8_t h);
+    size_t getCursorX(void) const { return cursorX; }
+    size_t getCursorY(void) const { return cursorY; }
+    size_t getCursorW(void) const { return cursorW; }
+    size_t getCursorH(void) const { return cursorH; }
+    void setCursor(size_t x, size_t y, size_t w, size_t h);
 
     // set a status text, this text automatically vanishes after a while
     void setStatus(const std::string & txt);
@@ -107,7 +107,7 @@ class graphicsN_c : public graphics_c {
     bool editorMode;
     cursorMode_e cursorMode;
     bool grid;
-    uint8_t cursorX, cursorY, cursorW, cursorH;
+    size_t cursorX, cursorY, cursorW, cursorH;
     std::string statusText;
     uint16_t statusTime;
     const surface_c * overlay;

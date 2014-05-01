@@ -1715,7 +1715,7 @@ void graphicsN_c::setShowGrid(bool on)
   }
 }
 
-void graphicsN_c::setCursor(int8_t x, int8_t y, int8_t w, int8_t h)
+void graphicsN_c::setCursor(size_t x, size_t y, size_t w, size_t h)
 {
   if (!level) return;
 

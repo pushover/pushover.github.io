@@ -902,7 +902,7 @@ unsigned int renderTextIntern(const fontParams_s * par, const std::string & t, S
     FriBidiCharType base = FRIBIDI_TYPE_ON;
     FriBidiChar * paraString = new FriBidiChar[paragraphs[para].length() + 1];
 
-    int ucsLength = fribidi_charset_to_unicode(FRIBIDI_CHAR_SET_UTF8,
+    size_t ucsLength = fribidi_charset_to_unicode(FRIBIDI_CHAR_SET_UTF8,
             const_cast<char*>(paragraphs[para].c_str()),
             paragraphs[para].length(), paraString);
 
@@ -939,7 +939,7 @@ unsigned int renderTextIntern(const fontParams_s * par, const std::string & t, S
 
         Uint16 outttf[ucsLength+1];
 
-        for (int i = 0; i <= nextLineEnd-lineStart; i++)
+        for (size_t i = 0; i <= nextLineEnd-lineStart; i++)
         {
           outttf[i] = paraString[i+lineStart];
         }
@@ -970,8 +970,8 @@ unsigned int renderTextIntern(const fontParams_s * par, const std::string & t, S
 
       Uint16 outttf[ucsLength+1];
 
-      int j = 0;
-      for (int i = 0; i <= lineEnd-lineStart; i++)
+      size_t j = 0;
+      for (size_t i = 0; i <= lineEnd-lineStart; i++)
       {
         if (paraString[i+lineStart] < 0x202A || paraString[i+lineStart] > 0x202E)  // exclude bidi characters
         {

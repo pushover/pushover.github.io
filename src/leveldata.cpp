@@ -706,7 +706,7 @@ void levelData_c::print(void) const {
 
 }
 
-unsigned short levelData_c::getBg(unsigned int x, unsigned int y, int layer) const {
+unsigned short levelData_c::getBg(unsigned int x, unsigned int y, size_t layer) const {
   if (layer < level[y][x].bg.size())
     return level[y][x].bg[layer];
   else
@@ -865,7 +865,7 @@ bool levelForegroundEmpty(const levelData_c & l, int16_t x, int16_t y, uint16_t 
   return true;
 }
 
-void levelData_c::setBg(unsigned int x, unsigned int y, int layer, uint16_t tile)
+void levelData_c::setBg(unsigned int x, unsigned int y, size_t layer, uint16_t tile)
 {
   if (x < levelX() && y < levelY())
   {

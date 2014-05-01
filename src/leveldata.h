@@ -191,9 +191,9 @@ class levelData_c {
     const std::string getChecksumNoTime(void) const { return checksumNoTime; }
 
     unsigned char getNumBgLayer(void) const { return numBg; }
-    unsigned short getBg(unsigned int x, unsigned int y, int layer) const;
+    unsigned short getBg(unsigned int x, unsigned int y, size_t layer) const;
 
-    void setBg(unsigned int x, unsigned int y, int layer, uint16_t tile);
+    void setBg(unsigned int x, unsigned int y, size_t layer, uint16_t tile);
 
     void openEntryDoorStep(void) { doorEntryState++; }
     void closeEntryDoorStep(void) { doorEntryState--; }
