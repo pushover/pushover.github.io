@@ -48,7 +48,7 @@ PKG_CHECK_EXISTS([SDL_mixer], [SDL_MIXER="SDL_mixer >= 1.2.0"],
 PKG_CHECK_EXISTS([SDL_ttf], [SDL_TTF="SDL_ttf >= 2.0.0"],
     [AC_CHECK_LIB([SDL_ttf], [main], [], [AC_MSG_ERROR([Unable to find SDL_ttf.])])])
 
-AX_BOOST_BASE([1.46], [], [AC_MSG_ERROR([Unabel to fint boost libraries])])
+AX_BOOST_BASE([1.46], [], [AC_MSG_ERROR([Unable to find Boost libraries])])
 AX_BOOST_FILESYSTEM
 AX_BOOST_SYSTEM
 LIBS="$LIBS $BOOST_LDFLAGS $BOOST_FILESYSTEM_LIB $BOOST_SYSTEM_LIB"
