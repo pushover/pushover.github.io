@@ -1422,7 +1422,7 @@ bool eventEditor(const SDL_Event & event)
             y = l->getEntryY();
           }
 
-          if (x == gr->getCursorX() && abs(y-(gr->getCursorY()+2)) < 2)
+          if (x == gr->getCursorX() && abs((int)y-(int)(gr->getCursorY()+2)) < 2)
             gr->setStatus(_("Doors must not overlap"));
           else
           {

@@ -199,7 +199,7 @@ void listWindow_c::redraw(void) {
       line2++;
     }
 
-    unsigned int diff = abs(c-center);
+    unsigned int diff = abs((int)c-(int)center);
 
     if (line2 < entries.size())
     {
@@ -211,7 +211,7 @@ void listWindow_c::redraw(void) {
     }
     else
     {
-      bestCenter = abs(c-center);
+      bestCenter = abs((int)c-(int)center);
       bestLine = line;
     }
 
