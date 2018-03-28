@@ -32,7 +32,7 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphicsN_c & g, const levelsetList_
   {
     char title[200];
     //TRANSLATORS: the %s is a placeholder for the version
-    snprintf(title, 200, _("Pushover - %s - About"), PACKAGE_VERSION);
+    snprintf(title, 200, _("Pushover - %s - About"), VERSION);
     surf.renderText(&par, title);
   }
 
