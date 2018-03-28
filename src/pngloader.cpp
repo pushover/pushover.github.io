@@ -23,8 +23,6 @@
 
 #include "screen.h"
 
-#include "../config.h"
-
 #include <iostream>
 
 
