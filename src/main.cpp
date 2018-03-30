@@ -38,7 +38,7 @@
 #include <sys/stat.h>
 #include <libintl.h>
 
-static std::string getDataDir(void)
+static std::string getPkgDataDir(void)
 {
   struct stat st;
   return std::string((stat(PKGDATADIR, &st) == 0) ? PKGDATADIR : ".");
@@ -106,7 +106,7 @@ int main(int argc, char * argv[]) {
   textdomain("pushover");
 
   // now off to all modes that use graphics
-  const std::string datadir = getDataDir();
+  const std::string pkgdatadir = getPkgDataDir();
   std::string selectedMission;  // the mission that was selected in menu
 
   // initialize random number generator
@@ -119,11 +119,11 @@ int main(int argc, char * argv[]) {
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
   atexit(SDL_Quit);
-  graphicsN_c gr(datadir);
+  graphicsN_c gr(pkgdatadir);
   screen_c screen(gr);
   if (conf.useFullscreen) screen.toggleFullscreen();
-  initText(datadir);
-  soundSystem_c::instance()->openSound(datadir);
+  initText(pkgdatadir);
+  soundSystem_c::instance()->openSound(pkgdatadir);
   levelPlayer_c l;
   recorder_c rec;
   ant_c a(l);
@@ -136,7 +136,7 @@ int main(int argc, char * argv[]) {
 #endif
 
   // prepare the list of levelsets
-  const std::string levelsdir = datadir+"/levels";
+  const std::string levelsdir = pkgdatadir+"/levels";
   levelsetList_c * levelsetList = loadAllLevels(levelsdir, "");
 
   states_e currentState = ST_INIT, nextState = ST_INIT;
@@ -152,7 +152,7 @@ int main(int argc, char * argv[]) {
       selectedMission = rec.getLevelsetName();
       levelsetList->getLevelset(selectedMission).loadLevel(l, rec.getLevelName(), "");
       a.initForLevel();
-      soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
+      soundSystem_c::instance()->playMusic(pkgdatadir+"/themes/"+l.getTheme()+".ogg");
 
       gr.setPaintData(&l, &a, &screen);
       nextState = ST_REPLAY;
@@ -169,7 +169,7 @@ int main(int argc, char * argv[]) {
       selectedMission = rec.getLevelsetName();
       levelsetList->getLevelset(selectedMission).loadLevel(l, rec.getLevelName(), "");
       a.initForLevel();
-      soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
+      soundSystem_c::instance()->playMusic(pkgdatadir+"/themes/"+l.getTheme()+".ogg");
 
       gr.setPaintData(&l, &a, &screen);
       nextState = ST_REPLAY;
@@ -191,7 +191,7 @@ int main(int argc, char * argv[]) {
 
       levelsetList->getLevelset(selectedMission).loadLevel(l, levelName, "");
       a.initForLevel();
-      soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
+      soundSystem_c::instance()->playMusic(pkgdatadir+"/themes/"+l.getTheme()+".ogg");
 
       nextState = ST_PREPLAY;
     }
@@ -210,7 +210,7 @@ int main(int argc, char * argv[]) {
       l.load(sections, "");
       selectedMission = "";            // TODO we need to find out which levelset this file belongs to
       gr.setPaintData(&l, &a, &screen);
-      soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
+      soundSystem_c::instance()->playMusic(pkgdatadir+"/themes/"+l.getTheme()+".ogg");
 
       nextState = ST_PREPLAY;
     }
@@ -240,7 +240,7 @@ int main(int argc, char * argv[]) {
 
   if (nextState == ST_MAIN)
   {
-    soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
+    soundSystem_c::instance()->playMusic(pkgdatadir+"/themes/option.ogg");
   }
 
   try {
@@ -307,7 +307,7 @@ int main(int argc, char * argv[]) {
               break;
 
             case ST_PROFILE_INIT:
-              soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
+              soundSystem_c::instance()->playMusic(pkgdatadir+"/themes/option.ogg");
               // intentionally fall through
 
             case ST_PROFILE:
@@ -622,7 +622,7 @@ int main(int argc, char * argv[]) {
                   nextState = ST_PREPLAY;
                   ls.loadLevel(l, ls.getLevelNames()[sel], solved.getUserString());
                   gr.setPaintData(&l, &a, &screen);
-                  soundSystem_c::instance()->playMusic(datadir+"/themes/"+l.getTheme()+".ogg");
+                  soundSystem_c::instance()->playMusic(pkgdatadir+"/themes/"+l.getTheme()+".ogg");
                   a.initForLevel();
                 }
               }
@@ -697,7 +697,7 @@ int main(int argc, char * argv[]) {
                   {
                     case 3:
                       nextState = ST_LEVEL;
-                      soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
+                      soundSystem_c::instance()->playMusic(pkgdatadir+"/themes/option.ogg");
                       lwindowLevel = l.getName();
                       break;    // return to level list
                     case 1:
@@ -723,7 +723,7 @@ int main(int argc, char * argv[]) {
                   {
                     case 2:
                       nextState = ST_MAIN;
-                      soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
+                      soundSystem_c::instance()->playMusic(pkgdatadir+"/themes/option.ogg");
                       break;    // return to main window
                     case 1:  // configuration
                       nextState = ST_LEVELCONF;
@@ -804,7 +804,7 @@ int main(int argc, char * argv[]) {
                   case 1:
                     nextState = ST_LEVEL;
                     lwindowLevel = l.getName();
-                    soundSystem_c::instance()->playMusic(datadir+"/themes/option.ogg");
+                    soundSystem_c::instance()->playMusic(pkgdatadir+"/themes/option.ogg");
                     break;  // back to level list
                 }
               }
@@ -1027,7 +1027,7 @@ int main(int argc, char * argv[]) {
 
   }
 
-  soundSystem_c::instance()->playMusic(datadir+"/themes/NonExistingFile.ogg");
+  soundSystem_c::instance()->playMusic(pkgdatadir+"/themes/NonExistingFile.ogg");
 
   return 0;
 }
