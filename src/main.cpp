@@ -38,16 +38,17 @@
 #include <sys/stat.h>
 #include <libintl.h>
 
-static std::string getPkgDataDir(void)
+static std::string getDataDir(void)
 {
+  const std::string portable_datadir = "./pushover_data";
   struct stat st;
-  return std::string((stat(PKGDATADIR, &st) == 0) ? PKGDATADIR : ".");
-}
-
-static std::string getLocaleDir(void)
-{
-  struct stat st;
-  return std::string((stat("locale", &st) == 0) ? "locale" : LOCALEDIR);
+  if (stat(portable_datadir.c_str(), &st) == 0) {
+      std::cout << "Using portable datadir: " << portable_datadir << std::endl;
+      return portable_datadir;
+  } else {
+      std::cout << "Using system datadir: " << DATADIR << std::endl;
+      return DATADIR;
+  }
 }
 
 LevelState playTick(levelPlayer_c & l, ant_c & a, graphics_c & gr, unsigned int keys)
@@ -99,14 +100,19 @@ int main(int argc, char * argv[]) {
 
   if (argc >= 2 && strcmp(argv[1], "-f") == 0) conf.useFullscreen = true;
 
+  // directories
+  const std::string datadir = getDataDir();
+  const std::string pkgdatadir = datadir+"/pushover";
+  const std::string localedir = datadir+"/locale";
+  const std::string levelsdir = pkgdatadir+"/levels";
+
   // setup internationalization
   setlocale(LC_MESSAGES, "");
-  bindtextdomain("pushover", getLocaleDir().c_str());
+  bindtextdomain("pushover", localedir.c_str());
   bind_textdomain_codeset("pushover", "UTF-8");
   textdomain("pushover");
 
   // now off to all modes that use graphics
-  const std::string pkgdatadir = getPkgDataDir();
   std::string selectedMission;  // the mission that was selected in menu
 
   // initialize random number generator
@@ -136,7 +142,6 @@ int main(int argc, char * argv[]) {
 #endif
 
   // prepare the list of levelsets
-  const std::string levelsdir = pkgdatadir+"/levels";
   levelsetList_c * levelsetList = loadAllLevels(levelsdir, "");
 
   states_e currentState = ST_INIT, nextState = ST_INIT;

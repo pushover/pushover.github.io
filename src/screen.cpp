@@ -636,8 +636,6 @@ static std::vector<std::vector<TTF_Font *> > fonts;
 const char * fontpaths [] = {
   "/usr/share/fonts/",
   "/usr/share/fonts/truetype/freefont/",
-  "data/",
-  PKGDATADIR,
   "" // empty string as end of list
 };
 

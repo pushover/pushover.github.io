@@ -20,7 +20,7 @@
     #declare D = 6;
 #end
 
-#include "shapes.pov"
+#include "data/sources/shapes.pov"
 
 #declare Angles = array[8] {0, 5, 10, 20, 40, 55, 78, 90};
 #declare SplitPos=array[28] { 0,0,  1,1,  2,2,  3,3,  4,4,  5,5,  6,6,  7,7,  1,0,  0,1,  2,0,  0,2,  1,2,  2,1 };

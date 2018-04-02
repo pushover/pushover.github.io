@@ -4,7 +4,6 @@
 #include "colors.h"
 #include "screen.h"
 #include "graphicsn.h"
-#include "config.h"
 
 class aboutWindow_c : public window_c {
 
