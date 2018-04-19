@@ -79,6 +79,7 @@ clean:
 update-po: build_tmp/po/messages.pot
 	for PO_FILE in po/*.po; do $(MSGMERGE) -Uq --backup=none $$PO_FILE $<; done
 
+.SECONDARY: $(FILES_O)
 build_tmp/o/%.o: src/% src/version $(FILES_H)
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(PKGS)` $(DEF_VERSION) $(DEF_DATADIR) -c -o $@ $<
