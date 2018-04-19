@@ -1,10 +1,13 @@
 CXXFLAGS := -Wall -g -O2
 
 PREFIX := /usr
+BINDIR := $(PREFIX)/bin
 DATADIR := $(PREFIX)/share
+DESTDIR :=
 
 CROSS :=
 CXX := $(CROSS)g++
+INSTALL := install
 MSGFMT := msgfmt
 MSGMERGE := msgmerge
 PKG_CONFIG := $(CROSS)pkg-config
@@ -29,6 +32,8 @@ FILES_GENERATED_SRC := generated/dominos.png
 FILES_GENERATED := pushover_data/pushover/data/dominos.png
 FILES_EXTRA := AUTHORS COPYING Makefile NEWS pushover.ico README
 FILES_DATADIR := $(FILES_MO) $(FILES_DATA) $(FILES_THEMES) $(FILES_LEVELS) $(FILES_GENERATED)
+FILES_DATADIR_INSTALL := $(patsubst pushover_data/%,$(DESTDIR)$(DATADIR)/%,$(FILES_DATADIR))
+FILES_BINDIR_INSTALL := $(DESTDIR)$(BINDIR)/pushover
 FILES_DIST := src/version $(FILES_EXTRA) $(FILES_H) $(FILES_CPP) $(FILES_PO) $(FILES_DATA_SRC) $(FILES_THEMES_SRC) $(FILES_LEVELS_SRC) $(FILES_GENERATED_SRC)
 VERSION := $(shell cat src/version)
 PKG_LUA := $(shell pkg-config --exists lua-5.2 && echo lua-5.2 || echo lua)
@@ -67,6 +72,9 @@ check: pushover $(FILES_DATADIR)
 	./pushover -y recordings/fail
 	./pushover -x recordings/crash
 	@echo OK
+
+.PHONY: install
+install: $(FILES_BINDIR_INSTALL) $(FILES_DATADIR_INSTALL)
 
 .PHONY: clean
 clean:
@@ -130,6 +138,14 @@ build_tmp/po/leveltexts.cpp: levels/*/*.level
 build_tmp/po/messages.pot: build_tmp/po/leveltexts.cpp src/*.cpp
 	mkdir -p $(dir $@)
 	$(XGETTEXT) --msgid-bugs-address=$(MSGID_BUGS_ADDRESS) -cTRANSLATORS: -k_ -kN_ -o $@ $^
+
+$(DESTDIR)$(BINDIR)/%: %
+	$(INSTALL) -m 755 -d $(dir $@)
+	$(INSTALL) -m 755 $< $@
+
+$(DESTDIR)$(DATADIR)/%: pushover_data/%
+	$(INSTALL) -m 755 -d $(dir $@)
+	$(INSTALL) -m 644 $< $@
 
 $(DIST): $(FILES_DIST)
 	rm -rf build_tmp/$(basename $@)
