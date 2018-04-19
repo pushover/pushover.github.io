@@ -86,16 +86,18 @@ build_tmp/o/%.o: src/% src/version $(FILES_H)
 pushover: $(FILES_O)
 	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --libs $(PKGS)` $(LIBS) -o $@ $(FILES_O)
 
+.SECONDARY: build_tmp/assembler
 build_tmp/assembler: data/sources/assembler.cpp data/sources/pngsaver.h
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(PKGS_ASSEMBLER)` `$(PKG_CONFIG) --libs $(PKGS_ASSEMBLER)` -o $@ $<
 
+.SECONDARY: build_tmp/domino_images/done
 build_tmp/domino_images/done: data/sources/domino.ini data/sources/*.pov
 	mkdir -p $(dir $@)
 	$(POVRAY) $<
 	touch $@
 
-generated/dominos.png:
+generated/dominos.png: build_tmp/assembler build_tmp/domino_images/done
 	mkdir -p $(dir $@)
 	build_tmp/assembler $@ 58 2 200 data/sources/dominos.lst
 
