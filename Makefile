@@ -1,6 +1,7 @@
 CXXFLAGS := -Wall -g -O2
 
-DATADIR := /usr/share
+PREFIX := /usr
+DATADIR := $(PREFIX)/share
 
 CROSS :=
 CXX := $(CROSS)g++
