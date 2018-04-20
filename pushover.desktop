@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Pushover
+GenericName=
+Comment=
+Exec=/usr/games/pushover
+Terminal=false
+Categories:Application:Game:LogicGame
