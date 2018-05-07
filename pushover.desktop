@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Pushover
+Comment=Make all dominoes topple over
+Exec=/usr/games/pushover
+Terminal=false
+Categories=Game;LogicGame;
