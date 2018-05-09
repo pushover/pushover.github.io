@@ -87,6 +87,10 @@ generated/dominoes.png: _tmp/dominoes/assembler _tmp/dominoes/done
 	mkdir -p $(dir $@)
 	_tmp/dominoes/assembler $@ 58 2 200 src/dominoes/dominoes.lst
 
+pushover_data/pushover/data/dominoes.png: generated/dominoes.png
+	mkdir -p $(dir $@)
+	cp $< $@
+
 FILES_PO := $(wildcard src/po/*.po)
 FILES_DIST += $(FILES_PO)
 FILES_DATADIR += $(patsubst src/po/%.po,pushover_data/locale/%/LC_MESSAGES/pushover.mo,$(FILES_PO))
@@ -100,10 +104,6 @@ FILES_DIST += $(FILES_DATA_SRC)
 FILES_DATADIR += $(patsubst data/%,pushover_data/pushover/data/%,$(FILES_DATA_SRC))
 
 pushover_data/pushover/data/%: data/%
-	mkdir -p $(dir $@)
-	cp $< $@
-
-pushover_data/pushover/data/dominoes.png: generated/dominoes.png
 	mkdir -p $(dir $@)
 	cp $< $@
 
