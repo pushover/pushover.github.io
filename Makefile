@@ -14,7 +14,7 @@ PKG_CONFIG := $(CROSS)pkg-config
 POVRAY := povray
 XGETTEXT := xgettext
 
-PKG_LUA := $(shell pkg-config --exists lua-5.2 && echo lua-5.2 || echo lua)
+PKG_LUA := $(shell $(PKG_CONFIG) --exists lua-5.2 && echo lua-5.2 || echo lua)
 
 MSGID_BUGS_ADDRESS := roever@users.sf.net
 
