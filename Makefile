@@ -6,6 +6,7 @@ DATADIR := $(PREFIX)/share
 DESTDIR :=
 
 CROSS :=
+
 CXX := $(CROSS)g++
 INSTALL := install
 MSGFMT := msgfmt
