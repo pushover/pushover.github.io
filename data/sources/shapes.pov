@@ -1,4 +1,4 @@
-// this file contains the hapes of all the used dominos
+// this file contains the hapes of all the used dominoes
 
 #declare TxtY = texture {
   pigment { color rgb <1, 1, 0> }

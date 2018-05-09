@@ -252,7 +252,7 @@ msgstr ""
 "staranta, kiu havas pli da linioj"
 
 #: src/window_help.cpp:72
-msgid "Arrange dominos in a run so that trigger falls last. You have 1 push."
+msgid "Arrange dominoes in a run so that trigger falls last. You have 1 push."
 msgstr ""
 "Aranĝu domenojn sinsekve tiel ke ekiganto falas laste. Vi havas 1 puŝon."
 

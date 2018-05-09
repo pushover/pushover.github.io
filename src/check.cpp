@@ -118,8 +118,8 @@ static std::string checkerFinish(const ant_c & a, const levelPlayer_c & l)
       return "Ant still visible";
 
 
-    if (!l.dominosFalln())
-      return "Not all dominos falln";
+    if (!l.dominoesFalln())
+      return "Not all dominoes falln";
 
     if (l.rubblePile())
       return "Crashes happened";
@@ -129,7 +129,7 @@ static std::string checkerFinish(const ant_c & a, const levelPlayer_c & l)
 
 static std::string checkerFail(const ant_c & a, const levelPlayer_c & l) {
 
-    if (a.isVisible() == true || !l.dominosFalln() || l.rubblePile())
+    if (a.isVisible() == true || !l.dominoesFalln() || l.rubblePile())
       return "";
     else
       return "Level not Failed";

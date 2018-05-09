@@ -29,7 +29,7 @@
 
 class textsections_c;
 
-// This enumeration contains all the available dominos that can be whithin the level
+// This enumeration contains all the available dominoes that can be whithin the level
 typedef enum {
   DominoTypeEmpty,
   DominoTypeStandard,
@@ -47,7 +47,7 @@ typedef enum {
   DominoTypeCounter1,
   DominoTypeCounter2,
   DominoTypeCounter3,
-  DominoTypeLastNormal = DominoTypeCounter3, // dominos up to this domino are within the level files
+  DominoTypeLastNormal = DominoTypeCounter3, // dominoes up to this domino are within the level files
   DominoTypeCrash0,         // all yellow big pile
   DominoTypeCrash1,         // mixed big pile
   DominoTypeCrash2,         // all red big pile
@@ -58,11 +58,11 @@ typedef enum {
 } DominoType;
 
 
-// Each of the dominos has a state, initially DO_ST_UPRIGHT
+// Each of the dominoes has a state, initially DO_ST_UPRIGHT
 // the following defines put down some basic numbers for the
 // possible domino states... each domino stat is supposed
 // to have exactly one meaning.. even though some
-// dominos might not use all of them.. e.g. the exploder
+// dominoes might not use all of them.. e.g. the exploder
 // will have no state except for the upright one and
 // some explostions
 
@@ -78,7 +78,7 @@ typedef enum {
 #define DO_ST_NUM     57  // number of different state
 
 // the following defines represent groups of states, the _E appendix is always the last entry of the group
-#define DO_ST_FALLING    1  // stands for the initial state of the normally falling dominos
+#define DO_ST_FALLING    1  // stands for the initial state of the normally falling dominoes
 #define DO_ST_FALLING_E 15  // final of the falling states
 
 #define DO_ST_EXPLODE   16  // exploder start state, representing the finished explosion
@@ -103,7 +103,7 @@ class levelData_c {
 
     // the current file version for level
     static const unsigned int version = 2;
-    // a string containing the characters to use for the different dominos
+    // a string containing the characters to use for the different dominoes
     static const std::string dominoChars;
     // a function that returns true, if the given character is a valid one for a domino
     static bool isDominoChar(char ch);
@@ -139,7 +139,7 @@ class levelData_c {
       char dominoExtra;  // this field contains a lot of information:
         // 0-20 for delay domino is the number of ticks left until it falls
         // 0-9  for splitter is the domino that splits the splitter (for display)
-        // 0x40 for all dominos means it is falling of the edge and still turning, so
+        // 0x40 for all dominoes means it is falling of the edge and still turning, so
         //      please fall slower
         // 0x50 raiser is clinging to the ceiling
         // 0x60 riser rising
@@ -161,7 +161,7 @@ class levelData_c {
 
   public:
 
-    // create an empty level with no background, no foreground and no dominos
+    // create an empty level with no background, no foreground and no dominoes
     levelData_c(void);
     virtual ~levelData_c(void) {}
 

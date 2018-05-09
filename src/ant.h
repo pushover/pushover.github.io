@@ -112,7 +112,7 @@ typedef enum
   LS_crashes,        // something crashed                        and level has become quiet (no domino action)
   LS_triggerNotFlat, // the trigger is not flat on the ground    and level has become quiet
   LS_triggerNotLast, // the trigger was not the last to fall     and level has become quiet
-  LS_someLeft,       // some dominos are left standing, no push left and level ha sbecome quiet
+  LS_someLeft,       // some dominoes are left standing, no push left and level ha sbecome quiet
   LS_carrying        // you are still holding a domino           and level has become quiet
 
 } LevelState;
@@ -237,8 +237,8 @@ class ant_c {
     AntAnimationState SFLooseRight(void);
     AntAnimationState SFLooseLeft(void);
     AntAnimationState SFStepOutForLoosingDomino(void);
-    AntAnimationState SFEnterDominosLeft(void);
-    AntAnimationState SFEnterDominosRight(void);
+    AntAnimationState SFEnterDominoesLeft(void);
+    AntAnimationState SFEnterDominoesRight(void);
     AntAnimationState SFPushLeft(void);
     AntAnimationState SFPushRight(void);
     AntAnimationState SFPushSpecialLeft(void);

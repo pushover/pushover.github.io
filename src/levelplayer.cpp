@@ -186,7 +186,7 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
       break;
   }
 
-  // now push the dominos, we only push, if the domino is not already falling
+  // now push the dominoes, we only push, if the domino is not already falling
   switch(getDominoType(x, y)) {
 
     // these are the default stones, they fall into the given direction
@@ -336,7 +336,7 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
       }
       break;
 
-      // for this types we always return false to stop dominos
+      // for this types we always return false to stop dominoes
       // falling against this block
     case DominoTypeStopper:
     case DominoTypeCrash0:
@@ -355,7 +355,7 @@ bool levelPlayer_c::pushDomino(int x, int y, int dir) {
   return retVal;
 }
 
-// this is for the stopper, splitter and exploder dominos, when they
+// this is for the stopper, splitter and exploder dominoes, when they
 // are falling after being lost when going over the edge
 // we check, if we are still falling and only handle the falling case
 void levelPlayer_c::DTA_F(int x, int y) {
@@ -667,7 +667,7 @@ void levelPlayer_c::DTA_I(int x, int y) {
   DTA_4(x, y);
 }
 
-// handle dominos crashing into something
+// handle dominoes crashing into something
 void levelPlayer_c::DominoCrash(int x, int y, int type, int extra) {
 
   // what do we crash into?
@@ -1575,7 +1575,7 @@ void levelPlayer_c::callStateFunction(int type, int state, int x, int y)
   DTA(action[state][type], x, y);
 }
 
-void levelPlayer_c::performDominos(void) {
+void levelPlayer_c::performDominoes(void) {
 
   inactive++;
 
@@ -1644,7 +1644,7 @@ bool levelPlayer_c::rubblePile(void) const
   return false;
 }
 
-bool levelPlayer_c::dominosFalln(void) const {
+bool levelPlayer_c::dominoesFalln(void) const {
 
   for (size_t y = 0; y < levelY(); y++)
     for (size_t x = 0; x < levelX(); x++) {
@@ -1728,7 +1728,7 @@ bool levelPlayer_c::dominosFalln(void) const {
 }
 
 
-bool levelPlayer_c::dominosStanding(void) const
+bool levelPlayer_c::dominoesStanding(void) const
 {
   for (size_t y = 0; y < levelY(); y++)
     for (size_t x = 0; x < levelX(); x++)

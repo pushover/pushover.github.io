@@ -168,19 +168,19 @@ LevelState ant_c::performAnimation(unsigned int keyMask)
   // have vanished
   bool trigger = level.triggerIsFalln();
 
-  // now the level update for all the dominos
-  level.performDominos();
+  // now the level update for all the dominoes
+  level.performDominoes();
 
   trigger = trigger ? level.triggerIsFalln() : false;
 
-  if (trigger && !level.dominosFalln())
+  if (trigger && !level.dominoesFalln())
     triggerNotLast = true;
 
   // check, whether we open the exit door we can close it
   // again, when something unexpected happens
   if (   trigger
       && !level.rubblePile()
-      && !level.dominosStanding()
+      && !level.dominoesStanding()
       && isVisible()
       && !triggerNotLast
      )
@@ -195,7 +195,7 @@ LevelState ant_c::performAnimation(unsigned int keyMask)
   // check, if we want to play the jubilation or shrugging animation
   if (trigger)
   {
-    if (!level.rubblePile() && level.dominosFalln() && carriedDomino == DominoTypeEmpty && isLiving() && !triggerNotLast)
+    if (!level.rubblePile() && level.dominoesFalln() && carriedDomino == DominoTypeEmpty && isLiving() && !triggerNotLast)
     {
       levelSuccess = true;
     }
@@ -225,7 +225,7 @@ LevelState ant_c::performAnimation(unsigned int keyMask)
       if (carriedDomino != DominoTypeEmpty)
         return LS_carrying;
 
-      if (level.dominosStanding())
+      if (level.dominoesStanding())
         return LS_someLeft;
 
       if (triggerNotLast)
@@ -298,8 +298,8 @@ AntAnimationState ant_c::callStateFunction(unsigned int state, unsigned int keyM
     case AntAnimTapping:                   return SFLazying();
     case AntAnimYawning:                   return SFLazying();
     // 36
-    case AntAnimEnterLeft:                 return SFEnterDominosLeft();
-    case AntAnimEnterRight:                return SFEnterDominosRight();
+    case AntAnimEnterLeft:                 return SFEnterDominoesLeft();
+    case AntAnimEnterRight:                return SFEnterDominoesRight();
     case AntAnimPushLeft:                  return SFPushLeft();
     case AntAnimPushRight:                 return SFPushRight();
     case AntAnimPushStopperLeft:           return SFPushSpecialLeft();
@@ -502,7 +502,7 @@ AntAnimationState ant_c::SFPushSpecialRight(void) {
   return animation;
 }
 
-// pushing dominos functions, when the domino is not falling
+// pushing dominoes functions, when the domino is not falling
 // normally the pushDOmino function returns false then
 // we branch into another animation
 
@@ -610,7 +610,7 @@ AntAnimationState ant_c::SFPushRight(void) {
   return animation;
 }
 
-AntAnimationState ant_c::SFEnterDominosLeft(void) {
+AntAnimationState ant_c::SFEnterDominoesLeft(void) {
   if (!animateAnt(0))
     return animation;
 
@@ -619,7 +619,7 @@ AntAnimationState ant_c::SFEnterDominosLeft(void) {
   return AntAnimNothing;
 }
 
-AntAnimationState ant_c::SFEnterDominosRight(void) {
+AntAnimationState ant_c::SFEnterDominoesRight(void) {
   if (!animateAnt(0))
     return animation;
 

@@ -256,7 +256,7 @@ msgid "Not quite, you were not fast enough, but you may continue if you want"
 msgstr "Presque, vous n'avez pas été assez rapide mais vous pouvez continuer si vous voulez"
 
 #: src/main.cpp:462
-msgid "Arrange dominos in a run so that trigger falls last. You have 1 push."
+msgid "Arrange dominoes in a run so that trigger falls last. You have 1 push."
 msgstr "Alignez les dominos de sorte que le déclencheur tombe en dernier. Vous poussez 1 fois"
 
 #: po/leveltexts.txt:1

@@ -245,10 +245,10 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   statusTime = 0;
   showBgNumbers = false;
 
-  dominos.resize(DominoNumber);
+  dominoes.resize(DominoNumber);
 
   for (unsigned int i = 0; i < DominoNumber; i++) {
-    dominos[i].resize(80);  // TODO right number
+    dominoes[i].resize(80);  // TODO right number
   }
 
   antImages.resize((int)AntAnimNothing);
@@ -267,7 +267,7 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   // all domino sprites are in a PNG image load the image and then copy
   // the information to the destination sprites
   {
-    pngLoader_c png(dataPath+"/data/dominos.png");
+    pngLoader_c png(dataPath+"/data/dominoes.png");
 
     uint16_t domino = 0;
     uint16_t dominoIndex = 0;
@@ -291,8 +291,8 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
         surface_c * v = new surface_c(png.getWidth(), 58);
         png.getPart(*v);
 
-        assert(dominos[domino][dominoImages[domino][dominoIndex]] == 0);
-        dominos[domino][dominoImages[domino][dominoIndex]] = v;
+        assert(dominoes[domino][dominoImages[domino][dominoIndex]] == 0);
+        dominoes[domino][dominoImages[domino][dominoIndex]] = v;
         png.skipLines(2);
       }
 
@@ -373,10 +373,10 @@ graphicsN_c::~graphicsN_c(void) {
     for (unsigned int j = 0; j < fgTiles[i].size(); j++)
       delete fgTiles[i][j];
 
-  for (unsigned int i = 0; i < dominos.size(); i++)
-    for (unsigned int j = 0; j < dominos[i].size(); j++)
-      if (dominos[i][j])
-        delete dominos[i][j];
+  for (unsigned int i = 0; i < dominoes.size(); i++)
+    for (unsigned int j = 0; j < dominoes[i].size(); j++)
+      if (dominoes[i][j])
+        delete dominoes[i][j];
 
   for (unsigned int i = 0; i < antImages.size(); i++)
     for (unsigned int j = 0; j < antImages[i].size(); j++)
@@ -710,8 +710,8 @@ void graphicsN_c::drawAnt(void)
 
         int img = getMoveImage(a, ant->getAnimationImage());
 
-        assert(dominos[ant->getCarriedDomino()][img] != 0);
-        target->blit(*dominos[ant->getCarriedDomino()][img], x, y);
+        assert(dominoes[ant->getCarriedDomino()][img] != 0);
+        target->blit(*dominoes[ant->getCarriedDomino()][img], x, y);
       }
     }
 
@@ -1038,8 +1038,8 @@ void graphicsN_c::drawDomino(uint16_t x, uint16_t y)
       // here we need to draw the splitting stone first
       if (de != 0)
       {
-        assert(dominos[de][de>=DominoTypeCrash0?DO_ST_CRASH:DO_ST_UPRIGHT]);
-        target->blit(*dominos[de][de>=DominoTypeCrash0?DO_ST_CRASH:DO_ST_UPRIGHT], SpriteXPos, SpriteYPos-splitterY);
+        assert(dominoes[de][de>=DominoTypeCrash0?DO_ST_CRASH:DO_ST_UPRIGHT]);
+        target->blit(*dominoes[de][de>=DominoTypeCrash0?DO_ST_CRASH:DO_ST_UPRIGHT], SpriteXPos, SpriteYPos-splitterY);
       }
       // fall through intentionally to paint actual domino
 
@@ -1049,16 +1049,16 @@ void graphicsN_c::drawDomino(uint16_t x, uint16_t y)
       break;
   }
 
-  assert(dominos[dt][ds] != 0);
-  target->blit(*dominos[dt][ds], dx, dy, dc);
+  assert(dominoes[dt][ds] != 0);
+  target->blit(*dominoes[dt][ds], dx, dy, dc);
 }
 
 const surface_c * graphicsN_c::getHelpDominoImage(unsigned int domino) {
-  assert(dominos[domino][DO_ST_UPRIGHT] != 0);
-  return dominos[domino][DO_ST_UPRIGHT];
+  assert(dominoes[domino][DO_ST_UPRIGHT] != 0);
+  return dominoes[domino][DO_ST_UPRIGHT];
 }
 
-void graphicsN_c::drawDominos(void)
+void graphicsN_c::drawDominoes(void)
 {
 
   // update background
@@ -1195,7 +1195,7 @@ void graphicsN_c::drawDominos(void)
 
   if (!foregroundVisible) return;
 
-  // the idea behind this code is to repaint the dirty blocks. Dominos that are actually
+  // the idea behind this code is to repaint the dirty blocks. Dominoes that are actually
   // within neighbor block must be repaint, too, when they might reach into the actual
   // block. But painting the neighbors is only necessary, when they are not drawn on
   // their own anyway, so always check for !dirty of the "home-block" of each domino
@@ -1549,7 +1549,7 @@ void graphicsN_c::drawLevel(void) {
 
   findDirtyBlocks();
 
-  drawDominos();
+  drawDominoes();
 
   if (foregroundVisible)
   {

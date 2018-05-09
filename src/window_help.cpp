@@ -27,14 +27,14 @@ class helpWindow_c : public window_c {
 
 };
 
-#define NUM_DOMINOS 12
+#define NUM_DOMINOES 12
 static struct {
-  uint16_t numDominos;
-  DominoType dominos[3];
+  uint16_t numDominoes;
+  DominoType dominoes[3];
   uint16_t boxWidth;
   uint16_t spacing;
   std::string text;
-} dominoHelp[NUM_DOMINOS] = {
+} dominoHelp[NUM_DOMINOES] = {
   { 1, {DominoTypeStandard},   50,  0, _("Standard: nothing special about this stone, it simply falls") },
   { 1, {DominoTypeStopper},    50,  0, _("Blocker: can not fall, only stone allowed to stand at level end") },
   { 1, {DominoTypeSplitter},   50,  0, _("Splitter: when something falls on its top it will split in two") },
@@ -69,7 +69,7 @@ void helpWindow_c::displayCurrentPage(void)
   std::string help;
 
   if (level.someTimeLeft())
-    help = _("Arrange dominos in a run so that trigger falls last. You have 1 push.");
+    help = _("Arrange dominoes in a run so that trigger falls last. You have 1 push.");
   else
     help = level.getHint();
 
@@ -152,13 +152,13 @@ void helpWindow_c::displayCurrentPage(void)
   uint32_t column = 0;
   uint32_t linehight = SY;
 
-  while (page < NUM_DOMINOS)
+  while (page < NUM_DOMINOES)
   {
     bool dominoInLevel = false;
 
-    for (int i = 0; i < dominoHelp[page].numDominos; i++)
-      if (   levelContainsDomino(level, dominoHelp[page].dominos[i])
-          || (carried == dominoHelp[page].dominos[i]))
+    for (int i = 0; i < dominoHelp[page].numDominoes; i++)
+      if (   levelContainsDomino(level, dominoHelp[page].dominoes[i])
+          || (carried == dominoHelp[page].dominoes[i]))
       {
         dominoInLevel = true;
         break;
@@ -211,9 +211,9 @@ void helpWindow_c::displayCurrentPage(void)
     s.fillRect(rlOffset+SX*column+TX,   ypos,   displaywidth,   75, 0, 0, 0);
     s.fillRect(rlOffset+SX*column+TX+2, ypos+2, displaywidth-4, 75-4, TXT_COL_R, TXT_COL_G, TXT_COL_B);
 
-    for (int i = 0; i < dominoHelp[page].numDominos; i++)
-      s.blitBlock(*g.getHelpDominoImage(dominoHelp[page].dominos[i]),
-          rlOffset+SX*column+TX-105+displaywidth/2+int(dominoHelp[page].spacing*(1.0*i-(dominoHelp[page].numDominos-1)*0.5)), ypos + 4);
+    for (int i = 0; i < dominoHelp[page].numDominoes; i++)
+      s.blitBlock(*g.getHelpDominoImage(dominoHelp[page].dominoes[i]),
+          rlOffset+SX*column+TX-105+displaywidth/2+int(dominoHelp[page].spacing*(1.0*i-(dominoHelp[page].numDominoes-1)*0.5)), ypos + 4);
 
     page++;
     column++;

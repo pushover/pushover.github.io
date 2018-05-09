@@ -163,7 +163,7 @@ class graphicsN_c : public graphics_c {
     // for all themes a vector of arrays with Tile Patterns to use for the level editor
     std::vector<std::vector<std::vector<uint16_t> > > bgTilePatterns;
 
-    std::vector<std::vector<surface_c *> > dominos;
+    std::vector<std::vector<surface_c *> > dominoes;
 
     std::vector<surface_c *> boxBlocks;
 
@@ -181,7 +181,7 @@ class graphicsN_c : public graphics_c {
 
 
     /* draw the changed stuff into the target surface */
-    void drawDominos(void);
+    void drawDominoes(void);
     void drawLadders(bool before);
     void drawAnt(void);
 

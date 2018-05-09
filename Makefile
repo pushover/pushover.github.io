@@ -80,12 +80,12 @@ build_tmp/domino_images/done: data/sources/domino.ini data/sources/*.pov
 	$(POVRAY) $<
 	touch $@
 
-FILES_DIST += generated/dominos.png
-FILES_DATADIR += pushover_data/pushover/data/dominos.png
+FILES_DIST += generated/dominoes.png
+FILES_DATADIR += pushover_data/pushover/data/dominoes.png
 
-generated/dominos.png: build_tmp/assembler build_tmp/domino_images/done
+generated/dominoes.png: build_tmp/assembler build_tmp/domino_images/done
 	mkdir -p $(dir $@)
-	build_tmp/assembler $@ 58 2 200 data/sources/dominos.lst
+	build_tmp/assembler $@ 58 2 200 data/sources/dominoes.lst
 
 FILES_PO := $(wildcard po/*.po)
 FILES_DIST += $(FILES_PO)
@@ -103,7 +103,7 @@ pushover_data/pushover/data/%: data/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
-pushover_data/pushover/data/dominos.png: generated/dominos.png
+pushover_data/pushover/data/dominoes.png: generated/dominoes.png
 	mkdir -p $(dir $@)
 	cp $< $@
 

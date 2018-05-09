@@ -272,7 +272,7 @@ msgstr ""
 "No del todo, no fue lo suficientemente rápido, pero puedes seguir si deseas"
 
 #: src/main.cpp:462
-msgid "Arrange dominos in a run so that trigger falls last. You have 1 push."
+msgid "Arrange dominoes in a run so that trigger falls last. You have 1 push."
 msgstr "Organiza las fichas de dominó para caer la final. Tienes un empujón."
 
 #: po/leveltexts.txt:1

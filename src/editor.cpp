@@ -48,7 +48,7 @@ typedef enum {
   ST_EDIT_AUTHORS_DEL,
   ST_EDIT_AUTHORS_ADD,
   ST_EDIT_HOME,        // edit the foreground of the level (all level related elements
-  ST_EDIT_DOMINOS_SELECTOR,
+  ST_EDIT_DOMINOES_SELECTOR,
   ST_EDIT_BACKGROUND,  // edit the background imagery of the level
   ST_EDIT_BG_SELECTOR,
   ST_EDIT_MENU,
@@ -387,7 +387,7 @@ static void changeState(void)
         window = 0;
         break;
 
-      case ST_EDIT_DOMINOS_SELECTOR:
+      case ST_EDIT_DOMINOES_SELECTOR:
       case ST_EDIT_BG_SELECTOR:
         gr->setOverlay(0);
         break;
@@ -448,7 +448,7 @@ static void changeState(void)
         gr->setPaintData(l, a, screen);
         break;
 
-      case ST_EDIT_DOMINOS_SELECTOR:
+      case ST_EDIT_DOMINOES_SELECTOR:
         updateDominoOverlay();
         break;
 
@@ -1194,7 +1194,7 @@ bool eventEditor(const SDL_Event & event)
       }
       break;
 
-    case ST_EDIT_DOMINOS_SELECTOR:
+    case ST_EDIT_DOMINOES_SELECTOR:
 
       if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_LCTRL)
       {
@@ -1438,7 +1438,7 @@ bool eventEditor(const SDL_Event & event)
 
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_LCTRL)
       {
-        nextState = ST_EDIT_DOMINOS_SELECTOR;
+        nextState = ST_EDIT_DOMINOES_SELECTOR;
       }
 
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == ' ')
@@ -1688,7 +1688,7 @@ void stepEditor(void)
 
     case ST_EDIT_HOME:
     case ST_EDIT_BACKGROUND:
-    case ST_EDIT_DOMINOS_SELECTOR:
+    case ST_EDIT_DOMINOES_SELECTOR:
     case ST_EDIT_BG_SELECTOR:
       gr->drawLevel();
       break;

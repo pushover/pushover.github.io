@@ -36,7 +36,7 @@ class levelPlayer_c : public levelData_c {
     // of num or bigger (num = DominoTypeCounter1, 2 or 3) that are not falling
     bool CounterStopper(DominoType num);
 
-    // calls the different states of the dominos
+    // calls the different states of the dominoes
     void callStateFunction(int type, int state, int x, int y);
 
     void DominoCrash(int x, int y, int type, int extra);
@@ -83,7 +83,7 @@ class levelPlayer_c : public levelData_c {
     void openEntryDoor(bool open) { openDoorEntry = open; }
     void openExitDoor(bool open) { openDoorExit = open; }
 
-    void performDominos(void);
+    void performDominoes(void);
 
     DominoType pickUpDomino(int x, int y);  // removes the domino from that position and returns the domino type
     void putDownDomino(int x, int y, DominoType domino, bool pushin);
@@ -99,8 +99,8 @@ class levelPlayer_c : public levelData_c {
 
 
 
-    bool dominosFalln(void) const; // returns true when all dominos are falln far enough
-    bool dominosStanding(void) const; // returns true, when there is at least one domino still standing
+    bool dominoesFalln(void) const; // returns true when all dominoes are falln far enough
+    bool dominoesStanding(void) const; // returns true, when there is at least one domino still standing
     bool rubblePile(void) const;  // there is at least one pile of rubbish on the board
     bool triggerIsFalln(void) const;
 };

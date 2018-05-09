@@ -267,7 +267,7 @@ msgstr ""
 "Non proprio, non sei stato abbastanza veloce, ma se vuoi puoi continuare"
 
 #: src/main.cpp:462
-msgid "Arrange dominos in a run so that trigger falls last. You have 1 push."
+msgid "Arrange dominoes in a run so that trigger falls last. You have 1 push."
 msgstr ""
 "Disponi i domino in modo che il Trigger sia l'ultimo a cadere. Hai una "
 "spinta."

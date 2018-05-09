@@ -271,7 +271,7 @@ msgid "Not quite, you were not fast enough, but you may continue if you want"
 msgstr "Nicht ganz, Du warst zu langsam. Kannst aber trotzdem fortsetzen"
 
 #: src/main.cpp:462
-msgid "Arrange dominos in a run so that trigger falls last. You have 1 push."
+msgid "Arrange dominoes in a run so that trigger falls last. You have 1 push."
 msgstr ""
 "Dominos so anordnen, dass der Auslöser als letzter fällt. Du hast einen Stoß."
 
