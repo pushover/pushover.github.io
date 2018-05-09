@@ -139,15 +139,15 @@ pushover_data/man/man6/pushover.6.gz: pushover.6
 	mkdir -p $(dir $@)
 	gzip -9n <$< >$@
 
-FILES_DIST += $(wildcard levels/*/*)
-FILES_LEVELS_SRCDIRS := $(wildcard levels/*)
-FILES_DATADIR += $(patsubst levels/%,pushover_data/pushover/levels/%.gz,$(FILES_LEVELS_SRCDIRS))
+FILES_DIST += $(wildcard src/levels/*/*)
+FILES_LEVELS_SRCDIRS := $(wildcard src/levels/*)
+FILES_DATADIR += $(patsubst src/levels/%,pushover_data/pushover/levels/%.gz,$(FILES_LEVELS_SRCDIRS))
 
-pushover_data/pushover/levels/%.gz: levels/%/*.level
+pushover_data/pushover/levels/%.gz: src/levels/%/*.level
 	mkdir -p $(dir $@)
-	cat levels/$*/*.level | gzip -9 >$@
+	cat src/levels/$*/*.level | gzip -9 >$@
 
-_tmp/po/leveltexts.cpp: levels/*/*.level
+_tmp/po/leveltexts.cpp: src/levels/*/*.level
 	mkdir -p $(dir $@)
 	sed -n '/^\(Description\|Hint\|Name\|Tutorial\)$$/,/^[^|]/ s,^| \(.*\)$$,_("\1"),p' $^ | LC_ALL=C sort -u >$@
 
