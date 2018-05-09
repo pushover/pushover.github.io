@@ -149,7 +149,7 @@ pushover_data/pushover/levels/%.gz: src/levels/%/*.level
 
 _tmp/po/leveltexts.cpp: src/levels/*/*.level
 	mkdir -p $(dir $@)
-	sed -n '/^\(Description\|Hint\|Name\|Tutorial\)$$/,/^[^|]/ s,^| \(.*\)$$,_("\1"),p' $^ | LC_ALL=C sort -u >$@
+	sed -n '/^\(Description\|Hint\|Name\|Tutorial\)$$/,/^[^|]/ s,^| \(.*\)$$,_("\1"),p' src/levels/*/*.level | LC_ALL=C sort -u >$@
 
 .PHONY: all
 all: $(FILES_BINDIR) $(FILES_DATADIR) $(FILES_DEBUG)
