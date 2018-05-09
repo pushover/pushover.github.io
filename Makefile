@@ -82,32 +82,7 @@ PKGS_ASSEMBLER += sdl
 .DELETE_ON_ERROR:
 
 .PHONY: default
-default: pushover $(FILES_DATADIR)
-
-.PHONY: dist
-dist: $(DIST)
-
-.PHONY: check
-check: pushover $(FILES_DATADIR)
-	./pushover -c recordings/finish/*
-	./pushover -y recordings/fail
-	./pushover -x recordings/crash
-	@echo OK
-
-.PHONY: install
-install: $(FILES_BINDIR_INSTALL) $(FILES_DATADIR_INSTALL)
-
-.PHONY: clean
-clean:
-	rm -f pushover
-	rm -f $(DIST)
-	rm -rf build_tmp/
-	rm -rf pushover_data/
-	@echo Not removing generated/
-
-.PHONY: update-po
-update-po: build_tmp/po/messages.pot
-	for PO_FILE in po/*.po; do $(MSGMERGE) -Uq --backup=none $$PO_FILE $<; done
+default: all
 
 .SECONDARY: $(FILES_O)
 build_tmp/o/%.o: src/% src/version $(FILES_H)
@@ -177,3 +152,31 @@ $(DIST): $(FILES_DIST)
 	mkdir -p build_tmp/$(basename $@)
 	tar c $^ | tar x -C build_tmp/$(basename $@)
 	tar c -C build_tmp $(basename $@) | gzip -9n >$@
+
+.PHONY: all
+all: pushover $(FILES_DATADIR)
+
+.PHONY: dist
+dist: $(DIST)
+
+.PHONY: check
+check: pushover $(FILES_DATADIR)
+	./pushover -c recordings/finish/*
+	./pushover -y recordings/fail
+	./pushover -x recordings/crash
+	@echo OK
+
+.PHONY: install
+install: $(FILES_BINDIR_INSTALL) $(FILES_DATADIR_INSTALL)
+
+.PHONY: clean
+clean:
+	rm -f pushover
+	rm -f $(DIST)
+	rm -rf build_tmp/
+	rm -rf pushover_data/
+	@echo Not removing generated/
+
+.PHONY: update-po
+update-po: build_tmp/po/messages.pot
+	for PO_FILE in po/*.po; do $(MSGMERGE) -Uq --backup=none $$PO_FILE $<; done
