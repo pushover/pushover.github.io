@@ -14,6 +14,7 @@ MSGFMT := msgfmt
 MSGMERGE := msgmerge
 PKG_CONFIG := $(CROSS)pkg-config
 POVRAY := povray
+STRIP := $(CROSS)strip
 XGETTEXT := xgettext
 
 PKG_LUA := $(shell $(PKG_CONFIG) --exists lua-5.2 && echo lua-5.2 || echo lua)
@@ -53,10 +54,16 @@ build_tmp/o/%.o: src/% src/version $(FILES_H)
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(PKGS)` $(DEFS) -c -o $@ $<
 
+FILES_DEBUG += pushover.debug
+
+pushover.debug: $(FILES_O)
+	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --libs $(PKGS)` $(LIBS) -o $@ $(FILES_O)
+
 FILES_BINDIR += pushover
 
-pushover: $(FILES_O)
-	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --libs $(PKGS)` $(LIBS) -o $@ $(FILES_O)
+pushover: pushover.debug
+	cp $< $@
+	$(STRIP) -s $@
 
 ASSEMBLER_PKGS += SDL_image
 ASSEMBLER_PKGS += libpng
@@ -145,7 +152,7 @@ build_tmp/po/leveltexts.cpp: levels/*/*.level
 	sed -n '/^\(Description\|Hint\|Name\|Tutorial\)$$/,/^[^|]/ s,^| \(.*\)$$,_("\1"),p' $^ | LC_ALL=C sort -u >$@
 
 .PHONY: all
-all: $(FILES_BINDIR) $(FILES_DATADIR)
+all: $(FILES_BINDIR) $(FILES_DATADIR) $(FILES_DEBUG)
 
 DIST := pushover-$(VERSION).tgz
 
