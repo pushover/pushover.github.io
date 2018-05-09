@@ -19,9 +19,6 @@ MSGID_BUGS_ADDRESS := roever@users.sf.net
 VERSION := $(shell cat src/version)
 PKG_LUA := $(shell pkg-config --exists lua-5.2 && echo lua-5.2 || echo lua)
 
-DEFS += -DVERSION='"$(VERSION)"'
-DEFS += -DDATADIR='"$(DATADIR)"'
-
 PKGS += $(PKG_LUA)
 PKGS += SDL_mixer
 PKGS += SDL_ttf
@@ -41,6 +38,9 @@ PKGS_ASSEMBLER += sdl
 
 .PHONY: default
 default: all
+
+DEFS += -DVERSION='"$(VERSION)"'
+DEFS += -DDATADIR='"$(DATADIR)"'
 
 FILES_H := $(wildcard src/*.h src/linebreak/*.h)
 FILES_DIST += $(FILES_H)
