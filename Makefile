@@ -19,8 +19,8 @@ MSGID_BUGS_ADDRESS := roever@users.sf.net
 VERSION := $(shell cat src/version)
 PKG_LUA := $(shell pkg-config --exists lua-5.2 && echo lua-5.2 || echo lua)
 
-DEF_VERSION := -DVERSION='"$(VERSION)"'
-DEF_DATADIR := -DDATADIR='"$(DATADIR)"'
+DEFS += -DVERSION='"$(VERSION)"'
+DEFS += -DDATADIR='"$(DATADIR)"'
 
 PKGS += $(PKG_LUA)
 PKGS += SDL_mixer
@@ -51,7 +51,7 @@ FILES_O := $(patsubst src/%,build_tmp/o/%.o,$(FILES_CPP))
 .SECONDARY: $(FILES_O)
 build_tmp/o/%.o: src/% src/version $(FILES_H)
 	mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(PKGS)` $(DEF_VERSION) $(DEF_DATADIR) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(PKGS)` $(DEFS) -c -o $@ $<
 
 FILES_BINDIR += pushover
 
