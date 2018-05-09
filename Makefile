@@ -154,7 +154,7 @@ $(DIST): $(FILES_DIST)
 	tar c -C build_tmp $(basename $@) | gzip -9n >$@
 
 .PHONY: check
-check: pushover $(FILES_DATADIR)
+check: all
 	./pushover -c recordings/finish/*
 	./pushover -y recordings/fail
 	./pushover -x recordings/crash
