@@ -7,6 +7,7 @@ DESTDIR :=
 
 CROSS :=
 
+CONVERT := convert
 CXX := $(CROSS)g++
 INSTALL := install
 MSGFMT := msgfmt
@@ -114,6 +115,16 @@ pushover_data/applications/pushover.desktop: pushover.desktop
 	mkdir -p $(dir $@)
 	cp $< $@
 
+FILES_DIST += pushover.ico
+FILES_DATADIR += pushover_data/icons/hicolor/16x16/apps/pushover.png
+FILES_DATADIR += pushover_data/icons/hicolor/32x32/apps/pushover.png
+FILES_DATADIR += pushover_data/icons/hicolor/48x48/apps/pushover.png
+FILES_DATADIR += pushover_data/icons/hicolor/64x64/apps/pushover.png
+
+pushover_data/icons/hicolor/%/apps/pushover.png: pushover.ico
+	mkdir -p $(dir $@)
+	$(CONVERT) $<[$(shell expr substr $* 1 2 / 16 - 1)] $@
+
 FILES_DIST += $(wildcard levels/*/*)
 FILES_LEVELS_SRCDIRS := $(wildcard levels/*)
 FILES_DATADIR += $(patsubst levels/%,pushover_data/pushover/levels/%.gz,$(FILES_LEVELS_SRCDIRS))
@@ -138,7 +149,6 @@ FILES_DIST += AUTHORS
 FILES_DIST += COPYING
 FILES_DIST += Makefile
 FILES_DIST += NEWS
-FILES_DIST += pushover.ico
 FILES_DIST += README
 
 $(DIST): $(FILES_DIST)
