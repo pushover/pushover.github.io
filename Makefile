@@ -16,8 +16,6 @@ XGETTEXT := xgettext
 
 MSGID_BUGS_ADDRESS := roever@users.sf.net
 
-FILES_GENERATED_SRC := generated/dominos.png
-FILES_GENERATED := pushover_data/pushover/data/dominos.png
 FILES_EXTRA += AUTHORS
 FILES_EXTRA += COPYING
 FILES_EXTRA += Makefile
@@ -74,6 +72,11 @@ build_tmp/domino_images/done: data/sources/domino.ini data/sources/*.pov
 	mkdir -p $(dir $@)
 	$(POVRAY) $<
 	touch $@
+
+FILES_GENERATED_SRC := generated/dominos.png
+FILES_DIST += $(FILES_GENERATED_SRC)
+FILES_GENERATED := pushover_data/pushover/data/dominos.png
+FILES_DATADIR += $(FILES_GENERATED)
 
 generated/dominos.png: build_tmp/assembler build_tmp/domino_images/done
 	mkdir -p $(dir $@)
@@ -135,9 +138,6 @@ build_tmp/po/leveltexts.cpp: levels/*/*.level
 
 FILES_DIST += src/version
 FILES_DIST += $(FILES_EXTRA)
-FILES_DIST += $(FILES_GENERATED_SRC)
-
-FILES_DATADIR += $(FILES_GENERATED)
 
 .PHONY: all
 all: pushover $(FILES_DATADIR)
