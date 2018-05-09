@@ -69,8 +69,8 @@ ASSEMBLER_PKGS += SDL_image
 ASSEMBLER_PKGS += libpng
 ASSEMBLER_PKGS += sdl
 
-.SECONDARY: _tmp/assembler
-_tmp/assembler: src/dominoes/assembler.cpp src/dominoes/pngsaver.h
+.SECONDARY: _tmp/dominoes/assembler
+_tmp/dominoes/assembler: src/dominoes/assembler.cpp src/dominoes/pngsaver.h
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(ASSEMBLER_PKGS)` `$(PKG_CONFIG) --libs $(ASSEMBLER_PKGS)` -o $@ $<
 
@@ -83,9 +83,9 @@ _tmp/dominoes/done: src/dominoes/domino.ini src/dominoes/*.pov
 FILES_DIST += generated/dominoes.png
 FILES_DATADIR += pushover_data/pushover/data/dominoes.png
 
-generated/dominoes.png: _tmp/assembler _tmp/dominoes/done
+generated/dominoes.png: _tmp/dominoes/assembler _tmp/dominoes/done
 	mkdir -p $(dir $@)
-	_tmp/assembler $@ 58 2 200 src/dominoes/dominoes.lst
+	_tmp/dominoes/assembler $@ 58 2 200 src/dominoes/dominoes.lst
 
 FILES_PO := $(wildcard src/po/*.po)
 FILES_DIST += $(FILES_PO)
