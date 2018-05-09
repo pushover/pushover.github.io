@@ -164,11 +164,11 @@ check: pushover $(FILES_DATADIR)
 	./pushover -x recordings/crash
 	@echo OK
 
-FILES_BINDIR_INSTALL := $(DESTDIR)$(BINDIR)/pushover
-FILES_DATADIR_INSTALL := $(patsubst pushover_data/%,$(DESTDIR)$(DATADIR)/%,$(FILES_DATADIR))
+FILES_INSTALL += $(DESTDIR)$(BINDIR)/pushover
+FILES_INSTALL += $(patsubst pushover_data/%,$(DESTDIR)$(DATADIR)/%,$(FILES_DATADIR))
 
 .PHONY: install
-install: $(FILES_BINDIR_INSTALL) $(FILES_DATADIR_INSTALL)
+install: $(FILES_INSTALL)
 
 .PHONY: clean
 clean:
