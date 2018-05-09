@@ -14,10 +14,11 @@ PKG_CONFIG := $(CROSS)pkg-config
 POVRAY := povray
 XGETTEXT := xgettext
 
+PKG_LUA := $(shell pkg-config --exists lua-5.2 && echo lua-5.2 || echo lua)
+
 MSGID_BUGS_ADDRESS := roever@users.sf.net
 
 VERSION := $(shell cat src/version)
-PKG_LUA := $(shell pkg-config --exists lua-5.2 && echo lua-5.2 || echo lua)
 
 .DELETE_ON_ERROR:
 
