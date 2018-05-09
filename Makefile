@@ -107,11 +107,11 @@ pushover_data/pushover/data/dominoes.png: generated/dominoes.png
 	mkdir -p $(dir $@)
 	cp $< $@
 
-FILES_THEMES_SRC := $(wildcard themes/*)
+FILES_THEMES_SRC := $(wildcard src/themes/*)
 FILES_DIST += $(FILES_THEMES_SRC)
-FILES_DATADIR += $(patsubst themes/%,pushover_data/pushover/themes/%,$(FILES_THEMES_SRC))
+FILES_DATADIR += $(patsubst src/themes/%,pushover_data/pushover/themes/%,$(FILES_THEMES_SRC))
 
-pushover_data/pushover/themes/%: themes/%
+pushover_data/pushover/themes/%: src/themes/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
