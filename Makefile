@@ -43,14 +43,14 @@ LIBS += -lboost_system
 DEFS += -DVERSION='"$(VERSION)"'
 DEFS += -DDATADIR='"$(DATADIR)"'
 
-FILES_H := $(wildcard src/*.h src/linebreak/*.h src/sha1/*.hpp)
+FILES_H := $(wildcard src/pushover/*.h src/pushover/linebreak/*.h src/pushover/sha1/*.hpp)
 FILES_DIST += $(FILES_H)
-FILES_CPP := $(wildcard src/*.cpp src/linebreak/*.c src/sha1/*.cpp)
+FILES_CPP := $(wildcard src/pushover/*.cpp src/pushover/linebreak/*.c src/pushover/sha1/*.cpp)
 FILES_DIST += $(FILES_CPP)
-FILES_O := $(patsubst src/%,_tmp/o/%.o,$(FILES_CPP))
+FILES_O := $(patsubst src/pushover/%,_tmp/o/%.o,$(FILES_CPP))
 
 .SECONDARY: $(FILES_O)
-_tmp/o/%.o: src/% src/version $(FILES_H)
+_tmp/o/%.o: src/pushover/% src/version $(FILES_H)
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(PKGS)` $(DEFS) -c -o $@ $<
 
@@ -203,6 +203,6 @@ clean:
 update-po: _tmp/po/messages.pot
 	for PO_FILE in po/*.po; do $(MSGMERGE) -Uq --backup=none $$PO_FILE $<; done
 
-_tmp/po/messages.pot: _tmp/po/leveltexts.cpp src/*.cpp
+_tmp/po/messages.pot: _tmp/po/leveltexts.cpp src/pushover/*.cpp
 	mkdir -p $(dir $@)
 	$(XGETTEXT) --msgid-bugs-address=$(MSGID_BUGS_ADDRESS) -cTRANSLATORS: -k_ -kN_ -o $@ $^
