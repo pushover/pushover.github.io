@@ -132,10 +132,10 @@ pushover_data/icons/hicolor/%/apps/pushover.png: pushover.ico
 	mkdir -p $(dir $@)
 	$(CONVERT) $<[$(shell expr substr $* 1 2 / 16 - 1)] $@
 
-FILES_DIST += pushover.6
+FILES_DIST += src/description/pushover.6
 FILES_DATADIR += pushover_data/man/man6/pushover.6.gz
 
-pushover_data/man/man6/pushover.6.gz: pushover.6
+pushover_data/man/man6/pushover.6.gz: src/description/pushover.6
 	mkdir -p $(dir $@)
 	gzip -9n <$< >$@
 
