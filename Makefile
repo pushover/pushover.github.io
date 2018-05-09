@@ -137,17 +137,17 @@ FILES_DIST += $(FILES_LEVELS_SRC)
 FILES_DIST += $(FILES_DESKTOP_SRC)
 FILES_DIST += $(FILES_GENERATED_SRC)
 
-$(DIST): $(FILES_DIST)
-	rm -rf build_tmp/$(basename $@)
-	mkdir -p build_tmp/$(basename $@)
-	tar c $^ | tar x -C build_tmp/$(basename $@)
-	tar c -C build_tmp $(basename $@) | gzip -9n >$@
-
 .PHONY: all
 all: pushover $(FILES_DATADIR)
 
 .PHONY: dist
 dist: $(DIST)
+
+$(DIST): $(FILES_DIST)
+	rm -rf build_tmp/$(basename $@)
+	mkdir -p build_tmp/$(basename $@)
+	tar c $^ | tar x -C build_tmp/$(basename $@)
+	tar c -C build_tmp $(basename $@) | gzip -9n >$@
 
 .PHONY: check
 check: pushover $(FILES_DATADIR)
