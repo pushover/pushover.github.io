@@ -59,6 +59,8 @@ build_tmp/o/%.o: src/% src/version $(FILES_H)
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(PKGS)` $(DEF_VERSION) $(DEF_DATADIR) -c -o $@ $<
 
+FILES_BINDIR += pushover
+
 pushover: $(FILES_O)
 	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --libs $(PKGS)` $(LIBS) -o $@ $(FILES_O)
 
@@ -140,7 +142,7 @@ FILES_DIST += src/version
 FILES_DIST += $(FILES_EXTRA)
 
 .PHONY: all
-all: pushover $(FILES_DATADIR)
+all: $(FILES_BINDIR) $(FILES_DATADIR)
 
 DIST := pushover-$(VERSION).tgz
 
@@ -160,7 +162,7 @@ check: all
 	./pushover -x recordings/crash
 	@echo OK
 
-FILES_INSTALL += $(DESTDIR)$(BINDIR)/pushover
+FILES_INSTALL += $(patsubst %,$(DESTDIR)$(BINDIR)/%,$(FILES_BINDIR))
 
 $(DESTDIR)$(BINDIR)/%: %
 	$(INSTALL) -m 755 -d $(dir $@)
