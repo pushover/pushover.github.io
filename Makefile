@@ -47,10 +47,10 @@ FILES_H := $(wildcard src/*.h src/linebreak/*.h src/sha1/*.hpp)
 FILES_DIST += $(FILES_H)
 FILES_CPP := $(wildcard src/*.cpp src/linebreak/*.c src/sha1/*.cpp)
 FILES_DIST += $(FILES_CPP)
-FILES_O := $(patsubst src/%,build_tmp/o/%.o,$(FILES_CPP))
+FILES_O := $(patsubst src/%,_tmp/o/%.o,$(FILES_CPP))
 
 .SECONDARY: $(FILES_O)
-build_tmp/o/%.o: src/% src/version $(FILES_H)
+_tmp/o/%.o: src/% src/version $(FILES_H)
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(PKGS)` $(DEFS) -c -o $@ $<
 
@@ -69,13 +69,13 @@ ASSEMBLER_PKGS += SDL_image
 ASSEMBLER_PKGS += libpng
 ASSEMBLER_PKGS += sdl
 
-.SECONDARY: build_tmp/assembler
-build_tmp/assembler: data/sources/assembler.cpp data/sources/pngsaver.h
+.SECONDARY: _tmp/assembler
+_tmp/assembler: data/sources/assembler.cpp data/sources/pngsaver.h
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(ASSEMBLER_PKGS)` `$(PKG_CONFIG) --libs $(ASSEMBLER_PKGS)` -o $@ $<
 
-.SECONDARY: build_tmp/domino_images/done
-build_tmp/domino_images/done: data/sources/domino.ini data/sources/*.pov
+.SECONDARY: _tmp/domino_images/done
+_tmp/domino_images/done: data/sources/domino.ini data/sources/*.pov
 	mkdir -p $(dir $@)
 	$(POVRAY) $<
 	touch $@
@@ -83,9 +83,9 @@ build_tmp/domino_images/done: data/sources/domino.ini data/sources/*.pov
 FILES_DIST += generated/dominoes.png
 FILES_DATADIR += pushover_data/pushover/data/dominoes.png
 
-generated/dominoes.png: build_tmp/assembler build_tmp/domino_images/done
+generated/dominoes.png: _tmp/assembler _tmp/domino_images/done
 	mkdir -p $(dir $@)
-	build_tmp/assembler $@ 58 2 200 data/sources/dominoes.lst
+	_tmp/assembler $@ 58 2 200 data/sources/dominoes.lst
 
 FILES_PO := $(wildcard po/*.po)
 FILES_DIST += $(FILES_PO)
@@ -147,7 +147,7 @@ pushover_data/pushover/levels/%.gz: levels/%/*.level
 	mkdir -p $(dir $@)
 	cat levels/$*/*.level | gzip -9 >$@
 
-build_tmp/po/leveltexts.cpp: levels/*/*.level
+_tmp/po/leveltexts.cpp: levels/*/*.level
 	mkdir -p $(dir $@)
 	sed -n '/^\(Description\|Hint\|Name\|Tutorial\)$$/,/^[^|]/ s,^| \(.*\)$$,_("\1"),p' $^ | LC_ALL=C sort -u >$@
 
@@ -166,10 +166,10 @@ FILES_DIST += NEWS
 FILES_DIST += README
 
 $(DIST): $(FILES_DIST)
-	rm -rf build_tmp/$(basename $@)
-	mkdir -p build_tmp/$(basename $@)
-	tar c $^ | tar x -C build_tmp/$(basename $@)
-	tar c -C build_tmp $(basename $@) | gzip -9n >$@
+	rm -rf _tmp/$(basename $@)
+	mkdir -p _tmp/$(basename $@)
+	tar c $^ | tar x -C _tmp/$(basename $@)
+	tar c -C _tmp $(basename $@) | gzip -9n >$@
 
 .PHONY: check
 check: all
@@ -196,13 +196,13 @@ install: $(FILES_INSTALL)
 .PHONY: clean
 clean:
 	rm -f $(DIST) $(FILES_BINDIR) $(FILES_DEBUG)
-	rm -rf build_tmp/ pushover_data/
+	rm -rf _tmp/ pushover_data/
 	@echo Not removing generated/
 
 .PHONY: update-po
-update-po: build_tmp/po/messages.pot
+update-po: _tmp/po/messages.pot
 	for PO_FILE in po/*.po; do $(MSGMERGE) -Uq --backup=none $$PO_FILE $<; done
 
-build_tmp/po/messages.pot: build_tmp/po/leveltexts.cpp src/*.cpp
+_tmp/po/messages.pot: _tmp/po/leveltexts.cpp src/*.cpp
 	mkdir -p $(dir $@)
 	$(XGETTEXT) --msgid-bugs-address=$(MSGID_BUGS_ADDRESS) -cTRANSLATORS: -k_ -kN_ -o $@ $^
