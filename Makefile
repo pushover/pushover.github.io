@@ -19,14 +19,6 @@ MSGID_BUGS_ADDRESS := roever@users.sf.net
 VERSION := $(shell cat src/version)
 PKG_LUA := $(shell pkg-config --exists lua-5.2 && echo lua-5.2 || echo lua)
 
-PKGS += $(PKG_LUA)
-PKGS += SDL_mixer
-PKGS += SDL_ttf
-PKGS += fribidi
-PKGS += libpng
-PKGS += sdl
-PKGS += zlib
-
 LIBS += -lboost_filesystem
 LIBS += -lboost_system
 
@@ -38,6 +30,14 @@ PKGS_ASSEMBLER += sdl
 
 .PHONY: default
 default: all
+
+PKGS += $(PKG_LUA)
+PKGS += SDL_mixer
+PKGS += SDL_ttf
+PKGS += fribidi
+PKGS += libpng
+PKGS += sdl
+PKGS += zlib
 
 DEFS += -DVERSION='"$(VERSION)"'
 DEFS += -DDATADIR='"$(DATADIR)"'
