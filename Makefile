@@ -71,10 +71,8 @@ build_tmp/domino_images/done: data/sources/domino.ini data/sources/*.pov
 	$(POVRAY) $<
 	touch $@
 
-FILES_GENERATED_SRC := generated/dominos.png
-FILES_DIST += $(FILES_GENERATED_SRC)
-FILES_GENERATED := pushover_data/pushover/data/dominos.png
-FILES_DATADIR += $(FILES_GENERATED)
+FILES_DIST += generated/dominos.png
+FILES_DATADIR += pushover_data/pushover/data/dominos.png
 
 generated/dominos.png: build_tmp/assembler build_tmp/domino_images/done
 	mkdir -p $(dir $@)
@@ -82,8 +80,7 @@ generated/dominos.png: build_tmp/assembler build_tmp/domino_images/done
 
 FILES_PO := $(wildcard po/*.po)
 FILES_DIST += $(FILES_PO)
-FILES_MO := $(patsubst po/%.po,pushover_data/locale/%/LC_MESSAGES/pushover.mo,$(FILES_PO))
-FILES_DATADIR += $(FILES_MO)
+FILES_DATADIR += $(patsubst po/%.po,pushover_data/locale/%/LC_MESSAGES/pushover.mo,$(FILES_PO))
 
 pushover_data/locale/%/LC_MESSAGES/pushover.mo: po/%.po
 	mkdir -p $(dir $@)
@@ -91,8 +88,7 @@ pushover_data/locale/%/LC_MESSAGES/pushover.mo: po/%.po
 
 FILES_DATA_SRC := $(wildcard data/*.ogg data/*.png)
 FILES_DIST += $(FILES_DATA_SRC)
-FILES_DATA := $(patsubst data/%,pushover_data/pushover/data/%,$(FILES_DATA_SRC))
-FILES_DATADIR += $(FILES_DATA)
+FILES_DATADIR += $(patsubst data/%,pushover_data/pushover/data/%,$(FILES_DATA_SRC))
 
 pushover_data/pushover/data/%: data/%
 	mkdir -p $(dir $@)
@@ -104,27 +100,22 @@ pushover_data/pushover/data/dominos.png: generated/dominos.png
 
 FILES_THEMES_SRC := $(wildcard themes/*)
 FILES_DIST += $(FILES_THEMES_SRC)
-FILES_THEMES := $(patsubst themes/%,pushover_data/pushover/themes/%,$(FILES_THEMES_SRC))
-FILES_DATADIR += $(FILES_THEMES)
+FILES_DATADIR += $(patsubst themes/%,pushover_data/pushover/themes/%,$(FILES_THEMES_SRC))
 
 pushover_data/pushover/themes/%: themes/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
-FILES_DESKTOP_SRC := pushover.desktop
-FILES_DIST += $(FILES_DESKTOP_SRC)
-FILES_DESKTOP := pushover_data/applications/pushover.desktop
-FILES_DATADIR += $(FILES_DESKTOP)
+FILES_DIST += pushover.desktop
+FILES_DATADIR += pushover_data/applications/pushover.desktop
 
 pushover_data/applications/pushover.desktop: pushover.desktop
 	mkdir -p $(dir $@)
 	cp $< $@
 
-FILES_LEVELS_SRC := $(wildcard levels/*/*)
-FILES_DIST += $(FILES_LEVELS_SRC)
+FILES_DIST += $(wildcard levels/*/*)
 FILES_LEVELS_SRCDIRS := $(wildcard levels/*)
-FILES_LEVELS := $(patsubst levels/%,pushover_data/pushover/levels/%.gz,$(FILES_LEVELS_SRCDIRS))
-FILES_DATADIR += $(FILES_LEVELS)
+FILES_DATADIR += $(patsubst levels/%,pushover_data/pushover/levels/%.gz,$(FILES_LEVELS_SRCDIRS))
 
 pushover_data/pushover/levels/%.gz: levels/%/*.level
 	mkdir -p $(dir $@)
