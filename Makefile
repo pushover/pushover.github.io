@@ -16,9 +16,6 @@ XGETTEXT := xgettext
 
 MSGID_BUGS_ADDRESS := roever@users.sf.net
 
-FILES_H := $(wildcard src/*.h src/linebreak/*.h)
-FILES_CPP := $(wildcard src/*.cpp src/linebreak/*.c)
-FILES_O := $(patsubst src/%,build_tmp/o/%.o,$(FILES_CPP))
 FILES_PO := $(wildcard po/*.po)
 FILES_MO := $(patsubst po/%.po,pushover_data/locale/%/LC_MESSAGES/pushover.mo,$(FILES_PO))
 FILES_DATA_SRC := $(wildcard data/*.ogg data/*.png)
@@ -63,6 +60,12 @@ PKGS_ASSEMBLER += sdl
 
 .PHONY: default
 default: all
+
+FILES_H := $(wildcard src/*.h src/linebreak/*.h)
+FILES_DIST += $(FILES_H)
+FILES_CPP := $(wildcard src/*.cpp src/linebreak/*.c)
+FILES_DIST += $(FILES_CPP)
+FILES_O := $(patsubst src/%,build_tmp/o/%.o,$(FILES_CPP))
 
 .SECONDARY: $(FILES_O)
 build_tmp/o/%.o: src/% src/version $(FILES_H)
@@ -121,8 +124,6 @@ build_tmp/po/messages.pot: build_tmp/po/leveltexts.cpp src/*.cpp
 
 FILES_DIST += src/version
 FILES_DIST += $(FILES_EXTRA)
-FILES_DIST += $(FILES_H)
-FILES_DIST += $(FILES_CPP)
 FILES_DIST += $(FILES_PO)
 FILES_DIST += $(FILES_DATA_SRC)
 FILES_DIST += $(FILES_THEMES_SRC)
