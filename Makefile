@@ -125,14 +125,6 @@ build_tmp/po/messages.pot: build_tmp/po/leveltexts.cpp src/*.cpp
 	mkdir -p $(dir $@)
 	$(XGETTEXT) --msgid-bugs-address=$(MSGID_BUGS_ADDRESS) -cTRANSLATORS: -k_ -kN_ -o $@ $^
 
-$(DESTDIR)$(BINDIR)/%: %
-	$(INSTALL) -m 755 -d $(dir $@)
-	$(INSTALL) -m 755 $< $@
-
-$(DESTDIR)$(DATADIR)/%: pushover_data/%
-	$(INSTALL) -m 755 -d $(dir $@)
-	$(INSTALL) -m 644 $< $@
-
 DIST := pushover-$(VERSION).tgz
 FILES_DIST += src/version
 FILES_DIST += $(FILES_EXTRA)
@@ -165,7 +157,16 @@ check: pushover $(FILES_DATADIR)
 	@echo OK
 
 FILES_INSTALL += $(DESTDIR)$(BINDIR)/pushover
+
+$(DESTDIR)$(BINDIR)/%: %
+	$(INSTALL) -m 755 -d $(dir $@)
+	$(INSTALL) -m 755 $< $@
+
 FILES_INSTALL += $(patsubst pushover_data/%,$(DESTDIR)$(DATADIR)/%,$(FILES_DATADIR))
+
+$(DESTDIR)$(DATADIR)/%: pushover_data/%
+	$(INSTALL) -m 755 -d $(dir $@)
+	$(INSTALL) -m 644 $< $@
 
 .PHONY: install
 install: $(FILES_INSTALL)
