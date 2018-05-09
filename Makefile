@@ -122,13 +122,13 @@ pushover_data/applications/pushover.desktop: pushover.desktop
 	mkdir -p $(dir $@)
 	cp $< $@
 
-FILES_DIST += pushover.ico
+FILES_DIST += src/description/pushover.ico
 FILES_DATADIR += pushover_data/icons/hicolor/16x16/apps/pushover.png
 FILES_DATADIR += pushover_data/icons/hicolor/32x32/apps/pushover.png
 FILES_DATADIR += pushover_data/icons/hicolor/48x48/apps/pushover.png
 FILES_DATADIR += pushover_data/icons/hicolor/64x64/apps/pushover.png
 
-pushover_data/icons/hicolor/%/apps/pushover.png: pushover.ico
+pushover_data/icons/hicolor/%/apps/pushover.png: src/description/pushover.ico
 	mkdir -p $(dir $@)
 	$(CONVERT) $<[$(shell expr substr $* 1 2 / 16 - 1)] $@
 
