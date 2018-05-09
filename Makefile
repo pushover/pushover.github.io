@@ -28,13 +28,15 @@ FILES_THEMES := $(patsubst themes/%,pushover_data/pushover/themes/%,$(FILES_THEM
 FILES_LEVELS_SRC := $(wildcard levels/*/*)
 FILES_LEVELS_SRCDIRS := $(wildcard levels/*)
 FILES_LEVELS := $(patsubst levels/%,pushover_data/pushover/levels/%.gz,$(FILES_LEVELS_SRCDIRS))
+FILES_DESKTOP_SRC := pushover.desktop
+FILES_DESKTOP := pushover_data/applications/pushover.desktop
 FILES_GENERATED_SRC := generated/dominos.png
 FILES_GENERATED := pushover_data/pushover/data/dominos.png
 FILES_EXTRA := AUTHORS COPYING Makefile NEWS pushover.ico README
-FILES_DATADIR := $(FILES_MO) $(FILES_DATA) $(FILES_THEMES) $(FILES_LEVELS) $(FILES_GENERATED)
+FILES_DATADIR := $(FILES_MO) $(FILES_DATA) $(FILES_THEMES) $(FILES_LEVELS) $(FILES_DESKTOP) $(FILES_GENERATED)
 FILES_DATADIR_INSTALL := $(patsubst pushover_data/%,$(DESTDIR)$(DATADIR)/%,$(FILES_DATADIR))
 FILES_BINDIR_INSTALL := $(DESTDIR)$(BINDIR)/pushover
-FILES_DIST := src/version $(FILES_EXTRA) $(FILES_H) $(FILES_CPP) $(FILES_PO) $(FILES_DATA_SRC) $(FILES_THEMES_SRC) $(FILES_LEVELS_SRC) $(FILES_GENERATED_SRC)
+FILES_DIST := src/version $(FILES_EXTRA) $(FILES_H) $(FILES_CPP) $(FILES_PO) $(FILES_DATA_SRC) $(FILES_THEMES_SRC) $(FILES_LEVELS_SRC) $(FILES_DESKTOP_SRC) $(FILES_GENERATED_SRC)
 VERSION := $(shell cat src/version)
 PKG_LUA := $(shell pkg-config --exists lua-5.2 && echo lua-5.2 || echo lua)
 
@@ -124,6 +126,10 @@ pushover_data/pushover/data/dominos.png: generated/dominos.png
 	cp $< $@
 
 pushover_data/pushover/themes/%: themes/%
+	mkdir -p $(dir $@)
+	cp $< $@
+
+pushover_data/applications/pushover.desktop: pushover.desktop
 	mkdir -p $(dir $@)
 	cp $< $@
 
