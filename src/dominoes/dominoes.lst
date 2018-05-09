@@ -70,13 +70,13 @@
 18 4 62 _tmp/domino_images/domino0305.png
 18 4 62 _tmp/domino_images/domino0307.png
 18 4 62 _tmp/domino_images/domino0309.png
-18 4 62 data/sources/explosions/expl00.png
-18 4 62 data/sources/explosions/expl01.png
-18 4 62 data/sources/explosions/expl02.png
-18 4 62 data/sources/explosions/expl03.png
-18 4 62 data/sources/explosions/expl04.png
-18 4 62 data/sources/explosions/expl05.png
-18 4 62 data/sources/explosions/expl06.png
+18 4 62 src/dominoes/explosions/expl00.png
+18 4 62 src/dominoes/explosions/expl01.png
+18 4 62 src/dominoes/explosions/expl02.png
+18 4 62 src/dominoes/explosions/expl03.png
+18 4 62 src/dominoes/explosions/expl04.png
+18 4 62 src/dominoes/explosions/expl05.png
+18 4 62 src/dominoes/explosions/expl06.png
 #
 # Exploder Domino Carried Images
 10 4 62 _tmp/domino_images/domino0390.png
@@ -367,49 +367,49 @@
 18 2 54 _tmp/domino_images/domino1496.png
 #
 # Crash 1
-18 4 62 data/sources/crashes/crash01.png
-18 4 62 data/sources/crashes/crash02.png
-18 4 62 data/sources/crashes/crash03.png
-18 4 62 data/sources/crashes/crash04.png
-18 4 62 data/sources/crashes/crash05.png
-18 4 62 data/sources/crashes/crash06.png
+18 4 62 src/dominoes/crashes/crash01.png
+18 4 62 src/dominoes/crashes/crash02.png
+18 4 62 src/dominoes/crashes/crash03.png
+18 4 62 src/dominoes/crashes/crash04.png
+18 4 62 src/dominoes/crashes/crash05.png
+18 4 62 src/dominoes/crashes/crash06.png
 #
 # Crash 2
-18 4 62 data/sources/crashes/crash07.png
-18 4 62 data/sources/crashes/crash08.png
-18 4 62 data/sources/crashes/crash09.png
-18 4 62 data/sources/crashes/crash10.png
-18 4 62 data/sources/crashes/crash11.png
-18 4 62 data/sources/crashes/crash12.png
+18 4 62 src/dominoes/crashes/crash07.png
+18 4 62 src/dominoes/crashes/crash08.png
+18 4 62 src/dominoes/crashes/crash09.png
+18 4 62 src/dominoes/crashes/crash10.png
+18 4 62 src/dominoes/crashes/crash11.png
+18 4 62 src/dominoes/crashes/crash12.png
 #
 # Crash 3
-18 4 62 data/sources/crashes/crash13.png
-18 4 62 data/sources/crashes/crash14.png
-18 4 62 data/sources/crashes/crash15.png
-18 4 62 data/sources/crashes/crash16.png
-18 4 62 data/sources/crashes/crash17.png
-18 4 62 data/sources/crashes/crash18.png
+18 4 62 src/dominoes/crashes/crash13.png
+18 4 62 src/dominoes/crashes/crash14.png
+18 4 62 src/dominoes/crashes/crash15.png
+18 4 62 src/dominoes/crashes/crash16.png
+18 4 62 src/dominoes/crashes/crash17.png
+18 4 62 src/dominoes/crashes/crash18.png
 #
 # Crash 4
-18 4 62 data/sources/crashes/crash19.png
-18 4 62 data/sources/crashes/crash20.png
-18 4 62 data/sources/crashes/crash21.png
-18 4 62 data/sources/crashes/crash22.png
-18 4 62 data/sources/crashes/crash23.png
-18 4 62 data/sources/crashes/crash24.png
+18 4 62 src/dominoes/crashes/crash19.png
+18 4 62 src/dominoes/crashes/crash20.png
+18 4 62 src/dominoes/crashes/crash21.png
+18 4 62 src/dominoes/crashes/crash22.png
+18 4 62 src/dominoes/crashes/crash23.png
+18 4 62 src/dominoes/crashes/crash24.png
 #
 # Crash 5
-18 4 62 data/sources/crashes/crash25.png
-18 4 62 data/sources/crashes/crash26.png
-18 4 62 data/sources/crashes/crash27.png
-18 4 62 data/sources/crashes/crash28.png
-18 4 62 data/sources/crashes/crash29.png
-18 4 62 data/sources/crashes/crash30.png
+18 4 62 src/dominoes/crashes/crash25.png
+18 4 62 src/dominoes/crashes/crash26.png
+18 4 62 src/dominoes/crashes/crash27.png
+18 4 62 src/dominoes/crashes/crash28.png
+18 4 62 src/dominoes/crashes/crash29.png
+18 4 62 src/dominoes/crashes/crash30.png
 #
 # Crash 6
-18 4 62 data/sources/crashes/crash31.png
-18 4 62 data/sources/crashes/crash32.png
-18 4 62 data/sources/crashes/crash33.png
-18 4 62 data/sources/crashes/crash34.png
-18 4 62 data/sources/crashes/crash35.png
-18 4 62 data/sources/crashes/crash36.png
+18 4 62 src/dominoes/crashes/crash31.png
+18 4 62 src/dominoes/crashes/crash32.png
+18 4 62 src/dominoes/crashes/crash33.png
+18 4 62 src/dominoes/crashes/crash34.png
+18 4 62 src/dominoes/crashes/crash35.png
+18 4 62 src/dominoes/crashes/crash36.png
