@@ -91,7 +91,13 @@ typedef enum {
 
 int main(int argc, char * argv[]) {
 
-  check(argc, argv);
+  // directories
+  const std::string datadir = getDataDir();
+  const std::string pkgdatadir = datadir+"/pushover";
+  const std::string localedir = datadir+"/locale";
+  const std::string levelsdir = pkgdatadir+"/levels";
+
+  check(levelsdir, argc, argv);
 
   configSettings conf;
   conf.useFullscreen = false;
@@ -99,12 +105,6 @@ int main(int argc, char * argv[]) {
   conf.playSounds = true;
 
   if (argc >= 2 && strcmp(argv[1], "-f") == 0) conf.useFullscreen = true;
-
-  // directories
-  const std::string datadir = getDataDir();
-  const std::string pkgdatadir = datadir+"/pushover";
-  const std::string localedir = datadir+"/locale";
-  const std::string levelsdir = pkgdatadir+"/levels";
 
   // setup internationalization
   setlocale(LC_MESSAGES, "");

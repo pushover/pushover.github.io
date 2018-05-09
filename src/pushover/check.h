@@ -22,7 +22,8 @@
 #ifndef __CHECK_H__
 #define __CHECK_H__
 
+#include <string>
 
-void check(int argc, char * argv[]);
+void check(const std::string &levelsdir, int argc, char * argv[]);
 
 #endif

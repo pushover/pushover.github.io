@@ -66,9 +66,9 @@ static void check_record(const std::string & rec_path, levelsetList_c & levelset
   count++;
 }
 
-static bool check(int argn, char * argv[], std::string checker(const ant_c & a, const levelPlayer_c & l), bool allowUncheckedLevels) {
+static bool check(const std::string &levelsdir, int argn, char * argv[], std::string checker(const ant_c & a, const levelPlayer_c & l), bool allowUncheckedLevels) {
   levelsetList_c levelsetList;
-  levelsetList.load("levels", "");
+  levelsetList.load(levelsdir, "");
 
   unsigned int count = 0;
   unsigned int failed = 0;
@@ -145,22 +145,22 @@ static std::string checkerCrash(const ant_c & a, const levelPlayer_c & l) {
 }
 
 
-void check(int argc, char * argv[]) {
+void check(const std::string &levelsdir, int argc, char * argv[]) {
 
   // filter out the no graphic cases, they are special and will be treated
   // separately
   if (argc >= 3 && strcmp(argv[1], "-c") == 0)   // the "must finish" tests
   {
-    exit(check(argc-2, argv+2, checkerFinish, false) ? 0 : 1);
+    exit(check(levelsdir, argc-2, argv+2, checkerFinish, false) ? 0 : 1);
   }
 
   if (argc >= 3 && strcmp(argv[1], "-y") == 0)   // the "must fail" tests
   {
-    exit(check(argc-2, argv+2, checkerFail, true) ? 0 : 1);
+    exit(check(levelsdir, argc-2, argv+2, checkerFail, true) ? 0 : 1);
   }
 
   if (argc >= 3 && strcmp(argv[1], "-x") == 0)   // the "must crash" tests
   {
-    exit(check(argc-2, argv+2, checkerCrash, true) ? 0 : 1);
+    exit(check(levelsdir, argc-2, argv+2, checkerCrash, true) ? 0 : 1);
   }
 }
