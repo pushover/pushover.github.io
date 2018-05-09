@@ -47,10 +47,10 @@ FILES_H := $(wildcard src/pushover/*.h src/pushover/linebreak/*.h src/pushover/s
 FILES_DIST += $(FILES_H)
 FILES_CPP := $(wildcard src/pushover/*.cpp src/pushover/linebreak/*.c src/pushover/sha1/*.cpp)
 FILES_DIST += $(FILES_CPP)
-FILES_O := $(patsubst src/pushover/%,_tmp/o/%.o,$(FILES_CPP))
+FILES_O := $(patsubst src/pushover/%,_tmp/pushover/%.o,$(FILES_CPP))
 
 .SECONDARY: $(FILES_O)
-_tmp/o/%.o: src/pushover/% src/version $(FILES_H)
+_tmp/pushover/%.o: src/pushover/% src/version $(FILES_H)
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(PKGS)` $(DEFS) -c -o $@ $<
 
