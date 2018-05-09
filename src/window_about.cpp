@@ -65,7 +65,7 @@ aboutWindow_c::aboutWindow_c(surface_c & s, graphicsN_c & g, const levelsetList_
   par.shadow = 0; par.box.y += surf.renderText(&par, "Keith Tinman, Dean Evans, Johnathan Dunn"); par.box.x -= sk; par.box.w += 30;
 
   par.shadow = 2; par.box.y += surf.renderText(&par, _("New Programming:")); par.box.x += sk; par.box.w -= 30;
-  par.shadow = 0; par.box.y += surf.renderText(&par, "Andreas Röver, Volker Grabsch"); par.box.x -= sk; par.box.w += 30;
+  par.shadow = 0; par.box.y += surf.renderText(&par, "Andreas Röver, Volker Diels-Grabsch"); par.box.x -= sk; par.box.w += 30;
 
   par.shadow = 2; par.box.y += surf.renderText(&par, _("New Music:")); par.box.x += sk; par.box.w -= 30;
   par.shadow = 0; par.box.y += surf.renderText(&par, "Roberto Lorenz"); par.box.x -= sk; par.box.w += 30;
