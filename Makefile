@@ -134,13 +134,6 @@ build_tmp/po/leveltexts.cpp: levels/*/*.level
 	mkdir -p $(dir $@)
 	sed -n '/^\(Description\|Hint\|Name\|Tutorial\)$$/,/^[^|]/ s,^| \(.*\)$$,_("\1"),p' $^ | LC_ALL=C sort -u >$@
 
-FILES_DIST += AUTHORS
-FILES_DIST += COPYING
-FILES_DIST += Makefile
-FILES_DIST += NEWS
-FILES_DIST += pushover.ico
-FILES_DIST += README
-
 .PHONY: all
 all: $(FILES_BINDIR) $(FILES_DATADIR)
 
@@ -148,6 +141,13 @@ DIST := pushover-$(VERSION).tgz
 
 .PHONY: dist
 dist: $(DIST)
+
+FILES_DIST += AUTHORS
+FILES_DIST += COPYING
+FILES_DIST += Makefile
+FILES_DIST += NEWS
+FILES_DIST += pushover.ico
+FILES_DIST += README
 
 $(DIST): $(FILES_DIST)
 	rm -rf build_tmp/$(basename $@)
