@@ -91,14 +91,6 @@ pushover_data/pushover/data/dominoes.png: generated/dominoes.png
 	mkdir -p $(dir $@)
 	cp $< $@
 
-FILES_PO := $(wildcard src/po/*.po)
-FILES_DIST += $(FILES_PO)
-FILES_DATADIR += $(patsubst src/po/%.po,pushover_data/locale/%/LC_MESSAGES/pushover.mo,$(FILES_PO))
-
-pushover_data/locale/%/LC_MESSAGES/pushover.mo: src/po/%.po
-	mkdir -p $(dir $@)
-	$(MSGFMT) -c -o $@ $<
-
 FILES_DATA_SRC := $(wildcard data/*.ogg data/*.png)
 FILES_DIST += $(FILES_DATA_SRC)
 FILES_DATADIR += $(patsubst data/%,pushover_data/pushover/data/%,$(FILES_DATA_SRC))
@@ -114,6 +106,14 @@ FILES_DATADIR += $(patsubst src/themes/%,pushover_data/pushover/themes/%,$(FILES
 pushover_data/pushover/themes/%: src/themes/%
 	mkdir -p $(dir $@)
 	cp $< $@
+
+FILES_PO := $(wildcard src/po/*.po)
+FILES_DIST += $(FILES_PO)
+FILES_DATADIR += $(patsubst src/po/%.po,pushover_data/locale/%/LC_MESSAGES/pushover.mo,$(FILES_PO))
+
+pushover_data/locale/%/LC_MESSAGES/pushover.mo: src/po/%.po
+	mkdir -p $(dir $@)
+	$(MSGFMT) -c -o $@ $<
 
 FILES_DIST += src/description/pushover.desktop
 FILES_DATADIR += pushover_data/applications/pushover.desktop
