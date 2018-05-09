@@ -42,9 +42,9 @@ LIBS += -lboost_system
 DEFS += -DVERSION='"$(VERSION)"'
 DEFS += -DDATADIR='"$(DATADIR)"'
 
-FILES_H := $(wildcard src/*.h src/linebreak/*.h)
+FILES_H := $(wildcard src/*.h src/linebreak/*.h src/sha1/*.hpp)
 FILES_DIST += $(FILES_H)
-FILES_CPP := $(wildcard src/*.cpp src/linebreak/*.c)
+FILES_CPP := $(wildcard src/*.cpp src/linebreak/*.c src/sha1/*.cpp)
 FILES_DIST += $(FILES_CPP)
 FILES_O := $(patsubst src/%,build_tmp/o/%.o,$(FILES_CPP))
 

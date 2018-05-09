@@ -23,7 +23,7 @@
 
 #include "leveldata.h"
 #include "textsections.h"
-#include "sha1.h"
+#include "sha1/sha1.hpp"
 #include "graphics.h"
 #include "soundsys.h"
 #include "screen.h"

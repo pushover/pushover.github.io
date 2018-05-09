@@ -1,5 +1,5 @@
 /*
-    sha1.h - header of
+    sha1.hpp - header of
 
     ============
     SHA-1 in C++
