@@ -87,11 +87,11 @@ generated/dominoes.png: _tmp/assembler _tmp/domino_images/done
 	mkdir -p $(dir $@)
 	_tmp/assembler $@ 58 2 200 data/sources/dominoes.lst
 
-FILES_PO := $(wildcard po/*.po)
+FILES_PO := $(wildcard src/po/*.po)
 FILES_DIST += $(FILES_PO)
-FILES_DATADIR += $(patsubst po/%.po,pushover_data/locale/%/LC_MESSAGES/pushover.mo,$(FILES_PO))
+FILES_DATADIR += $(patsubst src/po/%.po,pushover_data/locale/%/LC_MESSAGES/pushover.mo,$(FILES_PO))
 
-pushover_data/locale/%/LC_MESSAGES/pushover.mo: po/%.po
+pushover_data/locale/%/LC_MESSAGES/pushover.mo: src/po/%.po
 	mkdir -p $(dir $@)
 	$(MSGFMT) -c -o $@ $<
 
@@ -201,7 +201,7 @@ clean:
 
 .PHONY: update-po
 update-po: _tmp/po/messages.pot
-	for PO_FILE in po/*.po; do $(MSGMERGE) -Uq --backup=none $$PO_FILE $<; done
+	for PO_FILE in src/po/*.po; do $(MSGMERGE) -Uq --backup=none $$PO_FILE $<; done
 
 _tmp/po/messages.pot: _tmp/po/leveltexts.cpp src/pushover/*.cpp
 	mkdir -p $(dir $@)
