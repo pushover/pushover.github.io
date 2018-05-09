@@ -19,9 +19,6 @@ MSGID_BUGS_ADDRESS := roever@users.sf.net
 VERSION := $(shell cat src/version)
 PKG_LUA := $(shell pkg-config --exists lua-5.2 && echo lua-5.2 || echo lua)
 
-LIBS += -lboost_filesystem
-LIBS += -lboost_system
-
 PKGS_ASSEMBLER += SDL_image
 PKGS_ASSEMBLER += libpng
 PKGS_ASSEMBLER += sdl
@@ -38,6 +35,9 @@ PKGS += fribidi
 PKGS += libpng
 PKGS += sdl
 PKGS += zlib
+
+LIBS += -lboost_filesystem
+LIBS += -lboost_system
 
 DEFS += -DVERSION='"$(VERSION)"'
 DEFS += -DDATADIR='"$(DATADIR)"'
