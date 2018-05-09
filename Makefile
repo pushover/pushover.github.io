@@ -125,7 +125,6 @@ build_tmp/po/messages.pot: build_tmp/po/leveltexts.cpp src/*.cpp
 	mkdir -p $(dir $@)
 	$(XGETTEXT) --msgid-bugs-address=$(MSGID_BUGS_ADDRESS) -cTRANSLATORS: -k_ -kN_ -o $@ $^
 
-DIST := pushover-$(VERSION).tgz
 FILES_DIST += src/version
 FILES_DIST += $(FILES_EXTRA)
 FILES_DIST += $(FILES_H)
@@ -139,6 +138,8 @@ FILES_DIST += $(FILES_GENERATED_SRC)
 
 .PHONY: all
 all: pushover $(FILES_DATADIR)
+
+DIST := pushover-$(VERSION).tgz
 
 .PHONY: dist
 dist: $(DIST)
