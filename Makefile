@@ -44,8 +44,6 @@ FILES_DATADIR += $(FILES_THEMES)
 FILES_DATADIR += $(FILES_LEVELS)
 FILES_DATADIR += $(FILES_DESKTOP)
 FILES_DATADIR += $(FILES_GENERATED)
-FILES_DATADIR_INSTALL := $(patsubst pushover_data/%,$(DESTDIR)$(DATADIR)/%,$(FILES_DATADIR))
-FILES_BINDIR_INSTALL := $(DESTDIR)$(BINDIR)/pushover
 VERSION := $(shell cat src/version)
 PKG_LUA := $(shell pkg-config --exists lua-5.2 && echo lua-5.2 || echo lua)
 
@@ -165,6 +163,9 @@ check: pushover $(FILES_DATADIR)
 	./pushover -y recordings/fail
 	./pushover -x recordings/crash
 	@echo OK
+
+FILES_BINDIR_INSTALL := $(DESTDIR)$(BINDIR)/pushover
+FILES_DATADIR_INSTALL := $(patsubst pushover_data/%,$(DESTDIR)$(DATADIR)/%,$(FILES_DATADIR))
 
 .PHONY: install
 install: $(FILES_BINDIR_INSTALL) $(FILES_DATADIR_INSTALL)
