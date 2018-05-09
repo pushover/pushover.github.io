@@ -195,10 +195,8 @@ install: $(FILES_INSTALL)
 
 .PHONY: clean
 clean:
-	rm -f pushover
-	rm -f $(DIST)
-	rm -rf build_tmp/
-	rm -rf pushover_data/
+	rm -f $(DIST) $(FILES_BINDIR) $(FILES_DEBUG)
+	rm -rf build_tmp/ pushover_data/
 	@echo Not removing generated/
 
 .PHONY: update-po
