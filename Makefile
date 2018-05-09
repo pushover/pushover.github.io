@@ -19,10 +19,6 @@ MSGID_BUGS_ADDRESS := roever@users.sf.net
 VERSION := $(shell cat src/version)
 PKG_LUA := $(shell pkg-config --exists lua-5.2 && echo lua-5.2 || echo lua)
 
-PKGS_ASSEMBLER += SDL_image
-PKGS_ASSEMBLER += libpng
-PKGS_ASSEMBLER += sdl
-
 .DELETE_ON_ERROR:
 
 .PHONY: default
@@ -57,6 +53,10 @@ FILES_BINDIR += pushover
 
 pushover: $(FILES_O)
 	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --libs $(PKGS)` $(LIBS) -o $@ $(FILES_O)
+
+PKGS_ASSEMBLER += SDL_image
+PKGS_ASSEMBLER += libpng
+PKGS_ASSEMBLER += sdl
 
 .SECONDARY: build_tmp/assembler
 build_tmp/assembler: data/sources/assembler.cpp data/sources/pngsaver.h
