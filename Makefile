@@ -54,14 +54,14 @@ FILES_BINDIR += pushover
 pushover: $(FILES_O)
 	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --libs $(PKGS)` $(LIBS) -o $@ $(FILES_O)
 
-PKGS_ASSEMBLER += SDL_image
-PKGS_ASSEMBLER += libpng
-PKGS_ASSEMBLER += sdl
+ASSEMBLER_PKGS += SDL_image
+ASSEMBLER_PKGS += libpng
+ASSEMBLER_PKGS += sdl
 
 .SECONDARY: build_tmp/assembler
 build_tmp/assembler: data/sources/assembler.cpp data/sources/pngsaver.h
 	mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(PKGS_ASSEMBLER)` `$(PKG_CONFIG) --libs $(PKGS_ASSEMBLER)` -o $@ $<
+	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(ASSEMBLER_PKGS)` `$(PKG_CONFIG) --libs $(ASSEMBLER_PKGS)` -o $@ $<
 
 .SECONDARY: build_tmp/domino_images/done
 build_tmp/domino_images/done: data/sources/domino.ini data/sources/*.pov
