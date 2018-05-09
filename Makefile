@@ -16,12 +16,6 @@ XGETTEXT := xgettext
 
 MSGID_BUGS_ADDRESS := roever@users.sf.net
 
-FILES_EXTRA += AUTHORS
-FILES_EXTRA += COPYING
-FILES_EXTRA += Makefile
-FILES_EXTRA += NEWS
-FILES_EXTRA += pushover.ico
-FILES_EXTRA += README
 VERSION := $(shell cat src/version)
 PKG_LUA := $(shell pkg-config --exists lua-5.2 && echo lua-5.2 || echo lua)
 
@@ -139,7 +133,12 @@ build_tmp/po/leveltexts.cpp: levels/*/*.level
 	sed -n '/^\(Description\|Hint\|Name\|Tutorial\)$$/,/^[^|]/ s,^| \(.*\)$$,_("\1"),p' $^ | LC_ALL=C sort -u >$@
 
 FILES_DIST += src/version
-FILES_DIST += $(FILES_EXTRA)
+FILES_DIST += AUTHORS
+FILES_DIST += COPYING
+FILES_DIST += Makefile
+FILES_DIST += NEWS
+FILES_DIST += pushover.ico
+FILES_DIST += README
 
 .PHONY: all
 all: $(FILES_BINDIR) $(FILES_DATADIR)
