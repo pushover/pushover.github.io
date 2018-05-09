@@ -173,9 +173,9 @@ $(DIST): $(FILES_DIST)
 
 .PHONY: check
 check: all
-	./pushover -c recordings/finish/*
-	./pushover -y recordings/fail
-	./pushover -x recordings/crash
+	./pushover -c src/recordings/finish/*
+	./pushover -y src/recordings/fail
+	./pushover -x src/recordings/crash
 	@echo OK
 
 FILES_INSTALL += $(patsubst %,$(DESTDIR)$(BINDIR)/%,$(FILES_BINDIR))
