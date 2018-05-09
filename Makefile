@@ -18,12 +18,13 @@ PKG_LUA := $(shell $(PKG_CONFIG) --exists lua-5.2 && echo lua-5.2 || echo lua)
 
 MSGID_BUGS_ADDRESS := roever@users.sf.net
 
-VERSION := $(shell cat src/version)
-
 .DELETE_ON_ERROR:
 
 .PHONY: default
 default: all
+
+VERSION := $(shell cat src/version)
+FILES_DIST += src/version
 
 PKGS += $(PKG_LUA)
 PKGS += SDL_mixer
@@ -133,7 +134,6 @@ build_tmp/po/leveltexts.cpp: levels/*/*.level
 	mkdir -p $(dir $@)
 	sed -n '/^\(Description\|Hint\|Name\|Tutorial\)$$/,/^[^|]/ s,^| \(.*\)$$,_("\1"),p' $^ | LC_ALL=C sort -u >$@
 
-FILES_DIST += src/version
 FILES_DIST += AUTHORS
 FILES_DIST += COPYING
 FILES_DIST += Makefile
