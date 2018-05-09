@@ -16,8 +16,6 @@ XGETTEXT := xgettext
 
 MSGID_BUGS_ADDRESS := roever@users.sf.net
 
-FILES_PO := $(wildcard po/*.po)
-FILES_MO := $(patsubst po/%.po,pushover_data/locale/%/LC_MESSAGES/pushover.mo,$(FILES_PO))
 FILES_DATA_SRC := $(wildcard data/*.ogg data/*.png)
 FILES_DATA := $(patsubst data/%,pushover_data/pushover/data/%,$(FILES_DATA_SRC))
 FILES_THEMES_SRC := $(wildcard themes/*)
@@ -90,6 +88,11 @@ generated/dominos.png: build_tmp/assembler build_tmp/domino_images/done
 	mkdir -p $(dir $@)
 	build_tmp/assembler $@ 58 2 200 data/sources/dominos.lst
 
+FILES_PO := $(wildcard po/*.po)
+FILES_DIST += $(FILES_PO)
+FILES_MO := $(patsubst po/%.po,pushover_data/locale/%/LC_MESSAGES/pushover.mo,$(FILES_PO))
+FILES_DATADIR += $(FILES_MO)
+
 pushover_data/locale/%/LC_MESSAGES/pushover.mo: po/%.po
 	mkdir -p $(dir $@)
 	$(MSGFMT) -c -o $@ $<
@@ -124,14 +127,12 @@ build_tmp/po/messages.pot: build_tmp/po/leveltexts.cpp src/*.cpp
 
 FILES_DIST += src/version
 FILES_DIST += $(FILES_EXTRA)
-FILES_DIST += $(FILES_PO)
 FILES_DIST += $(FILES_DATA_SRC)
 FILES_DIST += $(FILES_THEMES_SRC)
 FILES_DIST += $(FILES_LEVELS_SRC)
 FILES_DIST += $(FILES_DESKTOP_SRC)
 FILES_DIST += $(FILES_GENERATED_SRC)
 
-FILES_DATADIR += $(FILES_MO)
 FILES_DATADIR += $(FILES_DATA)
 FILES_DATADIR += $(FILES_THEMES)
 FILES_DATADIR += $(FILES_LEVELS)
