@@ -267,7 +267,7 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   // all domino sprites are in a PNG image load the image and then copy
   // the information to the destination sprites
   {
-    pngLoader_c png(dataPath+"/data/dominoes.png");
+    pngLoader_c png(dataPath+"/images/dominoes.png");
 
     uint16_t domino = 0;
     uint16_t dominoIndex = 0;
@@ -303,7 +303,7 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   // load the ant images
 
   {
-    pngLoader_c png(dataPath+"/data/ant.png");
+    pngLoader_c png(dataPath+"/images/ant.png");
 
     // load images from first file
     for (unsigned int i = 0; i <= 27; i++)
@@ -336,7 +336,7 @@ graphicsN_c::graphicsN_c(const std::string & path) : dataPath(path) {
   }
 
   {
-    pngLoader_c png(dataPath+"/data/box.png");
+    pngLoader_c png(dataPath+"/images/box.png");
 
     if (png.getWidth() != 40*3 || png.getHeight() != 48*3)
     {

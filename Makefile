@@ -81,21 +81,30 @@ _tmp/dominoes/done: src/dominoes/domino.ini src/dominoes/*.pov
 	touch $@
 
 FILES_DIST += generated/dominoes.png
-FILES_DATADIR += pushover_data/pushover/data/dominoes.png
 
 generated/dominoes.png: _tmp/dominoes/assembler _tmp/dominoes/done
 	mkdir -p $(dir $@)
 	_tmp/dominoes/assembler $@ 58 2 200 src/dominoes/dominoes.lst
 
-pushover_data/pushover/data/dominoes.png: generated/dominoes.png
+FILES_DATADIR += pushover_data/pushover/images/dominoes.png
+
+pushover_data/pushover/images/dominoes.png: generated/dominoes.png
 	mkdir -p $(dir $@)
 	cp $< $@
 
-FILES_DATA_SRC := $(wildcard data/*.ogg data/*.png)
-FILES_DIST += $(FILES_DATA_SRC)
-FILES_DATADIR += $(patsubst data/%,pushover_data/pushover/data/%,$(FILES_DATA_SRC))
+FILES_IMAGES_SRC := $(wildcard src/images/*.png)
+FILES_DIST += $(FILES_IMAGES_SRC)
+FILES_DATADIR += $(patsubst src/images/%,pushover_data/pushover/images/%,$(FILES_IMAGES_SRC))
 
-pushover_data/pushover/data/%: data/%
+pushover_data/pushover/images/%: src/images/%
+	mkdir -p $(dir $@)
+	cp $< $@
+
+FILES_SOUNDS_SRC := $(wildcard src/sounds/*.ogg)
+FILES_DIST += $(FILES_SOUNDS_SRC)
+FILES_DATADIR += $(patsubst src/sounds/%,pushover_data/pushover/sounds/%,$(FILES_SOUNDS_SRC))
+
+pushover_data/pushover/sounds/%: src/sounds/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
