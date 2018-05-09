@@ -16,8 +16,6 @@ XGETTEXT := xgettext
 
 MSGID_BUGS_ADDRESS := roever@users.sf.net
 
-FILES_DATA_SRC := $(wildcard data/*.ogg data/*.png)
-FILES_DATA := $(patsubst data/%,pushover_data/pushover/data/%,$(FILES_DATA_SRC))
 FILES_THEMES_SRC := $(wildcard themes/*)
 FILES_THEMES := $(patsubst themes/%,pushover_data/pushover/themes/%,$(FILES_THEMES_SRC))
 FILES_LEVELS_SRC := $(wildcard levels/*/*)
@@ -97,6 +95,11 @@ pushover_data/locale/%/LC_MESSAGES/pushover.mo: po/%.po
 	mkdir -p $(dir $@)
 	$(MSGFMT) -c -o $@ $<
 
+FILES_DATA_SRC := $(wildcard data/*.ogg data/*.png)
+FILES_DIST += $(FILES_DATA_SRC)
+FILES_DATA := $(patsubst data/%,pushover_data/pushover/data/%,$(FILES_DATA_SRC))
+FILES_DATADIR += $(FILES_DATA)
+
 pushover_data/pushover/data/%: data/%
 	mkdir -p $(dir $@)
 	cp $< $@
@@ -127,13 +130,11 @@ build_tmp/po/messages.pot: build_tmp/po/leveltexts.cpp src/*.cpp
 
 FILES_DIST += src/version
 FILES_DIST += $(FILES_EXTRA)
-FILES_DIST += $(FILES_DATA_SRC)
 FILES_DIST += $(FILES_THEMES_SRC)
 FILES_DIST += $(FILES_LEVELS_SRC)
 FILES_DIST += $(FILES_DESKTOP_SRC)
 FILES_DIST += $(FILES_GENERATED_SRC)
 
-FILES_DATADIR += $(FILES_DATA)
 FILES_DATADIR += $(FILES_THEMES)
 FILES_DATADIR += $(FILES_LEVELS)
 FILES_DATADIR += $(FILES_DESKTOP)
