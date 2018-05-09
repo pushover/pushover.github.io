@@ -130,10 +130,6 @@ build_tmp/po/leveltexts.cpp: levels/*/*.level
 	mkdir -p $(dir $@)
 	sed -n '/^\(Description\|Hint\|Name\|Tutorial\)$$/,/^[^|]/ s,^| \(.*\)$$,_("\1"),p' $^ | LC_ALL=C sort -u >$@
 
-build_tmp/po/messages.pot: build_tmp/po/leveltexts.cpp src/*.cpp
-	mkdir -p $(dir $@)
-	$(XGETTEXT) --msgid-bugs-address=$(MSGID_BUGS_ADDRESS) -cTRANSLATORS: -k_ -kN_ -o $@ $^
-
 FILES_DIST += src/version
 FILES_DIST += $(FILES_EXTRA)
 FILES_DIST += $(FILES_DESKTOP_SRC)
@@ -189,3 +185,7 @@ clean:
 .PHONY: update-po
 update-po: build_tmp/po/messages.pot
 	for PO_FILE in po/*.po; do $(MSGMERGE) -Uq --backup=none $$PO_FILE $<; done
+
+build_tmp/po/messages.pot: build_tmp/po/leveltexts.cpp src/*.cpp
+	mkdir -p $(dir $@)
+	$(XGETTEXT) --msgid-bugs-address=$(MSGID_BUGS_ADDRESS) -cTRANSLATORS: -k_ -kN_ -o $@ $^
