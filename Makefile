@@ -115,10 +115,10 @@ pushover_data/pushover/themes/%: src/themes/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
-FILES_DIST += pushover.desktop
+FILES_DIST += src/description/pushover.desktop
 FILES_DATADIR += pushover_data/applications/pushover.desktop
 
-pushover_data/applications/pushover.desktop: pushover.desktop
+pushover_data/applications/pushover.desktop: src/description/pushover.desktop
 	mkdir -p $(dir $@)
 	cp $< $@
 
