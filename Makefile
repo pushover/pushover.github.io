@@ -16,9 +16,6 @@ XGETTEXT := xgettext
 
 MSGID_BUGS_ADDRESS := roever@users.sf.net
 
-FILES_LEVELS_SRC := $(wildcard levels/*/*)
-FILES_LEVELS_SRCDIRS := $(wildcard levels/*)
-FILES_LEVELS := $(patsubst levels/%,pushover_data/pushover/levels/%.gz,$(FILES_LEVELS_SRCDIRS))
 FILES_DESKTOP_SRC := pushover.desktop
 FILES_DESKTOP := pushover_data/applications/pushover.desktop
 FILES_GENERATED_SRC := generated/dominos.png
@@ -119,6 +116,12 @@ pushover_data/applications/pushover.desktop: pushover.desktop
 	mkdir -p $(dir $@)
 	cp $< $@
 
+FILES_LEVELS_SRC := $(wildcard levels/*/*)
+FILES_DIST += $(FILES_LEVELS_SRC)
+FILES_LEVELS_SRCDIRS := $(wildcard levels/*)
+FILES_LEVELS := $(patsubst levels/%,pushover_data/pushover/levels/%.gz,$(FILES_LEVELS_SRCDIRS))
+FILES_DATADIR += $(FILES_LEVELS)
+
 pushover_data/pushover/levels/%.gz: levels/%/*.level
 	mkdir -p $(dir $@)
 	cat levels/$*/*.level | gzip -9 >$@
@@ -133,11 +136,9 @@ build_tmp/po/messages.pot: build_tmp/po/leveltexts.cpp src/*.cpp
 
 FILES_DIST += src/version
 FILES_DIST += $(FILES_EXTRA)
-FILES_DIST += $(FILES_LEVELS_SRC)
 FILES_DIST += $(FILES_DESKTOP_SRC)
 FILES_DIST += $(FILES_GENERATED_SRC)
 
-FILES_DATADIR += $(FILES_LEVELS)
 FILES_DATADIR += $(FILES_DESKTOP)
 FILES_DATADIR += $(FILES_GENERATED)
 
