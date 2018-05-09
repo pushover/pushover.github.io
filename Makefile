@@ -16,8 +16,6 @@ XGETTEXT := xgettext
 
 MSGID_BUGS_ADDRESS := roever@users.sf.net
 
-FILES_DESKTOP_SRC := pushover.desktop
-FILES_DESKTOP := pushover_data/applications/pushover.desktop
 FILES_GENERATED_SRC := generated/dominos.png
 FILES_GENERATED := pushover_data/pushover/data/dominos.png
 FILES_EXTRA += AUTHORS
@@ -112,6 +110,11 @@ pushover_data/pushover/themes/%: themes/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
+FILES_DESKTOP_SRC := pushover.desktop
+FILES_DIST += $(FILES_DESKTOP_SRC)
+FILES_DESKTOP := pushover_data/applications/pushover.desktop
+FILES_DATADIR += $(FILES_DESKTOP)
+
 pushover_data/applications/pushover.desktop: pushover.desktop
 	mkdir -p $(dir $@)
 	cp $< $@
@@ -132,10 +135,8 @@ build_tmp/po/leveltexts.cpp: levels/*/*.level
 
 FILES_DIST += src/version
 FILES_DIST += $(FILES_EXTRA)
-FILES_DIST += $(FILES_DESKTOP_SRC)
 FILES_DIST += $(FILES_GENERATED_SRC)
 
-FILES_DATADIR += $(FILES_DESKTOP)
 FILES_DATADIR += $(FILES_GENERATED)
 
 .PHONY: all
