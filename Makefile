@@ -1,20 +1,21 @@
-PREFIX := /usr
-BINDIR := $(PREFIX)/bin
-DATADIR := $(PREFIX)/share
-DESTDIR :=
-CROSS :=
+PREFIX ?= /usr
+BINDIR ?= $(PREFIX)/bin
+DATADIR ?= $(PREFIX)/share
+DESTDIR ?=
+CROSS ?=
 
-CONVERT := convert
-CXX := $(CROSS)g++
-CXXFLAGS := -Wall -g -O2
-INSTALL := install
-MSGFMT := msgfmt
-MSGMERGE := msgmerge
-PKG_CONFIG := $(CROSS)pkg-config
-POVRAY := povray
-XGETTEXT := xgettext
+CONVERT ?= convert
+CXX ?= $(CROSS)g++
+CXXFLAGS ?= -Wall -g -O2
+INSTALL ?= install
+MSGFMT ?= msgfmt
+MSGMERGE ?= msgmerge
+PKG_CONFIG ?= $(CROSS)pkg-config
+POVRAY ?= povray
+XGETTEXT ?= xgettext
 
-PKG_LUA := $(shell $(PKG_CONFIG) --exists lua-5.2 && echo lua-5.2 || echo lua)
+PKG_LUA_DEFAULT := $(shell $(PKG_CONFIG) --exists lua-5.2 && echo lua-5.2 || echo lua)
+PKG_LUA ?= $(PKG_LUA_DEFAULT)
 
 MSGID_BUGS_ADDRESS := roever@users.sf.net
 
