@@ -141,9 +141,9 @@ generated/pushover_%.png: src/description/pushover.ico
 	mkdir -p $(dir $@)
 	$(CONVERT) $<[$(shell expr substr $* 1 2 / 16 - 1)] $@
 
-FILES_DATADIR += $(patsubst generated/pushover_%,data/icons/hicolor/%/apps/pushover.png,$(FILES_PNG_ICON))
+FILES_DATADIR += $(patsubst generated/pushover_%.png,data/icons/hicolor/%/apps/pushover.png,$(FILES_PNG_ICON))
 
-data/icons/hicolor/%/apps/pushover.png: generated/pushover_%
+data/icons/hicolor/%/apps/pushover.png: generated/pushover_%.png
 	mkdir -p $(dir $@)
 	cp $< $@
 
