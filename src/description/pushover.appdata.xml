@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>pushover.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0+</project_license>
+  <name>Pushover</name>
+  <summary>Rearrange dominoes on different platforms to start a chain reaction</summary>
+  <description>
+    <p>Pushover is a fun puzzle game where you have to rearrange dominoes on different platforms to start a chain reaction that makes all dominoes topple over. There are many strange types of dominoes, such as the Ascender which will rise to the ceiling when pushed, or the Exploder which will blast a hole into the platform.</p>
+    <p>This is a faithful reimplementation of the same-named game originally published by Ocean in 1992.</p>
+  </description>
+  <url type="homepage">https://pushover.github.io</url>
+  <url type="bugtracker">https://github.com/pushover/pushover.github.io/issues</url>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://pushover.github.io/website/images/Screenshot2.jpg</image>
+    </screenshot>
+    <screenshot>
+      <image>https://pushover.github.io/website/images/Screenshot3n.jpg</image>
+    </screenshot>
+    <screenshot>
+      <image>https://pushover.github.io/website/images/Screenshot4.jpg</image>
+    </screenshot>
+  </screenshots>
+</component>

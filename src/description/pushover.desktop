@@ -1,0 +1,8 @@
+[Desktop Entry]
+Categories=Game;LogicGame;
+Comment=Make all dominoes topple over
+Exec=pushover
+Icon=pushover
+Name=Pushover
+Terminal=false
+Type=Application

@@ -1,0 +1,415 @@
+#
+# Standard falling images
+18 4 62 _tmp/dominoes/domino0000.png
+18 4 62 _tmp/dominoes/domino0001.png
+18 4 62 _tmp/dominoes/domino0002.png
+18 4 62 _tmp/dominoes/domino0003.png
+18 4 62 _tmp/dominoes/domino0004.png
+18 4 62 _tmp/dominoes/domino0005.png
+18 4 62 _tmp/dominoes/domino0006.png
+18 4 62 _tmp/dominoes/domino0007.png
+18 4 62 _tmp/dominoes/domino0008.png
+18 4 62 _tmp/dominoes/domino0009.png
+18 4 62 _tmp/dominoes/domino0010.png
+18 4 62 _tmp/dominoes/domino0011.png
+18 4 62 _tmp/dominoes/domino0012.png
+18 4 62 _tmp/dominoes/domino0013.png
+18 4 62 _tmp/dominoes/domino0014.png
+#
+# Standard Domino Carried Images
+10 4 62 _tmp/dominoes/domino0090.png
+16 4 54 _tmp/dominoes/domino0091.png
+6 -2 54 _tmp/dominoes/domino0092.png
+19 3 54 _tmp/dominoes/domino0093.png
+11 5 54 _tmp/dominoes/domino0094.png
+14 3 54 _tmp/dominoes/domino0095.png
+18 2 54 _tmp/dominoes/domino0096.png
+#
+# Blocker
+18 4 62 _tmp/dominoes/domino0105.png
+18 4 62 _tmp/dominoes/domino0107.png
+18 4 62 _tmp/dominoes/domino0109.png
+#
+# Blocker Domino Carried Images
+10 4 62 _tmp/dominoes/domino0190.png
+16 4 54 _tmp/dominoes/domino0191.png
+6 -2 54 _tmp/dominoes/domino0192.png
+19 3 54 _tmp/dominoes/domino0193.png
+11 5 54 _tmp/dominoes/domino0194.png
+14 3 54 _tmp/dominoes/domino0195.png
+18 2 54 _tmp/dominoes/domino0196.png
+#
+# Splitter
+18 4 62 _tmp/dominoes/domino0205.png
+18 4 62 _tmp/dominoes/domino0207.png
+18 4 62 _tmp/dominoes/domino0209.png
+18 4 62 _tmp/dominoes/domino0215.png
+18 4 62 _tmp/dominoes/domino0216.png
+18 4 62 _tmp/dominoes/domino0217.png
+18 4 62 _tmp/dominoes/domino0218.png
+18 4 62 _tmp/dominoes/domino0219.png
+18 4 62 _tmp/dominoes/domino0220.png
+18 4 62 _tmp/dominoes/domino0221.png
+18 4 62 _tmp/dominoes/domino0223.png
+18 4 62 _tmp/dominoes/domino0224.png
+18 4 62 _tmp/dominoes/domino0225.png
+18 4 62 _tmp/dominoes/domino0226.png
+18 4 62 _tmp/dominoes/domino0227.png
+18 4 62 _tmp/dominoes/domino0228.png
+#
+# Splitter Domino Carried Images
+10 4 62 _tmp/dominoes/domino0290.png
+16 4 54 _tmp/dominoes/domino0291.png
+6 -2 54 _tmp/dominoes/domino0292.png
+19 3 54 _tmp/dominoes/domino0293.png
+11 5 54 _tmp/dominoes/domino0294.png
+14 3 54 _tmp/dominoes/domino0295.png
+18 2 54 _tmp/dominoes/domino0296.png
+#
+# Exploder
+18 4 62 _tmp/dominoes/domino0305.png
+18 4 62 _tmp/dominoes/domino0307.png
+18 4 62 _tmp/dominoes/domino0309.png
+18 4 62 src/dominoes/explosions/expl00.png
+18 4 62 src/dominoes/explosions/expl01.png
+18 4 62 src/dominoes/explosions/expl02.png
+18 4 62 src/dominoes/explosions/expl03.png
+18 4 62 src/dominoes/explosions/expl04.png
+18 4 62 src/dominoes/explosions/expl05.png
+18 4 62 src/dominoes/explosions/expl06.png
+#
+# Exploder Domino Carried Images
+10 4 62 _tmp/dominoes/domino0390.png
+16 4 54 _tmp/dominoes/domino0391.png
+6 -2 54 _tmp/dominoes/domino0392.png
+19 3 54 _tmp/dominoes/domino0393.png
+11 5 54 _tmp/dominoes/domino0394.png
+14 3 54 _tmp/dominoes/domino0395.png
+18 2 54 _tmp/dominoes/domino0396.png
+#
+# Delay
+18 4 62 _tmp/dominoes/domino0400.png
+18 4 62 _tmp/dominoes/domino0401.png
+18 4 62 _tmp/dominoes/domino0402.png
+18 4 62 _tmp/dominoes/domino0403.png
+18 4 62 _tmp/dominoes/domino0404.png
+18 4 62 _tmp/dominoes/domino0405.png
+18 4 62 _tmp/dominoes/domino0406.png
+18 4 62 _tmp/dominoes/domino0407.png
+18 4 62 _tmp/dominoes/domino0408.png
+18 4 62 _tmp/dominoes/domino0409.png
+18 4 62 _tmp/dominoes/domino0410.png
+18 4 62 _tmp/dominoes/domino0411.png
+18 4 62 _tmp/dominoes/domino0412.png
+18 4 62 _tmp/dominoes/domino0413.png
+18 4 62 _tmp/dominoes/domino0414.png
+#
+# Delay Domino Carried Images
+10 4 62 _tmp/dominoes/domino0490.png
+16 4 54 _tmp/dominoes/domino0491.png
+6 -2 54 _tmp/dominoes/domino0492.png
+19 3 54 _tmp/dominoes/domino0493.png
+11 5 54 _tmp/dominoes/domino0494.png
+14 3 54 _tmp/dominoes/domino0495.png
+18 2 54 _tmp/dominoes/domino0496.png
+#
+# Tumbler
+18 4 62 _tmp/dominoes/domino0500.png
+18 4 62 _tmp/dominoes/domino0501.png
+18 4 62 _tmp/dominoes/domino0502.png
+18 4 62 _tmp/dominoes/domino0503.png
+18 4 62 _tmp/dominoes/domino0504.png
+18 4 62 _tmp/dominoes/domino0505.png
+18 4 62 _tmp/dominoes/domino0506.png
+18 4 62 _tmp/dominoes/domino0507.png
+18 4 62 _tmp/dominoes/domino0508.png
+18 4 62 _tmp/dominoes/domino0509.png
+18 4 62 _tmp/dominoes/domino0510.png
+18 4 62 _tmp/dominoes/domino0511.png
+18 4 62 _tmp/dominoes/domino0512.png
+18 4 62 _tmp/dominoes/domino0513.png
+18 4 62 _tmp/dominoes/domino0514.png
+#
+# Tumbler Domino Carried Images
+10 4 62 _tmp/dominoes/domino0590.png
+16 4 54 _tmp/dominoes/domino0591.png
+6 -2 54 _tmp/dominoes/domino0592.png
+19 3 54 _tmp/dominoes/domino0593.png
+11 5 54 _tmp/dominoes/domino0594.png
+14 3 54 _tmp/dominoes/domino0595.png
+18 2 54 _tmp/dominoes/domino0596.png
+#
+# Bridger
+18 4 62 _tmp/dominoes/domino0600.png
+18 4 62 _tmp/dominoes/domino0601.png
+18 4 62 _tmp/dominoes/domino0602.png
+18 4 62 _tmp/dominoes/domino0603.png
+18 4 62 _tmp/dominoes/domino0604.png
+18 4 62 _tmp/dominoes/domino0605.png
+18 4 62 _tmp/dominoes/domino0606.png
+18 4 62 _tmp/dominoes/domino0607.png
+18 4 62 _tmp/dominoes/domino0608.png
+18 4 62 _tmp/dominoes/domino0609.png
+18 4 62 _tmp/dominoes/domino0610.png
+18 4 62 _tmp/dominoes/domino0611.png
+18 4 62 _tmp/dominoes/domino0612.png
+18 4 62 _tmp/dominoes/domino0613.png
+18 4 62 _tmp/dominoes/domino0614.png
+#
+# Bridger Domino Carried Images
+10 4 62 _tmp/dominoes/domino0690.png
+16 4 54 _tmp/dominoes/domino0691.png
+6 -2 54 _tmp/dominoes/domino0692.png
+19 3 54 _tmp/dominoes/domino0693.png
+11 5 54 _tmp/dominoes/domino0694.png
+14 3 54 _tmp/dominoes/domino0695.png
+18 2 54 _tmp/dominoes/domino0696.png
+#
+# Vanisher
+18 4 62 _tmp/dominoes/domino0700.png
+18 4 62 _tmp/dominoes/domino0701.png
+18 4 62 _tmp/dominoes/domino0702.png
+18 4 62 _tmp/dominoes/domino0703.png
+18 4 62 _tmp/dominoes/domino0704.png
+18 4 62 _tmp/dominoes/domino0705.png
+18 4 62 _tmp/dominoes/domino0706.png
+18 4 62 _tmp/dominoes/domino0707.png
+18 4 62 _tmp/dominoes/domino0708.png
+18 4 62 _tmp/dominoes/domino0709.png
+18 4 62 _tmp/dominoes/domino0710.png
+18 4 62 _tmp/dominoes/domino0711.png
+18 4 62 _tmp/dominoes/domino0712.png
+18 4 62 _tmp/dominoes/domino0713.png
+18 4 62 _tmp/dominoes/domino0714.png
+#
+# Vanish Domino Carried Images
+10 4 62 _tmp/dominoes/domino0790.png
+16 4 54 _tmp/dominoes/domino0791.png
+6 -2 54 _tmp/dominoes/domino0792.png
+19 3 54 _tmp/dominoes/domino0793.png
+11 5 54 _tmp/dominoes/domino0794.png
+14 3 54 _tmp/dominoes/domino0795.png
+18 2 54 _tmp/dominoes/domino0796.png
+#
+# Trigger
+18 4 62 _tmp/dominoes/domino0800.png
+18 4 62 _tmp/dominoes/domino0801.png
+18 4 62 _tmp/dominoes/domino0802.png
+18 4 62 _tmp/dominoes/domino0803.png
+18 4 62 _tmp/dominoes/domino0804.png
+18 4 62 _tmp/dominoes/domino0805.png
+18 4 62 _tmp/dominoes/domino0806.png
+18 4 62 _tmp/dominoes/domino0807.png
+18 4 62 _tmp/dominoes/domino0808.png
+18 4 62 _tmp/dominoes/domino0809.png
+18 4 62 _tmp/dominoes/domino0810.png
+18 4 62 _tmp/dominoes/domino0811.png
+18 4 62 _tmp/dominoes/domino0812.png
+18 4 62 _tmp/dominoes/domino0813.png
+18 4 62 _tmp/dominoes/domino0814.png
+#
+# Trigger Domino Carried Images
+#
+# Ascender
+18 4 62 _tmp/dominoes/domino0900.png
+18 4 62 _tmp/dominoes/domino0901.png
+18 4 62 _tmp/dominoes/domino0902.png
+18 4 62 _tmp/dominoes/domino0903.png
+18 4 62 _tmp/dominoes/domino0904.png
+18 4 62 _tmp/dominoes/domino0905.png
+18 4 62 _tmp/dominoes/domino0906.png
+18 4 62 _tmp/dominoes/domino0907.png
+18 4 62 _tmp/dominoes/domino0908.png
+18 4 62 _tmp/dominoes/domino0909.png
+18 4 62 _tmp/dominoes/domino0910.png
+18 4 62 _tmp/dominoes/domino0911.png
+18 4 62 _tmp/dominoes/domino0912.png
+18 4 62 _tmp/dominoes/domino0913.png
+18 4 62 _tmp/dominoes/domino0914.png
+#
+# Ascender Domino Carried Images
+10 4 62 _tmp/dominoes/domino0990.png
+16 4 54 _tmp/dominoes/domino0991.png
+6 -2 54 _tmp/dominoes/domino0992.png
+19 3 54 _tmp/dominoes/domino0993.png
+11 5 54 _tmp/dominoes/domino0994.png
+14 3 54 _tmp/dominoes/domino0995.png
+18 2 54 _tmp/dominoes/domino0996.png
+#
+# Connected A
+18 4 62 _tmp/dominoes/domino1000.png
+18 4 62 _tmp/dominoes/domino1001.png
+18 4 62 _tmp/dominoes/domino1002.png
+18 4 62 _tmp/dominoes/domino1003.png
+18 4 62 _tmp/dominoes/domino1004.png
+18 4 62 _tmp/dominoes/domino1005.png
+18 4 62 _tmp/dominoes/domino1006.png
+18 4 62 _tmp/dominoes/domino1007.png
+18 4 62 _tmp/dominoes/domino1008.png
+18 4 62 _tmp/dominoes/domino1009.png
+18 4 62 _tmp/dominoes/domino1010.png
+18 4 62 _tmp/dominoes/domino1011.png
+18 4 62 _tmp/dominoes/domino1012.png
+18 4 62 _tmp/dominoes/domino1013.png
+18 4 62 _tmp/dominoes/domino1014.png
+#
+# ConnectedA Domino Carried Images
+10 4 62 _tmp/dominoes/domino1090.png
+16 4 54 _tmp/dominoes/domino1091.png
+6 -2 54 _tmp/dominoes/domino1092.png
+19 3 54 _tmp/dominoes/domino1093.png
+11 5 54 _tmp/dominoes/domino1094.png
+14 3 54 _tmp/dominoes/domino1095.png
+18 2 54 _tmp/dominoes/domino1096.png
+#
+# Connected B
+18 4 62 _tmp/dominoes/domino1100.png
+18 4 62 _tmp/dominoes/domino1101.png
+18 4 62 _tmp/dominoes/domino1102.png
+18 4 62 _tmp/dominoes/domino1103.png
+18 4 62 _tmp/dominoes/domino1104.png
+18 4 62 _tmp/dominoes/domino1105.png
+18 4 62 _tmp/dominoes/domino1106.png
+18 4 62 _tmp/dominoes/domino1107.png
+18 4 62 _tmp/dominoes/domino1108.png
+18 4 62 _tmp/dominoes/domino1109.png
+18 4 62 _tmp/dominoes/domino1110.png
+18 4 62 _tmp/dominoes/domino1111.png
+18 4 62 _tmp/dominoes/domino1112.png
+18 4 62 _tmp/dominoes/domino1113.png
+18 4 62 _tmp/dominoes/domino1114.png
+#
+# ConnectedB Domino Carried Images
+10 4 62 _tmp/dominoes/domino1190.png
+16 4 54 _tmp/dominoes/domino1191.png
+6 -2 54 _tmp/dominoes/domino1192.png
+19 3 54 _tmp/dominoes/domino1193.png
+11 5 54 _tmp/dominoes/domino1194.png
+14 3 54 _tmp/dominoes/domino1195.png
+18 2 54 _tmp/dominoes/domino1196.png
+#
+# Counter 1
+18 4 62 _tmp/dominoes/domino1200.png
+18 4 62 _tmp/dominoes/domino1201.png
+18 4 62 _tmp/dominoes/domino1202.png
+18 4 62 _tmp/dominoes/domino1203.png
+18 4 62 _tmp/dominoes/domino1204.png
+18 4 62 _tmp/dominoes/domino1205.png
+18 4 62 _tmp/dominoes/domino1206.png
+18 4 62 _tmp/dominoes/domino1207.png
+18 4 62 _tmp/dominoes/domino1208.png
+18 4 62 _tmp/dominoes/domino1209.png
+18 4 62 _tmp/dominoes/domino1210.png
+18 4 62 _tmp/dominoes/domino1211.png
+18 4 62 _tmp/dominoes/domino1212.png
+18 4 62 _tmp/dominoes/domino1213.png
+18 4 62 _tmp/dominoes/domino1214.png
+#
+# Counter1 Domino Carried Images
+10 4 62 _tmp/dominoes/domino1290.png
+16 4 54 _tmp/dominoes/domino1291.png
+6 -2 54 _tmp/dominoes/domino1292.png
+19 3 54 _tmp/dominoes/domino1293.png
+11 5 54 _tmp/dominoes/domino1294.png
+14 3 54 _tmp/dominoes/domino1295.png
+18 2 54 _tmp/dominoes/domino1296.png
+#
+# Counter 2
+18 4 62 _tmp/dominoes/domino1300.png
+18 4 62 _tmp/dominoes/domino1301.png
+18 4 62 _tmp/dominoes/domino1302.png
+18 4 62 _tmp/dominoes/domino1303.png
+18 4 62 _tmp/dominoes/domino1304.png
+18 4 62 _tmp/dominoes/domino1305.png
+18 4 62 _tmp/dominoes/domino1306.png
+18 4 62 _tmp/dominoes/domino1307.png
+18 4 62 _tmp/dominoes/domino1308.png
+18 4 62 _tmp/dominoes/domino1309.png
+18 4 62 _tmp/dominoes/domino1310.png
+18 4 62 _tmp/dominoes/domino1311.png
+18 4 62 _tmp/dominoes/domino1312.png
+18 4 62 _tmp/dominoes/domino1313.png
+18 4 62 _tmp/dominoes/domino1314.png
+#
+# Counter2 Domino Carried Images
+10 4 62 _tmp/dominoes/domino1390.png
+16 4 54 _tmp/dominoes/domino1391.png
+6 -2 54 _tmp/dominoes/domino1392.png
+19 3 54 _tmp/dominoes/domino1393.png
+11 5 54 _tmp/dominoes/domino1394.png
+14 3 54 _tmp/dominoes/domino1395.png
+18 2 54 _tmp/dominoes/domino1396.png
+#
+# Counter 3
+18 4 62 _tmp/dominoes/domino1400.png
+18 4 62 _tmp/dominoes/domino1401.png
+18 4 62 _tmp/dominoes/domino1402.png
+18 4 62 _tmp/dominoes/domino1403.png
+18 4 62 _tmp/dominoes/domino1404.png
+18 4 62 _tmp/dominoes/domino1405.png
+18 4 62 _tmp/dominoes/domino1406.png
+18 4 62 _tmp/dominoes/domino1407.png
+18 4 62 _tmp/dominoes/domino1408.png
+18 4 62 _tmp/dominoes/domino1409.png
+18 4 62 _tmp/dominoes/domino1410.png
+18 4 62 _tmp/dominoes/domino1411.png
+18 4 62 _tmp/dominoes/domino1412.png
+18 4 62 _tmp/dominoes/domino1413.png
+18 4 62 _tmp/dominoes/domino1414.png
+#
+# Counter3 Domino Carried Images
+10 4 62 _tmp/dominoes/domino1490.png
+16 4 54 _tmp/dominoes/domino1491.png
+6 -2 54 _tmp/dominoes/domino1492.png
+19 3 54 _tmp/dominoes/domino1493.png
+11 5 54 _tmp/dominoes/domino1494.png
+14 3 54 _tmp/dominoes/domino1495.png
+18 2 54 _tmp/dominoes/domino1496.png
+#
+# Crash 1
+18 4 62 src/dominoes/crashes/crash01.png
+18 4 62 src/dominoes/crashes/crash02.png
+18 4 62 src/dominoes/crashes/crash03.png
+18 4 62 src/dominoes/crashes/crash04.png
+18 4 62 src/dominoes/crashes/crash05.png
+18 4 62 src/dominoes/crashes/crash06.png
+#
+# Crash 2
+18 4 62 src/dominoes/crashes/crash07.png
+18 4 62 src/dominoes/crashes/crash08.png
+18 4 62 src/dominoes/crashes/crash09.png
+18 4 62 src/dominoes/crashes/crash10.png
+18 4 62 src/dominoes/crashes/crash11.png
+18 4 62 src/dominoes/crashes/crash12.png
+#
+# Crash 3
+18 4 62 src/dominoes/crashes/crash13.png
+18 4 62 src/dominoes/crashes/crash14.png
+18 4 62 src/dominoes/crashes/crash15.png
+18 4 62 src/dominoes/crashes/crash16.png
+18 4 62 src/dominoes/crashes/crash17.png
+18 4 62 src/dominoes/crashes/crash18.png
+#
+# Crash 4
+18 4 62 src/dominoes/crashes/crash19.png
+18 4 62 src/dominoes/crashes/crash20.png
+18 4 62 src/dominoes/crashes/crash21.png
+18 4 62 src/dominoes/crashes/crash22.png
+18 4 62 src/dominoes/crashes/crash23.png
+18 4 62 src/dominoes/crashes/crash24.png
+#
+# Crash 5
+18 4 62 src/dominoes/crashes/crash25.png
+18 4 62 src/dominoes/crashes/crash26.png
+18 4 62 src/dominoes/crashes/crash27.png
+18 4 62 src/dominoes/crashes/crash28.png
+18 4 62 src/dominoes/crashes/crash29.png
+18 4 62 src/dominoes/crashes/crash30.png
+#
+# Crash 6
+18 4 62 src/dominoes/crashes/crash31.png
+18 4 62 src/dominoes/crashes/crash32.png
+18 4 62 src/dominoes/crashes/crash33.png
+18 4 62 src/dominoes/crashes/crash34.png
+18 4 62 src/dominoes/crashes/crash35.png
+18 4 62 src/dominoes/crashes/crash36.png
