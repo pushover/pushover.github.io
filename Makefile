@@ -8,6 +8,7 @@ CONVERT ?= convert
 CXX ?= $(CROSS)g++
 CXXFLAGS ?= -Wall -g -O2
 INSTALL ?= install
+LDFLAGS ?=
 MSGFMT ?= msgfmt
 MSGMERGE ?= msgmerge
 PKG_CONFIG ?= $(CROSS)pkg-config
@@ -55,7 +56,7 @@ _tmp/pushover/%.o: src/pushover/% src/version $(FILES_H)
 FILES_BINDIR += pushover
 
 pushover: $(FILES_O)
-	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --libs $(PKGS)` $(LIBS) -o $@ $(FILES_O)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) `$(PKG_CONFIG) --libs $(PKGS)` $(LIBS) -o $@ $(FILES_O)
 
 ASSEMBLER_PKGS += SDL_image
 ASSEMBLER_PKGS += libpng
@@ -67,7 +68,7 @@ FILES_DIST += $(ASSEMBLER_SOURCES)
 .SECONDARY: _tmp/dominoes/assembler
 _tmp/dominoes/assembler: $(ASSEMBLER_SOURCES)
 	mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(ASSEMBLER_PKGS)` `$(PKG_CONFIG) --libs $(ASSEMBLER_PKGS)` -o $@ $<
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) `$(PKG_CONFIG) --cflags $(ASSEMBLER_PKGS)` `$(PKG_CONFIG) --libs $(ASSEMBLER_PKGS)` -o $@ $<
 
 DOMINOES_SOURCES := src/dominoes/domino.ini $(wildcard src/dominoes/*.pov)
 FILES_DIST += $(DOMINOES_SOURCES)
