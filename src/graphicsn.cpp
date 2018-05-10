@@ -1108,8 +1108,8 @@ void graphicsN_c::drawDominos(void)
 
           if (showBgNumbers)
           {
-            char number[5];
-            snprintf(number, 4, "%i", level->getBg(x, y, bgDrawLayer));
+            char number[10];
+            snprintf(number, 9, "%i", level->getBg(x, y, bgDrawLayer));
             fontParams_s pars;
 
             pars.font = FNT_SMALL;
@@ -1577,8 +1577,8 @@ void graphicsN_c::drawLevel(void) {
       case CURS_FG: colorR = CURS_FG_COL_R; colorG = CURS_FG_COL_G; colorB = CURS_FG_COL_B; break;
       case CURS_BG: colorR = CURS_BG_COL_R; colorG = CURS_BG_COL_G; colorB = CURS_BG_COL_B; break;
     }
-    for (size_t y = 0; y < level->levelY(); y++)
-      for (size_t x = 0; x < level->levelX(); x++)
+    for (int y = 0; y < (int)level->levelY(); y++)
+      for (int x = 0; x < (int)level->levelX(); x++)
         if (dirty.isDirty(x, y))
         {
           if (y == cursorY && (x >= cursorX && x < cursorX+cursorW))
@@ -1756,7 +1756,7 @@ void graphicsN_c::setCursor(size_t x, size_t y, size_t w, size_t h)
     h = level->levelY()-y;
   }
 
-  for (size_t i = 0; i < cursorW; i++)
+  for (int i = 0; i < cursorW; i++)
   {
     markDirty(cursorX+i, cursorY-1);
     markDirty(cursorX+i, cursorY);
@@ -1764,7 +1764,7 @@ void graphicsN_c::setCursor(size_t x, size_t y, size_t w, size_t h)
     markDirty(cursorX+i, cursorY+cursorH);
   }
 
-  for (size_t i = 0; i < cursorH; i++)
+  for (int i = 0; i < cursorH; i++)
   {
     markDirty(cursorX-1, cursorY+i);
     markDirty(cursorX, cursorY+i);
@@ -1777,7 +1777,7 @@ void graphicsN_c::setCursor(size_t x, size_t y, size_t w, size_t h)
   cursorW = w;
   cursorH = h;
 
-  for (size_t i = 0; i < cursorW; i++)
+  for (int i = 0; i < cursorW; i++)
   {
     markDirty(cursorX+i, cursorY-1);
     markDirty(cursorX+i, cursorY);
@@ -1785,7 +1785,7 @@ void graphicsN_c::setCursor(size_t x, size_t y, size_t w, size_t h)
     markDirty(cursorX+i, cursorY+cursorH);
   }
 
-  for (size_t i = 0; i < cursorH; i++)
+  for (int i = 0; i < cursorH; i++)
   {
     markDirty(cursorX-1, cursorY+i);
     markDirty(cursorX, cursorY+i);

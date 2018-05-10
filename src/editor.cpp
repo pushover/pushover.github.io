@@ -176,7 +176,7 @@ void updateBackgroundOverlay(void)
 
     std::vector<std::vector<bool> > used; // which tiles of the selector are already used
 
-    uint16_t line = 0; // first empty line
+    int line = 0; // first empty line
 
     // first place the patterns
     for (size_t p = 0; p < pt.size(); p++)
@@ -187,7 +187,7 @@ void updateBackgroundOverlay(void)
       if (w > B_OVL_COL) continue;
 
       // make sure that we fit
-      if (line+h > used.size())
+      if (line+h > (int)used.size())
       {
         used.resize(line+h);
 
@@ -196,7 +196,7 @@ void updateBackgroundOverlay(void)
       }
 
       // find an empty place
-      for (size_t y = 0; y <= line+1; y++)
+      for (int y = 0; y <= line+1; y++)
         for (size_t x = 0; x < (size_t)B_OVL_COL-w+1; x++)
         {
           bool found = true;
@@ -209,7 +209,7 @@ void updateBackgroundOverlay(void)
           if (found)
           {
             // place big tile
-            if (bgTilesLayout.size() < y+h)
+            if ((int)bgTilesLayout.size() < y+h)
             {
               bgTilesLayout.resize(y+h);
 
@@ -248,7 +248,7 @@ void updateBackgroundOverlay(void)
       {
         // find next empty cell
 
-        while ((2*y+b < used.size()) && used[2*y+b][x])
+        while ((2*y+b < (int)used.size()) && used[2*y+b][x])
         {
           b++;
           if (b == 2)
@@ -302,7 +302,7 @@ void updateBackgroundOverlay(void)
   for (int y = 0; y < B_OVL_ROW; y++)
     for (int x = 0; x < B_OVL_COL; x++)
     {
-      if ((y+bgTilesStart) < bgTilesLayout.size() && bgTilesLayout[y+bgTilesStart][x] < bgTiles.size())
+      if ((y+bgTilesStart) < (int)bgTilesLayout.size() && bgTilesLayout[y+bgTilesStart][x] < (int)bgTiles.size())
       {
         for (int yc = 0; yc < 3; yc++)
           for (int xc = 0; xc < 5; xc++)
@@ -318,8 +318,8 @@ void updateBackgroundOverlay(void)
 
         if (gr->getShowBgNumbers())
         {
-          char number[5];
-          snprintf(number, 4, "%i", bgTilesLayout[bgTilesStart+y][x]);
+          char number[10];
+          snprintf(number, 9, "%i", bgTilesLayout[bgTilesStart+y][x]);
           fontParams_s pars;
 
           pars.font = FNT_SMALL;
@@ -677,7 +677,7 @@ static void setBgCursor(int8_t x, int8_t y, int8_t w, int8_t h)
 
   if (y >= B_OVL_ROW)
   {
-    if (bgTilesStart+B_OVL_ROW < bgTilesLayout.size())
+    if (bgTilesStart+B_OVL_ROW < (int)bgTilesLayout.size())
       bgTilesStart++;
 
     y = B_OVL_ROW-1;
@@ -693,7 +693,7 @@ static void setBgCursor(int8_t x, int8_t y, int8_t w, int8_t h)
   {
     h = B_OVL_ROW-y;
 
-    if (bgTilesStart+B_OVL_ROW < bgTilesLayout.size())
+    if (bgTilesStart+B_OVL_ROW < (int)bgTilesLayout.size())
       bgTilesStart++;
   }
 
@@ -714,8 +714,8 @@ static void updateEditPlane()
   {
     gr->setEditPlaneLayer(bgLayer);
 
-    for (size_t i = 0; i < gr->getCursorW(); i++)
-      for (size_t j = 0; j < gr->getCursorH(); j++)
+    for (int i = 0; i < gr->getCursorW(); i++)
+      for (int j = 0; j < gr->getCursorH(); j++)
         gr->setEditPlaneTile(gr->getCursorX()+i, gr->getCursorY()+j, bgPattern[j % bgPattern.size()][i % bgPattern[0].size()]);
   }
 }
@@ -1518,8 +1518,8 @@ bool eventEditor(const SDL_Event & event)
 
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_INSERT)
       {
-        for (size_t i = 0; i < gr->getCursorW(); i++)
-          for (size_t j = 0; j < gr->getCursorH(); j++)
+        for (int i = 0; i < gr->getCursorW(); i++)
+          for (int j = 0; j < gr->getCursorH(); j++)
           {
             for (size_t a = l->getNumBgLayer(); a > bgLayer; a--)
               l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, a, l->getBg(gr->getCursorX()+i, gr->getCursorY()+j, a-1));
@@ -1532,10 +1532,10 @@ bool eventEditor(const SDL_Event & event)
 
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DELETE)
       {
-        for (size_t i = 0; i < gr->getCursorW(); i++)
-          for (size_t j = 0; j < gr->getCursorH(); j++)
+        for (int i = 0; i < gr->getCursorW(); i++)
+          for (int j = 0; j < gr->getCursorH(); j++)
           {
-            for (size_t a = bgLayer; a < l->getNumBgLayer()-1; a++)
+            for (int a = bgLayer; a < l->getNumBgLayer()-1; a++)
               l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, a, l->getBg(gr->getCursorX()+i, gr->getCursorY()+j, a+1));
 
             l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, l->getNumBgLayer()-1, 0);
@@ -1565,8 +1565,8 @@ bool eventEditor(const SDL_Event & event)
 
         if (bgPattern.size())
         {
-          for (size_t i = 0; i < gr->getCursorW(); i++)
-            for (size_t j = 0; j < gr->getCursorH(); j++)
+          for (int i = 0; i < gr->getCursorW(); i++)
+            for (int j = 0; j < gr->getCursorH(); j++)
               l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, bgLayer, bgPattern[j % bgPattern.size()][i % bgPattern[0].size()]);
 
           gr->markAllDirtyBg();
@@ -1584,8 +1584,8 @@ bool eventEditor(const SDL_Event & event)
       {
         std::cout << "  { " << (int)gr->getCursorW() << "   ";
 
-        for (size_t j = 0; j < gr->getCursorH(); j++)
-          for (size_t i = 0; i < gr->getCursorW(); i++)
+        for (int j = 0; j < gr->getCursorH(); j++)
+          for (int i = 0; i < gr->getCursorW(); i++)
             std::cout << ", " << l->getBg(gr->getCursorX()+i, gr->getCursorY()+j, bgLayer);
 
         std::cout << " }, \n";
@@ -1595,10 +1595,10 @@ bool eventEditor(const SDL_Event & event)
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'c')
       {
         bgPattern.resize(gr->getCursorH());
-        for (size_t j = 0; j < gr->getCursorH(); j++)
+        for (int j = 0; j < gr->getCursorH(); j++)
         {
           bgPattern[j].resize(gr->getCursorW());
-          for (size_t i = 0; i < gr->getCursorW(); i++)
+          for (int i = 0; i < gr->getCursorW(); i++)
             bgPattern[j][i] = l->getBg(gr->getCursorX()+i, gr->getCursorY()+j, bgLayer);
         }
 
@@ -1609,10 +1609,10 @@ bool eventEditor(const SDL_Event & event)
       if (event.type == SDL_KEYDOWN && event.key.keysym.sym == 'x')
       {
         bgPattern.resize(gr->getCursorH());
-        for (size_t j = 0; j < gr->getCursorH(); j++)
+        for (int j = 0; j < gr->getCursorH(); j++)
         {
           bgPattern[j].resize(gr->getCursorW());
-          for (size_t i = 0; i < gr->getCursorW(); i++)
+          for (int i = 0; i < gr->getCursorW(); i++)
           {
             bgPattern[j][i] = l->getBg(gr->getCursorX()+i, gr->getCursorY()+j, bgLayer);
             l->setBg(gr->getCursorX()+i, gr->getCursorY()+j, bgLayer, 0);
