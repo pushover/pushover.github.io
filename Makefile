@@ -123,6 +123,13 @@ data/locale/%/LC_MESSAGES/pushover.mo: src/po/%.po
 	mkdir -p $(dir $@)
 	$(MSGFMT) -c -o $@ $<
 
+FILES_DIST += src/description/pushover.appdata.xml
+FILES_DATADIR += data/metainfo/pushover.appdata.xml
+
+data/metainfo/pushover.appdata.xml: src/description/pushover.appdata.xml
+	mkdir -p $(dir $@)
+	cp $< $@
+
 FILES_DIST += src/description/pushover.desktop
 FILES_DATADIR += data/applications/pushover.desktop
 
