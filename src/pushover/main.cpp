@@ -40,7 +40,7 @@
 
 static std::string getDataDir(void)
 {
-  const std::string portable_datadir = "./pushover_data";
+  const std::string portable_datadir = "./data";
   struct stat st;
   if (stat(portable_datadir.c_str(), &st) == 0) {
       std::cout << "Using portable datadir: " << portable_datadir << std::endl;

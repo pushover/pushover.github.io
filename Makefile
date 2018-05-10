@@ -86,73 +86,73 @@ generated/dominoes.png: _tmp/dominoes/assembler _tmp/dominoes/done
 	mkdir -p $(dir $@)
 	_tmp/dominoes/assembler $@ 58 2 200 src/dominoes/dominoes.lst
 
-FILES_DATADIR += pushover_data/pushover/images/dominoes.png
+FILES_DATADIR += data/pushover/images/dominoes.png
 
-pushover_data/pushover/images/dominoes.png: generated/dominoes.png
+data/pushover/images/dominoes.png: generated/dominoes.png
 	mkdir -p $(dir $@)
 	cp $< $@
 
 FILES_IMAGES_SRC := $(wildcard src/images/*.png)
 FILES_DIST += $(FILES_IMAGES_SRC)
-FILES_DATADIR += $(patsubst src/images/%,pushover_data/pushover/images/%,$(FILES_IMAGES_SRC))
+FILES_DATADIR += $(patsubst src/images/%,data/pushover/images/%,$(FILES_IMAGES_SRC))
 
-pushover_data/pushover/images/%: src/images/%
+data/pushover/images/%: src/images/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
 FILES_SOUNDS_SRC := $(wildcard src/sounds/*.ogg)
 FILES_DIST += $(FILES_SOUNDS_SRC)
-FILES_DATADIR += $(patsubst src/sounds/%,pushover_data/pushover/sounds/%,$(FILES_SOUNDS_SRC))
+FILES_DATADIR += $(patsubst src/sounds/%,data/pushover/sounds/%,$(FILES_SOUNDS_SRC))
 
-pushover_data/pushover/sounds/%: src/sounds/%
+data/pushover/sounds/%: src/sounds/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
 FILES_THEMES_SRC := $(wildcard src/themes/*)
 FILES_DIST += $(FILES_THEMES_SRC)
-FILES_DATADIR += $(patsubst src/themes/%,pushover_data/pushover/themes/%,$(FILES_THEMES_SRC))
+FILES_DATADIR += $(patsubst src/themes/%,data/pushover/themes/%,$(FILES_THEMES_SRC))
 
-pushover_data/pushover/themes/%: src/themes/%
+data/pushover/themes/%: src/themes/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
 FILES_PO := $(wildcard src/po/*.po)
 FILES_DIST += $(FILES_PO)
-FILES_DATADIR += $(patsubst src/po/%.po,pushover_data/locale/%/LC_MESSAGES/pushover.mo,$(FILES_PO))
+FILES_DATADIR += $(patsubst src/po/%.po,data/locale/%/LC_MESSAGES/pushover.mo,$(FILES_PO))
 
-pushover_data/locale/%/LC_MESSAGES/pushover.mo: src/po/%.po
+data/locale/%/LC_MESSAGES/pushover.mo: src/po/%.po
 	mkdir -p $(dir $@)
 	$(MSGFMT) -c -o $@ $<
 
 FILES_DIST += src/description/pushover.desktop
-FILES_DATADIR += pushover_data/applications/pushover.desktop
+FILES_DATADIR += data/applications/pushover.desktop
 
-pushover_data/applications/pushover.desktop: src/description/pushover.desktop
+data/applications/pushover.desktop: src/description/pushover.desktop
 	mkdir -p $(dir $@)
 	cp $< $@
 
 FILES_DIST += src/description/pushover.ico
-FILES_DATADIR += pushover_data/icons/hicolor/16x16/apps/pushover.png
-FILES_DATADIR += pushover_data/icons/hicolor/32x32/apps/pushover.png
-FILES_DATADIR += pushover_data/icons/hicolor/48x48/apps/pushover.png
-FILES_DATADIR += pushover_data/icons/hicolor/64x64/apps/pushover.png
+FILES_DATADIR += data/icons/hicolor/16x16/apps/pushover.png
+FILES_DATADIR += data/icons/hicolor/32x32/apps/pushover.png
+FILES_DATADIR += data/icons/hicolor/48x48/apps/pushover.png
+FILES_DATADIR += data/icons/hicolor/64x64/apps/pushover.png
 
-pushover_data/icons/hicolor/%/apps/pushover.png: src/description/pushover.ico
+data/icons/hicolor/%/apps/pushover.png: src/description/pushover.ico
 	mkdir -p $(dir $@)
 	$(CONVERT) $<[$(shell expr substr $* 1 2 / 16 - 1)] $@
 
 FILES_DIST += src/description/pushover.6
-FILES_DATADIR += pushover_data/man/man6/pushover.6.gz
+FILES_DATADIR += data/man/man6/pushover.6.gz
 
-pushover_data/man/man6/pushover.6.gz: src/description/pushover.6
+data/man/man6/pushover.6.gz: src/description/pushover.6
 	mkdir -p $(dir $@)
 	gzip -9n <$< >$@
 
 FILES_DIST += $(wildcard src/levels/*/*)
 FILES_LEVELS_SRCDIRS := $(wildcard src/levels/*)
-FILES_DATADIR += $(patsubst src/levels/%,pushover_data/pushover/levels/%.gz,$(FILES_LEVELS_SRCDIRS))
+FILES_DATADIR += $(patsubst src/levels/%,data/pushover/levels/%.gz,$(FILES_LEVELS_SRCDIRS))
 
-pushover_data/pushover/levels/%.gz: src/levels/%/*.level
+data/pushover/levels/%.gz: src/levels/%/*.level
 	mkdir -p $(dir $@)
 	cat src/levels/$*/*.level | gzip -9 >$@
 
@@ -193,9 +193,9 @@ $(DESTDIR)$(BINDIR)/%: %
 	$(INSTALL) -m 755 -d $(dir $@)
 	$(INSTALL) -m 755 $< $@
 
-FILES_INSTALL += $(patsubst pushover_data/%,$(DESTDIR)$(DATADIR)/%,$(FILES_DATADIR))
+FILES_INSTALL += $(patsubst data/%,$(DESTDIR)$(DATADIR)/%,$(FILES_DATADIR))
 
-$(DESTDIR)$(DATADIR)/%: pushover_data/%
+$(DESTDIR)$(DATADIR)/%: data/%
 	$(INSTALL) -m 755 -d $(dir $@)
 	$(INSTALL) -m 644 $< $@
 
@@ -205,7 +205,7 @@ install: $(FILES_INSTALL)
 .PHONY: clean
 clean:
 	rm -f $(DIST) $(FILES_BINDIR) $(FILES_DEBUG)
-	rm -rf _tmp/ pushover_data/
+	rm -rf _tmp/ data/
 	@echo Not removing generated/
 
 .PHONY: update-po
