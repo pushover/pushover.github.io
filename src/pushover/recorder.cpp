@@ -1,7 +1,7 @@
 /* Pushover
  *
  * Pushover is the legal property of its developers, whose
- * names are listed in the COPYRIGHT file, which is included
+ * names are listed in the AUTHORS file, which is included
  * within the source distribution.
  *
  * This program is free software; you can redistribute it and/or
