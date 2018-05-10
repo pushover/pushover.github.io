@@ -194,7 +194,7 @@ $(DIST): $(FILES_DIST)
 	tar c --owner=0 --group=0 --numeric-owner --mtime='1970-01-01T00:00:00Z' -C _tmp $(basename $@) | gzip -9n >$@
 	rm -rf _tmp/$(basename $@)
 	tar x -f $@ -C _tmp
-	$(MAKE) -C _tmp/$(basename $@) all -j 8 POVRAY='exit 1;'
+	$(MAKE) -C _tmp/$(basename $@) all -j 8 CONVERT='exit 1;' POVRAY='exit 1;'
 	$(MAKE) -C _tmp/$(basename $@) check
 	$(MAKE) -C _tmp/$(basename $@) install DESTDIR=`pwd`/_tmp/$(basename $@)/_test_destdir
 	rm -rf _tmp/$(basename $@)
