@@ -1,14 +1,12 @@
-CXXFLAGS := -Wall -g -O2
-
 PREFIX := /usr
 BINDIR := $(PREFIX)/bin
 DATADIR := $(PREFIX)/share
 DESTDIR :=
-
 CROSS :=
 
 CONVERT := convert
 CXX := $(CROSS)g++
+CXXFLAGS := -Wall -g -O2
 INSTALL := install
 MSGFMT := msgfmt
 MSGMERGE := msgmerge
