@@ -163,6 +163,13 @@ _tmp/po/leveltexts.cpp: src/levels/*/*.level
 .PHONY: all
 all: $(FILES_BINDIR) $(FILES_DATADIR) $(FILES_DEBUG)
 
+.PHONY: check
+check: all
+	./pushover -c src/recordings/finish/*
+	./pushover -y src/recordings/fail
+	./pushover -x src/recordings/crash
+	@echo OK
+
 DIST := pushover-$(VERSION).tgz
 
 .PHONY: dist
@@ -179,13 +186,6 @@ $(DIST): $(FILES_DIST)
 	mkdir -p _tmp/$(basename $@)
 	tar c $^ | tar x -C _tmp/$(basename $@)
 	tar c -C _tmp $(basename $@) | gzip -9n >$@
-
-.PHONY: check
-check: all
-	./pushover -c src/recordings/finish/*
-	./pushover -y src/recordings/fail
-	./pushover -x src/recordings/crash
-	@echo OK
 
 FILES_INSTALL += $(patsubst %,$(DESTDIR)$(BINDIR)/%,$(FILES_BINDIR))
 
