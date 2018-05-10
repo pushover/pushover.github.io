@@ -167,7 +167,7 @@ FILES_DATADIR += $(patsubst src/levels/%,data/pushover/levels/%.gz,$(FILES_LEVEL
 
 data/pushover/levels/%.gz: src/levels/%/*.level
 	mkdir -p $(dir $@)
-	cat src/levels/$*/*.level | gzip -9 >$@
+	cat src/levels/$*/*.level | gzip -9n >$@
 
 _tmp/po/leveltexts.cpp: src/levels/*/*.level
 	mkdir -p $(dir $@)
