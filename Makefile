@@ -194,6 +194,7 @@ $(DIST): $(FILES_DIST)
 	mkdir -p _tmp/$(basename $@)
 	tar c $^ | tar x -C _tmp/$(basename $@)
 	tar c --owner=0 --group=0 --numeric-owner --mtime='1970-01-01T00:00:00Z' -C _tmp $(basename $@) | gzip -9n >$@
+	rm -rf _tmp/$(basename $@)
 
 FILES_INSTALL += $(patsubst %,$(DESTDIR)$(BINDIR)/%,$(FILES_BINDIR))
 
