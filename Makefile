@@ -69,13 +69,19 @@ ASSEMBLER_PKGS += SDL_image
 ASSEMBLER_PKGS += libpng
 ASSEMBLER_PKGS += sdl
 
+ASSEMBLER_SOURCES := src/dominoes/assembler.cpp src/dominoes/pngsaver.h
+FILES_DIST += $(ASSEMBLER_SOURCES)
+
 .SECONDARY: _tmp/dominoes/assembler
-_tmp/dominoes/assembler: src/dominoes/assembler.cpp src/dominoes/pngsaver.h
+_tmp/dominoes/assembler: $(ASSEMBLER_SOURCES)
 	mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) `$(PKG_CONFIG) --cflags $(ASSEMBLER_PKGS)` `$(PKG_CONFIG) --libs $(ASSEMBLER_PKGS)` -o $@ $<
 
+DOMINOES_SOURCES := src/dominoes/domino.ini $(wildcard src/dominoes/*.pov)
+FILES_DIST += $(DOMINOES_SOURCES)
+
 .SECONDARY: _tmp/dominoes/done
-_tmp/dominoes/done: src/dominoes/domino.ini src/dominoes/*.pov
+_tmp/dominoes/done: $(DOMINOES_SOURCES)
 	mkdir -p $(dir $@)
 	$(POVRAY) $<
 	touch $@
@@ -162,6 +168,8 @@ _tmp/po/leveltexts.cpp: src/levels/*/*.level
 
 .PHONY: all
 all: $(FILES_BINDIR) $(FILES_DATADIR) $(FILES_DEBUG)
+
+FILES_DIST += $(wildcard src/recordings/*/*.rec src/recordings/finish/*/*.rec)
 
 .PHONY: check
 check: all
