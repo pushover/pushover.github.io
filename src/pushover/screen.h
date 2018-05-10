@@ -52,11 +52,11 @@ enum {
 
 
 typedef struct {
-  int font;
+  int font = 0;
   SDL_Rect box;
-  int alignment;
-  SDL_Color color;
-  uint8_t shadow;
+  int alignment = ALN_TEXT;
+  SDL_Color color = {0, 0, 0, 0};
+  uint8_t shadow = 0;
 } fontParams_s;
 
 

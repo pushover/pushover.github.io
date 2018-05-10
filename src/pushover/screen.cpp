@@ -1071,7 +1071,7 @@ unsigned int renderTextIntern(const fontParams_s * par, const std::string & t, S
       lineStart = lineEnd+1;
 
       // when the break reason was a normal space, skip those spaces
-      while (paraString[lineStart] == ' ' && lineStart < ucsLength)
+      while (lineStart < ucsLength && paraString[lineStart] == ' ')
         lineStart++;
     }
   }
@@ -1102,7 +1102,7 @@ unsigned int getTextWidth(unsigned int font, const std::string & string)
 
   Uint16 outttf[ucsLength+1];
 
-  for (int i = 0; i <= ucsLength; i++)
+  for (int i = 0; i < ucsLength; i++)
   {
     if (text[i] > 0xFFFF) printf("oops unsupported character\n");
     outttf[i] = text[i];
