@@ -129,14 +129,21 @@ data/applications/pushover.desktop: src/description/pushover.desktop
 	cp $< $@
 
 FILES_DIST += src/description/pushover.ico
-FILES_DATADIR += data/icons/hicolor/16x16/apps/pushover.png
-FILES_DATADIR += data/icons/hicolor/32x32/apps/pushover.png
-FILES_DATADIR += data/icons/hicolor/48x48/apps/pushover.png
-FILES_DATADIR += data/icons/hicolor/64x64/apps/pushover.png
+FILES_PNG_ICON += generated/pushover_16x16.png
+FILES_PNG_ICON += generated/pushover_32x32.png
+FILES_PNG_ICON += generated/pushover_48x48.png
+FILES_PNG_ICON += generated/pushover_64x64.png
+FILES_DIST += $(FILES_PNG_ICON)
 
-data/icons/hicolor/%/apps/pushover.png: src/description/pushover.ico
+generated/pushover_%.png: src/description/pushover.ico
 	mkdir -p $(dir $@)
 	$(CONVERT) $<[$(shell expr substr $* 1 2 / 16 - 1)] $@
+
+FILES_DATADIR += $(patsubst generated/pushover_%,data/icons/hicolor/%/apps/pushover.png,$(FILES_PNG_ICON))
+
+data/icons/hicolor/%/apps/pushover.png: generated/pushover_%
+	mkdir -p $(dir $@)
+	cp $< $@
 
 FILES_DIST += src/description/pushover.6
 FILES_DATADIR += data/man/man6/pushover.6.gz
