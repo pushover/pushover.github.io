@@ -6,7 +6,7 @@ CROSS ?=
 
 CONVERT ?= convert
 CXX ?= $(CROSS)g++
-CXXFLAGS ?= -Wall -g -O2
+CXXFLAGS ?= -Wall -Wextra -g -O2
 INSTALL ?= install
 LDFLAGS ?=
 MSGFMT ?= msgfmt
