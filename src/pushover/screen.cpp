@@ -1074,6 +1074,8 @@ unsigned int renderTextIntern(const fontParams_s * par, const std::string & t, S
       while (lineStart < ucsLength && paraString[lineStart] == ' ')
         lineStart++;
     }
+
+    delete [] paraString;
   }
 
   return height;
