@@ -48,10 +48,8 @@ class luaClass_c {
     unsigned int getArraySize(const std::string & name);
     unsigned int getArraySize(const std::string & name, unsigned int idx);
 
-    lua_Number getNumber(const std::string & name);
     lua_Number getNumberArray(const std::string & name, unsigned int idx);
     lua_Number get2dNumberArray(const std::string & name, unsigned int idx1, unsigned int idx2);
-    bool getBool(const std::string & name);
 
     /* functions to evaluate lua code */
     int doFile(const std::string & fname);

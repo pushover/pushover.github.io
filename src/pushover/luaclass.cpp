@@ -41,10 +41,13 @@ luaClass_c::~luaClass_c(void) {
 unsigned int luaClass_c::getArraySize(const std::string & name) {
   lua_getglobal(L, name.c_str());
 #if LUA_VERSION_NUM > 501
-  return lua_rawlen(L, -1);
+  unsigned int res = lua_rawlen(L, -1);
 #else
-  return lua_objlen(L, -1);
+  unsigned int res = lua_objlen(L, -1);
 #endif
+
+  lua_pop(L, 1);
+  return res;
 }
 
 unsigned int luaClass_c::getArraySize(const std::string & name, unsigned int idx) {
@@ -52,10 +55,13 @@ unsigned int luaClass_c::getArraySize(const std::string & name, unsigned int idx
   lua_pushnumber(L, idx);
   lua_gettable(L, -2);
 #if LUA_VERSION_NUM > 501
-  return lua_rawlen(L, -1);
+  unsigned int res = lua_rawlen(L, -1);
 #else
-  return lua_objlen(L, -1);
+  unsigned int res = lua_objlen(L, -1);
 #endif
+
+  lua_pop(L, 2);
+  return res;
 }
 
 lua_Number luaClass_c::getNumberArray(const std::string & name, unsigned int idx) {
@@ -81,16 +87,6 @@ lua_Number luaClass_c::get2dNumberArray(const std::string & name, unsigned int i
   lua_pop(L, 3);
 
   return result;
-}
-
-lua_Number luaClass_c::getNumber(const std::string & name) {
-  lua_getglobal(L, name.c_str());
-  if (!lua_isnumber(L, -1)) throw new luaTypeException_c();
-  return lua_tointeger(L, -1);
-}
-bool luaClass_c::getBool(const std::string & name) {
-  lua_getglobal(L, name.c_str());
-  return lua_toboolean(L, -1) != 0;
 }
 
 /* functions to evaluate lua code */
