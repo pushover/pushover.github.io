@@ -68,7 +68,7 @@ void soundSystem_c::startSound(unsigned int snd)
   if (!useSound) return;
   if (!playSoundSwitch) return;
 
-  if (snd >= 0 && snd < sounds.size())
+  if (snd < sounds.size())
   {
     sounds[snd].channel = Mix_PlayChannel(-1, sounds[snd].sound, 0);
     Mix_Volume(sounds[snd].channel, sounds[snd].volume);

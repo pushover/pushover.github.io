@@ -63,7 +63,7 @@ class window_c {
     window_c(unsigned char x_, unsigned char y_, unsigned char w_, unsigned char h_, surface_c & s, graphicsN_c & gr);
     virtual ~window_c(void);
 
-    virtual bool handleEvent(const SDL_Event & event) { return false; }
+    virtual bool handleEvent(const SDL_Event & /* event */) { return false; }
 
     bool isDone(void) { return done; }
     void resetWindow(void) { done = false; }

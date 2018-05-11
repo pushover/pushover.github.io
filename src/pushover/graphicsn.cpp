@@ -781,7 +781,7 @@ void graphicsN_c::setTheme(const std::string & name)
 
         if (x < xBlocks)
         {
-          if (0 <= i && i <= 3)
+          if (i <= 3)
           {
             // load a platform image, each platform image is plit into 4 parts each blockX/2 x blockY/2 in size
             surface_c * w1 = new surface_c(blockX()/2, blockY()/2);
@@ -1042,6 +1042,7 @@ void graphicsN_c::drawDomino(uint16_t x, uint16_t y)
         target->blit(*dominoes[de][de>=DominoTypeCrash0?DO_ST_CRASH:DO_ST_UPRIGHT], SpriteXPos, SpriteYPos-splitterY);
       }
       // fall through intentionally to paint actual domino
+      [[fallthrough]];
 
     default:
       dx = SpriteXPos;
@@ -1718,18 +1719,6 @@ void graphicsN_c::setShowGrid(bool on)
 void graphicsN_c::setCursor(size_t x, size_t y, size_t w, size_t h)
 {
   if (!level) return;
-
-  if (x < 0)
-  {
-    w += x;
-    x = 0;
-  }
-
-  if (y < 0)
-  {
-    h += y;
-    y = 0;
-  }
 
   if (w < 1) w = 1;
   if (h < 1) h = 1;

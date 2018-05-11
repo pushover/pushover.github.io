@@ -60,7 +60,7 @@ typedef struct {
 } fontParams_s;
 
 
-void initText(std::string datadir);
+void initText(void);
 void deinitText(void);
 unsigned int getFontHeight(unsigned int font);
 unsigned int getTextWidth(unsigned int font, const std::string & t);

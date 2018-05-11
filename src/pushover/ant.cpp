@@ -376,7 +376,8 @@ bool ant_c::animateAnt(unsigned int delay) {
 
 AntAnimationState ant_c::SFStruck(void) {
   if (animateAnt(2))
-    ;
+  {
+  }
 
   return animation;
 }

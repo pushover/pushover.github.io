@@ -222,16 +222,16 @@ static int clip(int v) {
 }
 
 // a list of functions that return value between 0 and 255, depending on x and y
-static int f1(int x, int y, int a) { return clip((14-y)*32 - 14*32 + (a*(14*32+256)/64)); }
-static int f2(int x, int y, int a) { return clip(x*32 - 19*32 + (a*(19*32+256)/64)); }
+static int f1(int /*x*/, int y, int a) { return clip((14-y)*32 - 14*32 + (a*(14*32+256)/64)); }
+static int f2(int x, int /*y*/, int a) { return clip(x*32 - 19*32 + (a*(19*32+256)/64)); }
 static int f3(int x, int y, int a) { return clip(((2*y-14)*(2*y-14)+(2*x-19)*(2*x-19))*256/127 - 1123 + a*((1123+256)/64)); }
-static int f4(int x, int y, int a) { return clip((y)*32 - 14*32 + (a*(14*32+256)/64)); }
-static int f5(int x, int y, int a) { return clip((19-x)*32 - 19*32 + (a*(19*32+256)/64)); }
+static int f4(int /*x*/, int y, int a) { return clip((y)*32 - 14*32 + (a*(14*32+256)/64)); }
+static int f5(int x, int /*y*/, int a) { return clip((19-x)*32 - 19*32 + (a*(19*32+256)/64)); }
 
 static SDL_Rect rects[15*20*255];
 static int count;
 
-static void u1(int x, int y, int f0, int f, int blx, int bly) {
+static void u1(int x, int y, int /*f0*/, int f, int blx, int bly) {
   int by = bly*y;
   int bx = blx*x;
   int bw = f*blx/256;
@@ -246,7 +246,7 @@ static void u1(int x, int y, int f0, int f, int blx, int bly) {
   }
 }
 
-static void u2(int x, int y, int f0, int f, int blx, int bly) {
+static void u2(int x, int y, int /*f0*/, int f, int blx, int bly) {
   int by = bly*y;
   int bx = blx*x;
   int bw = blx;
@@ -261,7 +261,7 @@ static void u2(int x, int y, int f0, int f, int blx, int bly) {
   }
 }
 
-static void u3(int x, int y, int f0, int f, int blx, int bly) {
+static void u3(int x, int y, int /*f0*/, int f, int blx, int bly) {
   int by = bly*y + bly/2 - bly/2*f/256;
   int bx = blx*x + blx/2 - blx/2*f/256;
   int bw = f*blx/256;
@@ -360,7 +360,7 @@ static void u5(int x, int y, int f0, int f, int blx, int bly)
   u_matrix(x, y, f0, f, blx, bly, matrixes[(x+y)%8]);
 }
 
-static void u6(int x, int y, int f0, int f, int blx, int bly)
+static void u6(int x, int y, int /*f0*/, int f, int blx, int bly)
 {
   int bx = blx*x;
   int by = bly*y;
@@ -415,7 +415,7 @@ static void u6(int x, int y, int f0, int f, int blx, int bly)
   }
 }
 
-static void u7(int x, int y, int f0, int f, int blx, int bly)
+static void u7(int x, int y, int /*f0*/, int f, int blx, int bly)
 {
   int w = f*blx/512;
 
@@ -471,7 +471,7 @@ static void u9(int x, int y, int f0, int f, int blx, int bly)
   }
 }
 
-static void uA(int x, int y, int f0, int f, int blx, int bly)
+static void uA(int x, int y, int /*f0*/, int f, int blx, int bly)
 {
   int by = bly*y;
   int bw = f*blx/256;
@@ -487,7 +487,7 @@ static void uA(int x, int y, int f0, int f, int blx, int bly)
   }
 }
 
-static void uB(int x, int y, int f0, int f, int blx, int bly) {
+static void uB(int x, int y, int /*f0*/, int f, int blx, int bly) {
   int bh = f*bly/256;
   int by = bly*y+bly-bh;
   int bx = blx*x;
@@ -512,7 +512,7 @@ static void uC(int x, int y, int f0, int f, int blx, int bly) {
   }
 }
 
-static void uD(int x, int y, int f0, int f, int blx, int bly)
+static void uD(int x, int y, int /*f0*/, int f, int blx, int bly)
 {
   int by = bly*y;
   int bw = f*blx/256;
@@ -528,7 +528,7 @@ static void uD(int x, int y, int f0, int f, int blx, int bly)
   }
 }
 
-static void uE(int x, int y, int f0, int f, int blx, int bly)
+static void uE(int x, int y, int /*f0*/, int f, int blx, int bly)
 {
   int bx = blx*x;
   int bh = f*bly/256;
@@ -657,7 +657,7 @@ static std::string findFont(const std::string & font)
 }
 
 
-void initText(std::string dir)
+void initText(void)
 {
   //TRANSLATORS: this is a list of fonts that you might need for your translation, please
   //specify a semicolon separated list of fonts to use, FreeSans.ttf should always be

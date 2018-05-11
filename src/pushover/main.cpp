@@ -51,7 +51,7 @@ static std::string getDataDir(void)
   }
 }
 
-LevelState playTick(levelPlayer_c & l, ant_c & a, graphics_c & gr, unsigned int keys)
+static LevelState playTick(ant_c & a, graphics_c & gr, unsigned int keys)
 {
   LevelState res = a.performAnimation(keys);
 
@@ -128,7 +128,7 @@ int main(int argc, char * argv[]) {
   graphicsN_c gr(pkgdatadir);
   screen_c screen(gr);
   if (conf.useFullscreen) screen.toggleFullscreen();
-  initText(pkgdatadir);
+  initText();
   soundSystem_c::instance()->openSound(pkgdatadir);
   levelPlayer_c l;
   recorder_c rec;
@@ -921,7 +921,7 @@ int main(int argc, char * argv[]) {
           if (failDelay > 0)
           {
             failDelay--;
-            playTick(l, a, gr, 0);
+            playTick(a, gr, 0);
           }
           else
           {
@@ -942,7 +942,7 @@ int main(int argc, char * argv[]) {
 #ifdef DEBUG
             tick++;
 #endif
-            if (playTick(l, a, gr, rec.getEvent()) != LS_undecided)
+            if (playTick(a, gr, rec.getEvent()) != LS_undecided)
             {
               if (exitAfterReplay)
               {
@@ -958,6 +958,7 @@ int main(int argc, char * argv[]) {
           // intentionally fall through to ST_PLAY when
           // the record has ended to allow the player to
           // continue playing
+          [[fallthrough]];
 
         case ST_PLAY:
           {
@@ -966,7 +967,7 @@ int main(int argc, char * argv[]) {
 #ifdef DEBUG
             tick++;
 #endif
-            failReason = playTick(l, a, gr, keyMask);
+            failReason = playTick(a, gr, keyMask);
           }
 
           if (l.levelInactive())

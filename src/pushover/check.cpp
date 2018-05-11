@@ -135,7 +135,7 @@ static std::string checkerFail(const ant_c & a, const levelPlayer_c & l) {
       return "Level not Failed";
 }
 
-static std::string checkerCrash(const ant_c & a, const levelPlayer_c & l) {
+static std::string checkerCrash(const ant_c & /*a*/, const levelPlayer_c & l) {
   // we succeeded, when the ant has vanished, then it went out of the door
 
   if (l.rubblePile())

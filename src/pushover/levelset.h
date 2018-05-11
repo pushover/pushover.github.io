@@ -48,7 +48,7 @@ class levelset_c {
     levelset_c(const std::string & path, const std::string & userString, bool noindexrequired = false);
     const std::string getName(void) const { return name; }
     const std::string getDescription(void) const { return description; }
-    const unsigned int getPriority(void) const { return priority; }
+    unsigned int getPriority(void) const { return priority; }
 
     const std::vector<std::string> & getLevelNames(void) const { return levelNames; }
     const std::string & getChecksum(const std::string & levelName) const;

@@ -1676,7 +1676,7 @@ void stepEditor(void)
               break;
             case LS_solved:
               rec.save("levels/"+levelName+"_");
-              // intentionally fall throgh
+              [[fallthrough]];
             default:
               nextState = ST_EDIT_HOME;
               levels->loadLevel(*l, levelName, "");
@@ -1685,6 +1685,7 @@ void stepEditor(void)
         }
       }
       // intentionally fall though to repaint the level
+      [[fallthrough]];
 
     case ST_EDIT_HOME:
     case ST_EDIT_BACKGROUND:
