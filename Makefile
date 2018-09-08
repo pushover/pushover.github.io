@@ -56,7 +56,7 @@ _tmp/pushover/%.o: src/pushover/% src/version $(FILES_H)
 FILES_BINDIR += pushover
 
 pushover: $(FILES_O)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) `$(PKG_CONFIG) --libs $(PKGS)` $(LIBS) -o $@ $(FILES_O)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(FILES_O) `$(PKG_CONFIG) --libs $(PKGS)` $(LIBS)
 
 ASSEMBLER_PKGS += SDL_image
 ASSEMBLER_PKGS += libpng
@@ -68,7 +68,7 @@ FILES_DIST += $(ASSEMBLER_SOURCES)
 .SECONDARY: _tmp/dominoes/assembler
 _tmp/dominoes/assembler: $(ASSEMBLER_SOURCES)
 	mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) `$(PKG_CONFIG) --cflags $(ASSEMBLER_PKGS)` `$(PKG_CONFIG) --libs $(ASSEMBLER_PKGS)` -o $@ $<
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) `$(PKG_CONFIG) --cflags $(ASSEMBLER_PKGS)` -o $@ $< `$(PKG_CONFIG) --libs $(ASSEMBLER_PKGS)`
 
 DOMINOES_SOURCES := src/dominoes/domino.ini $(wildcard src/dominoes/*.pov)
 FILES_DIST += $(DOMINOES_SOURCES)
