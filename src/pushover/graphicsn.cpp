@@ -29,7 +29,7 @@
 #include "screen.h"
 #include "colors.h"
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <string.h>
 #include <iostream>
 
