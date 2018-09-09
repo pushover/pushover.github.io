@@ -22,7 +22,7 @@
 #ifndef __EDIT_H__
 #define __EDIT_H__
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 #include <string>
 
