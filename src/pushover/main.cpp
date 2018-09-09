@@ -30,7 +30,7 @@
 #include "tools.h"
 #include "editor.h"
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 #include <fstream>
 #include <string>
